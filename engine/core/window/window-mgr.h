@@ -32,9 +32,9 @@ public:
 	void onCursorPos(double xpos, double ypos);
 	void onMouseButton(int button, int action, int mods);
 	void onWindowSize();
-	//void getWindowSize(int& width, int& height);
-	//void tick();
-	//void destroy();
+	void getWindowSize(int& width, int& height);
+	void tick();
+	void destroy();
 
 	//// 线程安全的获取窗口状态
 	//int getWindowDirty();

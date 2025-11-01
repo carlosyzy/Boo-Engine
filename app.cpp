@@ -3,10 +3,10 @@
 
 int main()
 {
-  /*  Engine *engine = new Engine();
+    Engine *engine = new Engine();
     engine->init();
     engine->tick();
     delete engine;
-    std::cout << "close" << std::endl;*/
+    std::cout << "close" << std::endl;
     return 0;
 }

@@ -108,45 +108,43 @@ void WindowMgr::onMouseButton(int button, int action, int mods)
 void WindowMgr::onWindowSize()
 {
 	////  交换链扩展应该使用帧缓冲大小，而不是窗口大小
-	//int width = 0;
-	//int height = 0;
-	//glfwGetWindowSize(this->_window, &width, &height);
-	//std::lock_guard<std::mutex> lock(this->_windowMutex);
-	//this->_width = width;
-	//this->_height = height;
-	//this->_windowDirty++;
+	int width = 0;
+	int height = 0;
+	glfwGetWindowSize(this->_window, &width, &height);
+	std::lock_guard<std::mutex> lock(this->_windowMutex);
+	this->_width = width;
+	this->_height = height;
+	this->_windowDirty++;
 	////std::cout << "WindowMgr::onWindowSize:" << width << "   " << height << std::endl;
 };
-//void WindowMgr::getWindowSize(int& width, int& height)
-//{
-//	std::lock_guard<std::mutex> lock(this->_windowMutex);
-//	width = this->_width;
-//	height = this->_height;
-//}
-//void WindowMgr::tick()
-//{
-//	while (!glfwWindowShouldClose(this->_window))
-//	{
-//		glfwPollEvents();
-//	}
-//}
-//
-//// 线程安全的获取方法
-// int WindowMgr::getWindowDirty()
-//{
-//	std::lock_guard<std::mutex> lock(this->_windowMutex);
-//	return this->_windowDirty;
-// }
-//
-// void WindowMgr::setWindowDirty(int dirty)
-//{
-//	std::lock_guard<std::mutex> lock(this->_windowMutex);
-//	this->_windowDirty = dirty;
-// }
-// void WindowMgr::destroy()
-// {
-//	 glfwDestroyWindow(this->_window);
-//	 glfwTerminate();
-// }
+void WindowMgr::getWindowSize(int& width, int& height)
+{
+	std::lock_guard<std::mutex> lock(this->_windowMutex);
+	width = this->_width;
+	height = this->_height;
+}
+void WindowMgr::tick()
+{
+	while (!glfwWindowShouldClose(this->_window))
+	{
+		glfwPollEvents();
+	}
+}
+ void WindowMgr::destroy()
+ {
+	 glfwDestroyWindow(this->_window);
+	 glfwTerminate();
+ }
 
-
+ //// 线程安全的获取方法
+ // int WindowMgr::getWindowDirty()
+ //{
+ //	std::lock_guard<std::mutex> lock(this->_windowMutex);
+ //	return this->_windowDirty;
+ // }
+ //
+ // void WindowMgr::setWindowDirty(int dirty)
+ //{
+ //	std::lock_guard<std::mutex> lock(this->_windowMutex);
+ //	this->_windowDirty = dirty;
+ // }
