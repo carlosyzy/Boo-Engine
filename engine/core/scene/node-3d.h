@@ -1,11 +1,12 @@
 #pragma once
-#include "node-base.h"
+#include "node.h"
 
-class Node3D : public NodeBase {
+class Node3D : public Node {
 public:
-    Node3D(const std::string& name, const std::string& uuid = "");
+    Node3D(const std::string name, const std::string uuid = "");
     ~Node3D();
     // 重写基类方法
-    virtual void update() override;
-    virtual void render() override;
+    virtual void update(float deltaTime);
+    virtual void lateUpdate(float deltaTime);
+    virtual void render();
 };

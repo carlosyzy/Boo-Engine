@@ -1,23 +1,24 @@
 #include "scene.h"
 #include <iostream>
-#include <algorithm>
-#include <random>
-#include <sstream>
-#include <iomanip>
 
-Scene::Scene(const std::string& name, const std::string& uuid) :NodeBase(name,uuid) {
+Scene::Scene(const std::string name, const std::string uuid) : Node(name, uuid) {
     
 }
 
 Scene::~Scene() {
+    
 }
 
-void Scene::update() {
-    std::cout << "Scene update: " << _name << std::endl;
-   
+void Scene::update(float dt) {
+	Node::update(dt);
+	// 基础更新逻辑，子类可以重写
+	std::cout << "Node update: " << _name << std::endl;
 }
-
+void Scene::lateUpdate(float dt) {
+	Node::lateUpdate(dt);
+	// 基础更新逻辑，子类可以重写
+	std::cout << "Node lateUpdate: " << _name << std::endl;
+}
 void Scene::render() {
-    std::cout << "Scene render: " << _name << std::endl;
-   
+    Node::render();
 }

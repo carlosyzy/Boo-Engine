@@ -130,7 +130,7 @@
     <ClCompile Include="engine\core\math\vec3.cpp" />
     <ClCompile Include="engine\core\scene\node-2d.cpp" />
     <ClCompile Include="engine\core\scene\node-3d.cpp" />
-    <ClCompile Include="engine\core\scene\node-base.cpp" />
+    <ClCompile Include="engine\core\scene\node.cpp" />
     <ClCompile Include="engine\core\scene\scene.cpp" />
     <ClCompile Include="engine\core\utils\uuid-util.cpp" />
   </ItemGroup>
@@ -141,7 +141,7 @@
     <ClInclude Include="engine\core\math\vec3.h" />
     <ClInclude Include="engine\core\scene\node-2d.h" />
     <ClInclude Include="engine\core\scene\node-3d.h" />
-    <ClInclude Include="engine\core\scene\node-base.h" />
+    <ClInclude Include="engine\core\scene\node.h" />
     <ClInclude Include="engine\core\scene\scene.h" />
     <ClInclude Include="engine\core\utils\uuid-util.h" />
   </ItemGroup>

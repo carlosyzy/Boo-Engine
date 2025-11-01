@@ -36,13 +36,13 @@
     <ClCompile Include="engine\core\scene\node-3d.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\scene\node-base.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\scene\scene.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\utils\uuid-util.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\scene\node.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,13 +65,13 @@
     <ClInclude Include="engine\core\scene\node-3d.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\scene\node-base.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="engine\core\scene\scene.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\utils\uuid-util.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\scene\node.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
