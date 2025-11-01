@@ -4,7 +4,7 @@
 const int MIN_WIDTH = 640;
 const int MIN_HEIGHT = 360;
 
-WindowMgr::WindowMgr() : _windowDirty(0), _width(0), _height(0),_window(nullptr)
+WindowMgr::WindowMgr() : _windowDirty(0), _width(0), _height(0), _window(nullptr)
 {
 }
 WindowMgr::~WindowMgr()
@@ -56,40 +56,55 @@ GLFWwindow* WindowMgr::getWindow()
 }
 void WindowMgr::cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 {
-	WindowMgr* manager = static_cast<WindowMgr*>(glfwGetWindowUserPointer(window));
-	std::cout << "aaa:" << manager << std::endl;
-	if (manager != nullptr) // 检查非空
-	{
-		manager->onCursorPos(xpos, ypos); // 调用非静态处理函数
+	void* userPointer = glfwGetWindowUserPointer(window);
+	if (userPointer == nullptr) {
+		return;
 	}
+	WindowMgr* manager = static_cast<WindowMgr*>(userPointer);
+	if (manager == nullptr) {
+		return;
+	}
+	manager->onCursorPos(xpos, ypos); // 调用非静态处理函数
+
 }
 void WindowMgr::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-	WindowMgr* manager = static_cast<WindowMgr*>(glfwGetWindowUserPointer(window));
-	//if (manager != nullptr)
-	//{
-	//	manager->onMouseButton(button, action, mods); // 调用非静态处理函数
-	//}
+	void* userPointer = glfwGetWindowUserPointer(window);
+	if (userPointer == nullptr) {
+		return;
+	}
+	WindowMgr* manager = static_cast<WindowMgr*>(userPointer);
+	if (manager == nullptr) // 检查非空
+	{
+		return;
+	}
+	manager->onMouseButton(button, action, mods);
 }
 void WindowMgr::windowSizeCallback(GLFWwindow* window, int width, int height)
 {
-	WindowMgr* manager = static_cast<WindowMgr*>(glfwGetWindowUserPointer(window));
-	//if (manager != nullptr)
-	//{
-	//	manager->onWindowSize(); // 调用非静态处理函数
-	//}
-}
+	void* userPointer = glfwGetWindowUserPointer(window);
+	if (userPointer == nullptr) {
+		return;
+	}
+	WindowMgr* manager = static_cast<WindowMgr*>(userPointer);
+	if (manager == nullptr) // 检查非空
+	{
+		return;
+	}
+	manager->onWindowSize();
+
+};
 
 void WindowMgr::onCursorPos(double xpos, double ypos)
 {
 	// InputMgr::getInstance()->onCursorPos(xpos, ypos);
 	std::cout << "WindowMgr::onCursorPos:" << std::endl;
-}
+};
 void WindowMgr::onMouseButton(int button, int action, int mods)
 {
 	std::cout << "WindowMgr::onMouseButton:" << button << "   " << action << "   " << mods << std::endl;
 	// InputMgr::getInstance()->onMouseButton(button, action, mods);
-}
+};
 void WindowMgr::onWindowSize()
 {
 	////  交换链扩展应该使用帧缓冲大小，而不是窗口大小
@@ -101,7 +116,7 @@ void WindowMgr::onWindowSize()
 	//this->_height = height;
 	//this->_windowDirty++;
 	////std::cout << "WindowMgr::onWindowSize:" << width << "   " << height << std::endl;
-}
+};
 //void WindowMgr::getWindowSize(int& width, int& height)
 //{
 //	std::lock_guard<std::mutex> lock(this->_windowMutex);
