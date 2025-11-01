@@ -1,10 +1,12 @@
 #include <iostream>
-#include "engine/core/scene/node.h"
+#include "engine/engine.h"
 
-int main() {
-    std::cout << "Hello, Boo-Engine!" << std::endl;
-    
-    Node node("","");
-    
+int main()
+{
+  /*  Engine *engine = new Engine();
+    engine->init();
+    engine->tick();
+    delete engine;
+    std::cout << "close" << std::endl;*/
     return 0;
 }

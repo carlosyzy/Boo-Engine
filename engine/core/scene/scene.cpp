@@ -1,23 +1,35 @@
 #include "scene.h"
 #include <iostream>
+#include "node-3d.h"
+#include "node-2d.h"
+
+
 
 Scene::Scene(const std::string name, const std::string uuid) : Node(name, uuid) {
-    
+    this->_layer = NodeLayer::Scene;
+    this->_root3D = new Node3D("root3D");
+    this->_root2D = new Node2D("root2D");
+	this->addChild(this->_root3D);
+	this->addChild(this->_root2D);
 }
 
 Scene::~Scene() {
-    
+    delete this->_root3D;
+    delete this->_root2D;
+	this->_root3D = nullptr;
+	this->_root2D = nullptr;
 }
 
 void Scene::update(float dt) {
 	Node::update(dt);
-	// 基础更新逻辑，子类可以重写
-	std::cout << "Node update: " << _name << std::endl;
+	this->_root3D->update(dt);
+	this->_root2D->update(dt);
 }
 void Scene::lateUpdate(float dt) {
 	Node::lateUpdate(dt);
-	// 基础更新逻辑，子类可以重写
-	std::cout << "Node lateUpdate: " << _name << std::endl;
+	this->_root3D->lateUpdate(dt);
+	this->_root2D->lateUpdate(dt);
+	
 }
 void Scene::render() {
     Node::render();

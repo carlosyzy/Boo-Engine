@@ -2,9 +2,15 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <functional>
 #include "../math/quat.h"
 #include "../math/vec3.h"
+#include "../math/mat4.h"
 
+namespace NodeEvent
+{
+	const std::string ON_TRANSFORM_CHANGED = "node_transform_changed";
+}
 enum NodeTransformFlag : uint32_t
 {
 	NONE_FLAG = 0,
@@ -16,7 +22,7 @@ enum NodeTransformFlag : uint32_t
 	ALL_FLAG = POSITION_FLAG | ROTATION_FLAG | SCALE_FLAG | SIZE_FLAG | ANCHOR_FLAG,
 };
 
-enum class NodeType
+enum class NodeLayer
 {
 	Node,
 	Node2D,
@@ -26,11 +32,23 @@ enum class NodeType
 
 class Node
 {
+private:
+	int _nodeEventId = 0;
+	struct Listener
+	{
+		std::function<void()> callback;
+		void *owner;
+		uint64_t id; // 唯一标识符
+		Listener(std::function<void()> cb, void *own, uint64_t id)
+			: callback(cb), owner(own), id(id) {}
+	};
+	std::unordered_map<std::string, std::vector<Listener>> _listeners;
+
 protected:
 	/**
 	 * 当前节点类型
 	 */
-	NodeType _layer;
+	NodeLayer _layer;
 	/**
 	 * 节点名称
 	 */
@@ -62,7 +80,7 @@ protected:
 	/*
 	 * 当前节点世界缩放
 	 */
-	Vec3 _woildScale;
+	Vec3 _worldScale;
 	/*
 	 * 欧拉角
 	 */
@@ -75,6 +93,11 @@ protected:
 	 * 当前节点世界角度
 	 */
 	Quat _worldRotation;
+	/**
+	 * 当前节点本地矩阵
+	 */
+	Mat4 _localMatrix;
+	Mat4 _worldMatrix;
 
 	/**
 	 * 子节点
@@ -103,10 +126,10 @@ public:
 	void setName(const std::string &name);
 	std::string getName() const;
 
-	void setActive(bool active);
+	void setActive(bool active, bool force = false);
 	bool isActive() const;
 
-	const NodeType getLayer() const;
+	const NodeLayer getLayer() const;
 	const std::string getUuid() const;
 
 	/**
@@ -146,7 +169,7 @@ public:
 	const Vec3 &getWorldScale()
 	{
 		this->_updateWorldTransform();
-		return this->_woildScale;
+		return this->_worldScale;
 	}
 	/**
 	 * 获取世界角度
@@ -156,7 +179,79 @@ public:
 		this->_updateWorldTransform();
 		return this->_worldRotation;
 	}
-
+	/**
+	 * 获取本地矩阵
+	 */
+	const Mat4 &getLocalMatrix() { return this->_localMatrix; }
+	/**
+	 * 获取世界矩阵
+	 */
+	const Mat4 &getWorldMatrix()
+	{
+		this->_updateWorldTransform();
+		return this->_worldMatrix;
+	}
+	/**
+	 * @brief 注册事件监听器
+	 * @param eventName 事件名称
+	 * @param callback 事件处理函数
+	 * @param owner 事件处理函数所属类的指针
+	 * @return uint64_t 监听器ID
+	 */
+	template <typename T, typename Func>
+	uint64_t on(const std::string eventName, Func func, T *instance)
+	{
+		uint64_t id = this->_nodeEventId++;
+		auto callback = [instance, func]()
+		{
+			(instance->*func)();
+		};
+		this->_listeners[eventName].emplace_back(callback, static_cast<void *>(instance), id);
+		return id;
+	}
+	/**
+	 * @brief 触发事件
+	 * @param eventName 事件名称
+	 */
+	template <typename... Args>
+	void emit(const std::string eventName)
+	{
+		auto it = this->_listeners.find(eventName);
+		if (it != this->_listeners.end())
+		{
+			for (auto &listener : it->second)
+			{
+				listener.callback();
+			}
+		}
+	}
+	/**
+	 * @brief 移除指定ID的事件监听器
+	 * @param eventName 事件名称
+	 * @param id 监听器ID
+	 */
+	void off(const std::string eventName, uint64_t id)
+	{
+		for (auto it = this->_listeners.begin(); it != this->_listeners.end(); ++it)
+		{
+			auto &listeners = it->second;
+			for (auto listenerIt = listeners.begin(); listenerIt != listeners.end(); ++listenerIt)
+			{
+				if (listenerIt->id == id)
+				{
+					listeners.erase(listenerIt);
+					return;
+				}
+			}
+		}
+	}
+	/**
+	 * @brief 移除所有事件监听器
+	 */
+	void offAll()
+	{
+		this->_listeners.clear();
+	}
 	Node *getParent();
 	void setParent(Node *node);
 
@@ -168,10 +263,12 @@ public:
 	 * 删除子节点
 	 */
 	void removeChild(Node *node);
+
 	/*
 	 *删除所有子节点
 	 */
 	void destroyAllChildren();
+	void destroy();
 
 	// 虚函数，子类可以重写
 	virtual void update(float deltaTime);

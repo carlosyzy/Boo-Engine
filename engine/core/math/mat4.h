@@ -52,7 +52,6 @@ public:
    void setM30(float value) { this->_m[12] = value; }
    void setM31(float value) { this->_m[13] = value; }
    void setM32(float value) { this->_m[14] = value; }
-   void setM33(float value) { this->_m[4] = value; }
    void setM33(float value) { this->_m[15] = value; }
    
 
@@ -81,8 +80,9 @@ public:
     * @return Mat4
     */
    static Mat4 identity();
-   static void inverse(Mat4 &mat, Mat4 &out);
-   static void multiplyVec3(Mat4 &mat, Vec3 &in, Vec3 &out);
+   static void inverse(const Mat4 &mat, Mat4 &out);
+   static void multiplyVec3(const Mat4 &mat, Vec3 &in, Vec3 &out);
+   static void multiply(const Mat4 &mat, const Mat4 &other, Mat4 &out);
 
    ~Mat4();
 };

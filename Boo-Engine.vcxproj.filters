@@ -45,6 +45,27 @@
     <ClCompile Include="engine\core\scene\node.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="engine\core\math\size.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\math\vec2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\component\component.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\component\component-factory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\window\window-mgr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\utils\time-util.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\engine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\core\math\color.h">
@@ -72,6 +93,27 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\scene\node.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\math\size.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\math\vec2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\component\component.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\component\component-factory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\window\window-mgr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\utils\time-util.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\engine.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

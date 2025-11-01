@@ -70,6 +70,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>E:\software\glfw\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\software\glfw\lib-vc2022;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -102,10 +106,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>E:\software\vulkan\Include;E:\software\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>E:\software\vulkan\Lib;E:\software\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -124,26 +132,40 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="engine\core\component\component-factory.cpp" />
+    <ClCompile Include="engine\core\component\component.cpp" />
     <ClCompile Include="engine\core\math\color.cpp" />
     <ClCompile Include="engine\core\math\mat4.cpp" />
     <ClCompile Include="engine\core\math\quat.cpp" />
+    <ClCompile Include="engine\core\math\size.cpp" />
+    <ClCompile Include="engine\core\math\vec2.cpp" />
     <ClCompile Include="engine\core\math\vec3.cpp" />
     <ClCompile Include="engine\core\scene\node-2d.cpp" />
     <ClCompile Include="engine\core\scene\node-3d.cpp" />
     <ClCompile Include="engine\core\scene\node.cpp" />
     <ClCompile Include="engine\core\scene\scene.cpp" />
+    <ClCompile Include="engine\core\utils\time-util.cpp" />
     <ClCompile Include="engine\core\utils\uuid-util.cpp" />
+    <ClCompile Include="engine\core\window\window-mgr.cpp" />
+    <ClCompile Include="engine\engine.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\core\component\component-factory.h" />
+    <ClInclude Include="engine\core\component\component.h" />
     <ClInclude Include="engine\core\math\color.h" />
     <ClInclude Include="engine\core\math\mat4.h" />
     <ClInclude Include="engine\core\math\quat.h" />
+    <ClInclude Include="engine\core\math\size.h" />
+    <ClInclude Include="engine\core\math\vec2.h" />
     <ClInclude Include="engine\core\math\vec3.h" />
     <ClInclude Include="engine\core\scene\node-2d.h" />
     <ClInclude Include="engine\core\scene\node-3d.h" />
     <ClInclude Include="engine\core\scene\node.h" />
     <ClInclude Include="engine\core\scene\scene.h" />
+    <ClInclude Include="engine\core\utils\time-util.h" />
     <ClInclude Include="engine\core\utils\uuid-util.h" />
+    <ClInclude Include="engine\core\window\window-mgr.h" />
+    <ClInclude Include="engine\engine.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="engine\readme.md" />

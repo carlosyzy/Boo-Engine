@@ -3,5 +3,5 @@
 class TimeUtil
 {
 public:
-    static long nowTime();
+   //static long long nowTime();
 };

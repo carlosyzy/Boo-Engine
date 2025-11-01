@@ -3,11 +3,12 @@
 #include <iostream>
 
 Node::Node(const std::string name, const std::string uuid)
-	: _name(name), _active(true), _layer(NodeType::Node), _isActiveInHierarchy(true),
+	: _name(name), _active(true), _layer(NodeLayer::Node), _isActiveInHierarchy(true),
 	  _position(0.0f, 0.0f, 0.0f), _scale(1.0f, 1.0f, 1.0f),
 	  _eulerAngles(0.0f, 0.0f, 0.0f), _rotation(0.0f, 0.0f, 0.0f, 1.0f),
-	  _worldPosition(0.0f, 0.0f, 0.0f), _woildScale(1.0f, 1.0f, 1.0f),
+	  _worldPosition(0.0f, 0.0f, 0.0f), _worldScale(1.0f, 1.0f, 1.0f),
 	  _worldRotation(0.0f, 0.0f, 0.0f, 1.0f),
+	  _localMatrix(Mat4::identity()), _worldMatrix(Mat4::identity()),
 	  _worldTransformFlag(NodeTransformFlag::ALL_FLAG)
 {
 	_uuid = uuid.empty() ? UuidUtil::generateUUID() : uuid;
@@ -25,16 +26,15 @@ std::string Node::getName() const
 	return this->_name;
 }
 
-void Node::setActive(bool active)
+void Node::setActive(bool active, bool force)
 {
-	if (this->_active == active)
+	if (this->_active == active && !force)
 	{
 		return;
 	}
 	this->_active = active;
-	this->_isActiveInHierarchy = (this->_parent == nullptr) ? true : this->_parent->_isActiveInHierarchy;
-	bool isActive = this->_isActiveInHierarchy && this->_active;
-	this->_updateNodesActiveInHierarchyState(isActive);
+	this->_isActiveInHierarchy = ((this->_parent == nullptr) ? true : this->_parent->_isActiveInHierarchy) && this->_active;
+	this->_updateNodesActiveInHierarchyState(this->_isActiveInHierarchy);
 }
 
 bool Node::isActive() const
@@ -42,7 +42,7 @@ bool Node::isActive() const
 	return this->_active;
 }
 
-const NodeType Node::getLayer() const
+const NodeLayer Node::getLayer() const
 {
 	return this->_layer;
 }
@@ -61,37 +61,40 @@ void Node::setPosition(float x, float y, float z)
 		return;
 	}
 	this->_position.set(x, y, z);
+	this->_localMatrix.translate(x, y, z);
 	this->_updateWorldTransformFlag(NodeTransformFlag::POSITION_FLAG);
+	this->emit(NodeEvent::ON_TRANSFORM_CHANGED);
 }
 void Node::setWorldPosition(float x, float y, float z)
 {
-	if (this->_worldPosition.getX() == x && this->_worldPosition.getY() == y && this->_worldPosition.getZ() == z)
-	{
-		return;
-	}
-	this->_worldPosition.set(x, y, z);
-	this->_updateWorldTransformFlag(NodeTransformFlag::POSITION_FLAG);
+	// if (this->_worldPosition.getX() == x && this->_worldPosition.getY() == y && this->_worldPosition.getZ() == z)
+	// {
+	// 	return;
+	// }
+	// this->_worldPosition.set(x, y, z);
+	// this->_updateWorldTransformFlag(NodeTransformFlag::POSITION_FLAG);
 }
 /**
  * 设置四元素角度
  */
 void Node::setRotation(float x, float y, float z, float w)
 {
-	if (this->_rotation.getX() == x && this->_rotation.getY() == y && this->_rotation.getZ() == z && this->_rotation.getW() == w)
-	{
-		return;
-	}
-	this->_rotation.set(x, y, z, w);
-	this->_updateWorldTransformFlag(NodeTransformFlag::ROTATION_FLAG);
+	// if (this->_rotation.getX() == x && this->_rotation.getY() == y && this->_rotation.getZ() == z && this->_rotation.getW() == w)
+	// {
+	// 	return;
+	// }
+	// this->_rotation.set(x, y, z, w);
+	// this->_localMatrix.rotate(x, y, z, w);
+	// this->_updateWorldTransformFlag(NodeTransformFlag::ROTATION_FLAG);
 }
 void Node::setWorldRotation(float x, float y, float z, float w)
 {
-	if (this->_worldRotation.getX() == x && this->_worldRotation.getY() == y && this->_worldRotation.getZ() == z && this->_worldRotation.getW() == w)
-	{
-		return;
-	}
-	this->_worldRotation.set(x, y, z, w);
-	this->_updateWorldTransformFlag(NodeTransformFlag::ROTATION_FLAG);
+	// if (this->_worldRotation.getX() == x && this->_worldRotation.getY() == y && this->_worldRotation.getZ() == z && this->_worldRotation.getW() == w)
+	// {
+	// 	return;
+	// }
+	// this->_worldRotation.set(x, y, z, w);
+	// this->_updateWorldTransformFlag(NodeTransformFlag::ROTATION_FLAG);
 }
 /*
  * 设置缩放
@@ -103,16 +106,19 @@ void Node::setScale(float x, float y, float z)
 		return;
 	}
 	this->_scale.set(x, y, z);
+	this->_localMatrix.scale(x, y, z);
 	this->_updateWorldTransformFlag(NodeTransformFlag::SCALE_FLAG);
+	this->emit(NodeEvent::ON_TRANSFORM_CHANGED);
 }
 void Node::setWorldScale(float x, float y, float z)
 {
-	if (this->_woildScale.getX() == x && this->_woildScale.getY() == y && this->_woildScale.getZ() == z)
-	{
-		return;
-	}
-	this->_woildScale.set(x, y, z);
-	this->_updateWorldTransformFlag(NodeTransformFlag::SCALE_FLAG);
+	// if (this->_worldScale.getX() == x && this->_worldScale.getY() == y && this->_worldScale.getZ() == z)
+	// {
+	// 	return;
+	// }
+	// this->_worldScale.set(x, y, z);
+	// this->_localMatrix.scale(x, y, z);
+	// this->_updateWorldTransformFlag(NodeTransformFlag::SCALE_FLAG);
 }
 void Node::setEulerAngles(float x, float y, float z)
 {
@@ -129,19 +135,24 @@ void Node::setParent(Node *node)
 {
 	this->_parent = node;
 	// 更新节点结构激活状态
-	this->_isActiveInHierarchy = (this->_parent == nullptr) ? true : this->_parent->_isActiveInHierarchy;
-	bool isActive = this->_isActiveInHierarchy && this->_active;
-	this->_updateNodesActiveInHierarchyState(isActive);
+	this->setActive(this->_active, true);
 }
 
 void Node::removeChild(Node *node)
 {
-	this->_children.erase(std::remove(this->_children.begin(), this->_children.end(), node), this->_children.end());
-    this->_frameChildFlag++;
+	for (auto it = this->_children.begin(); it != this->_children.end();)
+	{
+		if (*it == node)
+		{
+			it = this->_children.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }
-void Node::destroyAllChildren()
-{
-}
+
 void Node::_updateWorldTransformFlag(NodeTransformFlag flag)
 {
 	this->_worldTransformFlag |= static_cast<uint32_t>(flag);
@@ -166,31 +177,36 @@ void Node::_updateWorldTransform()
 		return;
 	if (this->_parent)
 	{
-		/*this->_worldMatrix = this->_parent->worldMatrix() * this->_localMatrix;*/
+		Mat4::multiply(this->_localMatrix, this->_parent->getWorldMatrix(), this->_worldMatrix);
 	}
 	else
 	{
-		/*this->_worldMatrix = this->_localMatrix;*/
+		this->_worldMatrix = this->_localMatrix;
 	}
-	/*this->_worldPosition.set(this->_worldMatrix.m12(), this->_worldMatrix.m13(), this->_worldMatrix.m14());
-	this->_worldTransformFlag = NodeTransformFlag::NONE_FLAG;*/
+	this->_worldPosition.set(this->_worldMatrix.getM30(), this->_worldMatrix.getM31(), this->_worldMatrix.getM32());
+	this->_worldTransformFlag = NodeTransformFlag::NONE_FLAG;
 }
 
 void Node::update(float dt)
 {
-	// 基础更新逻辑，子类可以重写
-	std::cout << "Node update: " << _name << std::endl;
 }
 void Node::lateUpdate(float dt)
 {
-	// 基础更新逻辑，子类可以重写
-	std::cout << "Node lateUpdate: " << _name << std::endl;
 }
 void Node::render()
 {
-	// 基础渲染逻辑，子类可以重写
-	if (_active)
+}
+void Node::destroyAllChildren()
+{
+	// 递归销毁所有子节点
+	for (auto &child : this->_children)
 	{
-		std::cout << "Node render: " << _name << std::endl;
+		child->destroy();
 	}
+	this->_children.clear();
+}
+void Node::destroy()
+{
+	// 递归销毁所有子节点
+	this->destroyAllChildren();
 }
