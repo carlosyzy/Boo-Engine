@@ -63,6 +63,15 @@ void Node::setPosition(float x, float y, float z)
 	this->_position.set(x, y, z);
 	this->_updateWorldTransformFlag(NodeTransformFlag::POSITION_FLAG);
 }
+void Node::setWorldPosition(float x, float y, float z)
+{
+	if (this->_worldPosition.getX() == x && this->_worldPosition.getY() == y && this->_worldPosition.getZ() == z)
+	{
+		return;
+	}
+	this->_worldPosition.set(x, y, z);
+	this->_updateWorldTransformFlag(NodeTransformFlag::POSITION_FLAG);
+}
 /**
  * 设置四元素角度
  */
@@ -75,6 +84,15 @@ void Node::setRotation(float x, float y, float z, float w)
 	this->_rotation.set(x, y, z, w);
 	this->_updateWorldTransformFlag(NodeTransformFlag::ROTATION_FLAG);
 }
+void Node::setWorldRotation(float x, float y, float z, float w)
+{
+	if (this->_worldRotation.getX() == x && this->_worldRotation.getY() == y && this->_worldRotation.getZ() == z && this->_worldRotation.getW() == w)
+	{
+		return;
+	}
+	this->_worldRotation.set(x, y, z, w);
+	this->_updateWorldTransformFlag(NodeTransformFlag::ROTATION_FLAG);
+}
 /*
  * 设置缩放
  */
@@ -85,6 +103,15 @@ void Node::setScale(float x, float y, float z)
 		return;
 	}
 	this->_scale.set(x, y, z);
+	this->_updateWorldTransformFlag(NodeTransformFlag::SCALE_FLAG);
+}
+void Node::setWorldScale(float x, float y, float z)
+{
+	if (this->_woildScale.getX() == x && this->_woildScale.getY() == y && this->_woildScale.getZ() == z)
+	{
+		return;
+	}
+	this->_woildScale.set(x, y, z);
 	this->_updateWorldTransformFlag(NodeTransformFlag::SCALE_FLAG);
 }
 void Node::setEulerAngles(float x, float y, float z)
@@ -109,7 +136,7 @@ void Node::setParent(Node *node)
 
 void Node::removeChild(Node *node)
 {
-	  this->_children.erase(std::remove(this->_children.begin(), this->_children.end(), node), this->_children.end());
+	this->_children.erase(std::remove(this->_children.begin(), this->_children.end(), node), this->_children.end());
     this->_frameChildFlag++;
 }
 void Node::destroyAllChildren()

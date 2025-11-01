@@ -132,7 +132,6 @@ public:
 	const Vec3 &getPosition() { return this->_position; }
 	const Quat &getRotation() { return this->_rotation; }
 	const Vec3 &getScale() { return this->_scale; }
-
 	/**
 	 * 获取世界位置
 	 */
