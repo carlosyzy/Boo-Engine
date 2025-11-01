@@ -24,10 +24,6 @@ private:
      */
     void _initGFX();
     /**
-     * @brief 初始化字体
-     */
-    void _initFont();
-    /**
      * @brief 初始Game
      */
     void _initGame();

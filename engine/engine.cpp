@@ -16,15 +16,6 @@
 
 Engine::Engine()
 {
-// #if defined(_WIN32) || defined(_WIN64)
-//     std::cout << "Windows系统" << std::endl;
-//     SetConsoleOutputCP(CP_UTF8);
-//     SetConsoleCP(CP_UTF8); // 也设置输入编码为 UTF-8，保持统一
-// #elif defined(__APPLE__)
-//     std::cout << "macOS系统" << std::endl;
-// #else
-//     std::cout << "其他系统" << std::endl;
-// #endif
     this->_frameRate = 30;
 }
 void Engine::init()
@@ -110,13 +101,13 @@ void Engine::_updateRendererLoop()
 {
     while (this->_isRenderering)
     {
-        /*long deltaTime = TimeUtil::nowTime();
+        long long deltaTime = TimeUtil::nowTime();
         long t = deltaTime - this->_deltaTime;
         if (t > 1000 / this->_frameRate)
         {
             this->update(t / 1000.0f);
             this->_deltaTime = deltaTime;
-        }*/
+        }
     }
 }
 /**

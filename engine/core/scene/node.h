@@ -6,6 +6,7 @@
 #include "../math/quat.h"
 #include "../math/vec3.h"
 #include "../math/mat4.h"
+#include <unordered_map>
 
 namespace NodeEvent
 {
@@ -38,7 +39,8 @@ private:
 	{
 		std::function<void()> callback;
 		void *owner;
-		uint64_t id; // 唯一标识符
+		// 唯一标识符
+		uint64_t id; 
 		Listener(std::function<void()> cb, void *own, uint64_t id)
 			: callback(cb), owner(own), id(id) {}
 	};
