@@ -29,7 +29,7 @@ Engine::Engine()
 }
 void Engine::init()
 {
-   /* this->_deltaTime = TimeUtil::nowTime();*/
+   this->_deltaTime = TimeUtil::nowTime();
     // 初始化窗口
     this->_initWindow();
     // 初始化 Vulkan
