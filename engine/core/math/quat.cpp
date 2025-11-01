@@ -13,19 +13,19 @@ void Quat::set(float x, float y, float z, float w)
     this->_z = z;
     this->_w = w;
 }
-float Quat::x()
+float Quat::getX()
 {
     return this->_x;
 }
-float Quat::y()
+float Quat::getY()
 {
     return this->_y;
 }
-float Quat::z()
+float Quat::getZ()
 {
     return this->_z;
 }
-float Quat::w()
+float Quat::getW()
 {
     return this->_w;
 }

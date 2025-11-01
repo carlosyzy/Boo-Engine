@@ -13,9 +13,9 @@ public:
     Color(float r, float g, float b, float a);
     void set(float r, float g, float b, float a);
     void set(std::string color);
-    float r();
-    float g();
-    float b();
-    float a();
+    float getR();
+    float getG();
+    float getB();
+    float getA();
     ~Color();
 };

@@ -3,11 +3,12 @@
 #include <iostream>
 
 Node::Node(const std::string name, const std::string uuid)
-	: _name(name), _active(true), _layer(NodeType::Node),
+	: _name(name), _active(true), _layer(NodeType::Node), _isActiveInHierarchy(true),
 	_position(0.0f, 0.0f, 0.0f), _scale(1.0f, 1.0f, 1.0f),
-	_eulerAngles(0.0f, 0.0f, 0.0f), _rotate(0.0f, 0.0f, 0.0f, 1.0f),
+	_eulerAngles(0.0f, 0.0f, 0.0f), _rotation(0.0f, 0.0f, 0.0f, 1.0f),
 	_worldPosition(0.0f, 0.0f, 0.0f), _woildScale(1.0f, 1.0f, 1.0f),
-	_worldRotate(0.0f, 0.0f, 0.0f, 1.0f) {
+	_worldRotation(0.0f, 0.0f, 0.0f, 1.0f),
+	_worldTransformFlag(NodeTransformFlag::ALL_FLAG) {
 	_uuid = uuid.empty() ? UuidUtil::generateUUID() : uuid;
 }
 
@@ -22,57 +23,113 @@ std::string Node::getName() const {
 }
 
 void Node::setActive(bool active) {
+	if (this->_active==active) {
+		return;
+	}
 	this->_active = active;
+	this->_isActiveInHierarchy = (this->_parent == nullptr) ? true : this->_parent->_isActiveInHierarchy;
+	bool isActive = this->_isActiveInHierarchy && this->_active;
+	this->_updateNodesActiveInHierarchyState(isActive);
 }
 
 bool Node::isActive() const {
 	return this->_active;
 }
 
-NodeType Node::getLayer() const {
+const NodeType Node::getLayer() const {
 	return this->_layer;
 }
 
-std::string Node::getUuid() const {
+const std::string Node::getUuid() const {
 	return this->_uuid;
 }
-
-void Node::setPosition(const Vec3& position) {
-	this->_position = position;
+/**
+* 设置坐标
+*/
+void Node::setPosition(float x, float y, float z) {
+	if (this->_position.getX()==x&& this->_position.getY() == y&& this->_position.getZ() == z) {
+		return;
+	}
+	this->_position.set(x, y, z);
+	this->_updateWorldTransformFlag(NodeTransformFlag::POSITION_FLAG);
 }
-
-const Vec3& Node::getPosition() const {
-	return this->_position;
+/**
+ * 设置四元素角度
+ */
+void Node::setRotation(float x, float y, float z, float w) {
+	if (this->_rotation.getX() == x && this->_rotation.getY() == y && this->_rotation.getZ() == z && this->_rotation.getW() == w) {
+		return;
+	}
+	this->_rotation.set(x, y, z, w);
+	this->_updateWorldTransformFlag(NodeTransformFlag::ROTATION_FLAG);
 }
-
-void Node::setScale(const Vec3& scale) {
-	this->_scale = scale;
+/*
+ * 设置缩放
+ */
+void Node::setScale(float x, float y, float z) {
+	if (this->_scale.getX() == x && this->_scale.getY() == y && this->_scale.getZ() == z) {
+		return;
+	}
+	this->_scale.set(x, y, z);
+	this->_updateWorldTransformFlag(NodeTransformFlag::SCALE_FLAG);
 }
-
-const Vec3& Node::getScale() const {
-	return this->_scale;
-}
-
-void Node::setEulerAngles(const Vec3& eulerAngles) {
-	this->_eulerAngles = eulerAngles;
-}
-
-const Vec3& Node::getEulerAngles() const {
-	return this->_eulerAngles;
+void Node::setEulerAngles(float x, float y, float z) {
+	this->_eulerAngles.set(x, y, z);
+	this->_updateWorldTransformFlag(NodeTransformFlag::ROTATION_FLAG);
 }
 void Node::addChild(Node* node) {
 	this->_children.push_back(node);
 	node->setParent(this);
+	//this->_frameChildFlag++;
+
 }
 void Node::setParent(Node* node) {
 	this->_parent = node;
+	//更新节点结构激活状态
+	this->_isActiveInHierarchy = (this->_parent == nullptr) ? true : this->_parent->_isActiveInHierarchy;
+	bool isActive = this->_isActiveInHierarchy && this->_active;
+	this->_updateNodesActiveInHierarchyState(isActive);
 }
+
 void Node::removeChild(Node* node) {
 
 }
 void Node::destroyAllChildren() {
 
 }
+void Node::_updateWorldTransformFlag(NodeTransformFlag  flag) {
+	this->_worldTransformFlag |= static_cast<uint32_t>(flag);
+	for (auto& child : this->_children)
+	{
+		child->_updateWorldTransformFlag(flag);
+	}
+}
+void Node::_updateNodesActiveInHierarchyState(bool isActiveInHierarch) {
+
+	for (auto& child : this->_children)
+	{
+		child->_updateNodesActiveInHierarchyState(isActiveInHierarch);
+	}
+}
+void Node::_updateWorldTransform() {
+	if (!this->_active)
+		return;
+	if (this->_worldTransformFlag == NodeTransformFlag::NONE_FLAG)
+		return;
+	if (this->_parent)
+	{
+		/*this->_worldMatrix = this->_parent->worldMatrix() * this->_localMatrix;*/
+	}
+	else
+	{
+		/*this->_worldMatrix = this->_localMatrix;*/
+	}
+	/*this->_worldPosition.set(this->_worldMatrix.m12(), this->_worldMatrix.m13(), this->_worldMatrix.m14());
+	this->_worldTransformFlag = NodeTransformFlag::NONE_FLAG;*/
+}
+
+
+
 
 void Node::update(float dt) {
 	// 基础更新逻辑，子类可以重写

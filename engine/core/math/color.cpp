@@ -46,22 +46,22 @@ void Color::set(std::string color)
         std::cerr << "Color::set: conversion error: " << e.what() << std::endl;
     }
 }
-float Color::r()
+float Color::getR()
 {
     return this->_r;
 }
 
-float Color::g()
+float Color::getG()
 {
     return this->_g;
 }
 
-float Color::b()
+float Color::getB()
 {
     return this->_b;
 }
 
-float Color::a()
+float Color::getA()
 {
     return this->_a;
 }

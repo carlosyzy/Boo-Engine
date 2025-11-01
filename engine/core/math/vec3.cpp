@@ -22,11 +22,11 @@ void Vec3::set(float x, float y, float z)
     this->_y = y;
     this->_z = z;
 }
-void Vec3::set1(Vec3 &v)
+void Vec3::set(Vec3 &v)
 {
-    this->_x = v.x();
-    this->_y = v.y();
-    this->_z = v.z();
+    this->_x = v.getX();
+    this->_y = v.getX();
+    this->_z = v.getZ();
 }
 void Vec3::setX(float x)
 {
@@ -40,15 +40,15 @@ void Vec3::setZ(float z)
 {
     this->_z = z;
 }
-float Vec3::x()
+float Vec3::getX()
 {
     return this->_x;
 }
-float Vec3::y()
+float Vec3::getY()
 {
     return this->_y;
 }
-float Vec3::z()
+float Vec3::getZ()
 {
     return this->_z;
 }
@@ -58,36 +58,36 @@ float Vec3::len()
 }
 void Vec3::add(Vec3 &v)
 {
-    this->_x = this->_x + v.x();
-    this->_y = this->_y + v.y();
-    this->_z = this->_z + v.z();
+    this->_x = this->_x + v.getX();
+    this->_y = this->_y + v.getY();
+    this->_z = this->_z + v.getZ();
 }
 void Vec3::subtract(Vec3 &v)
 {
-    this->_x = this->_x - v.x();
-    this->_y = this->_y - v.y();
-    this->_z = this->_z - v.z();
+    this->_x = this->_x - v.getX();
+    this->_y = this->_y - v.getY();
+    this->_z = this->_z - v.getZ();
 }
 void Vec3::add(Vec3 *out, Vec3 *a, Vec3 *b)
 {
-    out->set(a->x() + b->x(), a->y() + b->y(), a->z() + b->z());
+    out->set(a->getX() + b->getX(), a->getY() + b->getY(), a->getZ() + b->getZ());
 }
 void Vec3::subtract(Vec3 *out, Vec3 *a, Vec3 *b)
 {
-    out->set(a->x() - b->x(), a->y() - b->y(), a->z() - b->z());
+    out->set(a->getX() - b->getX(), a->getY() - b->getY(), a->getZ() - b->getZ());
 }
 
 void Vec3::min(Vec3 &v)
 {
-    this->_x = std::min(this->_x, v.x());
-    this->_y = std::min(this->_y, v.y());
-    this->_z = std::min(this->_z, v.z());
+    this->_x = std::min(this->_x, v.getX());
+    this->_y = std::min(this->_y, v.getY());
+    this->_z = std::min(this->_z, v.getZ());
 }
 void Vec3::max(Vec3 &v)
 {
-    this->_x = std::max(this->_x, v.x());
-    this->_y = std::max(this->_y, v.y());
-    this->_z = std::max(this->_z, v.z());
+    this->_x = std::max(this->_x, v.getX());        
+    this->_y = std::max(this->_y, v.getY());
+    this->_z = std::max(this->_z, v.getZ());
 }
 void Vec3::rotate(Quat *q)
 {
@@ -96,10 +96,10 @@ void Vec3::rotate(Quat *q)
     // v=(0,x,y,z) 是被旋转的向量（转换为纯四元数）。
     // q-1=(w,−x,−y,−z) 是四元数的逆（单位四元数的逆即共轭
 
-    const float qx = q->x();
-    const float qy = q->y();
-    const float qz = q->z();
-    const float qw = q->w();
+    const float qx = q->getX();
+    const float qy = q->getY();
+    const float qz = q->getZ();
+    const float qw = q->getW();
     // 计算q*v
     const float ix = qw * this->_x + qy * this->_z - qz * this->_y; // 实部: - (qx*x + qy*y + qz*z)
     const float iy = qw * this->_y + qz * this->_x - qx * this->_z;
