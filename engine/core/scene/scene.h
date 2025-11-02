@@ -7,9 +7,11 @@ class Node3D;
 
 class Scene : public Node
 {
-protected:
+private:
     Node3D *_root3D;
     Node2D *_root2D;
+protected:
+   
 
 public:
     Scene(const std::string name, const std::string uuid = "");
@@ -22,13 +24,7 @@ public:
     void render();
     void clearNodeFrameFlag() override;
 
-    /**
-     * 添加组件
-     */
     Component* addComponent(std::string name, std::string uuid = "") override;
-    /*
-     * 获取组件
-     */
     Component* getComponent(std::string name) override;
     void destroy() override;
     ~Scene();

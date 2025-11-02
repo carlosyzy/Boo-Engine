@@ -17,37 +17,23 @@ Scene::Scene(const std::string name, const std::string uuid) : Node(name, uuid) 
 Component* Scene::addComponent(std::string name, std::string uuid) {
 	return nullptr;
 }
-/*
-* 获取组件
-*/
+
 Component* Scene::getComponent(std::string name) {
 	return nullptr;
 }
-
-
 void Scene::update(float dt) {
 	Node::update(dt);
-	this->_root3D->update(dt);
-	this->_root2D->update(dt);
 }
 void Scene::lateUpdate(float dt) {
 	Node::lateUpdate(dt);
-	this->_root3D->lateUpdate(dt);
-	this->_root2D->lateUpdate(dt);
 }
 
 void Scene::render() {
     Node::render();
-	this->_root3D->render();
-	this->_root2D->render();
 }
 void Scene::clearNodeFrameFlag() {
 	Node::clearNodeFrameFlag();
-	this->_root3D->clearNodeFrameFlag();
-	this->_root2D->clearNodeFrameFlag();
 }
-
-
 void Scene::destroy() {
 	Node::destroy();
 }
