@@ -1,6 +1,7 @@
 #include "node.h"
 #include "../utils/uuid-util.h"
-#include <iostream>
+#include "../component/component.h"
+
 
 Node::Node(const std::string name, const std::string uuid)
 	: _name(name), _active(true), _layer(NodeLayer::Node), _isActiveInHierarchy(true),
@@ -217,6 +218,21 @@ void Node::clearNodeFrameFlag() {
 		child->clearNodeFrameFlag();
 	}
 }
+
+
+Component* Node::addComponent(std::string name, std::string uuid ) {
+	return nullptr;
+}
+/*
+* 获取组件
+*/
+Component* Node::getComponent(std::string name) {
+	return nullptr;
+}
+
+
+
+
 
 void Node::destroyAllChildren()
 {

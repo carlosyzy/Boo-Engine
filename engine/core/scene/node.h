@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstdint>
 #include <functional>
+#include <iostream>
 #include "../math/quat.h"
 #include "../math/vec3.h"
 #include "../math/mat4.h"
@@ -31,6 +32,8 @@ enum class NodeLayer
 	Scene,
 };
 
+class Component;
+
 class Node
 {
 private:
@@ -38,11 +41,12 @@ private:
 	struct Listener
 	{
 		std::function<void()> callback;
-		void *owner;
+		void* owner;
 		// 唯一标识符
-		uint64_t id; 
-		Listener(std::function<void()> cb, void *own, uint64_t id)
-			: callback(cb), owner(own), id(id) {}
+		uint64_t id;
+		Listener(std::function<void()> cb, void* own, uint64_t id)
+			: callback(cb), owner(own), id(id) {
+		}
 	};
 	std::unordered_map<std::string, std::vector<Listener>> _listeners;
 
@@ -104,15 +108,15 @@ protected:
 	/**
 	 * 子节点
 	 */
-	std::vector<Node *> _children;
+	std::vector<Node*> _children;
 	/**
 	 * 父节点
 	 */
-	Node *_parent;
+	Node* _parent;
 	/*
 	 *节点世界变化是否发生了变换，自身或父节点影响
 	 */
-	uint32_t _worldTransformFlag; 
+	uint32_t _worldTransformFlag;
 	uint32_t _frameTransformFlag;
 	/*
 	 * 更新世界transform 的更新flag
@@ -136,12 +140,17 @@ protected:
 			}
 		}
 	}
+
+	/**
+	*组件列表
+	*/
+	std::vector<Component*> _components;
 public:
 	Node(const std::string name, const std::string uuid);
-	
+
 
 	// 基础属性
-	void setName(const std::string &name);
+	void setName(const std::string& name);
 	std::string getName() const;
 
 	void setActive(bool active, bool force = false);
@@ -170,15 +179,15 @@ public:
 	 */
 	void setEulerAngles(float x, float y, float z);
 
-	const Vec3 &getPosition() { return this->_position; }
-	const Quat &getRotation() { return this->_rotation; }
-	const Vec3 &getScale() { return this->_scale; }
+	const Vec3& getPosition() { return this->_position; }
+	const Quat& getRotation() { return this->_rotation; }
+	const Vec3& getScale() { return this->_scale; }
 	const bool hasWorldTransformFlag() { return (this->_worldTransformFlag != NodeTransformFlag::NONE_FLAG); }
 	const bool hasFrameTransformFlag() { return (this->_frameTransformFlag != NodeTransformFlag::NONE_FLAG); }
 	/**
 	 * 获取世界位置
 	 */
-	const Vec3 &getWorldPosition()
+	const Vec3& getWorldPosition()
 	{
 		this->_updateWorldTransform();
 		return this->_worldPosition;
@@ -186,7 +195,7 @@ public:
 	/**
 	 * 获取世界缩放
 	 */
-	const Vec3 &getWorldScale()
+	const Vec3& getWorldScale()
 	{
 		this->_updateWorldTransform();
 		return this->_worldScale;
@@ -194,7 +203,7 @@ public:
 	/**
 	 * 获取世界角度
 	 */
-	const Quat &getWorldRotation()
+	const Quat& getWorldRotation()
 	{
 		this->_updateWorldTransform();
 		return this->_worldRotation;
@@ -202,31 +211,31 @@ public:
 	/**
 	 * 获取本地矩阵
 	 */
-	const Mat4 &getLocalMatrix() { return this->_localMatrix; }
+	const Mat4& getLocalMatrix() { return this->_localMatrix; }
 	/**
 	 * 获取世界矩阵
 	 */
-	const Mat4 &getWorldMatrix()
+	const Mat4& getWorldMatrix()
 	{
 		this->_updateWorldTransform();
 		return this->_worldMatrix;
 	}
 	template <typename T, typename Func>
-	uint64_t onTransformChange(Func func, T *instance)
+	uint64_t onTransformChange(Func func, T* instance)
 	{
 		uint64_t id = this->_nodeEventId++;
 		auto callback = [instance, func]()
-		{
-			(instance->*func)();
-		};
-		this->_listeners[NodeEvent::ON_TRANSFORM_CHANGED].emplace_back(callback, static_cast<void *>(instance), id);
+			{
+				(instance->*func)();
+			};
+		this->_listeners[NodeEvent::ON_TRANSFORM_CHANGED].emplace_back(callback, static_cast<void*>(instance), id);
 		return id;
 	}
 	void off(uint64_t id)
 	{
 		for (auto it = this->_listeners.begin(); it != this->_listeners.end(); ++it)
 		{
-			auto &listeners = it->second;
+			auto& listeners = it->second;
 			for (auto listenerIt = listeners.begin(); listenerIt != listeners.end(); ++listenerIt)
 			{
 				if (listenerIt->id == id)
@@ -241,23 +250,30 @@ public:
 	{
 		this->_listeners.clear();
 	}
-	Node *getParent();
-	void setParent(Node *node);
+	Node* getParent();
+	void setParent(Node* node);
 
 	/**
 	 * 添加子节点
 	 */
-	virtual void addChild(Node *node);
+	virtual void addChild(Node* node);
 	/**
 	 * 删除子节点
 	 */
-	void removeChild(Node *node);
+	void removeChild(Node* node);
 
 	/*
 	 *删除所有子节点
 	 */
 	void destroyAllChildren();
-	
+	/**
+	* 添加组件
+	*/
+	virtual	Component* addComponent(std::string name, std::string uuid = "");
+	/*
+	* 获取组件
+	*/
+	virtual Component* getComponent(std::string name);
 
 	// 虚函数，子类可以重写
 	virtual void update(float deltaTime);

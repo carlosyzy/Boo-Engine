@@ -7,6 +7,19 @@ Node3D::Node3D(const std::string name, const std::string uuid) : Node(name, uuid
 
 
 
+
+Component* Node3D::addComponent(std::string name, std::string uuid) {
+	return nullptr;
+}
+/*
+* 获取组件
+*/
+Component* Node3D::getComponent(std::string name) {
+	return nullptr;
+}
+
+
+
 void Node3D::update(float dt) {
 	Node::update(dt);
 }
@@ -16,6 +29,9 @@ void Node3D::lateUpdate(float dt) {
 void Node3D::render() {
 	Node::render();
 }
+
+
+
 void Node3D::clearNodeFrameFlag() {
 	Node::clearNodeFrameFlag();
 }

@@ -2,9 +2,9 @@
 #include <iostream>
 // #define STB_IMAGE_IMPLEMENTATION
 // #include "libs/stb/stb_image.h"
-//#include "../editor/editor.h"
+#include "../editor/editor.h"
 #include "window/window-mgr.h"
- //#include "core/gfx/gfx-mgr.h"
+#include "core/gfx/gfx-mgr.h"
 // #include "core/font/freetype-mgr.h"
 // #include "core/asset/asset-mgr.h"
 #include "core/utils/time-util.h"
@@ -25,10 +25,13 @@ void Engine::init()
 	this->_initWindow();
 	// 初始化 Vulkan
 	this->_initGFX();
-	// 初始化编辑器
-	this->_initEditor();
 	// 初始化Game
 	this->_initGame();
+
+
+	// 初始化编辑器
+	this->_initEditor();
+	
 }
 void Engine::_initWindow()
 {
@@ -38,11 +41,11 @@ void Engine::_initWindow()
 void Engine::_initGFX()
 {
 	std::cout << "INIT GFX" << std::endl;
-	/*GfxMgr::getInstance()->init();
-	GfxMgr::getInstance()->createRenderPass("ui");*/
+	GfxMgr::getInstance()->init();
+	GfxMgr::getInstance()->createRenderPass("ui");
 }
 void Engine::_initEditor() {
-	//Editor::getInstance()->init();
+	Editor::getInstance()->init();
 }
 
 void Engine::_initGame()

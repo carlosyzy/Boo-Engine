@@ -4,6 +4,7 @@
 
 UISprite::UISprite(Node *node, std::string uuid) : UIRenderer(node, uuid)
 {
+    this->_name = "UISprite";
 }
 void UISprite::update(float deltaTime)
 {

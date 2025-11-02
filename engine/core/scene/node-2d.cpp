@@ -1,6 +1,8 @@
 #include "node-2d.h"
 #include <iostream>
 #include "node-2d.h"
+#include "../component/component-factory.h"
+#include "../game.h"
 Node2D::Node2D(const std::string name, const std::string uuid) : Node(name, uuid), _anchor(0.5, 0.5), _size(200, 200)
 {
 	this->_layer = NodeLayer::Node2D;
@@ -42,15 +44,50 @@ void Node2D::setSize(float width, float height)
  */
 void Node2D::_updateWorldTransform()
 {
-	 Node::_updateWorldTransform();
-    // 尺寸
-    this->_uiWorldMatrix.set(this->_worldMatrix);
-    this->_uiWorldMatrix.setM00(this->_uiWorldMatrix.getM00() * this->_size.getWidth()); // 宽高和缩放进行相乘
-    this->_uiWorldMatrix.setM11(this->_uiWorldMatrix.getM11() * this->_size.getHeight());
-    // 锚点
-    this->_uiWorldMatrix.setM12(this->_uiWorldMatrix.getM30() + (0.5 - this->_anchor.getX()) * this->_size.getWidth());
-    this->_uiWorldMatrix.setM13(this->_uiWorldMatrix.getM31() + (0.5 - this->_anchor.getY()) * this->_size.getHeight());
+	Node::_updateWorldTransform();
+	// 尺寸
+	this->_uiWorldMatrix.set(this->_worldMatrix);
+	this->_uiWorldMatrix.setM00(this->_uiWorldMatrix.getM00() * this->_size.getWidth()); // 宽高和缩放进行相乘
+	this->_uiWorldMatrix.setM11(this->_uiWorldMatrix.getM11() * this->_size.getHeight());
+	// 锚点
+	this->_uiWorldMatrix.setM12(this->_uiWorldMatrix.getM30() + (0.5 - this->_anchor.getX()) * this->_size.getWidth());
+	this->_uiWorldMatrix.setM13(this->_uiWorldMatrix.getM31() + (0.5 - this->_anchor.getY()) * this->_size.getHeight());
 }
+
+
+Component* Node2D::addComponent(std::string name, std::string uuid) {
+	ComponentFactory* componentFactory = Game::getInstance()->componentFactory();
+	Component* component = componentFactory->create(name, this, uuid);
+	if (component == nullptr)
+	{
+		std::cout << name << ":Component Not  register" << std::endl;
+		return nullptr;
+	}
+	if (component->layer() != NodeLayer::Node2D)
+	{
+		std::cout << name << ":Component add fail,node type not is Node2D" << std::endl;
+		delete component;
+		return nullptr;
+	}
+	this->_components.push_back(component);
+	return component;
+}
+/*
+* 获取组件
+*/
+Component* Node2D::getComponent(std::string name) {
+	for (auto component : this->_components)
+	{
+		if (component != nullptr)
+		{
+			return component;
+		}
+	}
+	return nullptr;
+}
+
+
+
 void Node2D::update(float dt)
 {
 	Node::update(dt);
@@ -69,6 +106,10 @@ void Node2D::render()
 		std::cout << "Node render: " << _name << std::endl;
 	}
 }
+
+
+
+
 void Node2D::clearNodeFrameFlag() {
 	Node::clearNodeFrameFlag();
 }

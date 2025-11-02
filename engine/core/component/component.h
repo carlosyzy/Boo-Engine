@@ -10,6 +10,7 @@ class Component
 
 protected:
     std::string _uuid;
+    std::string _name;
     NodeLayer _layer;
     Node *_node;
     bool _isEnabled = true;

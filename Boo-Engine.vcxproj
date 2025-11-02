@@ -119,6 +119,18 @@
       <AdditionalLibraryDirectories>E:\software\vulkan\Lib;E:\software\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CopyFileToFolders>
+      <DestinationFolders>F:\worksapces\Boo-Engine\engine\resources;%(DestinationFolders)</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CopyFileToFolders>
+    <PostBuildEvent>
+      <Command>if exist "$(TargetDir)resources" rmdir /s /q "$(TargetDir)resources"
+if exist "$(ProjectDir)engine\resources" (
+    xcopy /Y /I /E "$(ProjectDir)engine\resources\*" "$(TargetDir)resources\"
+)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

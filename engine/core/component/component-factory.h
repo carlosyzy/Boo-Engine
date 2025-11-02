@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include "component.h"
 #include "../scene/node.h"
+#include "../scene/node-2d.h"
+#include "../scene/node-3d.h"
 
 class ComponentFactory
 {
@@ -24,29 +26,16 @@ public:
             return new T(node, uuid);
         };
     }
-    template <typename T = Component>
-    T *create(const std::string &className, Node *node, std::string uuid)
+   
+    Component *create(const std::string &className, Node *node, std::string uuid)
     {
         auto it = this->_creators.find(className);
         if (it != this->_creators.end())
         {
-            Component *component = it->second(node, uuid);
-            T *result = dynamic_cast<T *>(component);
-            if (result)
-            {
-                return result;
-            }
-            else
-            {
-                std::cout << "Dynamic cast failed for: " << className << std::endl;
-                 /** 
-                 *清理内存 
-                 */
-                delete component;
-                return nullptr;
-            }
-            return result;
+            return it->second(node, uuid);
         }
+
+        std::cout << "Component class not found: " << className << std::endl;
         return nullptr;
     }
 };

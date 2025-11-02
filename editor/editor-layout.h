@@ -3,7 +3,7 @@
 #include <cmath>
 class Scene;
 class Node2D;
-class Sprite;
+class UISprite;
 
 class EditorLayout
 {
@@ -11,19 +11,19 @@ private:
     Scene *_scene;
     
     Node2D *_ndMain;
-    Sprite *_spriteMain;
+    UISprite *_spriteMain;
     Node2D *_ndMenu;
-    Sprite *_spriteMenu;
+    UISprite *_spriteMenu;
     Node2D *_ndHierarchy;
-    Sprite *_spriteHierarchy;
+    UISprite *_spriteHierarchy;
     Node2D *_ndAsset;
-    Sprite *_spriteAsset;
+    UISprite *_spriteAsset;
     Node2D *_ndScene;
-    Sprite *_spriteScene;
+    UISprite *_spriteScene;
     Node2D *_ndTool;
-    Sprite *_spriteTool;
+    UISprite *_spriteTool;
     Node2D *_ndProperty;
-    Sprite *_spriteProperty;
+    UISprite *_spriteProperty;
     float _border = 2.0f;
     float _width;
     float _height;
@@ -59,7 +59,6 @@ private:
     float tool_width;
     float tool_height;
 
-    // float themeColor[4];
 
     void _initMainUI();
     void _initMenuUI();
