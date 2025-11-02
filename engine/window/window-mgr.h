@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <functional>
 #include <mutex>
+#include <atomic>
 // #include "../global/event.h"
 // #include "../input/input-mgr.h"
 
@@ -17,7 +18,9 @@ private:
 	GLFWwindow* _window;
 	int _width;
 	int _height;
-
+	std::atomic<int> _window_width;
+	std::atomic<int> _window_height;
+	std::atomic<bool> _size_changed;
 public:
 	static WindowMgr* getInstance();
 	void init();
@@ -28,7 +31,10 @@ public:
 	void onCursorPos(double xpos, double ypos);
 	void onMouseButton(int button, int action, int mods);
 	void onWindowSize();
-	void getWindowSize(int& width, int& height);
+	bool getWindowSize(int& width, int& height);
 	void tick();
 	void destroy();
+
+	//
+	
 };

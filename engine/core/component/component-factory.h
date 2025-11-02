@@ -39,7 +39,10 @@ public:
             else
             {
                 std::cout << "Dynamic cast failed for: " << className << std::endl;
-                delete component; // 清理内存
+                 /** 
+                 *清理内存 
+                 */
+                delete component;
                 return nullptr;
             }
             return result;

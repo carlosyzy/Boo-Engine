@@ -4,6 +4,8 @@
 const int MIN_WIDTH = 640;
 const int MIN_HEIGHT = 360;
 
+
+
 WindowMgr::WindowMgr() : _width(0), _height(0), _window(nullptr)
 {
 }
@@ -46,6 +48,10 @@ void WindowMgr::init()
 	glfwSetMouseButtonCallback(this->_window, WindowMgr::mouseButtonCallback);
 	glfwSetWindowSizeCallback(this->_window, WindowMgr::windowSizeCallback);
 	this->onWindowSize();
+
+	this->_window_width.store(width, std::memory_order_relaxed);
+	this->_window_height.store(height, std::memory_order_relaxed);
+	this->_size_changed.store(false, std::memory_order_release); // 通知子线程
 }
 GLFWwindow* WindowMgr::getWindow()
 {
@@ -109,11 +115,19 @@ void WindowMgr::onWindowSize()
 	glfwGetWindowSize(this->_window, &width, &height);
 	this->_width = width;
 	this->_height = height;
+	this->_window_width.store(width, std::memory_order_relaxed);
+	this->_window_height.store(height, std::memory_order_relaxed);
+	this->_size_changed.store(true, std::memory_order_release); // 通知子线程
 };
-void WindowMgr::getWindowSize(int& width, int& height)
+bool WindowMgr::getWindowSize(int& width, int& height)
 {
-	width = this->_width;
-	height = this->_height;
+	if (this->_size_changed.load(std::memory_order_acquire)) {
+		width = this->_window_width.load(std::memory_order_relaxed);
+		height = this->_window_height.load(std::memory_order_relaxed);
+		this->_size_changed.store(false, std::memory_order_release);
+		return true;
+	}
+	return false;
 }
 void WindowMgr::tick()
 {

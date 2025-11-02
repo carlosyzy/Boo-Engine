@@ -57,13 +57,49 @@
     <ClCompile Include="engine\core\component\component-factory.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\window\window-mgr.cpp">
+    <ClCompile Include="engine\window\window-mgr.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\utils\time-util.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\engine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\game.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\global\event.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\global\global.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-context.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-mgr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-object.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-pass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-pipeline.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-queue.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-renderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-shader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-texture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,7 +143,7 @@
     <ClInclude Include="engine\core\component\component-factory.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\window\window-mgr.h">
+    <ClInclude Include="engine\window\window-mgr.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\utils\time-util.h">
@@ -116,8 +152,54 @@
     <ClInclude Include="engine\engine.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="engine\core\game.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\global\event.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\global\global.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-context.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-mgr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-object.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-pass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-pass-struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-pipeline.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-pipeline-struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-queue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-renderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-shader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-texture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="engine\readme.md" />
+    <None Include="engine\core\gfx\readme.md" />
   </ItemGroup>
 </Project>

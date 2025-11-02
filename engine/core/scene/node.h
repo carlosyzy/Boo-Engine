@@ -119,7 +119,22 @@ protected:
 	void _updateWorldTransformFlag(NodeTransformFlag flag);
 	void _updateNodesActiveInHierarchyState(bool isActiveInHierarch);
 	virtual void _updateWorldTransform();
-
+	/**
+	 * @brief 触发事件
+	 * @param eventName 事件名称
+	 */
+	template <typename... Args>
+	void emit(const std::string eventName)
+	{
+		auto it = this->_listeners.find(eventName);
+		if (it != this->_listeners.end())
+		{
+			for (auto& listener : it->second)
+			{
+				listener.callback();
+			}
+		}
+	}
 public:
 	Node(const std::string name, const std::string uuid);
 	virtual ~Node();
@@ -193,46 +208,18 @@ public:
 		this->_updateWorldTransform();
 		return this->_worldMatrix;
 	}
-	/**
-	 * @brief 注册事件监听器
-	 * @param eventName 事件名称
-	 * @param callback 事件处理函数
-	 * @param owner 事件处理函数所属类的指针
-	 * @return uint64_t 监听器ID
-	 */
 	template <typename T, typename Func>
-	uint64_t on(const std::string eventName, Func func, T *instance)
+	uint64_t onTransformChange(Func func, T *instance)
 	{
 		uint64_t id = this->_nodeEventId++;
 		auto callback = [instance, func]()
 		{
 			(instance->*func)();
 		};
-		this->_listeners[eventName].emplace_back(callback, static_cast<void *>(instance), id);
+		this->_listeners[NodeEvent::ON_TRANSFORM_CHANGED].emplace_back(callback, static_cast<void *>(instance), id);
 		return id;
 	}
-	/**
-	 * @brief 触发事件
-	 * @param eventName 事件名称
-	 */
-	template <typename... Args>
-	void emit(const std::string eventName)
-	{
-		auto it = this->_listeners.find(eventName);
-		if (it != this->_listeners.end())
-		{
-			for (auto &listener : it->second)
-			{
-				listener.callback();
-			}
-		}
-	}
-	/**
-	 * @brief 移除指定ID的事件监听器
-	 * @param eventName 事件名称
-	 * @param id 监听器ID
-	 */
-	void off(const std::string eventName, uint64_t id)
+	void off(uint64_t id)
 	{
 		for (auto it = this->_listeners.begin(); it != this->_listeners.end(); ++it)
 		{
@@ -247,9 +234,6 @@ public:
 			}
 		}
 	}
-	/**
-	 * @brief 移除所有事件监听器
-	 */
 	void offAll()
 	{
 		this->_listeners.clear();
