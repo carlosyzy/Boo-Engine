@@ -13,13 +13,6 @@ Scene::Scene(const std::string name, const std::string uuid) : Node(name, uuid) 
 	this->addChild(this->_root2D);
 }
 
-Scene::~Scene() {
-    delete this->_root3D;
-    delete this->_root2D;
-	this->_root3D = nullptr;
-	this->_root2D = nullptr;
-}
-
 void Scene::update(float dt) {
 	Node::update(dt);
 	this->_root3D->update(dt);
@@ -29,8 +22,20 @@ void Scene::lateUpdate(float dt) {
 	Node::lateUpdate(dt);
 	this->_root3D->lateUpdate(dt);
 	this->_root2D->lateUpdate(dt);
-	
+}
+void Scene::clearNodeFrameFlag() {
+	Node::clearNodeFrameFlag();
+	this->_root3D->clearNodeFrameFlag();
+	this->_root2D->clearNodeFrameFlag();
 }
 void Scene::render() {
     Node::render();
+	this->_root3D->render();
+	this->_root2D->render();
+}
+void Scene::destroy() {
+	Node::destroy();
+}
+Scene::~Scene() {
+	
 }

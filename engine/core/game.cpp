@@ -54,6 +54,8 @@ void Game::setView(int width, int height)
 }
 void Game::update(float dt)
 {
+    
+
     // 更新渲染器
     //GfxMgr::getInstance()->update();
 }

@@ -114,7 +114,7 @@ void UIRenderer::update(float deltaTime) {
         return;
     }
     // 节点变换矩阵更新了
-    if (this->_node->hasWorldTransformFlag())
+    if (this->_node->hasFrameTransformFlag())
     {
         Node2D* node2D = dynamic_cast<Node2D*>(this->_node);
         GfxMgr::getInstance()->setObjectModelMatrix(this->_uuid, node2D->uiWorldMatrix().data());

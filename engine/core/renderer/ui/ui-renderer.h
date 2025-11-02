@@ -86,6 +86,7 @@ public:
     void setColor(std::string color);
     void setTexture(std::string texture);
     void setShader(std::string vert, std::string frag);
+    void setModelMat4();
     void update(float deltaTime) override;
 
     /*void updateViewMatrix();

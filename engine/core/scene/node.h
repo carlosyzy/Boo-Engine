@@ -112,7 +112,8 @@ protected:
 	/*
 	 *节点世界变化是否发生了变换，自身或父节点影响
 	 */
-	uint32_t _worldTransformFlag; //
+	uint32_t _worldTransformFlag; 
+	uint32_t _frameTransformFlag;
 	/*
 	 * 更新世界transform 的更新flag
 	 */
@@ -137,7 +138,7 @@ protected:
 	}
 public:
 	Node(const std::string name, const std::string uuid);
-	virtual ~Node();
+	
 
 	// 基础属性
 	void setName(const std::string &name);
@@ -173,6 +174,7 @@ public:
 	const Quat &getRotation() { return this->_rotation; }
 	const Vec3 &getScale() { return this->_scale; }
 	const bool hasWorldTransformFlag() { return (this->_worldTransformFlag != NodeTransformFlag::NONE_FLAG); }
+	const bool hasFrameTransformFlag() { return (this->_frameTransformFlag != NodeTransformFlag::NONE_FLAG); }
 	/**
 	 * 获取世界位置
 	 */
@@ -255,10 +257,13 @@ public:
 	 *删除所有子节点
 	 */
 	void destroyAllChildren();
-	void destroy();
+	
 
 	// 虚函数，子类可以重写
 	virtual void update(float deltaTime);
 	virtual void lateUpdate(float deltaTime);
 	virtual void render();
+	virtual void clearNodeFrameFlag();
+	virtual void destroy();
+	virtual ~Node();
 };

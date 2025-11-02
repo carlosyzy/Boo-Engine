@@ -15,7 +15,7 @@ protected:
 
 public:
     Node2D(const std::string name, const std::string uuid = "");
-    ~Node2D();
+    
 
     /**
      * 2d 节点的锚点
@@ -37,9 +37,12 @@ public:
         return this->_uiWorldMatrix;
     }
     // 重写基类方法
-    virtual void update(float deltaTime);
-    virtual void lateUpdate(float deltaTime);
-    virtual void render();
+    void update(float deltaTime) override;
+    void lateUpdate(float deltaTime) override;
+    void render();
+    void clearNodeFrameFlag() override;
+    void destroy() override;
+    ~Node2D() override;
 
     // void onNodeInputEvent(NodeInput input, std::function<void(NodeInputResult &)> callback, bool isIntercept = false);
     // void offNodeInputEvent(NodeInput input, int inputID);

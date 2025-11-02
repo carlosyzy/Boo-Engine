@@ -6,9 +6,7 @@ Node2D::Node2D(const std::string name, const std::string uuid) : Node(name, uuid
 	this->_layer = NodeLayer::Node2D;
 }
 
-Node2D::~Node2D()
-{
-}
+
 /**
  * 2d 节点的锚点
  * @param x
@@ -70,4 +68,13 @@ void Node2D::render()
 	{
 		std::cout << "Node render: " << _name << std::endl;
 	}
+}
+void Node2D::clearNodeFrameFlag() {
+	Node::clearNodeFrameFlag();
+}
+void Node2D::destroy() {
+	Node::destroy();
+}
+Node2D::~Node2D()
+{
 }

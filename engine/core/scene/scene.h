@@ -13,11 +13,14 @@ protected:
 
 public:
     Scene(const std::string name, const std::string uuid = "");
-    ~Scene();
+   
     Node3D *getRoot3D() { return this->_root3D; }
     Node2D *getRoot2D() { return this->_root2D; }   
 
-    virtual void update(float deltaTime);
-    virtual void lateUpdate(float deltaTime);
-    virtual void render();
+    void update(float deltaTime) override;
+    void lateUpdate(float deltaTime) override;
+    void render();
+    void clearNodeFrameFlag() override;
+    void destroy() override;
+    ~Scene();
 };
