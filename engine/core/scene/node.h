@@ -118,12 +118,17 @@ protected:
 	 */
 	uint32_t _worldTransformFlag;
 	uint32_t _frameTransformFlag;
+
+	/**
+	*组件列表
+	*/
+	std::vector<Component*> _components;
+
 	/*
 	 * 更新世界transform 的更新flag
 	 */
 	void _updateWorldTransformFlag(NodeTransformFlag flag);
 	void _updateNodesActiveInHierarchyState(bool isActiveInHierarch);
-	virtual void _updateWorldTransform();
 	/**
 	 * @brief 触发事件
 	 * @param eventName 事件名称
@@ -140,11 +145,8 @@ protected:
 			}
 		}
 	}
-
-	/**
-	*组件列表
-	*/
-	std::vector<Component*> _components;
+	virtual void _updateWorldTransform();
+	
 public:
 	Node(const std::string name, const std::string uuid);
 
@@ -163,27 +165,8 @@ public:
 	 * 设置坐标
 	 */
 	void setPosition(float x, float y, float z);
-	void setWorldPosition(float x, float y, float z);
-	/**
-	 * 设置四元素角度
-	 */
-	void setRotation(float x, float y, float z, float w);
-	void setWorldRotation(float x, float y, float z, float w);
-	/*
-	 * 设置缩放
-	 */
-	void setScale(float x, float y, float z);
-	void setWorldScale(float x, float y, float z);
-	/**
-	 * 设置欧拉角
-	 */
-	void setEulerAngles(float x, float y, float z);
-
 	const Vec3& getPosition() { return this->_position; }
-	const Quat& getRotation() { return this->_rotation; }
-	const Vec3& getScale() { return this->_scale; }
-	const bool hasWorldTransformFlag() { return (this->_worldTransformFlag != NodeTransformFlag::NONE_FLAG); }
-	const bool hasFrameTransformFlag() { return (this->_frameTransformFlag != NodeTransformFlag::NONE_FLAG); }
+	void setWorldPosition(float x, float y, float z);
 	/**
 	 * 获取世界位置
 	 */
@@ -192,14 +175,13 @@ public:
 		this->_updateWorldTransform();
 		return this->_worldPosition;
 	}
+
 	/**
-	 * 获取世界缩放
+	 * 设置四元素角度
 	 */
-	const Vec3& getWorldScale()
-	{
-		this->_updateWorldTransform();
-		return this->_worldScale;
-	}
+	void setRotation(float x, float y, float z, float w);
+	const Quat& getRotation() { return this->_rotation; }
+	void setWorldRotation(float x, float y, float z, float w);
 	/**
 	 * 获取世界角度
 	 */
@@ -208,6 +190,28 @@ public:
 		this->_updateWorldTransform();
 		return this->_worldRotation;
 	}
+
+	/*
+	 * 设置缩放
+	 */
+	void setScale(float x, float y, float z);
+	const Vec3& getScale() { return this->_scale; }
+	void setWorldScale(float x, float y, float z);
+	/**
+	 * 获取世界缩放
+	 */
+	const Vec3& getWorldScale()
+	{
+		this->_updateWorldTransform();
+		return this->_worldScale;
+	}
+
+	/**
+	 * 设置欧拉角
+	 */
+	void setEulerAngles(float x, float y, float z);
+	const Vec3& getEulerAngles() { return this->_eulerAngles; }
+	
 	/**
 	 * 获取本地矩阵
 	 */
@@ -220,6 +224,13 @@ public:
 		this->_updateWorldTransform();
 		return this->_worldMatrix;
 	}
+
+	const bool hasWorldTransformFlag() { return (this->_worldTransformFlag != NodeTransformFlag::NONE_FLAG); }
+	const bool hasFrameTransformFlag() { return (this->_frameTransformFlag != NodeTransformFlag::NONE_FLAG); }
+	
+	
+	
+
 	template <typename T, typename Func>
 	uint64_t onTransformChange(Func func, T* instance)
 	{
@@ -256,7 +267,7 @@ public:
 	/**
 	 * 添加子节点
 	 */
-	virtual void addChild(Node* node);
+	void addChild(Node* node);
 	/**
 	 * 删除子节点
 	 */
@@ -274,6 +285,7 @@ public:
 	* 获取组件
 	*/
 	virtual Component* getComponent(std::string name);
+
 
 	// 虚函数，子类可以重写
 	virtual void update(float deltaTime);

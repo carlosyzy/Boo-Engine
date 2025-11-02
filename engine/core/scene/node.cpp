@@ -189,7 +189,12 @@ void Node::_updateWorldTransform()
 
 void Node::update(float dt)
 {
-
+	// 更新组件
+	for (auto& component : this->_components)
+	{
+		component->update(dt);
+	}
+	// 更新子节点
 	for (auto& child : this->_children)
 	{
 		child->update(dt);
@@ -197,7 +202,11 @@ void Node::update(float dt)
 }
 void Node::lateUpdate(float dt)
 {
-
+	// 更新组件
+	for (auto& component : this->_components)
+	{
+		component->lateUpdate(dt);
+	}
 	for (auto& child : this->_children)
 	{
 		child->lateUpdate(dt);
@@ -205,7 +214,11 @@ void Node::lateUpdate(float dt)
 }
 void Node::render()
 {
-
+	// 渲染组件
+	for (auto& component : this->_components)
+	{
+		component->render();
+	}
 	for (auto& child : this->_children)
 	{
 		child->render();
@@ -245,6 +258,12 @@ void Node::destroyAllChildren()
 }
 void Node::destroy()
 {
+	// 销毁组件
+	for (auto& component : this->_components)
+	{
+		component->destroy();
+	}
+	this->_components.clear();
 	// 递归销毁所有子节点
 	this->destroyAllChildren();
 	delete this;

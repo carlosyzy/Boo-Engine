@@ -94,5 +94,5 @@ public:
 
     const Color &color() { return this->_color; };
 
-    ~UIRenderer();
+    virtual ~UIRenderer() override;
 };
