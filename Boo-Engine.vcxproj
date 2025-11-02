@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>E:\software\vulkan\Include;E:\software\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\worksapces\Boo-Engine\engine\libs\stb;E:\software\vulkan\Include;E:\software\glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>E:\software\vulkan\Lib;E:\software\glfw\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -157,6 +157,8 @@
     <ClCompile Include="engine\core\math\size.cpp" />
     <ClCompile Include="engine\core\math\vec2.cpp" />
     <ClCompile Include="engine\core\math\vec3.cpp" />
+    <ClCompile Include="engine\core\renderer\ui\ui-sprite.cpp" />
+    <ClCompile Include="engine\core\renderer\ui\ui-renderer.cpp" />
     <ClCompile Include="engine\core\scene\node-2d.cpp" />
     <ClCompile Include="engine\core\scene\node-3d.cpp" />
     <ClCompile Include="engine\core\scene\node.cpp" />
@@ -190,6 +192,8 @@
     <ClInclude Include="engine\core\math\size.h" />
     <ClInclude Include="engine\core\math\vec2.h" />
     <ClInclude Include="engine\core\math\vec3.h" />
+    <ClInclude Include="engine\core\renderer\ui\ui-sprite.h" />
+    <ClInclude Include="engine\core\renderer\ui\ui-renderer.h" />
     <ClInclude Include="engine\core\scene\node-2d.h" />
     <ClInclude Include="engine\core\scene\node-3d.h" />
     <ClInclude Include="engine\core\scene\node.h" />

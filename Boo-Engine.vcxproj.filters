@@ -102,6 +102,12 @@
     <ClCompile Include="engine\core\gfx\gfx-texture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="engine\core\renderer\ui\ui-sprite.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\renderer\ui\ui-renderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\core\math\color.h">
@@ -195,6 +201,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\gfx\gfx-texture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\renderer\ui\ui-sprite.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\renderer\ui\ui-renderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

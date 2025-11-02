@@ -22,5 +22,5 @@ public:
     void setEnabled(bool enabled);
     virtual void update(float deltaTime) = 0;
     NodeLayer layer() { return this->_layer; }
-    void destroy();
+    virtual void destroy();
 };

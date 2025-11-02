@@ -9,7 +9,6 @@ Component::Component(Node *node, std::string uuid) : _layer(NodeLayer::Node)
     {
         this->_uuid = UuidUtil::generateUUID();
     }
-
     this->_node = node;
 }
 
@@ -17,8 +16,10 @@ void Component::update(float deltaTime)
 {
 }
 
-
 void Component::destroy()
 {
     
+}
+Component::~Component() {
+
 }

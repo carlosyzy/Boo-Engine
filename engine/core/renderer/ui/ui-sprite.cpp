@@ -1,0 +1,17 @@
+#include "ui-sprite.h"
+#include "../../scene/node.h"
+
+
+UISprite::UISprite(Node *node, std::string uuid) : UIRenderer(node, uuid)
+{
+}
+void UISprite::update(float deltaTime)
+{
+    UIRenderer::update(deltaTime);
+}
+void UISprite::destroy() {
+
+}
+UISprite::~UISprite()
+{
+}

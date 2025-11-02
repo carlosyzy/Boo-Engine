@@ -172,6 +172,7 @@ public:
 	const Vec3 &getPosition() { return this->_position; }
 	const Quat &getRotation() { return this->_rotation; }
 	const Vec3 &getScale() { return this->_scale; }
+	const bool hasWorldTransformFlag() { return (this->_worldTransformFlag != NodeTransformFlag::NONE_FLAG); }
 	/**
 	 * 获取世界位置
 	 */
