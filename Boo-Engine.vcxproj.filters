@@ -108,6 +108,18 @@
     <ClCompile Include="engine\core\renderer\ui\ui-renderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\editor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\editor-config.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\editor-layout.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\ipc\editor-ipc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\core\math\color.h">
@@ -207,6 +219,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\renderer\ui\ui-renderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\editor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\editor-config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\editor-layout.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\ipc\editor-ipc.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

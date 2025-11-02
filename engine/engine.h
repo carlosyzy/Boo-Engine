@@ -3,10 +3,6 @@
 #include <memory> // 智能指针头文件
 #include <thread> // 线程头文件
 #include <string>
-// #if defined(_WIN32) || defined(_WIN64)
-//   #include <windows.h>
-// #endif
-
 
 class Scene;
 
@@ -23,6 +19,11 @@ private:
      * @brief 初始化图形库
      */
     void _initGFX();
+     /**
+     * @brief 初始化图形库
+     */
+     void _initEditor();
+
     /**
      * @brief 初始Game
      */

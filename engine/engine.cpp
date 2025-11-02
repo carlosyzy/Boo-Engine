@@ -2,7 +2,7 @@
 #include <iostream>
 // #define STB_IMAGE_IMPLEMENTATION
 // #include "libs/stb/stb_image.h"
-// #include "../editor/editor.h"
+//#include "../editor/editor.h"
 #include "window/window-mgr.h"
  //#include "core/gfx/gfx-mgr.h"
 // #include "core/font/freetype-mgr.h"
@@ -12,7 +12,7 @@
 // #include "core/global/global.h"
 // #include "core/utils/json.h"
 // #include "core/input/input-mgr.h"
- #include "core/game.h"
+#include "core/game.h"
 
 Engine::Engine()
 {
@@ -25,6 +25,8 @@ void Engine::init()
 	this->_initWindow();
 	// 初始化 Vulkan
 	this->_initGFX();
+	// 初始化编辑器
+	this->_initEditor();
 	// 初始化Game
 	this->_initGame();
 }
@@ -39,21 +41,23 @@ void Engine::_initGFX()
 	/*GfxMgr::getInstance()->init();
 	GfxMgr::getInstance()->createRenderPass("ui");*/
 }
+void Engine::_initEditor() {
+	//Editor::getInstance()->init();
+}
 
 void Engine::_initGame()
 {
 	// std::cout << "INIT Game MGR" << std::endl;
-	// Game::getInstance()->init();
+	Game::getInstance()->init();
 }
 
 void Engine::launchEditor()
 {
 	// std::cout << "launch editor" << std::endl;
-	// // 初始化编辑器
-	// Editor::getInstance()->init();
-
+	// 初始化编辑器
+	
 	// std::string project_path = "F:/worksapces/carlos-engine/project";
-	// // std::string project_path = "/Users/yangzongyuan/personal/project/vulkan/project";
+	// std::string project_path = "/Users/yangzongyuan/personal/project/vulkan/project";
 	// Editor::getInstance()->setAssetsRoot(project_path);
 	// Editor::getInstance()->setHierarchyRoot(new Scene("Test"));
 }
@@ -115,21 +119,13 @@ void Engine::_updateRendererLoop()
  */
 void Engine::update(float dt)
 {
-	// int dirty = WindowMgr::getInstance()->getWindowDirty();
-	// if (dirty > 0)
-	// {
-	//    
-	//     WindowMgr::getInstance()->getWindowSize(width, height);
-	//     Game::getInstance()->setView(width, height);
-	//     WindowMgr::getInstance()->setWindowDirty(0);
-	// }
 	int width, height;
 	bool isChange = WindowMgr::getInstance()->getWindowSize(width, height);
 	if (isChange) {
 		Game::getInstance()->setView(width, height);
 	}
-	 //Editor::getInstance()->update(dt);
-	 Game::getInstance()->update(dt);
+	//Editor::getInstance()->update(dt);
+	Game::getInstance()->update(dt);
 }
 
 Engine::~Engine()
