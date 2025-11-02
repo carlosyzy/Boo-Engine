@@ -59,7 +59,7 @@ void Game::update(float dt)
 
 
 	// 更新渲染器
-	//GfxMgr::getInstance()->update();
+	GfxMgr::getInstance()->update();
 }
 Game::~Game()
 {
