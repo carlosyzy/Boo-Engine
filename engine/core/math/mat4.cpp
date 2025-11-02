@@ -64,7 +64,9 @@ void Mat4::inverse(const Mat4 &mat, Mat4 &out)
     float m20 = mat.getM20(), m21 = mat.getM21(), m22 = mat.getM22(), m23 = mat.getM23();
     float m30 = mat.getM30(), m31 = mat.getM31(), m32 = mat.getM32(), m33 = mat.getM33();
 
-    // 计算辅助值（优化的行列式计算）
+    /*
+     *计算辅助值（优化的行列式计算）
+     */
     float a0 = m00 * m11 - m01 * m10;
     float a1 = m00 * m12 - m02 * m10;
     float a2 = m00 * m13 - m03 * m10;

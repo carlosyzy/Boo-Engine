@@ -140,15 +140,6 @@
     <ClCompile Include="engine\core\component\component-factory.cpp" />
     <ClCompile Include="engine\core\component\component.cpp" />
     <ClCompile Include="engine\core\game.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-context.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-mgr.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-object.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-pass.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-pipeline.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-queue.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-renderer.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-shader.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-texture.cpp" />
     <ClCompile Include="engine\core\global\event.cpp" />
     <ClCompile Include="engine\core\global\global.cpp" />
     <ClCompile Include="engine\core\math\color.cpp" />
@@ -170,18 +161,6 @@
     <ClInclude Include="engine\core\component\component-factory.h" />
     <ClInclude Include="engine\core\component\component.h" />
     <ClInclude Include="engine\core\game.h" />
-    <ClInclude Include="engine\core\gfx\gfx-context.h" />
-    <ClInclude Include="engine\core\gfx\gfx-mgr.h" />
-    <ClInclude Include="engine\core\gfx\gfx-object.h" />
-    <ClInclude Include="engine\core\gfx\gfx-pass-struct.h" />
-    <ClInclude Include="engine\core\gfx\gfx-pass.h" />
-    <ClInclude Include="engine\core\gfx\gfx-pipeline-struct.h" />
-    <ClInclude Include="engine\core\gfx\gfx-pipeline.h" />
-    <ClInclude Include="engine\core\gfx\gfx-queue.h" />
-    <ClInclude Include="engine\core\gfx\gfx-renderer.h" />
-    <ClInclude Include="engine\core\gfx\gfx-shader.h" />
-    <ClInclude Include="engine\core\gfx\gfx-struct.h" />
-    <ClInclude Include="engine\core\gfx\gfx-texture.h" />
     <ClInclude Include="engine\core\global\event.h" />
     <ClInclude Include="engine\core\global\global.h" />
     <ClInclude Include="engine\core\math\color.h" />
@@ -200,7 +179,6 @@
     <ClInclude Include="engine\engine.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="engine\core\gfx\readme.md" />
     <None Include="engine\readme.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
