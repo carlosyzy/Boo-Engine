@@ -40,9 +40,9 @@ private:
     void _Log(std::string msg);
 
 public:
-    // 主要用于创建附件贴图
+   /*  // 主要用于创建附件贴图 */
     GfxTexture(GfxContext *context);
-    // 多通道贴图创建
+   /*  // 多通道贴图创建 */
     GfxTexture(GfxContext *context, const std::vector<uint8_t> *pixels, uint32_t width, uint32_t height, uint32_t channels);
 
     void createImage(uint32_t width, uint32_t height, VkFormat format,
@@ -60,7 +60,7 @@ public:
     ~GfxTexture();
 };
 
-// // 创建单通道字体纹理
+/* // // 创建单通道字体纹理
 // auto fontTexture = std::make_shared<Texture>(context, 256, 256, VK_FORMAT_R8_UNORM);
 // fontTexture->uploadData(fontData);
 
@@ -70,4 +70,4 @@ public:
 
 // // 创建深度纹理
 // auto depthTexture = std::make_shared<Texture>(context, 1024, 1024, VK_FORMAT_D32_SFLOAT);
-// // 对于深度纹理，不需要上传数据，只需要初始化
+// // 对于深度纹理，不需要上传数据，只需要初始化 */

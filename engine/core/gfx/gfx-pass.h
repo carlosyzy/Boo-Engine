@@ -66,7 +66,7 @@ struct PassAttachmentColor
 	 */
 	VkImageLayout finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 };
-// 关键关联性总结
+/* // 关键关联性总结
 // 1.loadOp 与 initialLayout
 // - LOAD + COLOR_ATTACHMENT_OPTIMAL：保留上一帧结果继续渲染（如渐进式渲染）。
 // - CLEAR + UNDEFINED：每帧清空附件（常规渲染）。
@@ -74,7 +74,7 @@ struct PassAttachmentColor
 // - 交换链附件必须使用 STORE 和 PRESENT_SRC_KHR，否则内容无法显示。
 // 3.多采样与格式兼容性
 // - 如果启用 MSAA（samples > 1），需额外配置解析附件（pResolveAttachments）。
-
+ */
 
 class GfxPass
 {

@@ -31,7 +31,7 @@ void GfxMgr::init()
     this->_context->init();
     this->_renderer = new GfxRenderer(this->_context);
     this->_renderer->init();
-    // 初始化显示测试参数
+    /* // 初始化显示测试参数 */
     this->initTestInfo();
 }
 void GfxMgr::showVersion()
@@ -44,8 +44,8 @@ void GfxMgr::showVersion()
         uint32_t major = VK_VERSION_MAJOR(instanceVersion);
         uint32_t minor = VK_VERSION_MINOR(instanceVersion);
         uint32_t patch = VK_VERSION_PATCH(instanceVersion);
-        // std::cout << "Vulkan Instance (Driver) Version: "
-        //           << major << "." << minor << "." << patch << std::endl;
+       /*  // std::cout << "Vulkan Instance (Driver) Version: "
+        //           << major << "." << minor << "." << patch << std::endl; */
         GfxMgr::Log("GfxMgr", "Vulkan Instance (Driver) Version:" + std::to_string(major) + "." + std::to_string(minor) + "." + std::to_string(patch));
     }
 }
@@ -61,7 +61,7 @@ void GfxMgr::_testMSAASample()
 {
     VkPhysicalDeviceProperties physicalDeviceProperties;
     vkGetPhysicalDeviceProperties(this->_context->getPhysicalDevice(), &physicalDeviceProperties);
-    // 采样次数
+    /* // 采样次数 */
     VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts &
                                 physicalDeviceProperties.limits.framebufferDepthSampleCounts;
     VkSampleCountFlagBits sampleCount = this->_getMaxMSAAUsableSampleCount();
@@ -127,10 +127,10 @@ void GfxMgr::createObject(std::string id, std::string renderPassType, std::strin
 {
     this->_renderer->createObject(id, renderPassType, pipelineType, points, colors, normals, uvs, indices);
 }
-// void GfxMgr::resetGfxObjectRendererState(std::string id, std::string renderPassType, std::string pipelineType)
+/* // void GfxMgr::resetGfxObjectRendererState(std::string id, std::string renderPassType, std::string pipelineType)
 // {
 //     this->_renderer->resetGfxObjectRendererState(id, renderPassType, pipelineType);
-// }
+// } */
 void GfxMgr::destroyGfxObject(std::string id)
 {
     this->_renderer->destroyGfxObject(id);
@@ -172,30 +172,30 @@ void GfxMgr::submit(std::string id)
 void GfxMgr::update()
 {
     this->_context->frameFencesPrepare(this->_currentFrame);
-    // 可用的图像的索引
+    /* // 可用的图像的索引 */
     uint32_t imageIndex;
     /**
      * 从交换链申请一个可渲染的图像
      * 通过 _imageAvailableSemaphores[_currentFrame] 信号量，通知 GPU："必须等这个信号量触发后，才能开始渲染该图像"。
      */
     VkResult result1 = this->_context->frameAcquireNextImage(&imageIndex, this->_currentFrame);
-    // 如果交换链已过期（如窗口大小改变），会返回 VK_ERROR_OUT_OF_DATE_KHR，触发重建交换链
+   /*  // 如果交换链已过期（如窗口大小改变），会返回 VK_ERROR_OUT_OF_DATE_KHR，触发重建交换链 */
     if (result1 == VK_ERROR_OUT_OF_DATE_KHR || result1 == VK_SUBOPTIMAL_KHR)
     {
-        // std::cout << "renderer update:'VK_ERROR_OUT_OF_DATE_KHR',The window size might have changed, and the swap chain needs to be recreated." << std::endl;
+      /*   // std::cout << "renderer update:'VK_ERROR_OUT_OF_DATE_KHR',The window size might have changed, and the swap chain needs to be recreated." << std::endl; */
         this->resetSwapChain();
         return;
     }
-    // 检查当前索引图像是否被其他帧使用，若已被使用，则等待其他帧完成
+    /* // 检查当前索引图像是否被其他帧使用，若已被使用，则等待其他帧完成 */
     this->_context->frameWaitImageInUse(imageIndex, this->_currentFrame);
 
-    // 准备渲染buffer
+   /*  // 准备渲染buffer */
     std::vector<VkCommandBuffer> commandBuffers;
     this->_renderer->frameRenderer(imageIndex, commandBuffers);
 
-    // 提交渲染命令
+   /*  // 提交渲染命令 */
     this->_context->frameSubmitCommands(imageIndex, commandBuffers, this->_currentFrame);
-    // 显示图像
+   /*  // 显示图像 */
     VkResult result2 = this->_context->framePresentFrame(imageIndex, this->_currentFrame);
     if (result2 == VK_ERROR_OUT_OF_DATE_KHR || result2 == VK_SUBOPTIMAL_KHR)
     {
@@ -206,7 +206,7 @@ void GfxMgr::update()
     {
         GfxMgr::Log("GfxMgr", "Failed to present swap chain imag22222e!");
     }
-    // 0 1 0 1 0 1
+   /*  // 0 1 0 1 0 1 */
     /**
      * 帧0	提交命令，信号量A	开始渲染帧0
      * 帧1	提交命令，信号量B	渲染帧0完成，开始渲染帧1
@@ -217,37 +217,37 @@ void GfxMgr::update()
 void GfxMgr::resetSwapChain()
 {
     GfxMgr::Log("GfxMgr", "reset swap chain start...");
-    vkDeviceWaitIdle(this->_context->getVkDevice()); // 等待所有操作完成
-    // 线清除，
+    vkDeviceWaitIdle(this->_context->getVkDevice());/*  // 等待所有操作完成 */
+   /*  // 线清除， */
     this->_renderer->cleanRendererState();
     this->_context->cleanSwapChain();
-    // 后重置
+   /*  // 后重置 */
     this->_context->resetSwapChain();
     this->_renderer->resetRendererState();
     GfxMgr::Log("GfxMgr", "reset swap chain end...");
 }
 
-// 读取shader内容
+/* // 读取shader内容 */
 std::vector<char> GfxMgr::readShaderFile(const std::string &filename)
 {
-    // ate: 表示从文件末未开始读取
-    // binary: 表示以二进制方式读取
+  /*   // ate: 表示从文件末未开始读取
+    // binary: 表示以二进制方式读取 */
     std::ifstream file(filename, std::ios::ate | std::ios::binary);
-    // std::cout << filename << std::endl;
+ /*    // std::cout << filename << std::endl; */
     if (!file.is_open())
     {
         throw std::runtime_error("failed to open file!");
     }
-    // tellg()返回当前定位指针的位置，也代表着输入流的大小。
+   /*  // tellg()返回当前定位指针的位置，也代表着输入流的大小。 */
     size_t fileSize = (size_t)file.tellg();
-    // std::cout << fileSize << std::endl;
+   /*  // std::cout << fileSize << std::endl; */
     std::vector<char> buffer(fileSize);
-    // seekg()是对输入流的操作 g是get缩写，0是代表从开头读起。
+   /*  // seekg()是对输入流的操作 g是get缩写，0是代表从开头读起。 */
     file.seekg(0);
-    // 读入到Buffer当中
+    /* // 读入到Buffer当中 */
     file.read(buffer.data(), fileSize);
     file.close();
-    // std::cout << "read file success: " << filename << std::endl;
+    /* // std::cout << "read file success: " << filename << std::endl; */
     return buffer;
 }
 

@@ -2,9 +2,9 @@
 #include "gfx-context.h"
 #include "gfx-struct.h"
 #include "gfx-mgr.h"
+/*#include "../../libs/stb/stb_image.h"*/
 
-#include "../../libs/stb/stb_image.h"
-// 主要用于创建附件贴图
+/* // 主要用于创建附件贴图 */
 GfxTexture::GfxTexture(GfxContext *context)
 {
     this->_context = context;
@@ -24,7 +24,7 @@ GfxTexture::GfxTexture(GfxContext *context, const std::vector<uint8_t> *pixels, 
 
 void GfxTexture::_createTextureImage()
 {
-    // 创建暂存缓冲区
+    /* // 创建暂存缓冲区 */
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
 
@@ -34,29 +34,29 @@ void GfxTexture::_createTextureImage()
         &stagingBuffer,
         &stagingBufferMemory,
         this->_imageSize, nullptr);
-    // 复制数据到暂存缓冲区
+    /* // 复制数据到暂存缓冲区 */
     void *data;
     vkMapMemory(this->_context->getVkDevice(), stagingBufferMemory, 0, this->_imageSize, 0, &data);
     memcpy(data, this->_pixels->data(), static_cast<size_t>(this->_imageSize));
     vkUnmapMemory(this->_context->getVkDevice(), stagingBufferMemory);
-    // 计算格式
+    /* // 计算格式 */
     VkFormat format = VK_FORMAT_R8G8B8A8_UNORM;
     if (this->_channels == 1)
     {
         format = VK_FORMAT_R8_UNORM;
     }
-    // 创建纹理图像
+   /*  // 创建纹理图像 */
     this->createImage(this->_width, this->_height, format, VK_IMAGE_TILING_OPTIMAL,
                       VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
                       VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, VK_SAMPLE_COUNT_1_BIT,
                       this->_textureImage, this->_textureImageMemory);
-    // 转换布局并复制数据
-    // VK_IMAGE_LAYOUT_UNDEFINED 待确定
+    /* // 转换布局并复制数据
+    // VK_IMAGE_LAYOUT_UNDEFINED 待确定 */
     this->_transitionImageLayout(this->_textureImage, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
     this->_copyBufferToImage(stagingBuffer, this->_textureImage, static_cast<uint32_t>(this->_width), static_cast<uint32_t>(this->_height));
     this->_transitionImageLayout(this->_textureImage, format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-    // 清理暂存资源
+   /*  // 清理暂存资源 */
     vkDestroyBuffer(this->_context->getVkDevice(), stagingBuffer, nullptr);
     vkFreeMemory(this->_context->getVkDevice(), stagingBufferMemory, nullptr);
 }
@@ -73,7 +73,7 @@ void GfxTexture::_createTextureSampler()
 {
     VkSamplerCreateInfo samplerInfo{};
     samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-    samplerInfo.magFilter = VK_FILTER_LINEAR; // VK_FILTER_LINEAR
+    samplerInfo.magFilter = VK_FILTER_LINEAR; /* // VK_FILTER_LINEAR */
     samplerInfo.minFilter = VK_FILTER_LINEAR;
     samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
     samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
@@ -92,10 +92,10 @@ void GfxTexture::_createTextureSampler()
     {
         throw std::runtime_error("failed to create texture sampler!");
     }
-    // this->_Log("create texture sampler success...");
+    /* // this->_Log("create texture sampler success..."); */
 }
-
-// 以下实现辅助方法...
+/* 
+// 以下实现辅助方法... */
 void GfxTexture::createImage(uint32_t width, uint32_t height, VkFormat format,
                              VkImageTiling tiling, VkImageUsageFlags usage,
                              VkMemoryPropertyFlags properties, VkSampleCountFlagBits samples,
@@ -158,7 +158,7 @@ void GfxTexture::createImageView(VkImage image, VkFormat format, VkImageAspectFl
     viewInfo.subresourceRange.layerCount = 1;
     if (format == VK_FORMAT_R8_UNORM)
     {
-        // 单通道纹理的组件映射
+        /* // 单通道纹理的组件映射 */
         viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
         viewInfo.components.g = VK_COMPONENT_SWIZZLE_R;
         viewInfo.components.b = VK_COMPONENT_SWIZZLE_R;
@@ -207,7 +207,7 @@ void GfxTexture::_transitionImageLayout(VkImage image, VkFormat format, VkImageL
     barrier.subresourceRange.baseArrayLayer = 0;
     barrier.subresourceRange.layerCount = 1;
 
-    // 设置管道阶段和访问掩码
+    /* // 设置管道阶段和访问掩码 */
     VkPipelineStageFlags sourceStage;
     VkPipelineStageFlags destinationStage;
 
@@ -317,33 +317,33 @@ VkSampler GfxTexture::getSampler()
 
 void GfxTexture::_Log(std::string msg)
 {
-    // std::cout << "GfxTexture: " << msg << std::endl;
+   /*  // std::cout << "GfxTexture: " << msg << std::endl; */
 }
 
 GfxTexture::~GfxTexture()
 {
-    // 销毁采样器
+   /*  // 销毁采样器 */
     if (this->_textureSampler != VK_NULL_HANDLE)
     {
         vkDestroySampler(this->_context->getVkDevice(), this->_textureSampler, nullptr);
         this->_textureSampler = VK_NULL_HANDLE;
     }
 
-    // 销毁图像视图
+    /* // 销毁图像视图 */
     if (this->_textureImageView != VK_NULL_HANDLE)
     {
         vkDestroyImageView(this->_context->getVkDevice(), this->_textureImageView, nullptr);
         this->_textureImageView = VK_NULL_HANDLE;
     }
 
-    // 销毁图像
+   /*  // 销毁图像 */
     if (this->_textureImage != VK_NULL_HANDLE)
     {
         vkDestroyImage(this->_context->getVkDevice(), this->_textureImage, nullptr);
         this->_textureImage = VK_NULL_HANDLE;
     }
 
-    // 释放图像内存
+   /*  // 释放图像内存 */
     if (this->_textureImageMemory != VK_NULL_HANDLE)
     {
         vkFreeMemory(this->_context->getVkDevice(), this->_textureImageMemory, nullptr);

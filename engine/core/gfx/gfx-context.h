@@ -33,8 +33,9 @@ private:
 
     /**
      * @brief Vulkan表面句柄
+     *  用于显示的窗口句柄
      */
-    VkSurfaceKHR _surface; // 用于显示的窗口句柄
+    VkSurfaceKHR _surface; 
     /**
      * @brief 创建Vulkan表面
      */
@@ -56,7 +57,10 @@ private:
      * @brief 逻辑设备句柄
      */
     VkDevice _vkdevice;
-    VkQueue _presentQueue; // 用来存储逻辑设备的图形呈现队列句柄
+    /**
+     * 用来存储逻辑设备的图形呈现队列句柄
+     */
+    VkQueue _presentQueue; 
     VkQueue _graphicsQueue;
     void _createLogicalDevice();
 
@@ -128,7 +132,9 @@ private:
     void _createSyncObjects();
     void _cleanSyncObjects();
 
-    //多重采样-颜色附件贴图和深度附件贴图
+    /**
+     * 多重采样-颜色附件贴图和深度附件贴图
+     */
     GfxTexture *_colorMsaaTexture;
     GfxTexture *_depthMsaaTexture;
     void _createMsaaAttachmentTexture();

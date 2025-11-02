@@ -84,14 +84,14 @@ public:
 
 
 
-    // /**
+  /*   // /**
     //  * @brief 重置模型渲染对象状态
     //  *
     //  * @param id 物体ID
     //  * @param renderPassType 渲染通道类型
     //  * @param pipelineType 管线类型
     //  */
-    // void resetGfxObjectRendererState(std::string id, std::string renderPassType, std::string pipelineType);
+    // void resetGfxObjectRendererState(std::string id, std::string renderPassType, std::string pipelineType); */
     /**
      * @brief 销毁模型渲染对象
      *

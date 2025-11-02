@@ -23,7 +23,7 @@ void GfxObject::_createUniformBuffers()
 
     for (size_t i = 0; i < swapChainSize; i++)
     {
-        // 创建缓冲区
+       /*  // 创建缓冲区 */
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
         bufferInfo.size = bufferSize;
@@ -35,11 +35,11 @@ void GfxObject::_createUniformBuffers()
             throw std::runtime_error("Failed to create uniform buffer!");
         }
 
-        // 获取内存需求
+       /*  // 获取内存需求 */
         VkMemoryRequirements memRequirements;
         vkGetBufferMemoryRequirements(this->_context->getVkDevice(), this->_uniformBuffers[i], &memRequirements);
 
-        // 分配内存
+       /*  // 分配内存 */
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
@@ -51,13 +51,13 @@ void GfxObject::_createUniformBuffers()
         {
             throw std::runtime_error("Failed to allocate uniform buffer memory!");
         }
-        // 绑定内存
+        /* // 绑定内存 */
         vkBindBufferMemory(this->_context->getVkDevice(), this->_uniformBuffers[i], this->_uniformBuffersMemory[i], 0);
-        // 映射内存
+        /* // 映射内存 */
         vkMapMemory(this->_context->getVkDevice(), this->_uniformBuffersMemory[i], 0, bufferSize, 0, &this->_uniformBuffersMapped[i]);
     }
 
-    // this->_Log(" success...");
+    /* // this->_Log(" success..."); */
 }
 
 void GfxObject::setPass(GfxPass *pass)
@@ -66,9 +66,9 @@ void GfxObject::setPass(GfxPass *pass)
 }
 void GfxObject::setVertexs(std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
 {
-    // 等待设备空闲
+    /* // 等待设备空闲 */
     vkDeviceWaitIdle(this->_context->getVkDevice());
-    // 清理旧缓冲区
+   /*  // 清理旧缓冲区 */
     if (this->_vertexBuffer != VK_NULL_HANDLE)
     {
         vkDestroyBuffer(this->_context->getVkDevice(), this->_vertexBuffer, nullptr);
@@ -89,9 +89,9 @@ void GfxObject::setVertexs(std::vector<float> points, std::vector<float> colors,
         vkFreeMemory(this->_context->getVkDevice(), this->_indexMemory, nullptr);
         this->_indexMemory = VK_NULL_HANDLE;
     }
-    // 创建新的缓冲区
-    //  验证数据完整性
-    size_t vertexCount = points.size() / 3; // 每个顶点3个float (x,y,z)
+    /* // 创建新的缓冲区
+    //  验证数据完整性 */
+    size_t vertexCount = points.size() / 3; /* // 每个顶点3个float (x,y,z) */
     if (vertexCount == 0 || colors.size() != vertexCount * 4 || normals.size() != vertexCount * 3 || uvs.size() != vertexCount * 2 || indices.size() == 0)
     {
         std::cerr << "Invalid vertex data sizes!" << std::endl;
@@ -100,17 +100,17 @@ void GfxObject::setVertexs(std::vector<float> points, std::vector<float> colors,
     this->_indexSize = indices.size();
 
     std::vector<float> interleavedVertices;
-    interleavedVertices.reserve(vertexCount * (3 + 4 + 3 + 2)); // position + color + normal + uv
+    interleavedVertices.reserve(vertexCount * (3 + 4 + 3 + 2)); /* // position + color + normal + uv */
 
     for (size_t i = 0; i < vertexCount; ++i)
     {
-        // 添加位置 (3 floats)
+       /*  // 添加位置 (3 floats) */
         interleavedVertices.insert(interleavedVertices.end(), points.begin() + i * 3, points.begin() + (i + 1) * 3);
-        // 添加颜色 (4 floats)
+       /*  // 添加颜色 (4 floats) */
         interleavedVertices.insert(interleavedVertices.end(), colors.begin() + i * 4, colors.begin() + (i + 1) * 4);
-        // 添加法线 (3 floats)
+       /*  // 添加法线 (3 floats) */
         interleavedVertices.insert(interleavedVertices.end(), normals.begin() + i * 3, normals.begin() + (i + 1) * 3);
-        // 添加UV (2 floats)
+        /* // 添加UV (2 floats) */
         interleavedVertices.insert(interleavedVertices.end(), uvs.begin() + i * 2, uvs.begin() + (i + 1) * 2);
     }
     // 顶点缓冲区
@@ -119,10 +119,10 @@ void GfxObject::setVertexs(std::vector<float> points, std::vector<float> colors,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
         &this->_vertexBuffer,
         &this->_vertexMemory,
-        interleavedVertices.size() * sizeof(float), // 总字节数
-        interleavedVertices.data()                  // 数据指针
+        interleavedVertices.size() * sizeof(float), /* // 总字节数 */
+        interleavedVertices.data()                 /*  // 数据指针 */
     );
-    // 索引缓冲区（不变）
+   /*  // 索引缓冲区（不变） */
     GfxMgr::getInstance()->createBuffer(
         VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -180,12 +180,12 @@ void GfxObject::_updateDescriptorSet()
 {
     if (this->_texture == nullptr)
     {
-        // std::cout << "texture is null" << std::endl;
+        /* // std::cout << "texture is null" << std::endl; */
         return;
     }
     if (this->_pipeline == nullptr || this->_pipeline->getDescriptorSetLayout() == VK_NULL_HANDLE)
     {
-        // std::cout << "pipeline is null" << std::endl;
+       /*  // std::cout << "pipeline is null" << std::endl; */
         return;
     }
     std::vector<VkImageView> &swapChainImageViews = this->_context->getSwapChainImageViews();
@@ -236,7 +236,7 @@ void GfxObject::_updateDescriptorSet()
 
         vkUpdateDescriptorSets(this->_context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
     }
-    // this->_Log("update descriptor set success...");
+   /*  // this->_Log("update descriptor set success..."); */
 }
 
 uint32_t GfxObject::_findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
@@ -246,8 +246,8 @@ uint32_t GfxObject::_findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags p
 
     for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
     {
-        // 检查内存类型是否满足类型过滤器要求
-        // 并且具有我们需要的属性标志
+        /* // 检查内存类型是否满足类型过滤器要求
+        // 并且具有我们需要的属性标志 */
         if ((typeFilter & (1 << i)) &&
             (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
         {
@@ -319,10 +319,10 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
 
     if (!this->_pipeline || this->_vertexBuffer == VK_NULL_HANDLE || this->_indexBuffer == VK_NULL_HANDLE)
         return;
-    // 绑定渲染管线
+   /*  // 绑定渲染管线 */
     vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipeline());
 
-    // // 设置视口
+    /* // // 设置视口
     // vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &this->_viewport);
     // // 设置裁剪区域
     // vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &this->_scissor);
@@ -336,16 +336,16 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     // 参数4：用于定义着色器变量gl_VertexIndex的值
     // 参数5：用于定义着色器变量gl_InstanceIndex的值
     // std::cout << "this->_indexSize1: " << this->_indexSize << std::endl;
-    // Render scene
+    // Render scene */
     VkDeviceSize offsets[1] = {0};
     vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
     vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-    //  std::cout << "render:1111 "<< std::endl;
+ /*    //  std::cout << "render:1111 "<< std::endl;
     // 绑定描述符集
-    // std::cout <<"1111:"<< this->_descriptorSets[imageIndex]<< std::endl;
+    // std::cout <<"1111:"<< this->_descriptorSets[imageIndex]<< std::endl; */
     vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipelineLayout(), 0, 1, &this->_descriptorSets[imageIndex], 0, nullptr);
-    // 推送常量
-    //  std::cout << "render:22222 "<< std::endl;
+  /*   // 推送常量
+    //  std::cout << "render:22222 "<< std::endl; */
     PushConstants pushConstants{};
     pushConstants.defaultColor[0] = this->_color[0];
     pushConstants.defaultColor[1] = this->_color[1];
@@ -358,26 +358,26 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     pushConstants.maskRect[4] = this->_uiMask[4];
 
     vkCmdPushConstants(commandBuffers[imageIndex], this->_pipeline->getVKPipelineLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstants), &pushConstants);
-    // 绘制
-    //  std::cout << "render:33333 "<< std::endl;
+   /*  // 绘制
+    //  std::cout << "render:33333 "<< std::endl; */
     vkCmdDrawIndexed(
         commandBuffers[imageIndex],
-        this->_indexSize, // 只绘制3个索引（第一个三角形）
-        1,                // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
-        0,                // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
-        0,                // 第一个实例的索引 从第 0 个实例开始绘制
-        0                 // 实例偏移
+        this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
+        1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
+        0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
+        0,               /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
+        0                 /* // 实例偏移 */
     );
 }
 void GfxObject::clear()
 {
-    // 销毁描述符集（Descriptor Sets）
+    /* // 销毁描述符集（Descriptor Sets） */
     for (auto descriptorSet : this->_descriptorSets)
     {
         vkFreeDescriptorSets(this->_context->getVkDevice(), this->_context->getDescriptorPool(), static_cast<uint32_t>(this->_descriptorSets.size()), &descriptorSet);
     }
     this->_descriptorSets.clear();
-    // 销毁缓冲区
+   /*  // 销毁缓冲区 */
     this->_cleanUniformBuffers();
 }
 void GfxObject::reset()

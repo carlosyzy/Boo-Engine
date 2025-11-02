@@ -36,16 +36,16 @@ private:
 
 
     int _indexSize;
-    VkBuffer _vertexBuffer = VK_NULL_HANDLE; // 顶点数据Buffer
-    VkBuffer _indexBuffer = VK_NULL_HANDLE;  // 顶点index数据buffer
+    VkBuffer _vertexBuffer = VK_NULL_HANDLE; /* // 顶点数据Buffer */
+    VkBuffer _indexBuffer = VK_NULL_HANDLE;  /* // 顶点index数据buffer */
     VkDeviceMemory _vertexMemory = VK_NULL_HANDLE;
     VkDeviceMemory _indexMemory = VK_NULL_HANDLE;
 
-     // 现有的成员变量...
+    /*  // 现有的成员变量... */
     std::vector<VkBuffer> _uniformBuffers;
     std::vector<VkDeviceMemory> _uniformBuffersMemory;
     std::vector<void*> _uniformBuffersMapped;
-    // 现有的方法...
+   /*  // 现有的方法... */
     void _createUniformBuffers();
     void _cleanUniformBuffers();
     uint32_t _findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
@@ -54,11 +54,11 @@ private:
     std::vector<VkDescriptorSet> _descriptorSets;
     void _updateDescriptorSet();
 
-    //更新UBO中的模型矩阵
+    /* //更新UBO中的模型矩阵 */
     void _updateModelMatUniformBuffer();
-    //更新UBO中的视图矩阵
+    /* //更新UBO中的视图矩阵 */
     void _updateViewMatUniformBuffer();
-    //更新UBO中的投影矩阵
+   /*  //更新UBO中的投影矩阵 */
     void _updateProjMatUniformBuffer();
 
     void _Log(std::string msg);
