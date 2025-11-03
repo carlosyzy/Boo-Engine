@@ -104,6 +104,7 @@ void EditorLayout::update(float dt)
 	{
 		this->_scene->update(dt);
 		this->_scene->lateUpdate(dt);
+		this->_scene->render();
 		this->_scene->clearNodeFrameFlag();
 	}
 };

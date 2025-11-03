@@ -10,7 +10,10 @@
 //#include "ui/ui-tree/node-tree.h"
 //#include "ui/ui-tree/file-tree.h"
 //#include "ui/ui-mask.h"
-Game::Game()
+Game::Game():
+    _assets(nullptr),
+    _curScene(nullptr),
+    _view(0, 0, 0, 0)
 {
 }
 Game* Game::getInstance()
@@ -24,6 +27,7 @@ void Game::init()
 	this->_initInput();
 	this->_initFont();
 	this->_initComponents();
+	this->_initAssets();
 }
 
 void Game::_initEvent() {
@@ -48,6 +52,10 @@ void Game::_initComponents()
 	  this->_componentFactory->registerClass<NodeTree>("NodeTree");
 	  this->_componentFactory->registerClass<FileTree>("FileTree");
 	  this->_componentFactory->registerClass<UIMask>("UIMask");*/
+}
+void Game::_initAssets()
+{
+	this->_assets = new Assets();
 }
 void Game::setView(int width, int height)
 {

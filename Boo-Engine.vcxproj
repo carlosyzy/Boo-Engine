@@ -153,6 +153,7 @@ if exist "$(ProjectDir)engine\resources" (
     <ClCompile Include="editor\editor-layout.cpp" />
     <ClCompile Include="editor\editor.cpp" />
     <ClCompile Include="editor\ipc\editor-ipc.cpp" />
+    <ClCompile Include="engine\core\assets\assets.cpp" />
     <ClCompile Include="engine\core\component\component-factory.cpp" />
     <ClCompile Include="engine\core\component\component.cpp" />
     <ClCompile Include="engine\core\game.cpp" />
@@ -189,6 +190,7 @@ if exist "$(ProjectDir)engine\resources" (
     <ClInclude Include="editor\editor-layout.h" />
     <ClInclude Include="editor\editor.h" />
     <ClInclude Include="editor\ipc\editor-ipc.h" />
+    <ClInclude Include="engine\core\assets\assets.h" />
     <ClInclude Include="engine\core\component\component-factory.h" />
     <ClInclude Include="engine\core\component\component.h" />
     <ClInclude Include="engine\core\game.h" />

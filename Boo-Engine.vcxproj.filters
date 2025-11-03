@@ -120,6 +120,9 @@
     <ClCompile Include="editor\ipc\editor-ipc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="engine\core\assets\assets.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\core\math\color.h">
@@ -231,6 +234,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\ipc\editor-ipc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\assets\assets.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
