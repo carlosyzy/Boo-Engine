@@ -111,7 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>E:\software\vulkan\Include;E:\software\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\worksapces\Boo-Engine\engine\libs\stb;E:\software\vulkan\Include;E:\software\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,6 +129,11 @@
       <Command>if exist "$(TargetDir)resources" rmdir /s /q "$(TargetDir)resources"
 if exist "$(ProjectDir)engine\resources" (
     xcopy /Y /I /E "$(ProjectDir)engine\resources\*" "$(TargetDir)resources\"
+)
+
+if exist "$(TargetDir)res" rmdir /s /q "$(TargetDir)res"
+if exist "$(ProjectDir)editor\res" (
+    xcopy /Y /I /E "$(ProjectDir)editor\res\*" "$(TargetDir)res\"
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -153,9 +158,14 @@ if exist "$(ProjectDir)engine\resources" (
     <ClCompile Include="editor\editor-layout.cpp" />
     <ClCompile Include="editor\editor.cpp" />
     <ClCompile Include="editor\ipc\editor-ipc.cpp" />
-    <ClCompile Include="engine\core\assets\assets.cpp" />
+    <ClCompile Include="engine\core\assets\asset-load.cpp" />
+    <ClCompile Include="engine\core\assets\asset.cpp" />
+    <ClCompile Include="engine\core\assets\assets-manager.cpp" />
+    <ClCompile Include="engine\core\assets\shader.cpp" />
+    <ClCompile Include="engine\core\assets\texture.cpp" />
     <ClCompile Include="engine\core\component\component-factory.cpp" />
     <ClCompile Include="engine\core\component\component.cpp" />
+    <ClCompile Include="engine\core\font\freetype-mgr.cpp" />
     <ClCompile Include="engine\core\game.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-context.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-mgr.cpp" />
@@ -182,6 +192,7 @@ if exist "$(ProjectDir)engine\resources" (
     <ClCompile Include="engine\core\scene\scene.cpp" />
     <ClCompile Include="engine\core\utils\time-util.cpp" />
     <ClCompile Include="engine\core\utils\uuid-util.cpp" />
+    <ClCompile Include="engine\libs\stb\stb_vorbis.c" />
     <ClCompile Include="engine\window\window-mgr.cpp" />
     <ClCompile Include="engine\engine.cpp" />
   </ItemGroup>
@@ -190,9 +201,15 @@ if exist "$(ProjectDir)engine\resources" (
     <ClInclude Include="editor\editor-layout.h" />
     <ClInclude Include="editor\editor.h" />
     <ClInclude Include="editor\ipc\editor-ipc.h" />
+    <ClInclude Include="engine\core\assets\asset-load.h" />
+    <ClInclude Include="engine\core\assets\asset.h" />
+    <ClInclude Include="engine\core\assets\assets-manager.h" />
     <ClInclude Include="engine\core\assets\assets.h" />
+    <ClInclude Include="engine\core\assets\shader.h" />
+    <ClInclude Include="engine\core\assets\texture.h" />
     <ClInclude Include="engine\core\component\component-factory.h" />
     <ClInclude Include="engine\core\component\component.h" />
+    <ClInclude Include="engine\core\font\freetype-mgr.h" />
     <ClInclude Include="engine\core\game.h" />
     <ClInclude Include="engine\core\gfx\gfx-context.h" />
     <ClInclude Include="engine\core\gfx\gfx-mgr.h" />
@@ -222,6 +239,28 @@ if exist "$(ProjectDir)engine\resources" (
     <ClInclude Include="engine\core\scene\scene.h" />
     <ClInclude Include="engine\core\utils\time-util.h" />
     <ClInclude Include="engine\core\utils\uuid-util.h" />
+    <ClInclude Include="engine\libs\nlohmann\fifo_map.hpp" />
+    <ClInclude Include="engine\libs\nlohmann\json.hpp" />
+    <ClInclude Include="engine\libs\stb\stb_connected_components.h" />
+    <ClInclude Include="engine\libs\stb\stb_c_lexer.h" />
+    <ClInclude Include="engine\libs\stb\stb_divide.h" />
+    <ClInclude Include="engine\libs\stb\stb_ds.h" />
+    <ClInclude Include="engine\libs\stb\stb_dxt.h" />
+    <ClInclude Include="engine\libs\stb\stb_easy_font.h" />
+    <ClInclude Include="engine\libs\stb\stb_herringbone_wang_tile.h" />
+    <ClInclude Include="engine\libs\stb\stb_hexwave.h" />
+    <ClInclude Include="engine\libs\stb\stb_image.h" />
+    <ClInclude Include="engine\libs\stb\stb_image_resize2.h" />
+    <ClInclude Include="engine\libs\stb\stb_image_write.h" />
+    <ClInclude Include="engine\libs\stb\stb_include.h" />
+    <ClInclude Include="engine\libs\stb\stb_leakcheck.h" />
+    <ClInclude Include="engine\libs\stb\stb_perlin.h" />
+    <ClInclude Include="engine\libs\stb\stb_rect_pack.h" />
+    <ClInclude Include="engine\libs\stb\stb_sprintf.h" />
+    <ClInclude Include="engine\libs\stb\stb_textedit.h" />
+    <ClInclude Include="engine\libs\stb\stb_tilemap_editor.h" />
+    <ClInclude Include="engine\libs\stb\stb_truetype.h" />
+    <ClInclude Include="engine\libs\stb\stb_voxel_render.h" />
     <ClInclude Include="engine\window\window-mgr.h" />
     <ClInclude Include="engine\engine.h" />
   </ItemGroup>

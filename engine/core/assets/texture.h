@@ -2,6 +2,8 @@
 #include "asset.h"
 #include <string>
 #include <iostream>
+#include <vector>
+
 class Texture : public Asset
 {
 private:

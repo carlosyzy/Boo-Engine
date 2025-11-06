@@ -9,11 +9,11 @@
 
 EditorLayout::EditorLayout()
 {
-	// 创建
-	this->_scene = new Scene("EDITOR");
-	Node2D* root2D = this->_scene->getRoot2D();
-	//InputMgr::getInstance()->setRoot(root2D);
-	this->_initMainUI();
+	//// 创建
+	//this->_scene = new Scene("EDITOR");
+	//Node2D* root2D = this->_scene->getRoot2D();
+	////InputMgr::getInstance()->setRoot(root2D);
+	//this->_initMainUI();
 	/*this->_initMenuUI();
 	this->_initHierarchyUI();
 	this->_initAssetsUI();

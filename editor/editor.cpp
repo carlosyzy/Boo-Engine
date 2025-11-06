@@ -32,7 +32,10 @@ void Editor::init()
 }
 void Editor::_initEditorRes()
 {
-    for (const auto &entry : std::filesystem::recursive_directory_iterator("res"))
+    std::string& root = Game::getInstance()->assetsManager()->root();
+    std::filesystem::path fullPath = std::filesystem::path(root) / "res";
+
+    for (const auto &entry : std::filesystem::recursive_directory_iterator(fullPath))
     {
         const auto &path = entry.path();
         Game::getInstance()->assetsManager()->load(path.string());

@@ -30,6 +30,9 @@ public:
      * @brief 初始化资产管理器
      */
     void init();
+    std::string& root() {
+        return this->_root;
+    }
     /**
      * @brief 加载资产
      * @param path 资产路径

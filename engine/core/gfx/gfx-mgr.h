@@ -124,6 +124,6 @@ public:
     std::vector<char> readShaderFile(const std::string &filename);
     static void Log(const std::string tag, const std::string msg)
     {
-        std::cout << "🚄" << tag << ":" << msg << std::endl;
+        std::cout << "Boo-Engine: " << tag << ":" << msg << std::endl;
     }
 };
