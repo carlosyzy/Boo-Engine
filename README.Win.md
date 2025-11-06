@@ -1,36 +1,13 @@
 # Boo-Engine
 
-#### Description
-C++ 基于 vulkan 开发的游戏引擎
-
-#### Software Architecture
-Software architecture description
-
-#### Installation
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### Instructions
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### Contribution
-
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
-
-
-#### Gitee Feature
-
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+# 资源构建
+项目属性 → 生成事件 → 后期生成事件 的命令行中：
+if exist "$(TargetDir)resources" rmdir /s /q "$(TargetDir)resources"
+if exist "$(ProjectDir)engine\resources" (
+    xcopy /Y /I /E "$(ProjectDir)engine\resources\*" "$(TargetDir)resources\"
+)
+# 编辑器/引擎分支同步
+git restore --source=master -- editor
+git restore --source=master -- engine 
+git restore --source=master -- app.cpp
+git restore --source=master -- README.md
