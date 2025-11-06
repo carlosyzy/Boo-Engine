@@ -1,6 +1,9 @@
 #include "game.h"
 #include "gfx/gfx-mgr.h"
 #include "global/event.h"
+#include "assets/assets-manager.h"
+
+
 
 #include "component/component-factory.h"
 #include "renderer/ui/ui-sprite.h"
@@ -11,10 +14,11 @@
 //#include "ui/ui-tree/file-tree.h"
 //#include "ui/ui-mask.h"
 Game::Game():
-    _assets(nullptr),
-    _curScene(nullptr),
-    _view(0, 0, 0, 0)
+    _assetsManager(nullptr),
+    _curScene(nullptr)
 {
+	this->_view.width = 1280;
+	this->_view.height = 720;
 }
 Game* Game::getInstance()
 {
@@ -39,7 +43,7 @@ void Game::_initInput()
 }
 void Game::_initFont()
 {
-	//FreetypeMgr::getInstance()->init();
+	// FreetypeMgr::getInstance()->init();
 }
 
 void Game::_initComponents()
@@ -55,7 +59,9 @@ void Game::_initComponents()
 }
 void Game::_initAssets()
 {
-	this->_assets = new Assets();
+	std::cout << "INIT ASSETS MGR" << std::endl;
+	this->_assetsManager = new AssetsManager();
+	this->_assetsManager->init();
 }
 void Game::setView(int width, int height)
 {
@@ -64,10 +70,7 @@ void Game::setView(int width, int height)
 }
 void Game::update(float dt)
 {
-
-
-	// 更新渲染器
-	GfxMgr::getInstance()->update();
+	
 }
 Game::~Game()
 {

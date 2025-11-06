@@ -88,6 +88,8 @@ public:
     void setShader(std::string vert, std::string frag);
     void setModelMat4();
     void update(float deltaTime) override;
+    void lateUpdate(float deltaTime) override;
+    void render() override;
 
     /*void updateViewMatrix();
     void updateProjMatrix();*/

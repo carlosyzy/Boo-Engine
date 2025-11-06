@@ -32,7 +32,7 @@ public:
      */
     void init();
     void initTestInfo();
-   /*  // 采样次数 */
+    /*  // 采样次数 */
     void _testMSAASample();
     VkSampleCountFlagBits _getMaxMSAAUsableSampleCount();
 
@@ -71,6 +71,13 @@ public:
      */
     bool isExistTexture(std::string texture);
     /**
+     * @brief 创建着色器
+     *
+     * @param shaderName 着色器名称
+     * @param buffer 着色器字节码
+     */
+    void createShader(std::string shaderName, std::string &data);
+    /**
      * @brief 创建模型渲染对象
      *
      * @param id  物体ID
@@ -83,13 +90,13 @@ public:
      * @param indices 索引数据
      */
     void createObject(std::string id, std::string renderPassType, std::string pipelineType, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices);
-   /*  // /**
-    //  * @brief 重置模型渲染对象状态
-    //  *
-    //  * @param id 物体ID
-    //  * @param renderPassType 渲染通道类型
-    //  * @param pipelineType 管线类型
-    //  */
+    /*  // /**
+     //  * @brief 重置模型渲染对象状态
+     //  *
+     //  * @param id 物体ID
+     //  * @param renderPassType 渲染通道类型
+     //  * @param pipelineType 管线类型
+     //  */
     // void resetGfxObjectRendererState(std::string id, std::string renderPassType, std::string pipelineType); */
     /**
      * @brief 销毁模型渲染对象

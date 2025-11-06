@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <filesystem>
+
 #include "ipc/editor-ipc.h"
 
 class Engine;
@@ -31,6 +33,8 @@ private:
     void _initProperty();
     
     void _onHierarchyRootUpdate(const EventValue& value);*/
+    void _initEditorRes();
+    void _initEditorLayout();
 public:
     static Editor *getInstance();
     /**

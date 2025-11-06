@@ -11,6 +11,8 @@ private:
 public:
     UISprite(Node *node, std::string uuid="");
     void update(float deltaTime) override;
+    void lateUpdate(float deltaTime) override;
+    void render() override;
     void destroy() override;
     ~UISprite() override;
 };

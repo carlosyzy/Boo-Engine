@@ -122,7 +122,10 @@ bool GfxMgr::isExistTexture(std::string texture)
 {
     return this->_renderer->isExistTexture(texture);
 }
-
+void GfxMgr::createShader(std::string shaderName, std::string &data)
+{
+    this->_renderer->createShader(shaderName, data);
+}
 void GfxMgr::createObject(std::string id, std::string renderPassType, std::string pipelineType, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
 {
     this->_renderer->createObject(id, renderPassType, pipelineType, points, colors, normals, uvs, indices);
@@ -166,11 +169,13 @@ void GfxMgr::setObjectPipeline(std::string id, std::string pipeline)
 
 void GfxMgr::submit(std::string id)
 {
+    std::cout << "renderer submit   :" << id << std::endl;
     this->_renderer->submit(id);
 }
 
 void GfxMgr::update()
 {
+    // std::cout << "renderer update" << std::endl;
     this->_context->frameFencesPrepare(this->_currentFrame);
     /* // 可用的图像的索引 */
     uint32_t imageIndex;
@@ -182,7 +187,7 @@ void GfxMgr::update()
    /*  // 如果交换链已过期（如窗口大小改变），会返回 VK_ERROR_OUT_OF_DATE_KHR，触发重建交换链 */
     if (result1 == VK_ERROR_OUT_OF_DATE_KHR || result1 == VK_SUBOPTIMAL_KHR)
     {
-      /*   // std::cout << "renderer update:'VK_ERROR_OUT_OF_DATE_KHR',The window size might have changed, and the swap chain needs to be recreated." << std::endl; */
+       std::cout << "renderer update:'VK_ERROR_OUT_OF_DATE_KHR',The window size might have changed, and the swap chain needs to be recreated." << std::endl;  
         this->resetSwapChain();
         return;
     }

@@ -101,7 +101,7 @@ void WindowMgr::windowSizeCallback(GLFWwindow* window, int width, int height)
 void WindowMgr::onCursorPos(double xpos, double ypos)
 {
 	// InputMgr::getInstance()->onCursorPos(xpos, ypos);
-	std::cout << "WindowMgr::onCursorPos:" << std::endl;
+	// std::cout << "WindowMgr::onCursorPos:" << std::endl;
 };
 void WindowMgr::onMouseButton(int button, int action, int mods)
 {

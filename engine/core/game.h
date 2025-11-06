@@ -9,7 +9,7 @@ class Component;
 class Scene;
 class ComponentFactory;
 class Event;
-class Assets;
+class AssetsManager;
 
 struct View
 {
@@ -28,7 +28,7 @@ private:
     ComponentFactory *_componentFactory = nullptr;
     View _view;
     Scene *_curScene;
-    Assets *_assets;
+    AssetsManager *_assetsManager;
 
     void _initEvent();
     void _initInput();
@@ -57,9 +57,9 @@ public:
     {
         return this->_curScene;
     }
-    Assets *assets()
+    AssetsManager *assetsManager()
     {
-        return this->_assets;
+        return this->_assetsManager;
     }
 
     Scene *openScene(std::string sceneName);

@@ -20,8 +20,10 @@ public:
     Component(Node *node, std::string uuid = "");
     bool isEnabled() { return this->_isEnabled; }
     void setEnabled(bool enabled);
-    virtual void update(float deltaTime) = 0;
     NodeLayer layer() { return this->_layer; }
+    virtual void update(float deltaTime) = 0;
+    virtual void lateUpdate(float deltaTime) = 0;
+    virtual void render() = 0;
     virtual void destroy();
-   virtual  ~Component();
+    virtual ~Component();
 };

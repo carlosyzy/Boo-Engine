@@ -19,14 +19,14 @@ void GfxRenderer::init()
 
 void GfxRenderer::createRenderPass(std::string name)
 {
-   /*  // 创建渲染通道 */
+    /*  // 创建渲染通道 */
     if (this->_passes.find(name) == this->_passes.end())
     {
         GfxPass *pass = new GfxPass(name, this->_context);
         pass->create();
         this->_passes[name] = pass;
     }
-   /*  // 创建对应的渲染队列 */
+    /*  // 创建对应的渲染队列 */
     if (this->_queues.find(name) == this->_queues.end())
     {
         this->_queues[name] = new GfxQueue(this->_context, this->_passes[name]);
@@ -34,26 +34,26 @@ void GfxRenderer::createRenderPass(std::string name)
 }
 void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)
 {
-   /*  // 创建管线 */
+    /*  // 创建管线 */
     if (this->_pipelines.find(pipelineName) != this->_pipelines.end())
     {
         // this->_Log("createPipeline:name already exists");
         return;
     }
-   /*  // 通过name解析出pipeline的关键信息
-    // 哈希 有序 */
+    /*  // 通过name解析出pipeline的关键信息
+     // 哈希 有序 */
     std::unordered_map<std::string, std::string> properties;
     /* // 创建字符串流对象，将输入字符串包装成流 */
     std::stringstream ss(pipelineName);
     std::string token;
     while (std::getline(ss, token, '|'))
     {
-       /*  // 4. 在token中查找冒号的位置 */
+        /*  // 4. 在token中查找冒号的位置 */
         size_t colon_pos = token.find(':');
-       /*  // 5. 如果找到冒号 */
+        /*  // 5. 如果找到冒号 */
         if (colon_pos != std::string::npos)
         {
-           /*  // 6. 提取冒号前的部分作为key */
+            /*  // 6. 提取冒号前的部分作为key */
             std::string key = token.substr(0, colon_pos);
             std::string value = token.substr(colon_pos + 1);
             properties[key] = value;
@@ -61,7 +61,7 @@ void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)
     }
     if (properties.find("vert") == properties.end())
     {
-       /*  // this->_Log("createPipeline:vert or frag not found");/ */
+        /*  // this->_Log("createPipeline:vert or frag not found");/ */
         return;
     }
     if (properties.find("frag") == properties.end())
@@ -74,7 +74,7 @@ void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)
     /* // 先检测shader */
     if (this->_shaders.find(shaderVert) == this->_shaders.end())
     {
-       /*  // 顶点着色器 */
+        /*  // 顶点着色器 */
         GfxShader *vertexShader = new GfxShader(this->_context, shaderVert);
         this->_shaders[shaderVert] = vertexShader;
     }
@@ -83,7 +83,7 @@ void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)
         GfxShader *fragmentShader = new GfxShader(this->_context, shaderFrag);
         this->_shaders[shaderFrag] = fragmentShader;
     }
-   /*  // 创建管线 */
+    /*  // 创建管线 */
     GfxPipeline *pipeline = new GfxPipeline(pipelineName, this->_context);
     pipeline->create(this->_passes[passName], this->_shaders[shaderVert], this->_shaders[shaderFrag], properties);
     this->_pipelines[pipelineName] = pipeline;
@@ -95,6 +95,7 @@ void GfxRenderer::createTexture(std::string textureUuid, uint32_t width, uint32_
     {
         GfxTexture *texture = new GfxTexture(this->_context, pixels, width, height, channels);
         this->_textures[textureUuid] = texture;
+        std::cout << "createGfxTexture: " << textureUuid << std::endl;
     }
 }
 
@@ -110,6 +111,16 @@ bool GfxRenderer::isExistTexture(std::string textureUuid)
 {
     return this->_textures.find(textureUuid) != this->_textures.end();
 }
+void GfxRenderer::createShader(std::string shaderName, std::string &data)
+{
+    if (this->_shaders.find(shaderName) == this->_shaders.end())
+    {
+        //    GfxShader *shader = new GfxShader(this->_context, shaderName, buffer);
+        //     this->_shaders[shaderName] = shader;
+        // GfxShader *vertexShader = new GfxShader(this->_context, shaderVert);
+        // this->_shaders[shaderVert] = vertexShader;
+    }
+}
 
 void GfxRenderer::cleanRendererState()
 {
@@ -119,18 +130,18 @@ void GfxRenderer::cleanRendererState()
         object->clear();
     }
 
-   /*  // 渲染物体清除 */
+    /*  // 渲染物体清除 */
     for (auto &[name, queue] : this->_queues)
     {
         queue->clear();
     }
 
-   /*  // 渲染管线清除 */
+    /*  // 渲染管线清除 */
     for (auto &[name, pipeline] : this->_pipelines)
     {
         pipeline->clear();
     }
-   /*  // 渲染pass清除 */
+    /*  // 渲染pass清除 */
     for (auto &[name, pass] : this->_passes)
     {
         pass->clear();
@@ -259,6 +270,7 @@ void GfxRenderer::setObjectPipeline(std::string id, std::string pipeline)
 
 void GfxRenderer::submit(std::string id)
 {
+    std::cout << "renderer submit   :" << id << std::endl;
     if (this->_objects.find(id) == this->_objects.end())
     {
         this->_Log("submit:id not found");
@@ -268,7 +280,7 @@ void GfxRenderer::submit(std::string id)
     GfxPass *pass = object->pass();
     if (pass == nullptr || this->_queues.find(pass->name()) == this->_queues.end())
     {
-        /* // this->_Log("submit:pass not found"); */
+        this->_Log("submit:pass not found");
         return;
     }
     this->_queues[pass->name()]->submit(object);
@@ -276,7 +288,8 @@ void GfxRenderer::submit(std::string id)
 
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
-  /*   // this->submit("text"); */
+    /*   // this->submit("text"); */
+    // std::cout << "renderer frameRenderer" << std::endl;
 
     if (this->_queues.find("ui") != this->_queues.end())
     {

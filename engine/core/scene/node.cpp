@@ -2,20 +2,19 @@
 #include "../utils/uuid-util.h"
 #include "../component/component.h"
 
-
 Node::Node(const std::string name, const std::string uuid)
 	: _name(name), _active(true), _layer(NodeLayer::Node), _isActiveInHierarchy(true),
-	_position(0.0f, 0.0f, 0.0f), _scale(1.0f, 1.0f, 1.0f),
-	_eulerAngles(0.0f, 0.0f, 0.0f), _rotation(0.0f, 0.0f, 0.0f, 1.0f),
-	_worldPosition(0.0f, 0.0f, 0.0f), _worldScale(1.0f, 1.0f, 1.0f),
-	_worldRotation(0.0f, 0.0f, 0.0f, 1.0f),
-	_localMatrix(Mat4::identity()), _worldMatrix(Mat4::identity()),
-	_worldTransformFlag(NodeTransformFlag::ALL_FLAG)
+	  _position(0.0f, 0.0f, 0.0f), _scale(1.0f, 1.0f, 1.0f),
+	  _eulerAngles(0.0f, 0.0f, 0.0f), _rotation(0.0f, 0.0f, 0.0f, 1.0f),
+	  _worldPosition(0.0f, 0.0f, 0.0f), _worldScale(1.0f, 1.0f, 1.0f),
+	  _worldRotation(0.0f, 0.0f, 0.0f, 1.0f),
+	  _localMatrix(Mat4::identity()), _worldMatrix(Mat4::identity()),
+	  _worldTransformFlag(NodeTransformFlag::ALL_FLAG)
 {
 	_uuid = uuid.empty() ? UuidUtil::generateUUID() : uuid;
 }
 
-void Node::setName(const std::string& name)
+void Node::setName(const std::string &name)
 {
 	this->_name = name;
 }
@@ -124,20 +123,20 @@ void Node::setEulerAngles(float x, float y, float z)
 	this->_eulerAngles.set(x, y, z);
 	this->_updateWorldTransformFlag(NodeTransformFlag::ROTATION_FLAG);
 }
-void Node::addChild(Node* node)
+void Node::addChild(Node *node)
 {
 	this->_children.push_back(node);
 	node->setParent(this);
 	// this->_frameChildFlag++;
 }
-void Node::setParent(Node* node)
+void Node::setParent(Node *node)
 {
 	this->_parent = node;
 	// 更新节点结构激活状态
 	this->setActive(this->_active, true);
 }
 
-void Node::removeChild(Node* node)
+void Node::removeChild(Node *node)
 {
 	for (auto it = this->_children.begin(); it != this->_children.end();)
 	{
@@ -156,7 +155,7 @@ void Node::_updateWorldTransformFlag(NodeTransformFlag flag)
 {
 	this->_worldTransformFlag |= static_cast<uint32_t>(flag);
 	this->_frameTransformFlag |= static_cast<uint32_t>(flag);
-	for (auto& child : this->_children)
+	for (auto &child : this->_children)
 	{
 		child->_updateWorldTransformFlag(flag);
 	}
@@ -164,7 +163,7 @@ void Node::_updateWorldTransformFlag(NodeTransformFlag flag)
 void Node::_updateNodesActiveInHierarchyState(bool isActiveInHierarch)
 {
 
-	for (auto& child : this->_children)
+	for (auto &child : this->_children)
 	{
 		child->_updateNodesActiveInHierarchyState(isActiveInHierarch);
 	}
@@ -189,68 +188,80 @@ void Node::_updateWorldTransform()
 
 void Node::update(float dt)
 {
+	if (!this->_isActiveInHierarchy)
+	{
+		return;
+	}
+
 	// 更新组件
-	for (auto& component : this->_components)
+	for (auto &component : this->_components)
 	{
 		component->update(dt);
 	}
 	// 更新子节点
-	for (auto& child : this->_children)
+	for (auto &child : this->_children)
 	{
 		child->update(dt);
 	}
 }
 void Node::lateUpdate(float dt)
 {
+	if (!this->_isActiveInHierarchy)
+	{
+		return;
+	}
 	// 更新组件
-	for (auto& component : this->_components)
+	for (auto &component : this->_components)
 	{
 		component->lateUpdate(dt);
 	}
-	for (auto& child : this->_children)
+	for (auto &child : this->_children)
 	{
 		child->lateUpdate(dt);
 	}
 }
 void Node::render()
 {
+	if (!this->_isActiveInHierarchy)
+	{
+		return;
+	}
+
 	// 渲染组件
-	for (auto& component : this->_components)
+	for (auto &component : this->_components)
 	{
 		component->render();
 	}
-	for (auto& child : this->_children)
+	for (auto &child : this->_children)
 	{
 		child->render();
 	}
 }
-void Node::clearNodeFrameFlag() {
+void Node::clearNodeFrameFlag()
+{
 	this->_frameTransformFlag = NodeTransformFlag::NONE_FLAG;
-	for (auto& child : this->_children)
+	for (auto &child : this->_children)
 	{
 		child->clearNodeFrameFlag();
 	}
 }
 
-
-Component* Node::addComponent(std::string name, std::string uuid ) {
+Component *Node::addComponent(std::string name, std::string uuid)
+{
 	return nullptr;
 }
 /*
-* 获取组件
-*/
-Component* Node::getComponent(std::string name) {
+ * 获取组件
+ */
+Component *Node::getComponent(std::string name)
+{
 	return nullptr;
 }
-
-
-
-
 
 void Node::destroyAllChildren()
 {
 	// 递归销毁所有子节点
-	for (auto& child : this->_children)
+	for (auto &child : this->_children)
 	{
 		child->destroy();
 	}
@@ -259,7 +270,7 @@ void Node::destroyAllChildren()
 void Node::destroy()
 {
 	// 销毁组件
-	for (auto& component : this->_components)
+	for (auto &component : this->_components)
 	{
 		component->destroy();
 	}
@@ -268,6 +279,6 @@ void Node::destroy()
 	this->destroyAllChildren();
 	delete this;
 }
-Node :: ~Node() {
-
+Node ::~Node()
+{
 }

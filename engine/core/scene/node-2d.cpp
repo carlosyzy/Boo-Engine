@@ -91,20 +91,14 @@ Component* Node2D::getComponent(std::string name) {
 void Node2D::update(float dt)
 {
 	Node::update(dt);
-	std::cout << "Node update: " << _name << std::endl;
 }
 void Node2D::lateUpdate(float dt)
 {
 	Node::lateUpdate(dt);
-	std::cout << "Node lateUpdate: " << _name << std::endl;
 }
 void Node2D::render()
 {
 	Node::render();
-	if (_active)
-	{
-		std::cout << "Node render: " << _name << std::endl;
-	}
 }
 
 

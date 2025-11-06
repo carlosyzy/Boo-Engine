@@ -111,5 +111,13 @@ public:
     void createTexture(std::string textureUuid, uint32_t width, uint32_t height, uint32_t channels, const std::vector<uint8_t> *pixels);
     void destroyTexture(std::string textureUuid);
     bool isExistTexture(std::string textureUuid);
+
+    /**
+     * @brief 创建着色器
+     *
+     * @param shaderName 着色器名称
+     * @param buffer 着色器字节码
+     */
+    void createShader(std::string shaderName, std::string &data);
     ~GfxRenderer();
 };

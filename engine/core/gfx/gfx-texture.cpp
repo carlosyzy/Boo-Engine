@@ -91,7 +91,7 @@ void GfxTexture::_createTextureSampler()
     {
         throw std::runtime_error("failed to create texture sampler!");
     }
-    /* // this->_Log("create texture sampler success..."); */
+    this->_Log("create texture sampler success...");
 }
 /* 
 // 以下实现辅助方法... */

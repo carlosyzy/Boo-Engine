@@ -81,6 +81,7 @@ void GfxQueue::submit(GfxObject *object)
 }
 void GfxQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
+    // std::cout << "render:queue" << std::endl;
     if (this->_commandBuffers.empty())
     {
         return;
@@ -96,16 +97,17 @@ void GfxQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &command
     }
    /*  // 绑定render pass */
     this->_beginBindRenderPass(imageIndex);
-
+    // std::cout << "render:queue pass" << std::endl;
     /* // 更新渲染物体 */
     for (auto object : this->_opaqueQueue)
     {
+        // std::cout << "render:opaque" << std::endl;
         object->render(imageIndex, this->_commandBuffers);
     }
 
     for (auto object : this->_transparentQueue)
     {
-       /*  // std::cout << "render:transparent" << std::endl; */
+        // std::cout << "render:transparent" << std::endl;
         object->render(imageIndex, this->_commandBuffers);
        /*  // 渲染透明物体 */
     }

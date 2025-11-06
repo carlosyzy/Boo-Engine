@@ -26,10 +26,10 @@ void EditorLayout::_initMainUI()
 	this->_ndMain = new Node2D("Editor-Main");
 	this->_scene->getRoot2D()->addChild(this->_ndMain);
 	Component* comp = this->_ndMain->addComponent("UISprite");
-	//if (comp != nullptr) {
-	//	//this->_spriteMain = static_cast<UISprite*>(comp);
-	//	/*this->_spriteMain->setColor(0.1f, 0.1f, 0.1f, 1.0f);*/
-	//}
+	if (comp != nullptr) {
+		this->_spriteMain = static_cast<UISprite*>(comp);
+		this->_spriteMain->setColor(0.1f, 0.1f, 0.1f, 1.0f);
+	}
 }
 void EditorLayout::_initMenuUI()
 {
