@@ -150,6 +150,12 @@
     <ClCompile Include="engine\core\alpha\alpha.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="engine\core\assets\asset-cache.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\assets\asset-task.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\core\math\color.h">
@@ -357,6 +363,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\alpha\alpha.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\assets\asset-cache.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\assets\asset-task.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

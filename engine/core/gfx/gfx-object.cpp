@@ -149,7 +149,7 @@ void GfxObject::setColor(float r, float g, float b, float a)
     this->_color[1] = g;
     this->_color[2] = b;
     this->_color[3] = a;
-    // std::cout << "setColor:r:" << r << " g:" << g << " b:" << b << " a:" << a << std::endl;
+    std::cout << "setColor1:r:" << r << " g:" << g << " b:" << b << " a:" << a << std::endl;
 
 }
 void GfxObject::setTexture(GfxTexture *texture)
@@ -359,8 +359,8 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
        // 绑定描述符集
        // std::cout <<"1111:"<< this->_descriptorSets[imageIndex]<< std::endl; */
     vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipelineLayout(), 0, 1, &this->_descriptorSets[imageIndex], 0, nullptr);
-    /*   // 推送常量
-      //  std::cout << "render:22222 "<< std::endl; */
+ 
+    // std::cout << "render:22222 "<< std::endl;
     PushConstants pushConstants{};
     pushConstants.defaultColor[0] = this->_color[0];
     pushConstants.defaultColor[1] = this->_color[1];

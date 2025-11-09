@@ -159,7 +159,9 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="editor\editor.cpp" />
     <ClCompile Include="editor\ipc\editor-ipc.cpp" />
     <ClCompile Include="engine\core\alpha\alpha.cpp" />
+    <ClCompile Include="engine\core\assets\asset-cache.cpp" />
     <ClCompile Include="engine\core\assets\asset-load.cpp" />
+    <ClCompile Include="engine\core\assets\asset-task.cpp" />
     <ClCompile Include="engine\core\assets\asset.cpp" />
     <ClCompile Include="engine\core\assets\assets-manager.cpp" />
     <ClCompile Include="engine\core\assets\material.cpp" />
@@ -205,7 +207,9 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="editor\editor.h" />
     <ClInclude Include="editor\ipc\editor-ipc.h" />
     <ClInclude Include="engine\core\alpha\alpha.h" />
+    <ClInclude Include="engine\core\assets\asset-cache.h" />
     <ClInclude Include="engine\core\assets\asset-load.h" />
+    <ClInclude Include="engine\core\assets\asset-task.h" />
     <ClInclude Include="engine\core\assets\asset.h" />
     <ClInclude Include="engine\core\assets\assets-manager.h" />
     <ClInclude Include="engine\core\assets\assets.h" />

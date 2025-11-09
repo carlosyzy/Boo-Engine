@@ -11,6 +11,8 @@
 #endif
 #include <iostream>
 #include "asset-load.h"
+#include "asset-cache.h"
+
 #include "../utils/time-util.h"
 
 AssetsManager::AssetsManager()
@@ -18,6 +20,7 @@ AssetsManager::AssetsManager()
 }
 void AssetsManager::init()
 {
+	this->_assetLoad = new AssetLoad(this);
 	this->_initRoot();
 }
 void AssetsManager::_initRoot()
@@ -59,28 +62,17 @@ void AssetsManager::_initRoot()
 #endif
 	std::cout << "Assets root:" << this->_root << std::endl;
 }
-Asset *AssetsManager::load(const std::string path)
+Asset *AssetsManager::load(const std::string &path)
 {	
-	long long time = TimeUtil::nowTime();
-	std::filesystem::path fullPath = std::filesystem::path(this->_root) / path;
-	Asset *asset = AssetLoad::load(path, fullPath.generic_string());
-	std::cout << "Load asset:" << path << " time:" << TimeUtil::nowTime() - time << "ms" << std::endl;
-	if (asset != nullptr)
-	{
-		this->_assetsMap[path] = asset;
-		return asset;
-	}
-	return nullptr;
+	return this->_assetLoad->load(path);
+}
+template <typename T, typename Func>
+void AssetsManager::loadAsync(const std::string &path, Func func, T *instance){
+	
 }
 Asset *AssetsManager::get(const std::string &path)
 {
-	std::string key = std::filesystem::path(path).generic_string();
-	Asset *asset = this->_assetsMap[key];
-	if (asset != nullptr)
-	{
-		return asset;
-	}
-	return nullptr;
+	 return this->_assetLoad->getAsset(path);
 }
 // void AssetsManager::loadAsync(const std::string &path, std::function<void(Asset *)> callback)
 // {

@@ -132,6 +132,11 @@
     "codecvt": "cpp",
     "forward_list": "cpp",
     "valarray": "cpp",
-    "filesystem": "cpp"
+    "filesystem": "cpp",
+    "cassert": "cpp",
+    "ciso646": "cpp",
+    "ios": "cpp",
+    "locale": "cpp",
+    "*.rh": "cpp"
   }
 }

@@ -21,6 +21,11 @@ void Alpha::update(float deltaTime)
         this->_frame++;
         this->_init();
     }
+    else if (this->_frame == 2)
+    {
+        this->_frame++;
+        this->_loadResources();
+    }
     else
     {
         this->_updateLogoAlpha();
@@ -44,15 +49,15 @@ void Alpha::_initAlpha()
 {
     this->_ndAlpha = new Node2D("Editor-Alpha");
     this->_root2D->addChild(this->_ndAlpha);
-    Component *comp = this->_ndAlpha->addComponent("UISprite");
-    if (comp != nullptr)
-    {
-        this->_spriteAlpha = static_cast<UISprite *>(comp);
-        Asset *tex = Game::getInstance()->assetsManager()->get("resources/texture/ic-default.png");
-        this->_spriteAlpha->setTexture(static_cast<Texture *>(tex));
-        this->_spriteAlpha->setMaterial(nullptr);
-        this->_spriteAlpha->setColor(0.1f, 0.1f, 0.1f, 1.0f);
-    }
+    // Component *comp = this->_ndAlpha->addComponent("UISprite");
+    // if (comp != nullptr)
+    // {
+    //     this->_spriteAlpha = static_cast<UISprite *>(comp);
+    //     Asset *tex = Game::getInstance()->assetsManager()->get("resources/texture/ic-default.png");
+    //     this->_spriteAlpha->setTexture(static_cast<Texture *>(tex));
+    //     this->_spriteAlpha->setMaterial(nullptr);
+    //     this->_spriteAlpha->setColor(0.1f, 0.1f, 0.1f, 1.0f);
+    // }
     // 添加logo
     this->_ndLogo = new Node2D("Editor-Alpha-Logo");
     this->_ndAlpha->addChild(this->_ndLogo);
@@ -65,6 +70,7 @@ void Alpha::_initAlpha()
         Asset *tex = Game::getInstance()->assetsManager()->get("resources/texture/logo.png");
         this->_spriteLogo->setTexture(static_cast<Texture *>(tex));
         this->_spriteLogo->setMaterial(nullptr);
+        this->_spriteLogo->setColor(1.0f, 1.0f, 1.0f, 0.0f);
     }
 }
 
@@ -79,7 +85,19 @@ void Alpha::_updateLogoAlpha()
         return;
     }
     this->_logoAlphaNum += 0.02;
+    std::cout << "this->_logoAlphaNum: " << this->_logoAlphaNum << std::endl;
     this->_spriteLogo->setAlpha(this->_logoAlphaNum);
+}
+void Alpha::_loadResources()
+{
+    const std::string &root = Game::getInstance()->assetsManager()->root();
+    std::filesystem::path fullPath = std::filesystem::path(root) / "resources";
+    std::vector<std::string> paths;
+    for (const auto &entry : std::filesystem::recursive_directory_iterator(fullPath))
+    {
+        std::filesystem::path path = std::filesystem::relative(entry.path(), std::filesystem::path(root));
+        paths.push_back(path.generic_string());
+    }
 }
 
 void Alpha::destroy()

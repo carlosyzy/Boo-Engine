@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "../scene/scene.h"
 
 class Node2D;
@@ -17,6 +18,7 @@ private:
 	void _initRes();
 	void _initAlpha();
 	void _updateLogoAlpha();
+	void _loadResources();
 public:
     Alpha(const std::string name, const std::string uuid="");
 	void update(float deltaTime) override;

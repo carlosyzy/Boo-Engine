@@ -271,6 +271,7 @@ void GfxRenderer::setObjectProjMatrix(std::string id, std::array<float, 16> proj
 }
 void GfxRenderer::setObjectTexture(const std::string &id, const std::string &texture)
 {
+    std::cout << "setObjectTexture:id:" << id << " texture:" << texture << std::endl;
     if (this->_objects.find(id) != this->_objects.end())
     {
         if (this->_textures.find(texture) == this->_textures.end())
