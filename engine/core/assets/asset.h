@@ -30,6 +30,9 @@ protected:
 public:
     Asset(std::string uuid);
     Asset(std::string uuid,std::string path);
+    const std::string& getUuid() {
+        return this->_uuid;
+    }
     virtual void destroy();
     ~Asset();
 };

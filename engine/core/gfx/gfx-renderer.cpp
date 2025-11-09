@@ -214,7 +214,7 @@ void GfxRenderer::resetRendererState()
     }
 }
 
-void GfxRenderer::createObject(std::string id, std::string passName, std::string pipelineType, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
+void GfxRenderer::createObject(std::string id, std::string passName, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
 {
     if (this->_objects.find(id) != this->_objects.end())
     {
@@ -227,16 +227,16 @@ void GfxRenderer::createObject(std::string id, std::string passName, std::string
     this->_objects[id] = object;
     this->_queues[passName]->submit(object);
 
-    if (this->_passes.find(passName) == this->_passes.end())
+    if (this->_passes.find(passName) != this->_passes.end())
     {
-        this->_Log("createGfxObject:renderPassType not found,Currently, creation is not supported");
-        return;
+       
+        object->setPass(this->_passes[passName]);
     }
     else
     {
-        object->setPass(this->_passes[passName]);
+        this->_Log("createGfxObject:renderPassType not found,Currently, creation is not supported");
     }
-    if (this->_pipelines.find(pipelineType) == this->_pipelines.end())
+  /*  if (this->_pipelines.find(pipelineType) == this->_pipelines.end())
     {
         this->_Log("createGfxObject:pipelineType not found,Currently, creation is not supported");
         return;
@@ -244,13 +244,13 @@ void GfxRenderer::createObject(std::string id, std::string passName, std::string
     else
     {
         object->setPipeline(this->_pipelines[pipelineType]);
-    }
+    }*/
 }
 /* // void GfxRenderer::resetGfxObjectRendererState(std::string id, std::string renderPassType, std::string pipelineType)
 // {
 //     this->_Log("Currently not supported");
 // } */
-void GfxRenderer::destroyGfxObject(std::string id)
+void GfxRenderer::destroyObject(std::string id)
 {
 }
 void GfxRenderer::setObjectModelMatrix(std::string id, std::array<float, 16> modelMatrix)
@@ -277,7 +277,7 @@ void GfxRenderer::setObjectProjMatrix(std::string id, std::array<float, 16> proj
         return;
     }
 }
-void GfxRenderer::setObjectTexture(std::string id, std::string texture)
+void GfxRenderer::setObjectTexture(const std::string& id, const  std::string& texture)
 {
     if (this->_objects.find(id) != this->_objects.end())
     {

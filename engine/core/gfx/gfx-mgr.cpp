@@ -124,17 +124,17 @@ void GfxMgr::createShader(const std::string &shaderName,const std::string &shade
 {
     this->_renderer->createShader(shaderName, shaderType, data, macros);
 }
-void GfxMgr::createObject(std::string id, std::string renderPassType, std::string pipelineType, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
+void GfxMgr::createObject(std::string id, std::string renderPassType, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
 {
-    this->_renderer->createObject(id, renderPassType, pipelineType, points, colors, normals, uvs, indices);
+    this->_renderer->createObject(id, renderPassType,  points, colors, normals, uvs, indices);
 }
 /* // void GfxMgr::resetGfxObjectRendererState(std::string id, std::string renderPassType, std::string pipelineType)
 // {
 //     this->_renderer->resetGfxObjectRendererState(id, renderPassType, pipelineType);
 // } */
-void GfxMgr::destroyGfxObject(std::string id)
+void GfxMgr::destroyObject(std::string id)
 {
-    this->_renderer->destroyGfxObject(id);
+    this->_renderer->destroyObject(id);
 }
 void GfxMgr::setObjectModelMatrix(std::string id, const std::array<float, 16> &modelMatrix)
 {
@@ -152,7 +152,7 @@ void GfxMgr::setObjectColor(std::string id, float r, float g, float b, float a)
 {
     this->_renderer->setObjectColor(id, r, g, b, a);
 }
-void GfxMgr::setObjectTexture(std::string id, std::string texture)
+void GfxMgr::setObjectTexture(const std::string& id, const  std::string& texture)
 {
     this->_renderer->setObjectTexture(id, texture);
 }

@@ -18,7 +18,10 @@
 #include "../../math/size.h"
 #include "../../component/component.h"
 
+
 class Node;
+class Material;
+class Texture;
 
 enum class UIFlag : uint32_t
 {
@@ -67,20 +70,20 @@ protected:
     std::string _shaderFrag = "resources/effects/ui/ui.frag";
 
     std::string _pipelineState;
+
+
+    Material* _material;
+    Texture* _texture;
     Color _color;
     uint32_t _flag;
 
     Mat4 _modelMatrix;
     Mat4 _projMatrix;
-    void _init();
-    void _initDefaultGfxPipeline();
-    void _initDefaultGfxTexture();
-    void _initDefaultGfxRenderObject();
-    void _createGfxTexture();
 
 public:
     UIRenderer(Node *node, std::string uuid = "");
 
+    const Color& color() { return this->_color; };
     /**
      * @brief 设置渲染器的颜色
      *
@@ -90,15 +93,18 @@ public:
     void setColor(std::string color);
     void setTexture(std::string texture);
     void setShader(std::string vert, std::string frag);
-    void setModelMat4();
+    void setMaterial(Material *mtl);
+    void setTexture(Texture *texture);
+    //void setModelMat4();
     void update(float deltaTime) override;
     void lateUpdate(float deltaTime) override;
     void render() override;
+    virtual void destroy() override;
 
     /*void updateViewMatrix();
     void updateProjMatrix();*/
 
-    const Color &color() { return this->_color; };
+    
 
     virtual ~UIRenderer() override;
 };
