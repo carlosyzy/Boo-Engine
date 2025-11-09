@@ -31,13 +31,14 @@ void GfxShader::createShaderModule(const std::vector<uint32_t> &code)
 {
     VkShaderModuleCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    createInfo.codeSize = code.size();
+    createInfo.codeSize = code.size() * sizeof(uint32_t);
     createInfo.pCode = code.data();
     /*VkShaderModule shaderModule;*/
     if (vkCreateShaderModule(this->_context->getVkDevice(), &createInfo, nullptr, &this->_shaderModule) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create shader module!");
     }
+    std::cout << "Shader module created: " << this->_name << std::endl;
 
    /* return shaderModule;*/
 }

@@ -23,7 +23,7 @@ std::vector<uint32_t> GfxShaderCompile::compile(const std::string &type, const s
     // 设置目标环境
     compileOptions.SetTargetEnvironment(
         shaderc_target_env_vulkan,
-        shaderc_env_version_vulkan_1_2);
+        shaderc_env_version_vulkan_1_0);
     // 优化级别
     compileOptions.SetOptimizationLevel(shaderc_optimization_level_performance);
     // 生成调试信息
