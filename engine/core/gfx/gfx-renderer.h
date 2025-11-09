@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <fstream>
 #include <vector>
+#include <string>
 #include <set>
 #include <map>
 #include <cstdint>
@@ -118,6 +119,6 @@ public:
      * @param shaderName 着色器名称
      * @param buffer 着色器字节码
      */
-    void createShader(std::string shaderName, std::string &data);
+    void createShader(const std::string &shaderName,const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros);
     ~GfxRenderer();
 };

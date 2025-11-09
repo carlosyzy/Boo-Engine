@@ -135,25 +135,13 @@
     <ClCompile Include="engine\core\font\freetype-mgr.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\libs\stb\tools\build_matrix.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\libs\stb\tools\easy_font_maker.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\libs\stb\tools\make_readme.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\libs\stb\tools\trailing_whitespace.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\libs\stb\tools\unicode.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\libs\stb\stb_vorbis.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\assets\asset.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-shader-compile.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -354,6 +342,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\libs\stb\stb_voxel_render.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-shader-compile.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

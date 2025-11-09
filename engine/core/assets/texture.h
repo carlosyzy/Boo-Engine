@@ -16,6 +16,11 @@ protected:
 public:
 	Texture(const std::string key, const std::string path);
 	/**
+	 * @brief 创建图形资源
+	 * 
+	 */
+	void createGfxTexture();
+	/**
 	 * @brief 清除缓存
 	 * 
 	 */	

@@ -22,30 +22,11 @@ Asset *AssetLoad::load(std::string path, std::string fullPath)
     {
         Texture *texture = new Texture(path, fullPath);
         return texture;
-    }else if (extension == ".vert" || extension == ".frag")
+    }
+    else if (extension == ".vert" || extension == ".frag")
     {
-        Shader *shader = new Shader(path, fullPath);
+        Shader *shader = new Shader(path, extension, fullPath);
         return shader;
     }
-    //     else if (extension == ".vert")
-    //     {
-    //         // uiTreeData.icon = "resources/textures/ic-shader-v.png";
-    //     }
-    //     else if (extension == ".frag")
-    //     {
-    //         // uiTreeData.icon = "resources/textures/ic-shader-f.png";
-    //     }
-    //     else if (extension == ".mtl")
-    //     {
-    //         // uiTreeData.icon = "resources/textures/ic-material.png";
-    //     }
-    //     else if (extension == ".md")
-    //     {
-    //         // uiTreeData.icon = "resources/textures/ic-readme.png";
-    //     }
-    //     else
-    //     {
-    //         // uiTreeData.icon = "resources/textures/ic-2d.png";
-    //     }
     return nullptr;
 }

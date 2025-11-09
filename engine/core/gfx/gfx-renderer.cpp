@@ -7,6 +7,7 @@
 #include "gfx-queue.h"
 #include "gfx-object.h"
 #include "../math/mat4.h"
+#include "gfx-shader-compile.h"
 
 GfxRenderer::GfxRenderer(GfxContext *context)
 {
@@ -15,6 +16,7 @@ GfxRenderer::GfxRenderer(GfxContext *context)
 void GfxRenderer::init()
 {
     std::cout << "GfxRenderer:init" << std::endl;
+    GfxShaderCompile::getInstance()->init();
 }
 
 void GfxRenderer::createRenderPass(std::string name)
@@ -111,14 +113,47 @@ bool GfxRenderer::isExistTexture(std::string textureUuid)
 {
     return this->_textures.find(textureUuid) != this->_textures.end();
 }
-void GfxRenderer::createShader(std::string shaderName, std::string &data)
+void GfxRenderer::createShader(const std::string &shaderName, const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros)
 {
-    if (this->_shaders.find(shaderName) == this->_shaders.end())
+    // 生成唯一的缓存键：shaderName + 宏定义
+    std::stringstream cacheKey;
+    cacheKey << shaderName;
+    if (!macros.empty())
     {
-        //    GfxShader *shader = new GfxShader(this->_context, shaderName, buffer);
-        //     this->_shaders[shaderName] = shader;
-        // GfxShader *vertexShader = new GfxShader(this->_context, shaderVert);
-        // this->_shaders[shaderVert] = vertexShader;
+        cacheKey << "[";
+        bool first = true;
+        for (const auto &[key, value] : macros)
+        {
+            if (!first)
+            {
+                cacheKey << "|";
+            }
+            cacheKey << key << ":" << value;
+            first = false;
+        }
+        cacheKey << "]";
+    }
+
+    std::string finalCacheKey = cacheKey.str();
+    // 检查是否已存在
+    if (this->_shaders.find(finalCacheKey) != this->_shaders.end())
+    {
+        std::cout << "Shader already exists: " << finalCacheKey << std::endl;
+        return;
+    }
+    // 创建着色器
+    try
+    {
+        std::vector<uint32_t> spirvCode = GfxShaderCompile::getInstance()->compile(shaderType, finalCacheKey, data, macros);
+        GfxShader* shader = new GfxShader(this->_context, finalCacheKey);
+        shader->createShaderModule(spirvCode);
+        this->_shaders[finalCacheKey] = shader;
+        std::cout << "Created shader: " << finalCacheKey << std::endl;
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "Failed to create shader '" << finalCacheKey << "': " << e.what() << std::endl;
+        // 可以考虑抛出异常或返回错误码
     }
 }
 

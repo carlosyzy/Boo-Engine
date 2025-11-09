@@ -1,7 +1,8 @@
 #include "shader.h"
-Shader::Shader(const std::string key, const std::string path) : Asset(key, path)
+#include "../gfx/gfx-mgr.h"
+Shader::Shader(const std::string key, const std::string type,const std::string path) : Asset(key, path)
 {
-    this->_type = AssetType::Texture;
+    this->_shaderType = type;
     this->_load();
 }
 void Shader::_load()
@@ -15,12 +16,17 @@ void Shader::_load()
     // tellg()返回当前定位指针的位置，也代表着输入流的大小。
     size_t fileSize = static_cast<size_t>(file.tellg());
     // 创建缓冲区并读取文件
-    this->_data.resize(fileSize);
+    this->_shaderData.resize(fileSize);
     file.seekg(0);
-    file.read(this->_data.data(), fileSize);
+    file.read(this->_shaderData.data(), fileSize);
     file.close();
-    // std::cout << "Loaded shader: " << this->_key << " from path: " << this->_data << std::endl;
-    // GfxMgr::getInstance()->createTexture(this->_key, this->_width, this->_height, this->_channels, &this->_pixelsVector);
+    //std::cout << "Loaded shader: " << this->_key << " from path: " << this->_shaderData << std::endl;
+    std::map<std::string, std::string> no;
+    this->createGfxShader(no);
+}
+void Shader::createGfxShader(const std::map<std::string, std::string> &macros)
+{
+    GfxMgr::getInstance()->createShader(this->_key, this->_shaderType, this->_shaderData, macros);
 }
 void Shader::destroy()
 {

@@ -20,6 +20,10 @@ void Texture::_load()
     this->_pixelsVector = std::vector<uint8_t>(static_cast<const uint8_t *>(_pixels),
                                                static_cast<const uint8_t *>(_pixels) + (_width * _height * _channels));
     stbi_image_free((void *)_pixels);
+    this->createGfxTexture();
+}
+void Texture::createGfxTexture()
+{
     GfxMgr::getInstance()->createTexture(this->_key, this->_width, this->_height, this->_channels, &this->_pixelsVector);
 }
 void Texture::clearCache()

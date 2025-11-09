@@ -120,9 +120,9 @@ bool GfxMgr::isExistTexture(std::string texture)
 {
     return this->_renderer->isExistTexture(texture);
 }
-void GfxMgr::createShader(std::string shaderName, std::string &data)
+void GfxMgr::createShader(const std::string &shaderName,const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros)
 {
-    this->_renderer->createShader(shaderName, data);
+    this->_renderer->createShader(shaderName, shaderType, data, macros);
 }
 void GfxMgr::createObject(std::string id, std::string renderPassType, std::string pipelineType, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
 {
