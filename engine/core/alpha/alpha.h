@@ -9,7 +9,6 @@ class Alpha :public Scene
 {
 private:
     Node2D* _ndAlpha;
-	UISprite* _spriteAlpha;
 	Node2D* _ndLogo;
 	UISprite* _spriteLogo;
 	int _frame;
@@ -18,7 +17,6 @@ private:
 	void _initRes();
 	void _initAlpha();
 	void _updateLogoAlpha();
-	void _loadResources();
 public:
     Alpha(const std::string name, const std::string uuid="");
 	void update(float deltaTime) override;
