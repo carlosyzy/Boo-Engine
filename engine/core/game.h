@@ -35,6 +35,7 @@ private:
     void _initFont();
     void _initComponents();
     void _initAssets();
+    void _initAlpha();
 
 public:
     static Game *getInstance();

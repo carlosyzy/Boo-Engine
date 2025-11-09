@@ -1,0 +1,48 @@
+#include "alpha.h"
+#include "../game.h"
+#include "../scene/scene.h"
+#include "../scene/node-2d.h"
+#include "../renderer/ui/ui-sprite.h"
+#include "../assets/assets-manager.h"
+#include "../assets/asset.h"
+#include "../assets/Texture.h"
+
+Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid)
+{
+    Game::getInstance()->assetsManager()->load("resources/texture/logo.png");
+	Game::getInstance()->assetsManager()->load("resources/texture/ic-default.png");
+	Game::getInstance()->assetsManager()->load("resources/shader/ui/ui.vert");
+	Game::getInstance()->assetsManager()->load("resources/shader/ui/ui.frag");
+    this->_initAlpha();
+}
+void Alpha::_initAlpha()
+{
+    this->_ndAlpha = new Node2D("Editor-Alpha");
+    this->_root2D->addChild(this->_ndAlpha);
+    Component *comp = this->_ndAlpha->addComponent("UISprite");
+    if (comp != nullptr)
+    {
+        this->_spriteAlpha = static_cast<UISprite *>(comp);
+        Asset *tex = Game::getInstance()->assetsManager()->get("resources/texture/ic-default.png");
+        this->_spriteAlpha->setTexture(static_cast<Texture *>(tex));
+        this->_spriteAlpha->setMaterial(nullptr);
+        this->_spriteAlpha->setColor(0.1f, 0.1f, 0.1f, 1.0f);
+    }
+    // 添加logo
+    this->_ndLogo = new Node2D("Editor-Alpha-Logo");
+    this->_ndAlpha->addChild(this->_ndLogo);
+    this->_ndLogo->setSize(550 * 0.7, 400 * 0.7);
+    this->_ndLogo->setPosition(0.0f, 100.0f, 0.0f);
+    Component *compLogo = this->_ndLogo->addComponent("UISprite");
+    if (compLogo != nullptr)
+    {
+        this->_spriteLogo = static_cast<UISprite *>(compLogo);
+        Asset *tex = Game::getInstance()->assetsManager()->get("resources/texture/logo.png");
+        this->_spriteLogo->setTexture(static_cast<Texture *>(tex));
+        this->_spriteLogo->setMaterial(nullptr);
+    }
+}
+
+Alpha::~Alpha()
+{
+}

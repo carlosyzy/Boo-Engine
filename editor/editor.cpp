@@ -33,10 +33,7 @@ void Editor::init()
 }
 void Editor::_initEditorRes()
 {
-	Game::getInstance()->assetsManager()->load("resources/texture/logo.png");
-	Game::getInstance()->assetsManager()->load("resources/texture/ic-default.png");
-	Game::getInstance()->assetsManager()->load("resources/shader/ui/ui.vert");
-	Game::getInstance()->assetsManager()->load("resources/shader/ui/ui.frag");
+	
 }
 void Editor::_initEditorLayout()
 {
