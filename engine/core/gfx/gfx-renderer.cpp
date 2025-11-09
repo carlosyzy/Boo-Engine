@@ -39,7 +39,7 @@ void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)
     /*  // 创建管线 */
     if (this->_pipelines.find(pipelineName) != this->_pipelines.end())
     {
-        // this->_Log("createPipeline:name already exists");
+         this->_Log("createPipeline:name already exists");
         return;
     }
     /*  // 通过name解析出pipeline的关键信息

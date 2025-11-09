@@ -62,14 +62,14 @@ private:
         0, 2, 3};
 
 protected:
-    std::string _assetMtl = "resources/effects/ui/ui.mtl";
-    std::string _assetTexture = "resources/textures/ic-default.png";
+    //std::string _assetMtl = "resources/effects/ui/ui.mtl";
+    //std::string _assetTexture = "resources/textures/ic-default.png";
 
-    //后续删除
-    std::string _shaderVert = "resources/effects/ui/ui.vert";
-    std::string _shaderFrag = "resources/effects/ui/ui.frag";
+    ////后续删除
+    //std::string _shaderVert = "resources/effects/ui/ui.vert";
+    //std::string _shaderFrag = "resources/effects/ui/ui.frag";
 
-    std::string _pipelineState;
+    //std::string _pipelineState;
 
 
     Material* _material;

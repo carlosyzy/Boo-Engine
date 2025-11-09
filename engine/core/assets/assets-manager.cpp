@@ -69,6 +69,16 @@ Asset *AssetsManager::load(const std::string path)
 	}
 	return nullptr;
 }
+Asset *AssetsManager::get(const std::string &path)
+{
+	std::string key = std::filesystem::path(path).generic_string();
+	Asset *asset = this->_assetsMap[key];
+	if (asset != nullptr)
+	{
+		return asset;
+	}
+	return nullptr;
+}
 // void AssetsManager::loadAsync(const std::string &path, std::function<void(Asset *)> callback)
 // {
 // }

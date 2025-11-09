@@ -7,6 +7,9 @@
 #include "../engine/core/scene/scene.h"
 #include "../engine/core/scene/node-2d.h"
 #include "../engine/core/renderer/ui/ui-sprite.h"
+#include "../engine/core/assets/assets-manager.h"
+#include "../engine/core/assets/asset.h"
+#include "../engine/core/assets/Texture.h"
 //#include "../engine/core/input/input-mgr.h"
 
 EditorLayout::EditorLayout()
@@ -30,12 +33,9 @@ void EditorLayout::_initMainUI()
 	Component* comp = this->_ndMain->addComponent("UISprite");
 	if (comp != nullptr) {
 		this->_spriteMain = static_cast<UISprite*>(comp);
-		std::string extension1 = std::filesystem::path("F:/worksapces/Boo-Engine/x64/Debug/res/ic-default.png").string();
-		std::string extension2 = std::filesystem::path("F:/worksapces/Boo-Engine/x64/Debug/res/ui.vert").string();
-		std::string extension3 = std::filesystem::path("F:/worksapces/Boo-Engine/x64/Debug/res/ui.frag").string();
-
-		this->_spriteMain->setTexture(extension1);
-		this->_spriteMain->setShader(extension2, extension3);
+		Asset* tex = Game::getInstance()->assetsManager()->get("F:/worksapces/Boo-Engine/x64/Debug/res/ic-default.png");
+		this->_spriteMain->setTexture(static_cast<Texture*>(tex));
+		this->_spriteMain->setMaterial(nullptr);
 		this->_spriteMain->setColor(1.1f, 0.1f, 0.1f, 1.0f);
 	}
 }

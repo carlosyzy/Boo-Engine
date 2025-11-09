@@ -10,11 +10,11 @@ private:
 	/**
      * @brief 顶点着色器路径
      */
-	std::string _shaderVert;
+	std::string _vert;
      /**
      * @brief 片段着色器路径
      */
-	std::string _shaderFrag;
+	std::string _frag;
 
 protected:
 	void _load() override;

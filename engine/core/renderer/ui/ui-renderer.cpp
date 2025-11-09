@@ -1,4 +1,5 @@
 #include "ui-renderer.h"
+#include <filesystem>
 #include "../../gfx/gfx-mgr.h"
 #include "../../game.h"
 #include "../../scene/node.h"
@@ -46,17 +47,17 @@ UIRenderer::UIRenderer(Node* node, std::string uuid) : Component(node, uuid)
 //}
 void UIRenderer::setShader(std::string vert, std::string frag)
 {
-	this->_shaderVert = vert;
-	this->_shaderFrag = frag;
-	this->_pipelineState = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + this->_shaderVert + "|frag:" + this->_shaderFrag;
-	/**
-	 * 创建管道
-	 */
-	GfxMgr::getInstance()->createPipeline("ui", this->_pipelineState);
-	/**
-	 * 更新渲染对象的管线
-	 */
-	GfxMgr::getInstance()->setObjectPipeline(this->_uuid, this->_pipelineState);
+	//this->_shaderVert = vert;
+	//this->_shaderFrag = frag;
+	//this->_pipelineState = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + this->_shaderVert + "|frag:" + this->_shaderFrag;
+	///**
+	// * 创建管道
+	// */
+	//GfxMgr::getInstance()->createPipeline("ui", this->_pipelineState);
+	///**
+	// * 更新渲染对象的管线
+	// */
+	//GfxMgr::getInstance()->setObjectPipeline(this->_uuid, this->_pipelineState);
 }
 
 void UIRenderer::setColor(float r, float g, float b, float a)
@@ -74,9 +75,11 @@ void UIRenderer::setColor(std::string color)
 }
 void UIRenderer::setMaterial(Material* mtl) {
 	this->_material = mtl;
-
-
-
+	std::string vert = std::filesystem::path("F:/worksapces/Boo-Engine/x64/Debug/res/ui.vert").generic_string();
+	std::string frag = std::filesystem::path("F:/worksapces/Boo-Engine/x64/Debug/res/ui.frag").generic_string();
+	std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + vert + "|frag:" + frag;
+	GfxMgr::getInstance()->createPipeline("ui", pipeline);
+	GfxMgr::getInstance()->setObjectPipeline(this->_uuid, pipeline);
 }
 void UIRenderer::setTexture(Texture* texture) {
 	this->_texture = texture;
@@ -86,19 +89,19 @@ void UIRenderer::setTexture(Texture* texture) {
 
 void UIRenderer::setTexture(std::string texture)
 {
-	if (this->_assetTexture == texture)
-		return;
-	this->_assetTexture = texture;
-	// if (!GfxMgr::getInstance()->isExistTexture(this->_assetTexture))
-	// {
-	//     this->_createGfxTexture();
-	// }
-	GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_assetTexture);
-	// this->_flag |= static_cast<uint32_t>(UIFlag::UI_TEXTURE);
-	// if (!GfxMgr::getInstance()->isExistTexture(this->_texture))
-	// {
-	//     this->_createGfxTexture();
-	// }
+	//if (this->_assetTexture == texture)
+	//	return;
+	//this->_assetTexture = texture;
+	//// if (!GfxMgr::getInstance()->isExistTexture(this->_assetTexture))
+	//// {
+	////     this->_createGfxTexture();
+	//// }
+	//GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_assetTexture);
+	//// this->_flag |= static_cast<uint32_t>(UIFlag::UI_TEXTURE);
+	//// if (!GfxMgr::getInstance()->isExistTexture(this->_texture))
+	//// {
+	////     this->_createGfxTexture();
+	//// }
 }
 
 //void UIRenderer::_createGfxTexture()
@@ -137,9 +140,9 @@ void UIRenderer::lateUpdate(float deltaTime)
 void UIRenderer::render()
 {
 	Component::render();
-	if (this->_material == nullptr) {
-		return;
-	}
+	// if (this->_material == nullptr) {
+	// 	return;
+	// }
 	if (this->_texture == nullptr) {
 		return;
 	}
