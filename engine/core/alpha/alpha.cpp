@@ -7,14 +7,39 @@
 #include "../assets/asset.h"
 #include "../assets/Texture.h"
 
-Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid)
+Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid), _frame(0), _logoAlphaNum(0.0f)
 {
-    Game::getInstance()->assetsManager()->load("resources/texture/logo.png");
-	Game::getInstance()->assetsManager()->load("resources/texture/ic-default.png");
-	Game::getInstance()->assetsManager()->load("resources/shader/ui/ui.vert");
-	Game::getInstance()->assetsManager()->load("resources/shader/ui/ui.frag");
+}
+void Alpha::update(float deltaTime)
+{
+    if (this->_frame == 0)
+    {
+        this->_frame++;
+    }
+    else if (this->_frame == 1)
+    {
+        this->_frame++;
+        this->_init();
+    }
+    else
+    {
+        this->_updateLogoAlpha();
+    }
+}
+
+void Alpha::_init()
+{
+    this->_initRes();
     this->_initAlpha();
 }
+void Alpha::_initRes()
+{
+    Game::getInstance()->assetsManager()->load("resources/texture/logo.png");
+    Game::getInstance()->assetsManager()->load("resources/texture/ic-default.png");
+    Game::getInstance()->assetsManager()->load("resources/shader/ui/ui.vert");
+    Game::getInstance()->assetsManager()->load("resources/shader/ui/ui.frag");
+}
+
 void Alpha::_initAlpha()
 {
     this->_ndAlpha = new Node2D("Editor-Alpha");
@@ -43,6 +68,23 @@ void Alpha::_initAlpha()
     }
 }
 
+void Alpha::_updateLogoAlpha()
+{
+    if (this->_spriteLogo == nullptr)
+    {
+        return;
+    }
+    if (this->_logoAlphaNum > 1.0)
+    {
+        return;
+    }
+    this->_logoAlphaNum += 0.02;
+    this->_spriteLogo->setAlpha(this->_logoAlphaNum);
+}
+
+void Alpha::destroy()
+{
+}
 Alpha::~Alpha()
 {
 }

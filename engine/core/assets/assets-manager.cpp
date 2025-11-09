@@ -11,6 +11,7 @@
 #endif
 #include <iostream>
 #include "asset-load.h"
+#include "../utils/time-util.h"
 
 AssetsManager::AssetsManager()
 {
@@ -59,9 +60,11 @@ void AssetsManager::_initRoot()
 	std::cout << "Assets root:" << this->_root << std::endl;
 }
 Asset *AssetsManager::load(const std::string path)
-{
+{	
+	long long time = TimeUtil::nowTime();
 	std::filesystem::path fullPath = std::filesystem::path(this->_root) / path;
 	Asset *asset = AssetLoad::load(path, fullPath.generic_string());
+	std::cout << "Load asset:" << path << " time:" << TimeUtil::nowTime() - time << "ms" << std::endl;
 	if (asset != nullptr)
 	{
 		this->_assetsMap[path] = asset;

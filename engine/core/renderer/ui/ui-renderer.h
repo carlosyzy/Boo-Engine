@@ -91,6 +91,7 @@ public:
      */
     void setColor(float r, float g, float b, float a);
     void setColor(std::string color);
+    void setAlpha(float alpha);
     void setTexture(std::string texture);
     void setShader(std::string vert, std::string frag);
     void setMaterial(Material *mtl);

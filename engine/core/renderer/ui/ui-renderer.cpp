@@ -65,13 +65,18 @@ void UIRenderer::setColor(float r, float g, float b, float a)
 	std::cout << "setColor: " << r << ", " << g << ", " << b << ", " << a << std::endl;
 	this->_color.set(r, g, b, a);
 	this->_flag |= static_cast<uint32_t>(UIFlag::UI_COLOR);
-	GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getA(), this->_color.getA(), this->_color.getG(), this->_color.getR());
+	GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getR(), this->_color.getG(), this->_color.getB(), this->_color.getA());
 }
 void UIRenderer::setColor(std::string color)
 {
 	this->_color.set(color);
 	this->_flag |= static_cast<uint32_t>(UIFlag::UI_COLOR);
-	GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getA(), this->_color.getA(), this->_color.getG(), this->_color.getR());
+	GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getR(), this->_color.getG(), this->_color.getB(), this->_color.getA());
+}
+void UIRenderer::setAlpha(float alpha) {
+	this->_color.setA(alpha);
+	this->_flag |= static_cast<uint32_t>(UIFlag::UI_COLOR);
+	GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getR(), this->_color.getG(), this->_color.getB(), this->_color.getA());
 }
 void UIRenderer::setMaterial(Material* mtl) {
 	this->_material = mtl;
