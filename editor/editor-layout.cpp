@@ -19,15 +19,6 @@ EditorLayout::EditorLayout()
 	Node2D* root2D = this->_scene->getRoot2D();
 	this->_initAlpha();
 
-
-	//InputMgr::getInstance()->setRoot(root2D);
-	/*this->_initMainUI();*/
-	/*this->_initMenuUI();
-	this->_initHierarchyUI();
-	this->_initAssetsUI();
-	this->_initSceneUI();
-	this->_initToolUI();
-	this->_initPropertyUI();*/
 }
 void EditorLayout::_initAlpha() {
 	this->_ndAlpha = new Node2D("Editor-Alpha");
@@ -35,7 +26,7 @@ void EditorLayout::_initAlpha() {
 	Component* comp = this->_ndAlpha->addComponent("UISprite");
 	if (comp != nullptr) {
 		this->_spriteAlpha = static_cast<UISprite*>(comp);
-		Asset* tex = Game::getInstance()->assetsManager()->get("res/ic-default.png");
+		Asset* tex = Game::getInstance()->assetsManager()->get("resources/texture/ic-default.png");
 		this->_spriteAlpha->setTexture(static_cast<Texture*>(tex));
 		this->_spriteAlpha->setMaterial(nullptr);
 		this->_spriteAlpha->setColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -48,7 +39,7 @@ void EditorLayout::_initAlpha() {
 	Component* compLogo = this->_ndLogo->addComponent("UISprite");
 	if (compLogo != nullptr) {
 		this->_spriteLogo = static_cast<UISprite*>(compLogo);
-		Asset* tex = Game::getInstance()->assetsManager()->get("res/logo.png");
+		Asset* tex = Game::getInstance()->assetsManager()->get("resources/texture/logo.png");
 		this->_spriteLogo->setTexture(static_cast<Texture*>(tex));
 		this->_spriteLogo->setMaterial(nullptr);
 	}
@@ -72,6 +63,15 @@ void EditorLayout::_initAlpha() {
 
 
 
+
+//InputMgr::getInstance()->setRoot(root2D);
+/*this->_initMainUI();*/
+/*this->_initMenuUI();
+this->_initHierarchyUI();
+this->_initAssetsUI();
+this->_initSceneUI();
+this->_initToolUI();
+this->_initPropertyUI();*/
 
 
 void EditorLayout::_initMainUI()

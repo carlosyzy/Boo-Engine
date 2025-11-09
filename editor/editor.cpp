@@ -33,16 +33,10 @@ void Editor::init()
 }
 void Editor::_initEditorRes()
 {
-	const std::string& root = Game::getInstance()->assetsManager()->root();
-	std::filesystem::path fullPath = std::filesystem::path(root) / "res";
-	for (const auto& entry : std::filesystem::recursive_directory_iterator(fullPath))
-	{
-		long long time = TimeUtil::nowTime();
-		std::filesystem::path path = std::filesystem::relative(entry.path(), std::filesystem::path(root));
-		Game::getInstance()->assetsManager()->load(path.generic_string());
-		std::cout << "Editor::_initEditorRes: " << path.generic_string() << " time:" << TimeUtil::nowTime()- time << std::endl;
-	}
-	std::cout << "Editor::_initEditorRes: " << fullPath.generic_string() << std::endl;
+	Game::getInstance()->assetsManager()->load("resources/texture/logo.png");
+	Game::getInstance()->assetsManager()->load("resources/texture/ic-default.png");
+	Game::getInstance()->assetsManager()->load("resources/shader/ui/ui.vert");
+	Game::getInstance()->assetsManager()->load("resources/shader/ui/ui.frag");
 }
 void Editor::_initEditorLayout()
 {

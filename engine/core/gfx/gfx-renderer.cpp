@@ -39,7 +39,7 @@ void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)
     /*  // 创建管线 */
     if (this->_pipelines.find(pipelineName) != this->_pipelines.end())
     {
-         this->_Log("createPipeline:name already exists");
+        this->_Log("createPipeline:name already exists");
         return;
     }
     /*  // 通过name解析出pipeline的关键信息
@@ -74,27 +74,19 @@ void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)
     }
     std::string shaderVert = properties["vert"];
     std::string shaderFrag = properties["frag"];
-    std::cout << "createPipeline:vert: " << shaderVert << std::endl;
-    std::cout << "createPipeline:frag: " << shaderFrag << std::endl;
+    // std::cout << "createPipeline:vert: " << shaderVert << std::endl;
+    // std::cout << "createPipeline:frag: " << shaderFrag << std::endl;
     /* // 先检测shader */
     if (this->_shaders.find(shaderVert) == this->_shaders.end())
     {
-        /*  // 顶点着色器 */
-        GfxShader *vertexShader = new GfxShader(this->_context, shaderVert);
-        this->_shaders[shaderVert] = vertexShader;
+        std::cout << "createPipeline:vert not found:" << shaderVert << std::endl;
+        return;
     }
-    else
-    {
-        std::cout << "createPipeline:vert already exists" << std::endl;
-    }
+
     if (this->_shaders.find(shaderFrag) == this->_shaders.end())
     {
-        GfxShader *fragmentShader = new GfxShader(this->_context, shaderFrag);
-        this->_shaders[shaderFrag] = fragmentShader;
-    }
-    else
-    {
-        std::cout << "createPipeline:frag already exists" << std::endl;
+        std::cout << "createPipeline:frag not found:" << shaderFrag << std::endl;
+        return;
     }
     /*  // 创建管线 */
     GfxPipeline *pipeline = new GfxPipeline(pipelineName, this->_context);
@@ -146,8 +138,8 @@ void GfxRenderer::createShader(const std::string &shaderName, const std::string 
     }
 
     std::string finalCacheKey = cacheKey.str();
-    //std::cout << "createGfxShader: " << finalCacheKey << std::endl;
-    // 检查是否已存在
+    // std::cout << "createGfxShader: " << finalCacheKey << std::endl;
+    //  检查是否已存在
     if (this->_shaders.find(finalCacheKey) != this->_shaders.end())
     {
         std::cout << "Shader already exists: " << finalCacheKey << std::endl;
@@ -229,22 +221,22 @@ void GfxRenderer::createObject(std::string id, std::string passName, std::vector
 
     if (this->_passes.find(passName) != this->_passes.end())
     {
-       
+
         object->setPass(this->_passes[passName]);
     }
     else
     {
         this->_Log("createGfxObject:renderPassType not found,Currently, creation is not supported");
     }
-  /*  if (this->_pipelines.find(pipelineType) == this->_pipelines.end())
-    {
-        this->_Log("createGfxObject:pipelineType not found,Currently, creation is not supported");
-        return;
-    }
-    else
-    {
-        object->setPipeline(this->_pipelines[pipelineType]);
-    }*/
+    /*  if (this->_pipelines.find(pipelineType) == this->_pipelines.end())
+      {
+          this->_Log("createGfxObject:pipelineType not found,Currently, creation is not supported");
+          return;
+      }
+      else
+      {
+          object->setPipeline(this->_pipelines[pipelineType]);
+      }*/
 }
 /* // void GfxRenderer::resetGfxObjectRendererState(std::string id, std::string renderPassType, std::string pipelineType)
 // {
@@ -277,7 +269,7 @@ void GfxRenderer::setObjectProjMatrix(std::string id, std::array<float, 16> proj
         return;
     }
 }
-void GfxRenderer::setObjectTexture(const std::string& id, const  std::string& texture)
+void GfxRenderer::setObjectTexture(const std::string &id, const std::string &texture)
 {
     if (this->_objects.find(id) != this->_objects.end())
     {

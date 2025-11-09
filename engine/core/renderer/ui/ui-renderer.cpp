@@ -75,8 +75,8 @@ void UIRenderer::setColor(std::string color)
 }
 void UIRenderer::setMaterial(Material* mtl) {
 	this->_material = mtl;
-	std::string vert = std::filesystem::path("res/ui.vert").generic_string();
-	std::string frag = std::filesystem::path("res/ui.frag").generic_string();
+	std::string vert = std::filesystem::path("resources/shader/ui/ui.vert").generic_string();
+	std::string frag = std::filesystem::path("resources/shader/ui/ui.frag").generic_string();
 	std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + vert + "|frag:" + frag;
 	GfxMgr::getInstance()->createPipeline("ui", pipeline);
 	GfxMgr::getInstance()->setObjectPipeline(this->_uuid, pipeline);
