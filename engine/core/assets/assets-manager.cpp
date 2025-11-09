@@ -58,10 +58,10 @@ void AssetsManager::_initRoot()
 #endif
 	std::cout << "Assets root:" << this->_root << std::endl;
 }
-Asset *AssetsManager::load(const std::string &path)
+Asset *AssetsManager::load(const std::string path)
 {
 	std::filesystem::path fullPath = std::filesystem::path(this->_root) / path;
-	Asset *asset = AssetLoad::load(path, fullPath.string());
+	Asset *asset = AssetLoad::load(path, fullPath.generic_string());
 	if (asset != nullptr)
 	{
 		this->_assetsMap[path] = asset;

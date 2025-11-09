@@ -5,5 +5,5 @@ class Shader;
 class AssetLoad
 {
 public:
-    static Asset *load(std::string path, std::string fullPath);
+    static Asset *load(const std::string path, const std::string fullPath);
 };

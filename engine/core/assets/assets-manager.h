@@ -39,7 +39,7 @@ public:
 	 * @param path 资产路径
 	 * @return Asset 资产对象
 	 */
-	Asset* load(const std::string& path);
+	Asset* load(const std::string path);
 	// /**
 	//  * @brief 异步加载资产
 	//  * @param path 资产路径

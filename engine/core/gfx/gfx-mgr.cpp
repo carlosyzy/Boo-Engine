@@ -167,7 +167,6 @@ void GfxMgr::setObjectPipeline(std::string id, std::string pipeline)
 
 void GfxMgr::submit(std::string id)
 {
-    std::cout << "renderer submit   :" << id << std::endl;
     this->_renderer->submit(id);
 }
 

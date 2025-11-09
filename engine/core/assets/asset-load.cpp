@@ -5,7 +5,7 @@
 #include <iostream>
 #include "shader.h"
 
-Asset *AssetLoad::load(std::string path, std::string fullPath)
+Asset *AssetLoad::load(const std::string path, const std::string fullPath)
 {
     if (!std::filesystem::exists(fullPath))
     {
@@ -25,7 +25,8 @@ Asset *AssetLoad::load(std::string path, std::string fullPath)
     }
     else if (extension == ".vert" || extension == ".frag")
     {
-        Shader *shader = new Shader(path, extension, fullPath);
+        Shader *shader = new Shader(path,  fullPath);
+
         return shader;
     }
     return nullptr;

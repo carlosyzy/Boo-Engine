@@ -61,18 +61,21 @@ void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)
             properties[key] = value;
         }
     }
+    std::cout << "createPipeline:name: " << pipelineName << std::endl;
     if (properties.find("vert") == properties.end())
     {
-        /*  // this->_Log("createPipeline:vert or frag not found");/ */
+        this->_Log("createPipeline:vert or frag not found");
         return;
     }
     if (properties.find("frag") == properties.end())
     {
-        /* // this->_Log("createPipeline:frag not found"); */
+        this->_Log("createPipeline:frag not found");
         return;
     }
     std::string shaderVert = properties["vert"];
     std::string shaderFrag = properties["frag"];
+    std::cout << "createPipeline:vert: " << shaderVert << std::endl;
+    std::cout << "createPipeline:frag: " << shaderFrag << std::endl;
     /* // 先检测shader */
     if (this->_shaders.find(shaderVert) == this->_shaders.end())
     {
@@ -80,10 +83,18 @@ void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)
         GfxShader *vertexShader = new GfxShader(this->_context, shaderVert);
         this->_shaders[shaderVert] = vertexShader;
     }
+    else
+    {
+        std::cout << "createPipeline:vert already exists" << std::endl;
+    }
     if (this->_shaders.find(shaderFrag) == this->_shaders.end())
     {
         GfxShader *fragmentShader = new GfxShader(this->_context, shaderFrag);
         this->_shaders[shaderFrag] = fragmentShader;
+    }
+    else
+    {
+        std::cout << "createPipeline:frag already exists" << std::endl;
     }
     /*  // 创建管线 */
     GfxPipeline *pipeline = new GfxPipeline(pipelineName, this->_context);
@@ -135,6 +146,7 @@ void GfxRenderer::createShader(const std::string &shaderName, const std::string 
     }
 
     std::string finalCacheKey = cacheKey.str();
+    std::cout << "createGfxShader: " << finalCacheKey << std::endl;
     // 检查是否已存在
     if (this->_shaders.find(finalCacheKey) != this->_shaders.end())
     {
@@ -145,7 +157,7 @@ void GfxRenderer::createShader(const std::string &shaderName, const std::string 
     try
     {
         std::vector<uint32_t> spirvCode = GfxShaderCompile::getInstance()->compile(shaderType, finalCacheKey, data, macros);
-        GfxShader* shader = new GfxShader(this->_context, finalCacheKey);
+        GfxShader *shader = new GfxShader(this->_context, finalCacheKey);
         shader->createShaderModule(spirvCode);
         this->_shaders[finalCacheKey] = shader;
         std::cout << "Created shader: " << finalCacheKey << std::endl;
@@ -204,28 +216,35 @@ void GfxRenderer::resetRendererState()
 
 void GfxRenderer::createObject(std::string id, std::string passName, std::string pipelineType, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
 {
+    if (this->_objects.find(id) != this->_objects.end())
+    {
+        this->_Log("createGfxObject:id already exists");
+        return;
+    }
+
+    GfxObject *object = new GfxObject(this->_context);
+    object->setVertexs(points, colors, normals, uvs, indices);
+    this->_objects[id] = object;
+    this->_queues[passName]->submit(object);
+
     if (this->_passes.find(passName) == this->_passes.end())
     {
         this->_Log("createGfxObject:renderPassType not found,Currently, creation is not supported");
         return;
+    }
+    else
+    {
+        object->setPass(this->_passes[passName]);
     }
     if (this->_pipelines.find(pipelineType) == this->_pipelines.end())
     {
         this->_Log("createGfxObject:pipelineType not found,Currently, creation is not supported");
         return;
     }
-    if (this->_objects.find(id) != this->_objects.end())
+    else
     {
-        this->_Log("createGfxObject:id already exists");
-        return;
+        object->setPipeline(this->_pipelines[pipelineType]);
     }
-    GfxObject *object = new GfxObject(this->_context);
-    object->setPass(this->_passes[passName]);
-    object->setVertexs(points, colors, normals, uvs, indices);
-    object->setPipeline(this->_pipelines[pipelineType]);
-    this->_objects[id] = object;
-
-    this->_queues[passName]->submit(object);
 }
 /* // void GfxRenderer::resetGfxObjectRendererState(std::string id, std::string renderPassType, std::string pipelineType)
 // {
@@ -267,6 +286,7 @@ void GfxRenderer::setObjectTexture(std::string id, std::string texture)
             this->_Log("setObjectTexture:texture not found");
             return;
         }
+        std::cout << "setObjectTexture:id:" << id << " texture:" << texture << std::endl;
         this->_objects[id]->setTexture(this->_textures[texture]);
         return;
     }
@@ -300,6 +320,7 @@ void GfxRenderer::setObjectPipeline(std::string id, std::string pipeline)
         // return; */
     }
     this->_objects[id]->setPipeline(this->_pipelines[pipeline]);
+    std::cout << "setObjectPipeline:id:" << id << " pipeline:" << pipeline << std::endl;
     return;
 }
 

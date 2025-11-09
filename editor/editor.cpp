@@ -38,12 +38,13 @@ void Editor::_initEditorRes()
     for (const auto &entry : std::filesystem::recursive_directory_iterator(fullPath))
     {
         const auto &path = entry.path();
-        Game::getInstance()->assetsManager()->load(path.string());
+        Game::getInstance()->assetsManager()->load(path.generic_string());
     }
+    std::cout << "Editor::_initEditorRes: " << fullPath.generic_string() << std::endl;
 }
 void Editor::_initEditorLayout()
 {
-    // this->_editorLayout = new EditorLayout();
+     this->_editorLayout = new EditorLayout();
     /*this->_initHierarchy();
     this->_initAssets();
     this->_initProperty();*/

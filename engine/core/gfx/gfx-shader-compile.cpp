@@ -40,12 +40,12 @@ std::vector<uint32_t> GfxShaderCompile::compile(const std::string &type, const s
     // compileOptions.AddMacroDefinition("VULKAN", "100");
 
     shaderc::SpvCompilationResult result;
-    if (type == ".vert")
+    if (type == "Vert")
     {
         result = this->_compiler.CompileGlslToSpv(
             source.c_str(), shaderc_vertex_shader, cacheKey.c_str(), compileOptions);
     }
-    else if (type == ".frag")
+    else if (type == "Frag")
     {
         result = this->_compiler.CompileGlslToSpv(
             source.c_str(), shaderc_fragment_shader, cacheKey.c_str(), compileOptions);

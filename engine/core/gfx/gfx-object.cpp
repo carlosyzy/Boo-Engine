@@ -5,7 +5,9 @@
 #include "gfx-context.h"
 #include "../game.h"
 
-GfxObject::GfxObject(GfxContext *context)
+GfxObject::GfxObject(GfxContext *context) : _color{1.0f, 1.0f, 1.0f, 1.0f},
+                                            _uiMask{0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
+
 {
     this->_context = context;
     this->_pipeline = nullptr;
@@ -150,6 +152,7 @@ void GfxObject::setColor(float r, float g, float b, float a)
 }
 void GfxObject::setTexture(GfxTexture *texture)
 {
+    std::cout << "setTexture:id:" << " texture:" << std::endl;
     this->_texture = texture;
     this->_updateDescriptorSet();
 }
@@ -168,7 +171,6 @@ void GfxObject::setProjMatrix(std::array<float, 16> &mat)
 {
     // this->_projMatrix = mat;
     // this->_updateProjMatUniformBuffer();
-
 }
 void GfxObject::setUIMask(float x, float y, float width, float height, float angle)
 {
@@ -366,7 +368,6 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     pushConstants.maskRect[1] = this->_uiMask[1];
     pushConstants.maskRect[2] = this->_uiMask[2];
     pushConstants.maskRect[3] = this->_uiMask[3];
-    pushConstants.maskRect[4] = this->_uiMask[4];
 
     vkCmdPushConstants(commandBuffers[imageIndex], this->_pipeline->getVKPipelineLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstants), &pushConstants);
     /*  // 绘制

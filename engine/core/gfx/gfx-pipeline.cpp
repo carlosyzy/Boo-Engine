@@ -26,7 +26,7 @@ bool GfxPipeline::isTransparent()
 
 void GfxPipeline::_createPipeline()
 {
-	/* // this->_Log("create graphics pipeline start...");
+	this->_Log("create graphics pipeline start...");
 	// 第一步：初始化着色器模块 */
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
@@ -383,7 +383,6 @@ void GfxPipeline::reset()
 
 void GfxPipeline::_Log(std::string msg)
 {
-	return;
 	std::cout << "GfxPipeline: " << msg << std::endl;
 }
 GfxPipeline::~GfxPipeline()

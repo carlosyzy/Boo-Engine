@@ -59,9 +59,13 @@ private:
         0, 2, 3};
 
 protected:
+    std::string _assetMtl = "resources/effects/ui/ui.mtl";
+    std::string _assetTexture = "resources/textures/ic-default.png";
+
+    //后续删除
     std::string _shaderVert = "resources/effects/ui/ui.vert";
     std::string _shaderFrag = "resources/effects/ui/ui.frag";
-    std::string _texture = "resources/textures/ic-default.png";
+
     std::string _pipelineState;
     Color _color;
     uint32_t _flag;

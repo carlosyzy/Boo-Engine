@@ -20,18 +20,18 @@ void UIRenderer::_init()
 }
 void UIRenderer::_initDefaultGfxPipeline()
 {
-    this->_shaderVert = "resources/effects/ui/ui.vert";
-    this->_shaderFrag = "resources/effects/ui/ui.frag";
-    this->_pipelineState = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + this->_shaderVert + "|frag:" + this->_shaderFrag;
-    /**
-     * 创建管道
-     */
-    GfxMgr::getInstance()->createPipeline("ui", this->_pipelineState);
+    //this->_shaderVert = "resources/effects/ui/ui.vert";
+    //this->_shaderFrag = "resources/effects/ui/ui.frag";
+    //this->_pipelineState = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + this->_shaderVert + "|frag:" + this->_shaderFrag;
+    ///**
+    //* 创建管道
+    //*/
+    //GfxMgr::getInstance()->createPipeline("ui", this->_pipelineState);
 }
 void UIRenderer::_initDefaultGfxTexture()
 {
-    this->_texture = "resources/textures/ic-default.png";
-    if (!GfxMgr::getInstance()->isExistTexture(this->_texture))
+    this->_assetTexture = "resources/textures/ic-default.png";
+    if (!GfxMgr::getInstance()->isExistTexture(this->_assetTexture))
     {
         this->_createGfxTexture();
     }
@@ -39,7 +39,7 @@ void UIRenderer::_initDefaultGfxTexture()
 void UIRenderer::_initDefaultGfxRenderObject()
 {
     GfxMgr::getInstance()->createObject(this->_uuid, "ui", this->_pipelineState, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
-    GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_texture);
+    GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_assetTexture);
 }
 void UIRenderer::setShader(std::string vert, std::string frag)
 {
@@ -71,14 +71,14 @@ void UIRenderer::setColor(std::string color)
 }
 void UIRenderer::setTexture(std::string texture)
 {
-    if (this->_texture == texture)
+    if (this->_assetTexture == texture)
         return;
-    this->_texture = texture;
-    if (!GfxMgr::getInstance()->isExistTexture(this->_texture))
-    {
-        this->_createGfxTexture();
-    }
-    GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_texture);
+    this->_assetTexture = texture;
+    // if (!GfxMgr::getInstance()->isExistTexture(this->_assetTexture))
+    // {
+    //     this->_createGfxTexture();
+    // }
+    GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_assetTexture);
     // this->_flag |= static_cast<uint32_t>(UIFlag::UI_TEXTURE);
     // if (!GfxMgr::getInstance()->isExistTexture(this->_texture))
     // {
@@ -114,27 +114,6 @@ void UIRenderer::_createGfxTexture()
 void UIRenderer::update(float deltaTime)
 {
     Component::update(deltaTime);
-    // if (!this->isEnabled())
-    //     return; // 渲染组件未激活
-    // if (this->_color.getA() <= 0)
-    //     return; // 颜色透明
-    // if (this->_modelMatrix.getM00() <= 0 || this->_modelMatrix.getM10() <= 0)
-    // {
-    //     return;
-    // }
-
-    // if (this->_flag & static_cast<uint32_t>(UIFlag::UI_TEXTURE))
-    // {
-    //     // 更新纹理
-    //     GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_texture);
-    // }
-    // if (this->_flag & static_cast<uint32_t>(UIFlag::UI_COLOR))
-    // {
-    //     // 更新颜色
-    //     GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getA(), this->_color.getA(), this->_color.getG(), this->_color.getR());
-    // }
-
-    // this->_flag = static_cast<uint32_t>(UIFlag::UI_NONE);
 }
 void UIRenderer::lateUpdate(float deltaTime)
 {

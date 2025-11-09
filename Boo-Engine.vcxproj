@@ -161,6 +161,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\assets\asset-load.cpp" />
     <ClCompile Include="engine\core\assets\asset.cpp" />
     <ClCompile Include="engine\core\assets\assets-manager.cpp" />
+    <ClCompile Include="engine\core\assets\material.cpp" />
     <ClCompile Include="engine\core\assets\shader.cpp" />
     <ClCompile Include="engine\core\assets\texture.cpp" />
     <ClCompile Include="engine\core\component\component-factory.cpp" />
@@ -206,6 +207,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\assets\asset.h" />
     <ClInclude Include="engine\core\assets\assets-manager.h" />
     <ClInclude Include="engine\core\assets\assets.h" />
+    <ClInclude Include="engine\core\assets\material.h" />
     <ClInclude Include="engine\core\assets\shader.h" />
     <ClInclude Include="engine\core\assets\texture.h" />
     <ClInclude Include="engine\core\component\component-factory.h" />

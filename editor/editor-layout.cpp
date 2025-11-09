@@ -1,4 +1,6 @@
 #include "editor-layout.h"
+#include <filesystem>
+#include <iostream>
 
 
 #include "../engine/core/game.h"
@@ -9,11 +11,11 @@
 
 EditorLayout::EditorLayout()
 {
-	//// 创建
-	//this->_scene = new Scene("EDITOR");
-	//Node2D* root2D = this->_scene->getRoot2D();
-	////InputMgr::getInstance()->setRoot(root2D);
-	//this->_initMainUI();
+	// 创建
+	this->_scene = new Scene("EDITOR");
+	Node2D* root2D = this->_scene->getRoot2D();
+	//InputMgr::getInstance()->setRoot(root2D);
+	this->_initMainUI();
 	/*this->_initMenuUI();
 	this->_initHierarchyUI();
 	this->_initAssetsUI();
@@ -28,7 +30,13 @@ void EditorLayout::_initMainUI()
 	Component* comp = this->_ndMain->addComponent("UISprite");
 	if (comp != nullptr) {
 		this->_spriteMain = static_cast<UISprite*>(comp);
-		this->_spriteMain->setColor(0.1f, 0.1f, 0.1f, 1.0f);
+		std::string extension1 = std::filesystem::path("F:/worksapces/Boo-Engine/x64/Debug/res/ic-default.png").string();
+		std::string extension2 = std::filesystem::path("F:/worksapces/Boo-Engine/x64/Debug/res/ui.vert").string();
+		std::string extension3 = std::filesystem::path("F:/worksapces/Boo-Engine/x64/Debug/res/ui.frag").string();
+
+		this->_spriteMain->setTexture(extension1);
+		this->_spriteMain->setShader(extension2, extension3);
+		this->_spriteMain->setColor(1.1f, 0.1f, 0.1f, 1.0f);
 	}
 }
 void EditorLayout::_initMenuUI()

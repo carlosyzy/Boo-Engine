@@ -14,7 +14,7 @@ protected:
 	void _load() override;
 
 public:
-	Shader(const std::string key, const std::string type, const std::string path);
+	Shader(const std::string key, const std::string path);
 	/**
 	 * @brief 创建图形资源
 	 * 参数 宏定义

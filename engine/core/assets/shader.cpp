@@ -1,8 +1,16 @@
 #include "shader.h"
+#include <filesystem>
 #include "../gfx/gfx-mgr.h"
-Shader::Shader(const std::string key, const std::string type,const std::string path) : Asset(key, path)
+Shader::Shader(const std::string key, const std::string path) : Asset(key, path)
 {
-    this->_shaderType = type;
+    std::string extension = std::filesystem::path(path).extension().string();
+    if (extension == ".vert" )
+    {
+        this->_shaderType = "Vert";
+    }
+    else if (extension == ".frag") {
+        this->_shaderType = "Frag";
+    }
     this->_load();
 }
 void Shader::_load()

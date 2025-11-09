@@ -131,6 +131,7 @@
     "typeindex": "cpp",
     "codecvt": "cpp",
     "forward_list": "cpp",
-    "valarray": "cpp"
+    "valarray": "cpp",
+    "filesystem": "cpp"
   }
 }

@@ -144,6 +144,9 @@
     <ClCompile Include="engine\core\gfx\gfx-shader-compile.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="engine\core\assets\material.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\core\math\color.h">
@@ -345,6 +348,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\gfx\gfx-shader-compile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\assets\material.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
