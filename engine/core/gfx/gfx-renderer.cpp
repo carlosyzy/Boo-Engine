@@ -146,7 +146,7 @@ void GfxRenderer::createShader(const std::string &shaderName, const std::string 
     }
 
     std::string finalCacheKey = cacheKey.str();
-    std::cout << "createGfxShader: " << finalCacheKey << std::endl;
+    //std::cout << "createGfxShader: " << finalCacheKey << std::endl;
     // 检查是否已存在
     if (this->_shaders.find(finalCacheKey) != this->_shaders.end())
     {
@@ -160,7 +160,7 @@ void GfxRenderer::createShader(const std::string &shaderName, const std::string 
         GfxShader *shader = new GfxShader(this->_context, finalCacheKey);
         shader->createShaderModule(spirvCode);
         this->_shaders[finalCacheKey] = shader;
-        std::cout << "Created shader: " << finalCacheKey << std::endl;
+        // std::cout << "Created shader: " << finalCacheKey << std::endl;
     }
     catch (const std::exception &e)
     {
@@ -326,7 +326,7 @@ void GfxRenderer::setObjectPipeline(std::string id, std::string pipeline)
 
 void GfxRenderer::submit(std::string id)
 {
-    std::cout << "renderer submit   :" << id << std::endl;
+    // std::cout << "renderer submit   :" << id << std::endl;
     if (this->_objects.find(id) == this->_objects.end())
     {
         this->_Log("submit:id not found");

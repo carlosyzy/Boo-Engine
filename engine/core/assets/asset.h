@@ -20,7 +20,7 @@ protected:
     /**
      * @brief 资源键值
      */
-    std::string _key;
+    std::string _uuid;
     /**
      * @brief 资源路径
      * 基于环境的绝对路径
@@ -28,8 +28,8 @@ protected:
     std::string _path;
     virtual void _load() = 0;
 public:
-    Asset(std::string key);
-    Asset(std::string key,std::string path);
+    Asset(std::string uuid);
+    Asset(std::string uuid,std::string path);
     virtual void destroy();
     ~Asset();
 };

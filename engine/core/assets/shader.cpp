@@ -1,7 +1,7 @@
 #include "shader.h"
 #include <filesystem>
 #include "../gfx/gfx-mgr.h"
-Shader::Shader(const std::string key, const std::string path) : Asset(key, path)
+Shader::Shader(const std::string uuid, const std::string path) : Asset(uuid, path)
 {
     std::string extension = std::filesystem::path(path).extension().string();
     if (extension == ".vert" )
@@ -34,7 +34,7 @@ void Shader::_load()
 }
 void Shader::createGfxShader(const std::map<std::string, std::string> &macros)
 {
-    GfxMgr::getInstance()->createShader(this->_key, this->_shaderType, this->_shaderData, macros);
+    GfxMgr::getInstance()->createShader(this->_uuid, this->_shaderType, this->_shaderData, macros);
 }
 void Shader::destroy()
 {
