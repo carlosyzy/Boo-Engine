@@ -17,8 +17,11 @@ EditorLayout::EditorLayout()
 	// 创建
 	this->_scene = new Scene("EDITOR");
 	Node2D* root2D = this->_scene->getRoot2D();
+	this->_initAlpha();
+
+
 	//InputMgr::getInstance()->setRoot(root2D);
-	this->_initMainUI();
+	/*this->_initMainUI();*/
 	/*this->_initMenuUI();
 	this->_initHierarchyUI();
 	this->_initAssetsUI();
@@ -26,6 +29,51 @@ EditorLayout::EditorLayout()
 	this->_initToolUI();
 	this->_initPropertyUI();*/
 }
+void EditorLayout::_initAlpha() {
+	this->_ndAlpha = new Node2D("Editor-Alpha");
+	this->_scene->getRoot2D()->addChild(this->_ndAlpha);
+	Component* comp = this->_ndAlpha->addComponent("UISprite");
+	if (comp != nullptr) {
+		this->_spriteAlpha = static_cast<UISprite*>(comp);
+		Asset* tex = Game::getInstance()->assetsManager()->get("res/ic-default.png");
+		this->_spriteAlpha->setTexture(static_cast<Texture*>(tex));
+		this->_spriteAlpha->setMaterial(nullptr);
+		this->_spriteAlpha->setColor(0.1f, 0.1f, 0.1f, 1.0f);
+	}
+	//添加logo
+	this->_ndLogo = new Node2D("Editor-Alpha-Logo");
+	this->_ndAlpha->addChild(this->_ndLogo);
+	this->_ndLogo->setSize(550 * 0.7,400 * 0.7);
+	this->_ndLogo->setPosition(0.0f,100.0f,0.0f);
+	Component* compLogo = this->_ndLogo->addComponent("UISprite");
+	if (compLogo != nullptr) {
+		this->_spriteLogo = static_cast<UISprite*>(compLogo);
+		Asset* tex = Game::getInstance()->assetsManager()->get("res/logo.png");
+		this->_spriteLogo->setTexture(static_cast<Texture*>(tex));
+		this->_spriteLogo->setMaterial(nullptr);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void EditorLayout::_initMainUI()
 {
 	this->_ndMain = new Node2D("Editor-Main");
@@ -150,6 +198,14 @@ void EditorLayout::_updateModuleSize()
 	this->tool_y = this->asset_y;
 	this->tool_width = this->scene_width;
 	this->tool_height = this->asset_height;
+
+	// 设置启动页
+	if (this->_ndAlpha != nullptr)
+	{
+		 this->_ndAlpha->setSize(this->_width, this->_height);
+	}
+
+
 	if (this->_ndMain != nullptr)
 	{
 		this->_ndMain->setSize(this->_width, this->_height);

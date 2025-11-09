@@ -75,8 +75,8 @@ void UIRenderer::setColor(std::string color)
 }
 void UIRenderer::setMaterial(Material* mtl) {
 	this->_material = mtl;
-	std::string vert = std::filesystem::path("F:/worksapces/Boo-Engine/x64/Debug/res/ui.vert").generic_string();
-	std::string frag = std::filesystem::path("F:/worksapces/Boo-Engine/x64/Debug/res/ui.frag").generic_string();
+	std::string vert = std::filesystem::path("res/ui.vert").generic_string();
+	std::string frag = std::filesystem::path("res/ui.frag").generic_string();
 	std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + vert + "|frag:" + frag;
 	GfxMgr::getInstance()->createPipeline("ui", pipeline);
 	GfxMgr::getInstance()->setObjectPipeline(this->_uuid, pipeline);
@@ -163,6 +163,7 @@ void UIRenderer::render()
 		Node2D* node2D = dynamic_cast<Node2D*>(this->_node);
 		GfxMgr::getInstance()->setObjectModelMatrix(this->_uuid, node2D->uiWorldMatrix().data());
 		/*UIMaskRect& maskRect = node2D->maskRect();*/
+		std::cout << "UIRenderer::render: maskRect: " << node2D->uiWorldMatrix().data()[0]<< ", " << node2D->uiWorldMatrix().data()[5] << ", " << std::endl;
 		GfxMgr::getInstance()->setUIObjectMask(this->_uuid, 0, 0, 0, 0, 0);
 	}
 	// 提交渲染对象

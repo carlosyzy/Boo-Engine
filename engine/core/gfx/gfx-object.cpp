@@ -331,7 +331,7 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
 
     if (!this->_pipeline || this->_vertexBuffer == VK_NULL_HANDLE || this->_indexBuffer == VK_NULL_HANDLE)
         return;
-    std::cout << "render: "<< std::endl;
+    // std::cout << "render: "<< std::endl;
     /*  // 绑定渲染管线 */
     vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipeline());
 

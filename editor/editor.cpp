@@ -35,11 +35,10 @@ void Editor::_initEditorRes()
 {
 	const std::string& root = Game::getInstance()->assetsManager()->root();
 	std::filesystem::path fullPath = std::filesystem::path(root) / "res";
-
 	for (const auto& entry : std::filesystem::recursive_directory_iterator(fullPath))
 	{
 		long long time = TimeUtil::nowTime();
-		const auto& path = entry.path();
+		std::filesystem::path path = std::filesystem::relative(entry.path(), std::filesystem::path(root));
 		Game::getInstance()->assetsManager()->load(path.generic_string());
 		std::cout << "Editor::_initEditorRes: " << path.generic_string() << " time:" << TimeUtil::nowTime()- time << std::endl;
 	}
