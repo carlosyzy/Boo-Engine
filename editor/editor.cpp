@@ -3,6 +3,7 @@
 #include "../engine/core/game.h"
 #include "../engine/core/assets/assets-manager.h"
 #include "editor-layout.h"
+#include "../engine/core/utils/time-util.h"
 
 
 // #include "../engine/core/renderer/scene.h"
@@ -19,37 +20,30 @@ Editor::Editor()
 Editor::~Editor()
 {
 }
-Editor *Editor::getInstance()
+Editor* Editor::getInstance()
 {
-    static Editor instance;
-    return &instance;
+	static Editor instance;
+	return &instance;
 }
 
 void Editor::init()
 {
-    this->_initEditorRes();
-    this->_initEditorLayout();
+	this->_initEditorRes();
+	this->_initEditorLayout();
 }
 void Editor::_initEditorRes()
 {
-    const std::string& root = Game::getInstance()->assetsManager()->root();
-    std::filesystem::path fullPath = std::filesystem::path(root) / "res";
-
-    for (const auto &entry : std::filesystem::recursive_directory_iterator(fullPath))
-    {
-        const auto &path = entry.path();
-        Game::getInstance()->assetsManager()->load(path.string());
-    }
+	
 }
 void Editor::_initEditorLayout()
 {
-    // this->_editorLayout = new EditorLayout();
-    /*this->_initHierarchy();
-    this->_initAssets();
-    this->_initProperty();*/
+	this->_editorLayout = new EditorLayout();
+	/*this->_initHierarchy();
+	this->_initAssets();
+	this->_initProperty();*/
 
-    /*  EditorIpc::getInstance()->on(IpcEvent::UPDATE_HIERARCHY_ROOT, &Editor::_onHierarchyRootUpdate, this);
-      EditorIpc::getInstance()->send(IpcEvent::UPDATE_HIERARCHY_ROOT,0);*/
+	/*  EditorIpc::getInstance()->on(IpcEvent::UPDATE_HIERARCHY_ROOT, &Editor::_onHierarchyRootUpdate, this);
+	  EditorIpc::getInstance()->send(IpcEvent::UPDATE_HIERARCHY_ROOT,0);*/
 }
 
 // void Editor::_initHierarchy()
@@ -99,11 +93,11 @@ void Editor::_initEditorLayout()
 
 void Editor::update(float dt)
 {
-    if (this->_editorLayout != nullptr)
-    {
-        this->_editorLayout->update(dt);
-    }
-    // this->_hierarchy->update(dt);
-    // this->_assets->update(dt);
-    // this->_property->update(dt);*/
+	if (this->_editorLayout != nullptr)
+	{
+		this->_editorLayout->update(dt);
+	}
+	// this->_hierarchy->update(dt);
+	// this->_assets->update(dt);
+	// this->_property->update(dt);*/
 }

@@ -117,7 +117,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>E:\software\vulkan\Lib;E:\software\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;vulkan-1.lib;shaderc_combinedd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CopyFileToFolders>
       <DestinationFolders>F:\worksapces\Boo-Engine\engine\resources;%(DestinationFolders)</DestinationFolders>
@@ -149,7 +149,7 @@ if exist "$(ProjectDir)editor\res" (
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;vulkan-1.lib;shaderc_combined.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -158,9 +158,13 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="editor\editor-layout.cpp" />
     <ClCompile Include="editor\editor.cpp" />
     <ClCompile Include="editor\ipc\editor-ipc.cpp" />
+    <ClCompile Include="engine\core\alpha\alpha.cpp" />
+    <ClCompile Include="engine\core\assets\asset-cache.cpp" />
     <ClCompile Include="engine\core\assets\asset-load.cpp" />
+    <ClCompile Include="engine\core\assets\asset-task.cpp" />
     <ClCompile Include="engine\core\assets\asset.cpp" />
     <ClCompile Include="engine\core\assets\assets-manager.cpp" />
+    <ClCompile Include="engine\core\assets\material.cpp" />
     <ClCompile Include="engine\core\assets\shader.cpp" />
     <ClCompile Include="engine\core\assets\texture.cpp" />
     <ClCompile Include="engine\core\component\component-factory.cpp" />
@@ -174,6 +178,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\gfx\gfx-pipeline.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-queue.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-renderer.cpp" />
+    <ClCompile Include="engine\core\gfx\gfx-shader-compile.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-shader.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-texture.cpp" />
     <ClCompile Include="engine\core\global\event.cpp" />
@@ -201,10 +206,14 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="editor\editor-layout.h" />
     <ClInclude Include="editor\editor.h" />
     <ClInclude Include="editor\ipc\editor-ipc.h" />
+    <ClInclude Include="engine\core\alpha\alpha.h" />
+    <ClInclude Include="engine\core\assets\asset-cache.h" />
     <ClInclude Include="engine\core\assets\asset-load.h" />
+    <ClInclude Include="engine\core\assets\asset-task.h" />
     <ClInclude Include="engine\core\assets\asset.h" />
     <ClInclude Include="engine\core\assets\assets-manager.h" />
     <ClInclude Include="engine\core\assets\assets.h" />
+    <ClInclude Include="engine\core\assets\material.h" />
     <ClInclude Include="engine\core\assets\shader.h" />
     <ClInclude Include="engine\core\assets\texture.h" />
     <ClInclude Include="engine\core\component\component-factory.h" />
@@ -220,6 +229,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\gfx\gfx-pipeline.h" />
     <ClInclude Include="engine\core\gfx\gfx-queue.h" />
     <ClInclude Include="engine\core\gfx\gfx-renderer.h" />
+    <ClInclude Include="engine\core\gfx\gfx-shader-compile.h" />
     <ClInclude Include="engine\core\gfx\gfx-shader.h" />
     <ClInclude Include="engine\core\gfx\gfx-struct.h" />
     <ClInclude Include="engine\core\gfx\gfx-texture.h" />

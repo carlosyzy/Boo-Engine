@@ -4,48 +4,57 @@
 #include <filesystem>
 #include <iostream>
 #include "shader.h"
+#include "assets-manager.h"
+#include "asset-cache.h"
+#include "asset-task.h"
 
-Asset *AssetLoad::load(std::string path, std::string fullPath)
+AssetLoad::AssetLoad(AssetsManager *mgr)
 {
-    if (!std::filesystem::exists(fullPath))
+    this->_mgr = mgr;
+    this->_cache = new AssetCache();
+}
+Asset *AssetLoad::load(const std::string path)
+{
+    // 从缓存中获取资产
+    Asset *asset = this->_cache->getAsset(path);
+    if (asset != nullptr)
     {
-        std::cerr << "AssetLoad:资产不存在:" << fullPath << std::endl;
-        return nullptr;
+        return asset;
     }
-    if (!std::filesystem::is_regular_file(fullPath))
+
+    // 创建加载任务
+    AssetTask task(this->_mgr, this->_cache);
+    return task.load(path);
+}
+Asset *AssetLoad::getAsset(const std::string &path)
+{
+     Asset *asset = this->_cache->getAsset(path);
+    if (asset != nullptr)
     {
-        std::cerr << "AssetLoad:资产不是文件:" << fullPath << std::endl;
-        return nullptr;
+        return asset;
     }
-    std::string extension = std::filesystem::path(fullPath).extension().string();
-    if (extension == ".png" || extension == ".PNG" || extension == ".jpg" || extension == ".JPG")
-    {
-        Texture *texture = new Texture(path, fullPath);
-        return texture;
-    }else if (extension == ".vert" || extension == ".frag")
-    {
-        Shader *shader = new Shader(path, fullPath);
-        return shader;
-    }
-    //     else if (extension == ".vert")
-    //     {
-    //         // uiTreeData.icon = "resources/textures/ic-shader-v.png";
-    //     }
-    //     else if (extension == ".frag")
-    //     {
-    //         // uiTreeData.icon = "resources/textures/ic-shader-f.png";
-    //     }
-    //     else if (extension == ".mtl")
-    //     {
-    //         // uiTreeData.icon = "resources/textures/ic-material.png";
-    //     }
-    //     else if (extension == ".md")
-    //     {
-    //         // uiTreeData.icon = "resources/textures/ic-readme.png";
-    //     }
-    //     else
-    //     {
-    //         // uiTreeData.icon = "resources/textures/ic-2d.png";
-    //     }
     return nullptr;
 }
+
+
+
+AssetLoad::~AssetLoad()
+{
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Asset *AssetLoad::load(const std::string path, const std::string fullPath)
+// {
+
+// }

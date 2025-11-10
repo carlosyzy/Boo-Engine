@@ -1,26 +1,58 @@
 #include "editor-layout.h"
+#include <filesystem>
+#include <iostream>
 
 
 #include "../engine/core/game.h"
 #include "../engine/core/scene/scene.h"
 #include "../engine/core/scene/node-2d.h"
 #include "../engine/core/renderer/ui/ui-sprite.h"
+#include "../engine/core/assets/assets-manager.h"
+#include "../engine/core/assets/asset.h"
+#include "../engine/core/assets/Texture.h"
 //#include "../engine/core/input/input-mgr.h"
 
 EditorLayout::EditorLayout()
 {
-	//// 创建
-	//this->_scene = new Scene("EDITOR");
-	//Node2D* root2D = this->_scene->getRoot2D();
-	////InputMgr::getInstance()->setRoot(root2D);
-	//this->_initMainUI();
-	/*this->_initMenuUI();
-	this->_initHierarchyUI();
-	this->_initAssetsUI();
-	this->_initSceneUI();
-	this->_initToolUI();
-	this->_initPropertyUI();*/
+	// 创建
+	this->_scene = new Scene("EDITOR");
+	Node2D* root2D = this->_scene->getRoot2D();
+	// this->_initAlpha();
+
 }
+// void EditorLayout::_initAlpha() {
+	
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//InputMgr::getInstance()->setRoot(root2D);
+/*this->_initMainUI();*/
+/*this->_initMenuUI();
+this->_initHierarchyUI();
+this->_initAssetsUI();
+this->_initSceneUI();
+this->_initToolUI();
+this->_initPropertyUI();*/
+
+
 void EditorLayout::_initMainUI()
 {
 	this->_ndMain = new Node2D("Editor-Main");
@@ -28,7 +60,10 @@ void EditorLayout::_initMainUI()
 	Component* comp = this->_ndMain->addComponent("UISprite");
 	if (comp != nullptr) {
 		this->_spriteMain = static_cast<UISprite*>(comp);
-		this->_spriteMain->setColor(0.1f, 0.1f, 0.1f, 1.0f);
+		Asset* tex = Game::getInstance()->assetsManager()->get("F:/worksapces/Boo-Engine/x64/Debug/res/ic-default.png");
+		this->_spriteMain->setTexture(static_cast<Texture*>(tex));
+		this->_spriteMain->setMaterial(nullptr);
+		this->_spriteMain->setColor(1.1f, 0.1f, 0.1f, 1.0f);
 	}
 }
 void EditorLayout::_initMenuUI()
@@ -142,6 +177,8 @@ void EditorLayout::_updateModuleSize()
 	this->tool_y = this->asset_y;
 	this->tool_width = this->scene_width;
 	this->tool_height = this->asset_height;
+
+
 	if (this->_ndMain != nullptr)
 	{
 		this->_ndMain->setSize(this->_width, this->_height);

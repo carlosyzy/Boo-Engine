@@ -5,7 +5,9 @@
 #include "gfx-context.h"
 #include "../game.h"
 
-GfxObject::GfxObject(GfxContext *context)
+GfxObject::GfxObject(GfxContext *context) : _color{1.0f, 1.0f, 1.0f, 1.0f},
+                                            _uiMask{0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
+
 {
     this->_context = context;
     this->_pipeline = nullptr;
@@ -147,9 +149,12 @@ void GfxObject::setColor(float r, float g, float b, float a)
     this->_color[1] = g;
     this->_color[2] = b;
     this->_color[3] = a;
+    std::cout << "setColor1:r:" << r << " g:" << g << " b:" << b << " a:" << a << std::endl;
+
 }
 void GfxObject::setTexture(GfxTexture *texture)
 {
+    std::cout << "setTexture:id:" << " texture:" << std::endl;
     this->_texture = texture;
     this->_updateDescriptorSet();
 }
@@ -168,7 +173,6 @@ void GfxObject::setProjMatrix(std::array<float, 16> &mat)
 {
     // this->_projMatrix = mat;
     // this->_updateProjMatUniformBuffer();
-
 }
 void GfxObject::setUIMask(float x, float y, float width, float height, float angle)
 {
@@ -355,8 +359,8 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
        // 绑定描述符集
        // std::cout <<"1111:"<< this->_descriptorSets[imageIndex]<< std::endl; */
     vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipelineLayout(), 0, 1, &this->_descriptorSets[imageIndex], 0, nullptr);
-    /*   // 推送常量
-      //  std::cout << "render:22222 "<< std::endl; */
+ 
+    // std::cout << "render:22222 "<< std::endl;
     PushConstants pushConstants{};
     pushConstants.defaultColor[0] = this->_color[0];
     pushConstants.defaultColor[1] = this->_color[1];
@@ -366,7 +370,6 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     pushConstants.maskRect[1] = this->_uiMask[1];
     pushConstants.maskRect[2] = this->_uiMask[2];
     pushConstants.maskRect[3] = this->_uiMask[3];
-    pushConstants.maskRect[4] = this->_uiMask[4];
 
     vkCmdPushConstants(commandBuffers[imageIndex], this->_pipeline->getVKPipelineLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstants), &pushConstants);
     /*  // 绘制

@@ -35,6 +35,7 @@ void Node2D::setSize(float width, float height)
 	{
 		return;
 	}
+	std::cout << "Node2D::setSize: " << width << ", " << height << std::endl;
 	this->_size.set(width, height);
 	this->_updateWorldTransformFlag(NodeTransformFlag::SIZE_FLAG);
 	this->emit(NodeEvent::ON_TRANSFORM_CHANGED);
@@ -50,8 +51,8 @@ void Node2D::_updateWorldTransform()
 	this->_uiWorldMatrix.setM00(this->_uiWorldMatrix.getM00() * this->_size.getWidth()); // 宽高和缩放进行相乘
 	this->_uiWorldMatrix.setM11(this->_uiWorldMatrix.getM11() * this->_size.getHeight());
 	// 锚点
-	this->_uiWorldMatrix.setM12(this->_uiWorldMatrix.getM30() + (0.5 - this->_anchor.getX()) * this->_size.getWidth());
-	this->_uiWorldMatrix.setM13(this->_uiWorldMatrix.getM31() + (0.5 - this->_anchor.getY()) * this->_size.getHeight());
+	this->_uiWorldMatrix.setM30(this->_uiWorldMatrix.getM30() + (0.5 - this->_anchor.getX()) * this->_size.getWidth());
+	this->_uiWorldMatrix.setM31(this->_uiWorldMatrix.getM31() + (0.5 - this->_anchor.getY()) * this->_size.getHeight());
 }
 
 

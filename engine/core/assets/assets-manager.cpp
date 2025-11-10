@@ -11,12 +11,16 @@
 #endif
 #include <iostream>
 #include "asset-load.h"
+#include "asset-cache.h"
+
+#include "../utils/time-util.h"
 
 AssetsManager::AssetsManager()
 {
 }
 void AssetsManager::init()
 {
+	this->_assetLoad = new AssetLoad(this);
 	this->_initRoot();
 }
 void AssetsManager::_initRoot()
@@ -59,15 +63,16 @@ void AssetsManager::_initRoot()
 	std::cout << "Assets root:" << this->_root << std::endl;
 }
 Asset *AssetsManager::load(const std::string &path)
+{	
+	return this->_assetLoad->load(path);
+}
+template <typename T, typename Func>
+void AssetsManager::loadAsync(const std::string &path, Func func, T *instance){
+	
+}
+Asset *AssetsManager::get(const std::string &path)
 {
-	std::filesystem::path fullPath = std::filesystem::path(this->_root) / path;
-	Asset *asset = AssetLoad::load(path, fullPath.string());
-	if (asset != nullptr)
-	{
-		this->_assetsMap[path] = asset;
-		return asset;
-	}
-	return nullptr;
+	 return this->_assetLoad->getAsset(path);
 }
 // void AssetsManager::loadAsync(const std::string &path, std::function<void(Asset *)> callback)
 // {
