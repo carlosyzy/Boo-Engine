@@ -55,6 +55,9 @@ void EditorLayout::setLoadProgress(float progress)
 }
 void EditorLayout::launch()
 {
+	if (this->_ndLoad !=nullptr) {
+		this->_ndLoad->destroy();
+	}
 }
 
 // InputMgr::getInstance()->setRoot(root2D);

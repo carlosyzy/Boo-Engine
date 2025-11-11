@@ -1,6 +1,7 @@
 #include "node.h"
 #include "../utils/uuid-util.h"
 #include "../component/component.h"
+#include "../game.h"
 
 void Node::setName(const std::string &name)
 {
@@ -265,5 +266,10 @@ void Node::destroy()
 	this->_components.clear();
 	// 递归销毁所有子节点
 	this->destroyAllChildren();
-	delete this;
+	// 从父节点中移除
+	if (this->_parent != nullptr)
+	{
+		this->_parent->removeChild(this);
+	}
+	Game::getInstance()->addNodeClearCaches(this);
 }

@@ -74,7 +74,9 @@ Asset *AssetsManager::get(const std::string &path)
 {
 	return this->_assetLoad->getAsset(path);
 }
-
+void  AssetsManager::setMaxLoadCount(int count) {
+	this->_assetLoad->setMaxLoadCount(count);
+}
 void AssetsManager::update(float deltaTime)
 {
 	this->_assetLoad->update(deltaTime);

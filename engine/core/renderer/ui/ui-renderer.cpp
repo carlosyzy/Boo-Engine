@@ -76,6 +76,7 @@ void UIRenderer::lateUpdate(float deltaTime)
 }
 void UIRenderer::render()
 {
+	Component::render();
 	// 节点变换矩阵更新了
 	if (this->_node->hasFrameTransformFlag())
 	{
@@ -111,8 +112,11 @@ void UIRenderer::render()
 }
 void UIRenderer::destroy()
 {
+	Component::destroy();
+	std::cout << "UIRenderer::destroy" << std::endl;
 }
 
 UIRenderer::~UIRenderer()
 {
+	std::cout << "UIRenderer::~destructor" << std::endl;
 }

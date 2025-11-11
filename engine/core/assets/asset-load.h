@@ -20,7 +20,7 @@ private:
     /**
      * @brief 最大加载数量
      */
-    int _MAX_LOAD_COUNT = 30;
+    int _MAX_LOAD_COUNT = 1;
 
     int _TaskNextID = 0;
     std::vector<AssetTask> _tasks;

@@ -85,6 +85,7 @@ Component *Node2D::addComponent(std::string name, std::string uuid)
 	{
 		std::cout << name << ":Component add fail,node type not is Node2D" << std::endl;
 		delete component;
+		component = nullptr;
 		return nullptr;
 	}
 	this->_components.push_back(component);
@@ -128,4 +129,5 @@ void Node2D::destroy()
 }
 Node2D::~Node2D()
 {
+	std::cout << "Node2D::~destructor: " << this->_name << std::endl;
 }

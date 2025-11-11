@@ -57,4 +57,5 @@ void Node3D::destroy()
 }
 Node3D::~Node3D()
 {
+	std::cout << "Node3D::~destructor: " << this->_name << std::endl;
 }

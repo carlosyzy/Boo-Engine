@@ -60,4 +60,5 @@ void Scene::destroy()
 }
 Scene::~Scene()
 {
+	std::cout << "Scene::~destructor" << std::endl;
 }

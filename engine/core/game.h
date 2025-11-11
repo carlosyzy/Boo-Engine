@@ -9,6 +9,7 @@ class Scene;
 class ComponentFactory;
 class Event;
 class AssetsManager;
+class Node;
 
 struct View
 {
@@ -43,6 +44,10 @@ private:
     ~Game();
     Game(const Game &) = delete;            // 禁用拷贝构造
     Game &operator=(const Game &) = delete; // 禁用赋值操作符
+
+    std::vector<Component *> _compClearCaches;
+    std::vector<Node *> _nodeClearCaches;
+
     Event *_event;
     ComponentFactory *_componentFactory = nullptr;
     View _view;
@@ -60,6 +65,7 @@ private:
     void _initAlpha();
 
     void _updateSchedules(float dt);
+    void _updateClearCaches();
 
 public:
     static Game *getInstance();
@@ -117,5 +123,9 @@ public:
     void unschedule(int scheduleID);
 
     Scene *openScene(std::string sceneName);
+
+    void addCompClearCaches(Component* comp);
+    void addNodeClearCaches(Node* node);
+
     void update(float dt);
 };

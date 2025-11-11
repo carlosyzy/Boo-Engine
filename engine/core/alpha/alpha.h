@@ -24,6 +24,7 @@ private:
 	float _logoRatio;
 
 	int _initDelayScheduleID;
+	void _onAlphaAnimOK();
 	
 	void _init();
 	void _initRes();

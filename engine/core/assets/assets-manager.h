@@ -56,6 +56,7 @@ public:
 	{
 		return this->_assetLoad->loadListAsync(paths, callback, instance);
 	}
+	void setMaxLoadCount(int count);
 	void clearLoadCall(const int loadId);
 
 	Asset *get(const std::string &path);

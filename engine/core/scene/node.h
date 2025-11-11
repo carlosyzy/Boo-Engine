@@ -50,6 +50,7 @@ private:
 		}
 	};
 	std::unordered_map<std::string, std::vector<Listener>> _listeners;
+	
 
 protected:
 	/**
