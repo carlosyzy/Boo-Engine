@@ -116,7 +116,7 @@ bool GfxRenderer::isExistTexture(std::string textureUuid)
 {
     return this->_textures.find(textureUuid) != this->_textures.end();
 }
-void GfxRenderer::createShader(const std::string &shaderName, const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros)
+void GfxRenderer::createGlslShader(const std::string &shaderName, const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros)
 {
     // 生成唯一的缓存键：shaderName + 宏定义
     std::stringstream cacheKey;
@@ -159,6 +159,18 @@ void GfxRenderer::createShader(const std::string &shaderName, const std::string 
         std::cerr << "Failed to create shader '" << finalCacheKey << "': " << e.what() << std::endl;
         // 可以考虑抛出异常或返回错误码
     }
+}
+
+void GfxRenderer::createSpirvShader(const std::string &shaderName, const std::vector<char> &data)
+{
+    if (this->_shaders.find(shaderName) != this->_shaders.end())
+    {
+        std::cout << "Shader already exists: " << shaderName << std::endl;
+        return;
+    }
+    GfxShader *shader = new GfxShader(this->_context, shaderName);
+    shader->createShaderModule(data);
+    this->_shaders[shaderName] = shader;
 }
 
 void GfxRenderer::cleanRendererState()

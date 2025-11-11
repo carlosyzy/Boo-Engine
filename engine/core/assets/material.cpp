@@ -1,4 +1,4 @@
-#include "Material.h"
+#include "material.h"
 #include "../gfx/gfx-mgr.h"
 
 Material::Material(const std::string uuid) : Asset(uuid),

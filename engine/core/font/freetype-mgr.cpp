@@ -159,7 +159,7 @@
 // //     for (size_t i = 0; i < atlasData.size(); ++i)
 // //     {
 // //         // 将有符号转换为无符号，保持相同的位模式
-// //         unsignedData[i] = static_cast<unsigned char>(atlasData[i]);
+// //         unsignedData[i] = dynamic_cast<unsigned char>(atlasData[i]);
 // //     }
 
 // //     // 保存为 PNG
@@ -224,7 +224,7 @@
 // //     {
 // //         // std::cout << "c: " << c << std::endl;
 
-// //         chineseChars.push_back(static_cast<wchar_t>(c));
+// //         chineseChars.push_back(dynamic_cast<wchar_t>(c));
 // //     }
 
 // //     for (wchar_t c = 0x4E00; c <= 0x9FA5; c++) {
@@ -296,7 +296,7 @@
 // //         character.height = height;
 // //         character.bearingX = glyph->bitmap_left;
 // //         character.bearingY = glyph->bitmap_top;
-// //         character.advance = static_cast<uint32_t>(glyph->advance.x);
+// //         character.advance = dynamic_cast<uint32_t>(glyph->advance.x);
 // //         this->_characters[c] = character;
 
 // //         x += width + 1; // 加1像素间隔

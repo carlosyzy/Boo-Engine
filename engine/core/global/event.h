@@ -44,7 +44,7 @@ public:
         {
             (instance->*func)(value);
         };
-        this->_listeners[eventName].emplace_back(callback, static_cast<void *>(instance), id);
+        this->_listeners[eventName].emplace_back(callback, dynamic_cast<void *>(instance), id);
         return id;
     }
 
@@ -81,7 +81,7 @@ public:
             auto &listeners = it->second;
             for (auto listenerIt = listeners.begin(); listenerIt != listeners.end(); ++listenerIt)
             {
-                if (listenerIt->owner == static_cast<void *>(instance))
+                if (listenerIt->owner == dynamic_cast<void *>(instance))
                 {
                     listeners.erase(listenerIt);
                 }

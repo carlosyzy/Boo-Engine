@@ -5,7 +5,6 @@
 #include "editor-layout.h"
 #include "../engine/core/utils/time-util.h"
 
-
 // #include "../engine/core/renderer/scene.h"
 // #include "../engine/core/renderer/ui/sprite.h"
 // #include "../engine/core/global/event.h"
@@ -14,13 +13,13 @@
 // #include "assets/editor-assets.h"
 // #include "property/editor-property.h"
 
-Editor::Editor()
+Editor::Editor() : _editorLayout(nullptr)
 {
 }
 Editor::~Editor()
 {
 }
-Editor* Editor::getInstance()
+Editor *Editor::getInstance()
 {
 	static Editor instance;
 	return &instance;
@@ -28,16 +27,62 @@ Editor* Editor::getInstance()
 
 void Editor::init()
 {
-	this->_initEditorRes();
-	this->_initEditorLayout();
+	this->_initLayout();
+	this->_initRes();
 }
-void Editor::_initEditorRes()
-{
-	
-}
-void Editor::_initEditorLayout()
+void Editor::_initLayout()
 {
 	this->_editorLayout = new EditorLayout();
+	// // Editor:: : 表示 Editor 类的作用域
+	// // _onAlphaAnimOK : 成员函数名
+	// // & : 取地址运算符，获取成员函数的地址
+	// // 成员函数指针的正确格式是 &ClassName::MemberFunction
+	// // &this->member 语法用于获取成员变量的地址，不适用于成员函数
+	this->_scheduleID_AlphaAnim = Game::getInstance()->scheduleOnce(&Editor::_onAlphaAnimOK, this, 2.0f);
+}
+void Editor::_onAlphaAnimOK()
+{
+	this->_alphaAnimOK = true;
+	if (this->_loadComplete)
+	{
+		this->_launchEditor();
+	}
+}
+
+void Editor::_initRes()
+{
+	// 先加载公用resources文件,
+	const std::string &root = Game::getInstance()->assetsManager()->root();
+	std::filesystem::path fullPath = std::filesystem::path(root) / "resources";
+	std::vector<std::string> paths;
+	for (const auto &entry : std::filesystem::recursive_directory_iterator(fullPath))
+	{
+		if(std::filesystem::is_regular_file(entry.path())){
+			std::filesystem::path path = std::filesystem::relative(entry.path(), std::filesystem::path(root));
+			paths.push_back(path.generic_string());
+			std::cout << "add resource " << path.generic_string() << std::endl;
+		}
+	}
+	//将在工程
+	Game::getInstance()->assetsManager()->loadListAsync(paths, &Editor::_onLoadCallBack, this);
+}
+void Editor::_onLoadCallBack(const int complete, const int all, const float progress)
+{
+	this->_editorLayout->setLoadProgress(progress);
+	if (complete == all)
+	{
+		this->_loadComplete = true;
+		if (this->_alphaAnimOK)
+		{
+			this->_launchEditor();
+		}
+	}
+}
+// 启动编辑器
+void Editor::_launchEditor()
+{
+	std::cout << "launch editor" << std::endl;
+	this->_editorLayout->launch();
 	/*this->_initHierarchy();
 	this->_initAssets();
 	this->_initProperty();*/
@@ -45,6 +90,16 @@ void Editor::_initEditorLayout()
 	/*  EditorIpc::getInstance()->on(IpcEvent::UPDATE_HIERARCHY_ROOT, &Editor::_onHierarchyRootUpdate, this);
 	  EditorIpc::getInstance()->send(IpcEvent::UPDATE_HIERARCHY_ROOT,0);*/
 }
+// void Editor::_initEditorLayout()
+// {
+// 	// this->_editorLayout = new EditorLayout();
+// 	// this->_editorLayout->load();
+// 	// // 加载完成后删除布局对象
+// 	// delete this->_editorLayout;
+// 	// this->_editorLayout = nullptr;
+// 	this->_editorLayout->launch();
+// 	std::cout << "launch editor layout:"<<this->_editorLayout << std::endl;
+// }
 
 // void Editor::_initHierarchy()
 //{
@@ -100,4 +155,8 @@ void Editor::update(float dt)
 	// this->_hierarchy->update(dt);
 	// this->_assets->update(dt);
 	// this->_property->update(dt);*/
+}
+
+void Editor::destroy()
+{
 }

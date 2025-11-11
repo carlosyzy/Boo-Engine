@@ -149,7 +149,7 @@ void GfxObject::setColor(float r, float g, float b, float a)
     this->_color[1] = g;
     this->_color[2] = b;
     this->_color[3] = a;
-    std::cout << "setColor1:r:" << r << " g:" << g << " b:" << b << " a:" << a << std::endl;
+    // std::cout << "setColor1:r:" << r << " g:" << g << " b:" << b << " a:" << a << std::endl;
 
 }
 void GfxObject::setTexture(GfxTexture *texture)

@@ -20,5 +20,5 @@ public:
 
     void clearNodeFrameFlag() override;
     void destroy() override;
-    ~Node3D() override;
+    ~Node3D();
 };

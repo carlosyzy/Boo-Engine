@@ -6,12 +6,6 @@
 #include "component/component-factory.h"
 #include "renderer/ui/ui-sprite.h"
 #include "alpha/alpha.h"
-// #include "renderer/ui/sprite.h"
-// #include "renderer/ui/text.h"
-// #include "ui/ui-widget.h"
-// #include "ui/ui-tree/node-tree.h"
-// #include "ui/ui-tree/file-tree.h"
-// #include "ui/ui-mask.h"
 Game::Game() : _assetsManager(nullptr),
 			   _curScene(nullptr)
 {
@@ -67,6 +61,7 @@ void Game::_initAlpha()
 {
 	Alpha *alpha = new Alpha("Editor-Alpha");
 	this->_curScene = static_cast<Scene *>(alpha);
+	//启动场景
 }
 
 void Game::setView(int width, int height)
@@ -74,11 +69,22 @@ void Game::setView(int width, int height)
 	this->_view.width = width;
 	this->_view.height = height;
 }
+
+void Game::unschedule(int scheduleID)
+{
+	this->_schedules.erase(scheduleID);
+}
+
 void Game::update(float dt)
 {
 	if (this->_curScene)
 	{
 		this->_curScene->update(dt);
+	}
+	this->_updateSchedules(dt);
+	if (this->_assetsManager)
+	{
+		this->_assetsManager->update(dt);
 	}
 	if (this->_curScene)
 	{
@@ -93,6 +99,50 @@ void Game::update(float dt)
 		this->_curScene->clearNodeFrameFlag();
 	}
 }
+void Game::_updateSchedules(float dt)
+{
+	for (auto it = this->_schedules.begin(); it != this->_schedules.end();)
+	{
+		ScheduleInfo &info = it->second;
+		if (info.instance == nullptr)
+		{
+			it = this->_schedules.erase(it);
+			continue;
+		}
+		info.time += dt;
+		if (info.time >= info.interval)
+		{
+			info.time = 0.0f;
+			info.func();
+			bool isOnce = info.isOnce;
+			int currentId = it->first; // 保存当前ID
+			if (isOnce)
+			{
+				it = this->_schedules.find(currentId);
+				if (it != this->_schedules.end())
+				{
+					it = this->_schedules.erase(it);
+				}
+				else
+				{
+					// 如果已经被删除，需要重新获取有效的迭代器
+					it = this->_schedules.begin();
+					if (it == this->_schedules.end())
+						break;
+				}
+			}
+			else
+			{
+				++it;
+			}
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
 Game::~Game()
 {
 }

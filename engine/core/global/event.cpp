@@ -14,7 +14,7 @@ Event::~Event()
 //     {
 //         (instance->*func)();
 //     };
-//     this->_listeners[eventName].emplace_back(callback, static_cast<void*>(instance), id);
+//     this->_listeners[eventName].emplace_back(callback, dynamic_cast<void*>(instance), id);
 //     return id;
 // }
 // /**
@@ -51,7 +51,7 @@ Event::~Event()
 //         auto &listeners = it->second;
 //         for (auto listenerIt = listeners.begin(); listenerIt != listeners.end(); ++listenerIt)
 //         {
-//             if (listenerIt->owner == static_cast<void*>(instance))
+//             if (listenerIt->owner == dynamic_cast<void*>(instance))
 //             {
 //                 listeners.erase(listenerIt);
 //             }
@@ -125,7 +125,7 @@ Event::~Event()
 //             className,
 //             [listener](const void *event)
 //             {
-//                 listener(*static_cast<const EventType *>(event));
+//                 listener(*dynamic_cast<const EventType *>(event));
 //             }});
 // }
 

@@ -119,7 +119,7 @@ void GfxPipeline::_createPipeline()
 	// };
 	// VkPipelineDynamicStateCreateInfo dynamicState{};
 	// dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-	// dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+	// dynamicState.dynamicStateCount = dynamic_cast<uint32_t>(dynamicStates.size());
 	// dynamicState.pDynamicStates = dynamicStates.data();
 
 	// // 视口和裁剪状态（现在只设置数量，具体值将在命令缓冲区中动态设置）

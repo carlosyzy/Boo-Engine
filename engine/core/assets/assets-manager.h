@@ -3,10 +3,11 @@
 #include <unordered_map>
 #include <filesystem>
 #include <functional>
+#include "asset-load.h"
 enum class AssetType;
 class Asset;
 class AssetCache;
-class AssetLoad;
+struct AssetLoadResult;
 
 // 基础图片资源
 class AssetsManager
@@ -16,7 +17,7 @@ private:
 	 * @brief 资产根目录
 	 */
 	std::string _root;
-	
+
 	/**
 	 * @brief 资产加载器
 	 */
@@ -31,10 +32,12 @@ public:
 	 */
 	void init();
 
-	const  std::string& root() {
+	const std::string &root()
+	{
 		return this->_root;
 	}
-	AssetLoad *assetLoad() {
+	AssetLoad *assetLoad()
+	{
 		return this->_assetLoad;
 	}
 	/**
@@ -42,22 +45,22 @@ public:
 	 * @param path 资产路径
 	 * @return Asset 资产对象
 	 */
-	Asset* load(const std::string &path);
+	Asset *load(const std::string &path);
 	template <typename T, typename Func>
-	void loadAsync(const std::string &path, Func func, T *instance);
-	/**
-	 * @brief 异步加载资产列表
-	 * @param paths 资产路径列表
-	 */
-	void loadList(const std::vector<std::string> &paths);
+	int loadAsync(const std::string &path, Func callback, T *instance)
+	{
+		return this->_assetLoad->loadAsync(path, callback, instance);
+	}
 	template <typename T, typename Func>
-	void loadListAsync(const std::vector<std::string> &paths,Func func, T *instance);
+	int loadListAsync(const std::vector<std::string> &paths, Func callback, T *instance)
+	{
+		return this->_assetLoad->loadListAsync(paths, callback, instance);
+	}
+	void clearLoadCall(const int loadId);
 
 	Asset *get(const std::string &path);
-	// /**
-	//  * @brief 异步加载资产
-	//  * @param path 资产路径
-	//  */
-	// 
+
+	void update(float deltaTime);
+
 	~AssetsManager();
 };

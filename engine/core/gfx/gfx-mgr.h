@@ -115,8 +115,11 @@ public:
 	 * @param shaderName 着色器名称
 	 * @param buffer 着色器字节码
 	 */
-	void createShader(const std::string& shaderName, const std::string& shaderType, const std::string& data, const std::map<std::string, std::string>& macros);
-
+	void createGlslShader(const std::string& shaderName, const std::string& shaderType, const std::string& data, const std::map<std::string, std::string>& macros);
+	/**
+	 * @brief 创建SPIR-V着色器
+	 */
+	void createSpirvShader(const std::string& shaderName, const std::vector<char>& data);
 
 	/**
 	 * @brief 提交渲染对象

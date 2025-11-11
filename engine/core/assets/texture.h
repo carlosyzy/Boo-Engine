@@ -15,6 +15,26 @@ protected:
 	void _load() override;
 public:
 	Texture(const std::string key, const std::string path);
+
+
+	/**
+	 * @brief 获取纹理宽度
+	 * 
+	 * @return int 
+	 */
+	const int width() const { return _width; }
+	/**
+	 * @brief 获取纹理高度
+	 * 
+	 * @return int 
+	 */
+	const int height() const { return _height; }
+	/**
+	 * @brief 获取纹理通道数
+	 * 
+	 * @return int 
+	 */
+	int channels() const { return _channels; }
 	/**
 	 * @brief 创建图形资源
 	 * 

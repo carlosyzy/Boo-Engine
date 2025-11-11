@@ -2,18 +2,6 @@
 #include "../utils/uuid-util.h"
 #include "../component/component.h"
 
-Node::Node(const std::string name, const std::string uuid)
-	: _name(name), _active(true), _layer(NodeLayer::Node), _isActiveInHierarchy(true),
-	  _position(0.0f, 0.0f, 0.0f), _scale(1.0f, 1.0f, 1.0f),
-	  _eulerAngles(0.0f, 0.0f, 0.0f), _rotation(0.0f, 0.0f, 0.0f, 1.0f),
-	  _worldPosition(0.0f, 0.0f, 0.0f), _worldScale(1.0f, 1.0f, 1.0f),
-	  _worldRotation(0.0f, 0.0f, 0.0f, 1.0f),
-	  _localMatrix(Mat4::identity()), _worldMatrix(Mat4::identity()),
-	  _worldTransformFlag(NodeTransformFlag::ALL_FLAG)
-{
-	_uuid = uuid.empty() ? UuidUtil::generateUUID() : uuid;
-}
-
 void Node::setName(const std::string &name)
 {
 	this->_name = name;
@@ -278,7 +266,4 @@ void Node::destroy()
 	// 递归销毁所有子节点
 	this->destroyAllChildren();
 	delete this;
-}
-Node ::~Node()
-{
 }

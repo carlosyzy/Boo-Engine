@@ -10,7 +10,7 @@
 #include <mach-o/dyld.h> // 必需的头文件
 #endif
 #include <iostream>
-#include "asset-load.h"
+
 #include "asset-cache.h"
 
 #include "../utils/time-util.h"
@@ -63,20 +63,24 @@ void AssetsManager::_initRoot()
 	std::cout << "Assets root:" << this->_root << std::endl;
 }
 Asset *AssetsManager::load(const std::string &path)
-{	
+{
 	return this->_assetLoad->load(path);
 }
-template <typename T, typename Func>
-void AssetsManager::loadAsync(const std::string &path, Func func, T *instance){
-	
+void AssetsManager::clearLoadCall(const int loadId)
+{
+	this->_assetLoad->clearLoadCall(loadId);
 }
 Asset *AssetsManager::get(const std::string &path)
 {
-	 return this->_assetLoad->getAsset(path);
+	return this->_assetLoad->getAsset(path);
 }
-// void AssetsManager::loadAsync(const std::string &path, std::function<void(Asset *)> callback)
-// {
-// }
+
+void AssetsManager::update(float deltaTime)
+{
+	this->_assetLoad->update(deltaTime);
+}
+
+
 
 AssetsManager::~AssetsManager()
 {

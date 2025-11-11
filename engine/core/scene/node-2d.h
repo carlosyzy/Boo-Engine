@@ -2,6 +2,7 @@
 #include "node.h"
 #include "../math/vec2.h"
 #include "../math/size.h"
+#include "../math/mat4.h"
 
 class Node2D : public Node
 {
@@ -29,8 +30,8 @@ public:
      * @param height
      */
     void setSize(float width, float height);
-    const Vec2 &anchor() { return this->_anchor; }
-    const Size &size() { return this->_size; }
+    const Vec2 &getAnchor() { return this->_anchor; }
+    const Size &getSize() { return this->_size; }
     const Mat4 &uiWorldMatrix()
     {
         this->_updateWorldTransform();
@@ -53,7 +54,7 @@ public:
 
     void clearNodeFrameFlag() override;
     void destroy() override;
-    ~Node2D() override;
+    ~Node2D();
 
     // void onNodeInputEvent(NodeInput input, std::function<void(NodeInputResult &)> callback, bool isIntercept = false);
     // void offNodeInputEvent(NodeInput input, int inputID);

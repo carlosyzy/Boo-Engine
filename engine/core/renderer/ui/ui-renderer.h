@@ -84,6 +84,7 @@ public:
     void setAlpha(float alpha);
     void setMaterial(Material *mtl);
     void setTexture(Texture *texture);
+    void setTexture(std::string text);
     void update(float deltaTime) override;
     void lateUpdate(float deltaTime) override;
     void render() override;

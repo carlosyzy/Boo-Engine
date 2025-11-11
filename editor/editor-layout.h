@@ -10,7 +10,12 @@ class EditorLayout
 private:
 	Scene* _scene;
 
-	
+	Node2D* _ndLoad;
+	UISprite* _spriteLoad;
+	Node2D* _ndLoadBar;
+	UISprite* _spriteLoadBar;
+	float _loadProgress = 0.0f;
+	void _initLoadUI();
 
 
 	Node2D* _ndMain;
@@ -77,6 +82,15 @@ private:
 
 public:
 	EditorLayout();
+	
+	void setLoadProgress(float progress);
+	/**
+	 * @brief 启动布局
+	 */
+	void launch();
+
+
+
 	Scene* scene() {
 		return this->_scene;
 	}
