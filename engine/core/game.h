@@ -3,14 +3,17 @@
 #include <iostream>
 #include <functional>
 #include <unordered_map>
-
-#include "component/component-factory.h"
-#include "component/component.h"
 #include "assets/assets-manager.h"
+#include "component/component.h"
+#include "component/ui/ui-widget.h"
+#include "component/ui/ui-layout-horizontal.h"
+
 #include "global/event.h"
 #include "scene/scene.h"
-
+#include "gfx/gfx-mgr.h"
+#include "alpha/alpha.h"
 #include "renderer/ui/ui-sprite.h"
+
 
 struct View
 {
@@ -44,6 +47,8 @@ private:
     // 调度器相关
     uint64_t _scheduleNextID_ = 0;
     std::unordered_map<int, ScheduleInfo> _schedules;
+    // 组件创建相关
+    std::unordered_map<std::string, std::function<Component *(Node *, std::string)>> _creatorComponentMap;
     // 组件清理相关
     std::vector<Component *> _compClearCaches;
     // 节点清理相关
@@ -61,10 +66,7 @@ private:
      * @brief 资产系统
      */
     AssetsManager *_assetsManager;
-    /**
-     * @brief 组件系统
-     */
-    ComponentFactory *_componentFactory = nullptr;
+
     /**
      * @brief 当前场景
      */
@@ -127,10 +129,6 @@ public:
     {
         return this->_event;
     }
-    ComponentFactory *componentFactory()
-    {
-        return this->_componentFactory;
-    };
     Scene *getScene()
     {
         return this->_curScene;
@@ -140,6 +138,19 @@ public:
         std::cout << "Game::assetsManager():" << this->_assetsManager << std::endl;
         return this->_assetsManager;
     }
+    // 注册组件类
+    template <typename T = Component>
+    void registerComponentClass(const std::string &className)
+    {
+        static_assert(std::is_base_of<Component, T>::value,
+                      "T must be derived from Component");
+        this->_creatorComponentMap[className] = [](Node *node, std::string uuid) -> Component *
+        {
+            return new T(node, uuid);
+        };
+    }
+    Component *createComponent(const std::string &className, Node *node, std::string uuid);
+
     // typename T: 表示一个类型参数，通常指类的类型
     // typename Func: 表示另一个类型参数，通常指函数类型（函数指针、成员函数指针、函数对象等）
     template <typename T, typename Func>

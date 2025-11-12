@@ -4,34 +4,63 @@
 class Scene;
 class Node2D;
 class UISprite;
+class UIWidget;
+class UILayoutHorizontal;
+
+
 
 class EditorLayout
 {
 private:
-	Scene* _scene;
+	Scene *_scene;
 
-	Node2D* _ndLoad;
-	UISprite* _spriteLoad;
-	Node2D* _ndLoadBar;
-	UISprite* _spriteLoadBar;
+	Node2D *_ndLoad;
+	UISprite *_spriteLoad;
+	Node2D *_ndLoadBar;
+	UISprite *_spriteLoadBar;
 	float _loadProgress = 0.0f;
 	void _initLoadUI();
+	/**
+	 * @brief 初始化主界面
+	 * 包含menu和layout
+	 */
+	Node2D *_ndMain;
+	UISprite *_spriteMain;
+	void _initMainUI();
+	Node2D *_ndMenu;
+	UISprite *_spriteMenu;
+	UIWidget *_widgetMenu;
+	void _initMenuUI();
+	/**
+	 * @brief 初始化布局界面
+	 * 水平布局(包含(hierarchy、asset)、(scene、tool)、property)
+	 */
+	Node2D *_ndLayout;
+	UISprite *_spriteLayout;
+	UIWidget *_widgetLayout;
+	UILayoutHorizontal *_layoutHorizontal;
+	void _initLayoutUI();
+
+	Node2D* ndLeft;
+	UISprite* spriteLeft;
+	Node2D* ndCenter;
+	UISprite* spriteCenter;
+	Node2D* ndRight;
+	UISprite* spriteRight;
 
 
-	Node2D* _ndMain;
-	UISprite* _spriteMain;
-	Node2D* _ndMenu;
-	UISprite* _spriteMenu;
-	Node2D* _ndHierarchy;
-	UISprite* _spriteHierarchy;
-	Node2D* _ndAsset;
-	UISprite* _spriteAsset;
-	Node2D* _ndScene;
-	UISprite* _spriteScene;
-	Node2D* _ndTool;
-	UISprite* _spriteTool;
-	Node2D* _ndProperty;
-	UISprite* _spriteProperty;
+
+
+	Node2D *_ndHierarchy;
+	UISprite *_spriteHierarchy;
+	Node2D *_ndAsset;
+	UISprite *_spriteAsset;
+	Node2D *_ndScene;
+	UISprite *_spriteScene;
+	Node2D *_ndTool;
+	UISprite *_spriteTool;
+	Node2D *_ndProperty;
+	UISprite *_spriteProperty;
 	float _border = 2.0f;
 	float _width;
 	float _height;
@@ -67,9 +96,6 @@ private:
 	float tool_width;
 	float tool_height;
 
-
-	void _initMainUI();
-	void _initMenuUI();
 	void _initHierarchyUI();
 	void _initAssetsUI();
 	void _initSceneUI();
@@ -82,25 +108,27 @@ private:
 
 public:
 	EditorLayout();
-	
+
 	void setLoadProgress(float progress);
 	/**
 	 * @brief 启动布局
 	 */
 	void launch();
 
-
-
-	Scene* scene() {
+	Scene *scene()
+	{
 		return this->_scene;
 	}
-	Node2D* getHierarchy() {
+	Node2D *getHierarchy()
+	{
 		return this->_ndHierarchy;
 	}
-	Node2D* getAssets() {
+	Node2D *getAssets()
+	{
 		return this->_ndAsset;
 	}
-	Node2D* getProperty() {
+	Node2D *getProperty()
+	{
 		return this->_ndProperty;
 	}
 

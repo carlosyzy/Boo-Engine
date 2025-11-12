@@ -38,18 +38,18 @@ class Node
 {
 private:
 	int _nodeEventId = 0;
-	struct Listener
+	struct TransformListener
 	{
-		std::function<void()> callback;
+		std::function<void(uint32_t)> callback;
 		void *owner;
 		// 唯一标识符
 		uint64_t id;
-		Listener(std::function<void()> cb, void *own, uint64_t id)
+		TransformListener(std::function<void(uint32_t)> cb, void *own, uint64_t id)
 			: callback(cb), owner(own), id(id)
 		{
 		}
 	};
-	std::unordered_map<std::string, std::vector<Listener>> _listeners;
+	std::vector<TransformListener> _transformListeners;
 	
 
 protected:
@@ -135,15 +135,11 @@ protected:
 	 * @brief 触发事件
 	 * @param eventName 事件名称
 	 */
-	void emit(const std::string eventName)
+	void emitTransformChanged(uint32_t flag)
 	{
-		auto it = this->_listeners.find(eventName);
-		if (it != this->_listeners.end())
+		for (auto &listener : this->_transformListeners)
 		{
-			for (auto &listener : it->second)
-			{
-				listener.callback();
-			}
+			listener.callback(flag);
 		}
 	}
 	virtual void _updateWorldTransform();
@@ -237,30 +233,27 @@ public:
 				(instance->*func)();
 			}
 		};
-		this->_listeners[NodeEvent::ON_TRANSFORM_CHANGED].emplace_back(callback, dynamic_cast<void *>(instance), id);
+		this->_transformListeners.emplace_back(callback, dynamic_cast<void *>(instance), id);
 		return id;
 	}
-	void off(uint64_t id)
+	void offTransformChange(uint64_t id)
 	{
-		for (auto it = this->_listeners.begin(); it != this->_listeners.end(); ++it)
+		for (auto it = this->_transformListeners.begin(); it != this->_transformListeners.end(); ++it)
 		{
-			auto &listeners = it->second;
-			for (auto listenerIt = listeners.begin(); listenerIt != listeners.end(); ++listenerIt)
+			if (it->id == id)
 			{
-				if (listenerIt->id == id)
-				{
-					listeners.erase(listenerIt);
-					return;
-				}
+				this->_transformListeners.erase(it);
+				return;
 			}
 		}
 	}
 	void offAll()
 	{
-		this->_listeners.clear();
+		this->_transformListeners.clear();
 	}
 
-	Node *getParent();
+	Node *getParent() { return this->_parent; }
+
 	void setParent(Node *node);
 
 	/**

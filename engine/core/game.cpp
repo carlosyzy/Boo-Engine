@@ -1,11 +1,8 @@
 #include "game.h"
-#include "gfx/gfx-mgr.h"
-#include "renderer/ui/ui-sprite.h"
-#include "alpha/alpha.h"
+
 Game::Game() : _assetsManager(nullptr),
 			   _curScene(nullptr)
 {
-	
 }
 
 void Game::init()
@@ -46,11 +43,12 @@ void Game::_initFont()
 
 void Game::_initComponents()
 {
-	this->_componentFactory = new ComponentFactory();
-	this->_componentFactory->registerClass<UISprite>("UISprite");
+	this->registerComponentClass<UISprite>("UISprite");
+	this->registerComponentClass<UIWidget>("UIWidget");
+	this->registerComponentClass<UILayoutHorizontal>("UILayoutHorizontal");
 	/*
 	  this->_componentFactory->registerClass<Text>("Text");
-	  this->_componentFactory->registerClass<UIWidget>("UIWidget");
+
 	  this->_componentFactory->registerClass<NodeTree>("NodeTree");
 	  this->_componentFactory->registerClass<FileTree>("FileTree");
 	  this->_componentFactory->registerClass<UIMask>("UIMask");*/
@@ -78,7 +76,25 @@ void Game::unschedule(int scheduleID)
 {
 	this->_schedules.erase(scheduleID);
 }
+/**
+ * @brief 创建组件
+ * 
+ * @param className 组件类名
+ * @param node 节点
+ * @param uuid 组件UUID
+ * @return Component* 组件指针
+ */
+Component *Game::createComponent(const std::string &className, Node *node, std::string uuid)
+{
+	auto it = this->_creatorComponentMap.find(className);
+	if (it != this->_creatorComponentMap.end())
+	{
+		return it->second(node, uuid);
+	}
 
+	std::cout << "Component class not found: " << className << std::endl;
+	return nullptr;
+}
 void Game::addCompClearCaches(Component *comp)
 {
 	std::cout << "Game::addCompClearCaches: comp: " << comp->getNode()->getName() << std::endl;

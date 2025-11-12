@@ -22,10 +22,10 @@ public:
     void setZ(float z);
     void min(Vec3 &v);
     void max(Vec3 &v);
-    float getX();
-    float getY();
-    float getZ();
-    float len();
+    float getX() const;
+    float getY() const;
+    float getZ() const;
+    float len() const;
     void add(Vec3 &v);
     void subtract(Vec3 &v);
     void rotate(Quat *q);

@@ -1,5 +1,6 @@
 #include "alpha.h"
 #include "../../boo.h"
+#include "../renderer/ui/ui-sprite.h"
 
 Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid), _logoAlphaNum(0.0f)
 {

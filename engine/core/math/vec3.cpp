@@ -40,19 +40,20 @@ void Vec3::setZ(float z)
 {
     this->_z = z;
 }
-float Vec3::getX()
+float Vec3::getX() const
 {
     return this->_x;
 }
-float Vec3::getY()
+float Vec3::getY() const
 {
     return this->_y;
 }
-float Vec3::getZ()
+// float Vec2::getX() const
+float Vec3::getZ() const
 {
     return this->_z;
 }
-float Vec3::len()
+float Vec3::len() const
 {
     return sqrt(this->_x * this->_x + this->_y * this->_y + this->_z + this->_z);
 }

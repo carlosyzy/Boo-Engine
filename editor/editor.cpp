@@ -10,9 +10,9 @@
 // #include "../engine/core/renderer/ui/sprite.h"
 // #include "../engine/core/global/event.h"
 // #include "../engine/core/global/global.h"
-// #include "hierarchy/editor-hierarchy.h"
-// #include "assets/editor-assets.h"
-// #include "property/editor-property.h"
+#include "hierarchy/editor-hierarchy.h"
+#include "assets/editor-assets.h"
+#include "property/editor-property.h"
 
 Editor::Editor() : _editorLayout(nullptr)
 {
@@ -84,36 +84,25 @@ void Editor::_launchEditor()
 {
 	std::cout << "launch editor" << std::endl;
 	this->_editorLayout->launch();
-	/*this->_initHierarchy();
-	this->_initAssets();
-	this->_initProperty();*/
+	this->_initHierarchy();
+	// this->_initAssets();
+	// this->_initProperty();
 
 	/*  EditorIpc::getInstance()->on(IpcEvent::UPDATE_HIERARCHY_ROOT, &Editor::_onHierarchyRootUpdate, this);
 	  EditorIpc::getInstance()->send(IpcEvent::UPDATE_HIERARCHY_ROOT,0);*/
 }
-// void Editor::_initEditorLayout()
-// {
-// 	// this->_editorLayout = new EditorLayout();
-// 	// this->_editorLayout->load();
-// 	// // 加载完成后删除布局对象
-// 	// delete this->_editorLayout;
-// 	// this->_editorLayout = nullptr;
-// 	this->_editorLayout->launch();
-// 	std::cout << "launch editor layout:"<<this->_editorLayout << std::endl;
-// }
-
-// void Editor::_initHierarchy()
-//{
-//     Node2D *layout = this->_editorLayout->getHierarchy();
-//     this->_hierarchy = new EditorHierarchy(layout);
-// }
+void Editor::_initHierarchy()
+{
+    // Node2D *layout = this->_editorLayout->getHierarchy();
+    // this->_hierarchy = new EditorHierarchy(layout);
+}
 // void Editor::_initAssets()
-//{
+// {
 //     Node2D *layout = this->_editorLayout->getAssets();
 //     this->_assets = new EditorAssets(layout);
 // }
 // void Editor::_initProperty()
-//{
+// {
 //     Node2D *layout = this->_editorLayout->getProperty();
 //     this->_property = new EditorProperty(layout);
 // }

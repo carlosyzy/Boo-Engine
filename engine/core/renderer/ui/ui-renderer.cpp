@@ -14,7 +14,6 @@ UIRenderer::UIRenderer(Node *node, std::string uuid) : Component(node, uuid)
 {
 	this->_flag = static_cast<uint32_t>(UIFlag::UI_ALL);
 	this->_layer = NodeLayer::Node2D;
-
 	// 创建渲染物体
 	GfxMgr::getInstance()->createObject(this->_uuid, "ui", this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
 }
@@ -84,8 +83,8 @@ void UIRenderer::render()
 		Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
 		GfxMgr::getInstance()->setObjectModelMatrix(this->_uuid, node2D->uiWorldMatrix().data());
 		/*UIMaskRect& maskRect = node2D->maskRect();*/
-		std::cout << "UIRenderer::render: maskRect: " << node2D->uiWorldMatrix().data()[0] << ", " << node2D->uiWorldMatrix().data()[5] << ", " << std::endl;
-		GfxMgr::getInstance()->setUIObjectMask(this->_uuid, 0, 0, 0, 0, 0);
+		// std::cout << "UIRenderer::render: maskRect: " << node2D->uiWorldMatrix().data()[0] << ", " << node2D->uiWorldMatrix().data()[5] << ", " << std::endl;
+		// GfxMgr::getInstance()->setUIObjectMask(this->_uuid, 0, 0, 0, 0, 0);
 	}
 
 	if (!this->isEnabled())
@@ -115,6 +114,7 @@ void UIRenderer::destroy()
 {
 	Component::destroy();
 	std::cout << "UIRenderer::destroy" << std::endl;
+	GfxMgr::getInstance()->destroyObject(this->_uuid);
 }
 
 UIRenderer::~UIRenderer()

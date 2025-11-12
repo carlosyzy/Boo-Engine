@@ -2,7 +2,6 @@
 #include <iostream>
 #include "node-2d.h"
 #include "../utils/uuid-util.h"
-#include "../component/component-factory.h"
 #include "../../boo.h"
 Node2D::Node2D(const std::string name, const std::string uuid)
 {
@@ -39,7 +38,6 @@ void Node2D::setAnchor(float x, float y)
 	}
 	this->_anchor.set(x, y);
 	this->_updateWorldTransformFlag(NodeTransformFlag::ANCHOR_FLAG);
-	this->emit(NodeEvent::ON_TRANSFORM_CHANGED);
 }
 /**
  * 2d 节点的大小
@@ -55,7 +53,6 @@ void Node2D::setSize(float width, float height)
 	std::cout << "Node2D::setSize: " << width << ", " << height << std::endl;
 	this->_size.set(width, height);
 	this->_updateWorldTransformFlag(NodeTransformFlag::SIZE_FLAG);
-	this->emit(NodeEvent::ON_TRANSFORM_CHANGED);
 }
 /**
  * 2d 节点的世界变换矩阵
@@ -74,8 +71,7 @@ void Node2D::_updateWorldTransform()
 
 Component *Node2D::addComponent(std::string name, std::string uuid)
 {
-	ComponentFactory *componentFactory = Boo::game->componentFactory();
-	Component *component = componentFactory->create(name, this, uuid);
+	Component *component = Boo::game->createComponent(name, this, uuid);
 	if (component == nullptr)
 	{
 		std::cout << name << ":Component Not  register" << std::endl;

@@ -256,6 +256,14 @@ void GfxRenderer::createObject(std::string id, std::string passName, std::vector
 // } */
 void GfxRenderer::destroyObject(std::string id)
 {
+    if (this->_objects.find(id) != this->_objects.end())
+    {
+        std::cout << "destroyGfxObject:id:aaaaaaaaaa" << id << std::endl;
+        // this->_objects[id]->clear();
+        // delete this->_objects[id];
+        // this->_objects.erase(id);
+        // return;
+    }
 }
 void GfxRenderer::setObjectModelMatrix(std::string id, std::array<float, 16> modelMatrix)
 {

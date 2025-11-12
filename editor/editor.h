@@ -10,9 +10,9 @@ class Scene;
 class Node;
 class Sprite;
 class EditorLayout;
-// class EditorHierarchy;
-// class EditorAssets;
-// class EditorProperty;
+class EditorHierarchy;
+class EditorAssets;
+class EditorProperty;
 
 class Editor
 {
@@ -32,18 +32,18 @@ private:
     bool _loadComplete = false;
     void _onLoadCallBack(const int complete, const int all, const float progress);
 
-
     void _launchEditor();
 
-    /*EditorHierarchy *_hierarchy;
-   EditorAssets *_assets;
-   EditorProperty *_property;
+    EditorHierarchy *_hierarchy;
+    EditorAssets *_assets;
+    EditorProperty *_property;
 
-   void _initHierarchy();
-   void _initAssets();
-   void _initProperty();
+    void _initHierarchy();
+    void _initAssets();
+    void _initProperty();
 
-   void _onHierarchyRootUpdate(const EventValue& value);*/
+    // void _onHierarchyRootUpdate(const EventValue &value);
+
 public:
     static Editor *getInstance();
     /**

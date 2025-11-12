@@ -15,7 +15,6 @@ protected:
     Node *_node;
     bool _isEnabled = true;
     int _priority;
-
 public:
     Component(Node *node, std::string uuid = "");
     bool isEnabled() { return this->_isEnabled; }
