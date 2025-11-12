@@ -54,9 +54,6 @@
     <ClCompile Include="engine\core\component\component.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\component\component-factory.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\window\window-mgr.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
