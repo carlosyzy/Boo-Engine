@@ -26,10 +26,10 @@ Asset *AssetLoad::load(const std::string path)
     }
     int taskID = this->_TaskNextID++;
     // 创建加载任务
-    long long time = TimeUtil::nowTime();
+   
     AssetTask task(this->_mgr, this->_cache, taskID);
     Asset *asset2 = task.load(normPath);
-    std::cout << "load asset " << normPath << " cost :" << TimeUtil::nowTime() - time << " ms" << std::endl;
+    
     return asset2;
 }
 

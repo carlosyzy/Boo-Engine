@@ -40,6 +40,7 @@ void AssetTask::run()
 		this->_loadError();
 		return;
 	}
+	long long time = TimeUtil::nowTime();
 	std::filesystem::path path = std::filesystem::relative(fullPath, std::filesystem::path(this->_mgr->root()));
 	std::string resKey = path.generic_string();
 
@@ -61,6 +62,7 @@ void AssetTask::run()
 		std::cerr << "AssetLoad:Unknown file extension:" << extension << std::endl;
 		this->_loadError();
 	}
+	std::cout << "load asset " << resKey << " cost :" << TimeUtil::nowTime() - time << " ms" << std::endl;
 }
 void AssetTask::_createTexture(const std::string resKey, const std::string fullPath)
 {
