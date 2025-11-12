@@ -18,7 +18,7 @@ private:
      */
     int _size;
     // // FILL 目前只使用单一模式:填充
-    std::vector<UILayoutHorizontalConfig> _configs;
+   /* std::vector<UILayoutHorizontalConfig> _configs;*/
 
     int _nodeTransformEventId = 0;
     void _onNodeTransformEvent(uint32_t eventId);

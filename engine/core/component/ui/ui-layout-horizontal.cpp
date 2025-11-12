@@ -33,39 +33,39 @@ UILayoutHorizontal::UILayoutHorizontal(Node *node, std::string uuid) : Component
     //     }
 
     // }
-    this->_nodeTransformEventId = this->_node->onTransformChange(&UILayoutHorizontal::_onNodeTransformEvent, this);
+    //this->_nodeTransformEventId = this->_node->onTransformChange(&UILayoutHorizontal::_onNodeTransformEvent, this);
 }
 void UILayoutHorizontal::setSize(int size)
 {
-    this->_clear();
-    this->_size = size;
-    Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
-    if (node2D == nullptr)
-    {
-        return;
-    }
+    //this->_clear();
+    //this->_size = size;
+    //Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
+    //if (node2D == nullptr)
+    //{
+    //    return;
+    //}
   
 
-    for (int i = 0; i < this->_size; i++)
-    {
-        UILayoutHorizontalConfig config;
-        Node2D *ndContent = new Node2D("Editor-Content");
-        this->_node->addChild(ndContent);
-        UISprite *spriteContent = dynamic_cast<UISprite *>(ndContent->addComponent("UISprite"));
-        if (spriteContent != nullptr)
-        {
-            std::cout << "EditorLayout::_initLayoutUI1 UISprite" << std::endl;
-            spriteContent->setTexture("resources/texture/ic-default.png");
-            spriteContent->setMaterial(nullptr);
-            spriteContent->setColor(0.3f, 0.1f, 0.1f, 1.0);
-        }
-        // ndContent->setSize(ndSize.getWidth() / this->_size, ndSize.getHeight());
-        // ndContent->setPosition(-ndSize.getWidth() / 2.0f + i * ndSize.getWidth() / this->_size, 0, 0.0f);
-        // config.width = ndSize.getWidth() / this->_size;
-        config.node = ndContent;
-        this->_configs.push_back(config);
-    }
-    this->_onNodeTransformEvent(NodeTransformFlag::SIZE_FLAG);
+    //for (int i = 0; i < this->_size; i++)
+    //{
+    //    UILayoutHorizontalConfig config;
+    //    Node2D *ndContent = new Node2D("Editor-Content");
+    //    this->_node->addChild(ndContent);
+    //    UISprite *spriteContent = dynamic_cast<UISprite *>(ndContent->addComponent("UISprite"));
+    //    if (spriteContent != nullptr)
+    //    {
+    //        std::cout << "EditorLayout::_initLayoutUI1 UISprite" << std::endl;
+    //        spriteContent->setTexture("resources/texture/ic-default.png");
+    //        spriteContent->setMaterial(nullptr);
+    //        spriteContent->setColor(0.3f, 0.1f, 0.1f, 1.0);
+    //    }
+    //    // ndContent->setSize(ndSize.getWidth() / this->_size, ndSize.getHeight());
+    //    // ndContent->setPosition(-ndSize.getWidth() / 2.0f + i * ndSize.getWidth() / this->_size, 0, 0.0f);
+    //    // config.width = ndSize.getWidth() / this->_size;
+    //    config.node = ndContent;
+    //    this->_configs.push_back(config);
+    //}
+    //this->_onNodeTransformEvent(NodeTransformFlag::SIZE_FLAG);
 }
 void UILayoutHorizontal::_onNodeTransformEvent(uint32_t eventId)
 {
@@ -89,16 +89,8 @@ void UILayoutHorizontal::render()
 }
 void UILayoutHorizontal::_clear()
 {
-    for (auto &config : this->_configs)
-    {
-        if (config.node != nullptr)
-        {
-            config.node->destroy();
-            config.node = nullptr;
-        }
-    }
-
-    this->_configs.clear();
+   
+   /* this->_configs.clear();*/
 }
 void UILayoutHorizontal::destroy()
 {
