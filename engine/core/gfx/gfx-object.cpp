@@ -3,7 +3,7 @@
 #include "gfx-texture.h"
 #include "gfx-mgr.h"
 #include "gfx-context.h"
-#include "../game.h"
+#include "../../boo.h"
 
 GfxObject::GfxObject(GfxContext *context) : _color{1.0f, 1.0f, 1.0f, 1.0f},
                                             _uiMask{0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
@@ -316,8 +316,8 @@ void GfxObject::_updateViewMatUniformBuffer()
 void GfxObject::_updateProjMatUniformBuffer()
 {
     this->_projMatrix[0] = this->_projMatrix[5] = this->_projMatrix[10] = this->_projMatrix[15] = 1.0f;
-    this->_projMatrix[0] = 2.0f / Game::getInstance()->view().width;
-    this->_projMatrix[5] = 2.0f / Game::getInstance()->view().height;
+    this->_projMatrix[0] = 2.0f / Boo::game->view()->width;
+    this->_projMatrix[5] = 2.0f / Boo::game->view()->height;
 
     if (this->_uniformBuffersMapped.empty())
         return;

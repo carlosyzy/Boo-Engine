@@ -1,7 +1,4 @@
 #include "assets-manager.h"
-#include "asset.h"
-#include <filesystem>
-
 #ifdef _WIN32
 #include <windows.h>
 #elif defined(__APPLE__)
@@ -9,10 +6,6 @@
 #include <limits.h>
 #include <mach-o/dyld.h> // 必需的头文件
 #endif
-#include <iostream>
-
-#include "asset-cache.h"
-
 #include "../utils/time-util.h"
 
 AssetsManager::AssetsManager()

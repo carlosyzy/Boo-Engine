@@ -4,7 +4,7 @@
 // #include "libs/stb/stb_image.h"
 #include "../editor/editor.h"
 #include "window/window-mgr.h"
-#include "core/gfx/gfx-mgr.h"
+
 // #include "core/font/freetype-mgr.h"
 // #include "core/asset/asset-mgr.h"
 #include "core/utils/time-util.h"
@@ -12,7 +12,7 @@
 // #include "core/global/global.h"
 // #include "core/utils/json.h"
 // #include "core/input/input-mgr.h"
-#include "core/game.h"
+#include "boo.h"
 
 Engine::Engine()
 {
@@ -23,8 +23,6 @@ void Engine::init()
 	this->_deltaTime = TimeUtil::nowTime();
 	// 初始化窗口
 	this->_initWindow();
-	// 初始化 Vulkan
-	this->_initGFX();
 	// 初始化Game
 	this->_initGame();
 	// 初始化编辑器
@@ -35,16 +33,12 @@ void Engine::_initWindow()
 	std::cout << "INIT WINDOW" << std::endl;
 	WindowMgr::getInstance()->init();
 }
-void Engine::_initGFX()
-{
-	std::cout << "INIT GFX" << std::endl;
-	GfxMgr::getInstance()->init();
-	GfxMgr::getInstance()->createRenderPass("ui");
-}
+
 void Engine::_initGame()
 {
 	std::cout << "INIT Game MGR" << std::endl;
-	Game::getInstance()->init();
+	Boo::game = new Game();
+	Boo::game->init();
 }
 void Engine::_initEditor()
 {
@@ -123,12 +117,10 @@ void Engine::update(float dt)
 	bool isChange = WindowMgr::getInstance()->getWindowSize(width, height);
 	if (isChange)
 	{
-		Game::getInstance()->setView(width, height);
+		Boo::game->setView(width, height);
 	}
 	Editor::getInstance()->update(dt);
-	Game::getInstance()->update(dt);
-	// 更新渲染器
-	GfxMgr::getInstance()->update();
+	Boo::game->update(dt);
 }
 
 Engine::~Engine()

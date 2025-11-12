@@ -1,7 +1,7 @@
 #include "component.h"
 #include "../scene/node.h"
 #include "../utils/uuid-util.h"
-#include "../game.h"
+#include "../../boo.h"
 
 Component::Component(Node *node, std::string uuid) : _layer(NodeLayer::Node)
 {
@@ -32,7 +32,7 @@ void Component::render()
 void Component::destroy()
 {
     std::cout << "Component::destroy" << std::endl;
-    Game::getInstance()->addCompClearCaches(this);
+    Boo::game->addCompClearCaches(this);
 }
 Component::~Component() {
     std::cout << "Component::~destructor" << std::endl;

@@ -3,7 +3,7 @@
 #include "node-2d.h"
 #include "../utils/uuid-util.h"
 #include "../component/component-factory.h"
-#include "../game.h"
+#include "../../boo.h"
 Node2D::Node2D(const std::string name, const std::string uuid)
 {
 	this->_name = name;
@@ -74,7 +74,7 @@ void Node2D::_updateWorldTransform()
 
 Component *Node2D::addComponent(std::string name, std::string uuid)
 {
-	ComponentFactory *componentFactory = Game::getInstance()->componentFactory();
+	ComponentFactory *componentFactory = Boo::game->componentFactory();
 	Component *component = componentFactory->create(name, this, uuid);
 	if (component == nullptr)
 	{

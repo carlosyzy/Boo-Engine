@@ -59,8 +59,6 @@ void AssetLoad::clearLoadCall(const int loadId)
     }
 }
 
-
-
 /**
  * @brief 更新加载任务
  * @param deltaTime 时间间隔

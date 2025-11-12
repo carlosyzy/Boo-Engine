@@ -2,14 +2,13 @@
 #include <filesystem>
 #include <iostream>
 #include "editor-config.h"
-
+#include "../engine/boo.h"
 #include "../engine/core/game.h"
 #include "../engine/core/scene/scene.h"
 #include "../engine/core/scene/node-2d.h"
 #include "../engine/core/renderer/ui/ui-sprite.h"
 #include "../engine/core/assets/assets-manager.h"
-#include "../engine/core/assets/asset.h"
-#include "../engine/core/assets/texture.h"
+
 // #include "../engine/core/input/input-mgr.h"
 
 EditorLayout::EditorLayout()
@@ -77,7 +76,7 @@ void EditorLayout::_initMainUI()
 	if (comp != nullptr)
 	{
 		this->_spriteMain = dynamic_cast<UISprite *>(comp);
-		Asset *tex = Game::getInstance()->assetsManager()->get("F:/worksapces/Boo-Engine/x64/Debug/res/ic-default.png");
+		Asset *tex = Boo::game->assetsManager()->get("F:/worksapces/Boo-Engine/x64/Debug/res/ic-default.png");
 		this->_spriteMain->setTexture(dynamic_cast<Texture *>(tex));
 		this->_spriteMain->setMaterial(nullptr);
 		this->_spriteMain->setColor(1.1f, 0.1f, 0.1f, 1.0f);
@@ -151,11 +150,11 @@ void EditorLayout::_initPropertyUI()
 }
 void EditorLayout::update(float dt)
 {
-	View &view = Game::getInstance()->view();
-	if (this->_width != view.width || this->_height != view.height)
+	View *view = Boo::game->view();
+	if (this->_width != view->width || this->_height != view->height)
 	{
-		this->_width = view.width;
-		this->_height = view.height;
+		this->_width = view->width;
+		this->_height = view->height;
 		this->_updateModuleSize();
 	}
 	if (this->_scene != nullptr)

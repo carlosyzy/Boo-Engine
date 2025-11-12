@@ -1,5 +1,6 @@
 #include "editor.h"
 #include "../engine/engine.h"
+#include "../engine/boo.h"
 #include "../engine/core/game.h"
 #include "../engine/core/assets/assets-manager.h"
 #include "editor-layout.h"
@@ -38,7 +39,7 @@ void Editor::_initLayout()
 	// // & : 取地址运算符，获取成员函数的地址
 	// // 成员函数指针的正确格式是 &ClassName::MemberFunction
 	// // &this->member 语法用于获取成员变量的地址，不适用于成员函数
-	this->_scheduleID_AlphaAnim = Game::getInstance()->scheduleOnce(&Editor::_onAlphaAnimOK, this, 2.0f);
+	this->_scheduleID_AlphaAnim = Boo::game->scheduleOnce(&Editor::_onAlphaAnimOK, this, 2.0f);
 }
 void Editor::_onAlphaAnimOK()
 {
@@ -52,7 +53,7 @@ void Editor::_onAlphaAnimOK()
 void Editor::_initRes()
 {
 	// 先加载公用resources文件,
-	const std::string &root = Game::getInstance()->assetsManager()->root();
+	const std::string &root = Boo::game->assetsManager()->root();
 	std::filesystem::path fullPath = std::filesystem::path(root) / "resources";
 	std::vector<std::string> paths;
 	for (const auto &entry : std::filesystem::recursive_directory_iterator(fullPath))
@@ -64,7 +65,7 @@ void Editor::_initRes()
 		}
 	}
 	//将在工程
-	Game::getInstance()->assetsManager()->loadListAsync(paths, &Editor::_onLoadCallBack, this);
+	Boo::game->assetsManager()->loadListAsync(paths, &Editor::_onLoadCallBack, this);
 }
 void Editor::_onLoadCallBack(const int complete, const int all, const float progress)
 {

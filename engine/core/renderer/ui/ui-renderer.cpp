@@ -1,7 +1,8 @@
 #include "ui-renderer.h"
 #include <filesystem>
 #include "../../gfx/gfx-mgr.h"
-#include "../../game.h"
+#include "../../boo.h"
+
 #include "../../scene/node.h"
 #include "../../scene/node-2d.h"
 #include "../../assets/material.h"
@@ -63,7 +64,7 @@ void UIRenderer::setTexture(Texture *texture)
 }
 void UIRenderer::setTexture(std::string texture)
 {
-	Asset *tex = Game::getInstance()->assetsManager()->get(texture);
+	Asset *tex = Boo::game->assetsManager()->get(texture);
 	this->setTexture(dynamic_cast<Texture *>(tex));
 }
 void UIRenderer::update(float deltaTime)

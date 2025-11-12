@@ -4,12 +4,13 @@
 #include <functional>
 #include <unordered_map>
 
-class Component;
-class Scene;
-class ComponentFactory;
-class Event;
-class AssetsManager;
-class Node;
+#include "component/component-factory.h"
+#include "component/component.h"
+#include "assets/assets-manager.h"
+#include "global/event.h"
+#include "scene/scene.h"
+
+#include "renderer/ui/ui-sprite.h"
 
 struct View
 {
@@ -40,39 +41,85 @@ struct ScheduleInfo
 class Game
 {
 private:
-    Game();
-    ~Game();
-    Game(const Game &) = delete;            // 禁用拷贝构造
-    Game &operator=(const Game &) = delete; // 禁用赋值操作符
-
-    std::vector<Component *> _compClearCaches;
-    std::vector<Node *> _nodeClearCaches;
-
-    Event *_event;
-    ComponentFactory *_componentFactory = nullptr;
-    View _view;
-    Scene *_curScene;
-    AssetsManager *_assetsManager;
-
+    // 调度器相关
     uint64_t _scheduleNextID_ = 0;
     std::unordered_map<int, ScheduleInfo> _schedules;
+    // 组件清理相关
+    std::vector<Component *> _compClearCaches;
+    // 节点清理相关
+    std::vector<Node *> _nodeClearCaches;
 
+    /**
+     * @brief 事件系统
+     */
+    Event *_event;
+    /**
+     * @brief 视图系统
+     */
+    View *_view;
+    /**
+     * @brief 资产系统
+     */
+    AssetsManager *_assetsManager;
+    /**
+     * @brief 组件系统
+     */
+    ComponentFactory *_componentFactory = nullptr;
+    /**
+     * @brief 当前场景
+     */
+    Scene *_curScene;
+
+    /**
+     * @brief 初始化图形库
+     */
+    void _initGFX();
+    /**
+     * @brief 初始化事件系统
+     */
     void _initEvent();
+    /**
+     * @brief 初始化输入系统
+     */
     void _initInput();
+    /**
+     * @brief 初始化视图系统
+     */
+    void _initView();
+    /**
+     * @brief 初始化字体系统
+     */
     void _initFont();
+    /**
+     * @brief 初始化组件系统
+     */
     void _initComponents();
+    /**
+     * @brief 初始化资产系统
+     */
     void _initAssets();
+    /**
+     * @brief 初始化透明度系统
+     */
     void _initAlpha();
 
+    void _update(float dt);
+    void _lateUpdate(float dt);
+    void _render(float dt);
+    void _clear();
     void _updateSchedules(float dt);
     void _updateClearCaches();
 
 public:
-    static Game *getInstance();
+    Game();
+    ~Game();
+    /**
+     * @brief 初始化游戏
+     */
     void init();
 
     void setView(int width, int height);
-    View &view()
+    View *view()
     {
         return this->_view;
     }
@@ -90,6 +137,7 @@ public:
     }
     AssetsManager *assetsManager()
     {
+        std::cout << "Game::assetsManager():" << this->_assetsManager << std::endl;
         return this->_assetsManager;
     }
     // typename T: 表示一个类型参数，通常指类的类型
@@ -124,8 +172,8 @@ public:
 
     Scene *openScene(std::string sceneName);
 
-    void addCompClearCaches(Component* comp);
-    void addNodeClearCaches(Node* node);
+    void addCompClearCaches(Component *comp);
+    void addNodeClearCaches(Node *node);
 
     void update(float dt);
 };

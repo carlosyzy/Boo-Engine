@@ -1,7 +1,7 @@
 #include "node.h"
 #include "../utils/uuid-util.h"
 #include "../component/component.h"
-#include "../game.h"
+#include "../../boo.h"
 
 void Node::setName(const std::string &name)
 {
@@ -271,5 +271,5 @@ void Node::destroy()
 	{
 		this->_parent->removeChild(this);
 	}
-	Game::getInstance()->addNodeClearCaches(this);
+	Boo::game->addNodeClearCaches(this);
 }

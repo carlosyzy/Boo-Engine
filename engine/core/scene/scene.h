@@ -2,8 +2,8 @@
 #include "node.h"
 #include <vector>
 #include <memory>
-class Node2D;
-class Node3D;
+#include "node-3d.h"
+#include "node-2d.h"
 
 class Scene : public Node
 {

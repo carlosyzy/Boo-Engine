@@ -1,8 +1,7 @@
 #include "scene.h"
 #include <iostream>
 #include "../utils/uuid-util.h"
-#include "node-3d.h"
-#include "node-2d.h"
+
 
 Scene::Scene(const std::string name, const std::string uuid)
 {

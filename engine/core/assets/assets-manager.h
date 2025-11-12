@@ -3,11 +3,16 @@
 #include <unordered_map>
 #include <filesystem>
 #include <functional>
+#include <iostream>
+#include <filesystem>
+#include "asset.h"
 #include "asset-load.h"
-enum class AssetType;
-class Asset;
-class AssetCache;
-struct AssetLoadResult;
+#include "asset-cache.h"
+#include "texture.h"
+#include "material.h"
+#include "shader.h"
+
+
 
 // 基础图片资源
 class AssetsManager

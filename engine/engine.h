@@ -9,7 +9,7 @@ class Scene;
 class Engine
 {
 private:
-    long  _deltaTime;
+    long _deltaTime;
     int _frameRate;
     /**
      * @brief 初始化窗口
@@ -18,12 +18,7 @@ private:
     /**
      * @brief 初始化图形库
      */
-    void _initGFX();
-     /**
-     * @brief 初始化图形库
-     */
-     void _initEditor();
-
+    void _initEditor();
     /**
      * @brief 初始Game
      */
@@ -34,7 +29,6 @@ private:
     void _startRendererThread();
     void _updateRendererLoop();
     void _stopRendererThread();
-    
 
 public:
     Engine();
@@ -55,7 +49,6 @@ public:
      */
     void tick();
     void update(float dt);
-   
-    
+
     ~Engine();
 };

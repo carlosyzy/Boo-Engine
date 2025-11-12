@@ -35,12 +35,12 @@
 //    void send(IpcEvent event, const EventValue& value)
 //    {
 //        std::string eventStr = toStringMap.at(event);
-//        Game::getInstance()->event()->emit(eventStr, value);
+//        Boo::game->event()->emit(eventStr, value);
 //    }
 //    template <typename T, typename Func>
 //    uint64_t on(IpcEvent event, Func func, T *instance)
 //    {
 //        std::string eventStr = toStringMap.at(event);
-//        return Game::getInstance()->event()->on(eventStr, func, instance);
+//        return Boo::game->event()->on(eventStr, func, instance);
 //    }
 //};

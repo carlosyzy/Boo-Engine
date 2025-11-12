@@ -1,34 +1,30 @@
 #include "game.h"
 #include "gfx/gfx-mgr.h"
-#include "global/event.h"
-#include "assets/assets-manager.h"
-#include "scene/scene.h"
-#include "scene/node.h"
-#include "component/component-factory.h"
-#include "component/component.h"
 #include "renderer/ui/ui-sprite.h"
 #include "alpha/alpha.h"
 Game::Game() : _assetsManager(nullptr),
 			   _curScene(nullptr)
 {
-	this->_view.width = 1280;
-	this->_view.height = 720;
+	
 }
-Game *Game::getInstance()
-{
-	static Game instance;
-	return &instance;
-}
+
 void Game::init()
 {
+	this->_initGFX();
 	this->_initEvent();
 	this->_initInput();
+	this->_initView();
 	this->_initFont();
 	this->_initComponents();
 	this->_initAssets();
 	this->_initAlpha();
 }
-
+void Game::_initGFX()
+{
+	std::cout << "INIT GFX" << std::endl;
+	GfxMgr::getInstance()->init();
+	GfxMgr::getInstance()->createRenderPass("ui");
+}
 void Game::_initEvent()
 {
 	this->_event = new Event();
@@ -36,6 +32,12 @@ void Game::_initEvent()
 void Game::_initInput()
 {
 	/* InputMgr::getInstance()->init();*/
+}
+void Game::_initView()
+{
+	this->_view = new View();
+	this->_view->width = 1280;
+	this->_view->height = 720;
 }
 void Game::_initFont()
 {
@@ -68,8 +70,8 @@ void Game::_initAlpha()
 
 void Game::setView(int width, int height)
 {
-	this->_view.width = width;
-	this->_view.height = height;
+	this->_view->width = width;
+	this->_view->height = height;
 }
 
 void Game::unschedule(int scheduleID)
@@ -90,6 +92,15 @@ void Game::addNodeClearCaches(Node *node)
 
 void Game::update(float dt)
 {
+	this->_update(dt);
+	this->_lateUpdate(dt);
+	this->_render(dt);
+	this->_clear();
+	// 更新渲染器
+	GfxMgr::getInstance()->update();
+}
+void Game::_update(float dt)
+{
 	if (this->_curScene)
 	{
 		this->_curScene->update(dt);
@@ -99,20 +110,30 @@ void Game::update(float dt)
 	{
 		this->_assetsManager->update(dt);
 	}
+}
+void Game::_lateUpdate(float dt)
+{
 	if (this->_curScene)
 	{
 		this->_curScene->lateUpdate(dt);
 	}
+}
+void Game::_render(float dt)
+{
 	if (this->_curScene)
 	{
 		this->_curScene->render();
 	}
+}
+void Game::_clear()
+{
 	if (this->_curScene)
 	{
 		this->_curScene->clearNodeFrameFlag();
 	}
 	this->_updateClearCaches();
 }
+
 void Game::_updateSchedules(float dt)
 {
 	for (auto it = this->_schedules.begin(); it != this->_schedules.end();)

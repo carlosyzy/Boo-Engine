@@ -1,11 +1,5 @@
 #include "alpha.h"
-#include "../game.h"
-#include "../scene/scene.h"
-#include "../scene/node-2d.h"
-#include "../renderer/ui/ui-sprite.h"
-#include "../assets/assets-manager.h"
-#include "../assets/asset.h"
-#include "../assets/texture.h"
+#include "../../boo.h"
 
 Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid), _logoAlphaNum(0.0f)
 {
@@ -17,18 +11,17 @@ Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid)
 
 void Alpha::_init()
 {
-	std::cout << "Alpha::init()" << std::endl;
 	this->_initRes();
 	this->_initAlpha();
-	this->_initDelayScheduleID=Game::getInstance()->scheduleOnce(&Alpha::_onAlphaAnimOK,this, this->_alphaDuration/2.0);
+	this->_initDelayScheduleID=Boo::game->scheduleOnce(&Alpha::_onAlphaAnimOK,this, this->_alphaDuration/2.0);
 }
 void Alpha::_initRes()
 {
-	Game::getInstance()->assetsManager()->load("resources/texture/logo.png");
-	Game::getInstance()->assetsManager()->load("resources/texture/ic-default.png");
-	Game::getInstance()->assetsManager()->load("resources/shader/ui/ui.vert.spv");
-	Game::getInstance()->assetsManager()->load("resources/shader/ui/ui.frag.spv");
-	Texture* textureLogo = static_cast<Texture*>(Game::getInstance()->assetsManager()->get("resources/texture/logo.png"));
+	Boo::game->assetsManager()->load("resources/texture/logo.png");
+	Boo::game->assetsManager()->load("resources/texture/ic-default.png");
+	Boo::game->assetsManager()->load("resources/shader/ui/ui.vert.spv");
+	Boo::game->assetsManager()->load("resources/shader/ui/ui.frag.spv");
+	Texture* textureLogo = static_cast<Texture*>(Boo::game->assetsManager()->get("resources/texture/logo.png"));
 	if (textureLogo != nullptr)
 	{
 		this->_logoTxWidth = textureLogo->width();
@@ -37,6 +30,7 @@ void Alpha::_initRes()
 }
 void Alpha::_initAlpha()
 {
+	std::cout << "Alpha::_initAlpha()" << std::endl;
 	this->_ndAlpha = new Node2D("Editor-Alpha");
 	this->_root2D->addChild(this->_ndAlpha);
 	// 添加logo
@@ -47,7 +41,7 @@ void Alpha::_initAlpha()
 	if (compLogo != nullptr)
 	{
 		this->_spriteLogo = dynamic_cast<UISprite*>(compLogo);
-		// Asset *tex = Game::getInstance()->assetsManager()->get("resources/texture/logo.png");
+		// Asset *tex = Boo::game->assetsManager()->get("resources/texture/logo.png");
 		this->_spriteLogo->setTexture("resources/texture/logo.png");
 		this->_spriteLogo->setMaterial(nullptr);
 		this->_spriteLogo->setColor(1.0f, 1.0f, 1.0f, 0.0f);
@@ -80,6 +74,7 @@ void Alpha::_updateLogoAlpha(float deltaTime)
 	{
 		return;
 	}
+	return;
 	this->_logoAlphaNum += deltaTime;
 	this->_spriteLogo->setAlpha(this->_logoAlphaNum / this->_alphaDuration);
 }
@@ -93,8 +88,8 @@ void Alpha::_updateLogoSize()
 	{
 		return;
 	}
-	float _width = Game::getInstance()->view().width;
-	float _height = Game::getInstance()->view().height;
+	float _width = Boo::game->view()->width;
+	float _height = Boo::game->view()->height;
 	if (this->_width == _width && this->_height == _height)
 	{
 		return;
@@ -110,7 +105,7 @@ void Alpha::_updateLogoSize()
 void Alpha::destroy()
 {
 	Scene::destroy();
-	Game::getInstance()->unschedule(this->_initDelayScheduleID);
+	Boo::game->unschedule(this->_initDelayScheduleID);
 }
 Alpha::~Alpha()
 {
