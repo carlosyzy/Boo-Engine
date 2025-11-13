@@ -157,6 +157,8 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="editor\editor-config.cpp" />
     <ClCompile Include="editor\editor-layout.cpp" />
     <ClCompile Include="editor\editor.cpp" />
+    <ClCompile Include="editor\hierarchy\editor-hierarchy-layout.cpp" />
+    <ClCompile Include="editor\hierarchy\editor-hierarchy.cpp" />
     <ClCompile Include="editor\ipc\editor-ipc.cpp" />
     <ClCompile Include="engine\boo.cpp" />
     <ClCompile Include="engine\core\alpha\alpha.cpp" />
@@ -171,6 +173,9 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\component\component.cpp" />
     <ClCompile Include="engine\core\component\ui\ui-layout-horizontal.cpp" />
     <ClCompile Include="engine\core\component\ui\ui-layout-vertical.cpp" />
+    <ClCompile Include="engine\core\component\ui\ui-tree\file-tree.cpp" />
+    <ClCompile Include="engine\core\component\ui\ui-tree\node-tree.cpp" />
+    <ClCompile Include="engine\core\component\ui\ui-tree\ui-tree.cpp" />
     <ClCompile Include="engine\core\component\ui\ui-widget.cpp" />
     <ClCompile Include="engine\core\font\freetype-mgr.cpp" />
     <ClCompile Include="engine\core\game.cpp" />
@@ -208,6 +213,8 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="editor\editor-config.h" />
     <ClInclude Include="editor\editor-layout.h" />
     <ClInclude Include="editor\editor.h" />
+    <ClInclude Include="editor\hierarchy\editor-hierarchy-layout.h" />
+    <ClInclude Include="editor\hierarchy\editor-hierarchy.h" />
     <ClInclude Include="editor\ipc\editor-ipc.h" />
     <ClInclude Include="engine\boo.h" />
     <ClInclude Include="engine\core\alpha\alpha.h" />
@@ -224,6 +231,9 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\component\component.h" />
     <ClInclude Include="engine\core\component\ui\ui-layout-horizontal.h" />
     <ClInclude Include="engine\core\component\ui\ui-layout-vertical.h" />
+    <ClInclude Include="engine\core\component\ui\ui-tree\file-tree.h" />
+    <ClInclude Include="engine\core\component\ui\ui-tree\node-tree.h" />
+    <ClInclude Include="engine\core\component\ui\ui-tree\ui-tree.h" />
     <ClInclude Include="engine\core\component\ui\ui-widget.h" />
     <ClInclude Include="engine\core\font\freetype-mgr.h" />
     <ClInclude Include="engine\core\game.h" />

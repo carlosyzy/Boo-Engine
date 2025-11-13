@@ -153,6 +153,33 @@
     <ClCompile Include="engine\core\assets\asset-task.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="engine\boo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\component\ui\ui-layout-horizontal.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\component\ui\ui-layout-vertical.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\component\ui\ui-widget.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\component\ui\ui-tree\file-tree.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\component\ui\ui-tree\node-tree.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\component\ui\ui-tree\ui-tree.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\hierarchy\editor-hierarchy.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\hierarchy\editor-hierarchy-layout.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\core\math\color.h">
@@ -366,6 +393,33 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\assets\asset-task.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\boo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\component\ui\ui-layout-horizontal.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\component\ui\ui-layout-vertical.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\component\ui\ui-widget.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\component\ui\ui-tree\file-tree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\component\ui\ui-tree\node-tree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\component\ui\ui-tree\ui-tree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\hierarchy\editor-hierarchy.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\hierarchy\editor-hierarchy-layout.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
