@@ -9,6 +9,8 @@ UIWidget::UIWidget(Node *node, std::string uuid) : Component(node, uuid)
 {
     this->_layer = NodeLayer::Node2D;
     this->_flag = 1;
+
+    // this->_nodeTransform_ID = this->_node->onTransformChange(&UIWidget::_onNodeTransformChange, this);
 }
 void UIWidget::setHorizontal(WidgetHorizontal horizontal, WidgetHorizontalParam param)
 {
@@ -22,6 +24,12 @@ void UIWidget::setVertical(WidgetVertical vertical, WidgetVerticalParam param)
     this->_verticalParam = param;
     this->_flag++;
 }
+void UIWidget::_onNodeTransformChange(int nodeTransform)
+{
+   
+}
+
+
 void UIWidget::update(float deltaTime)
 {
     Component::update(deltaTime);

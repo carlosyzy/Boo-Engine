@@ -46,6 +46,8 @@ private:
     WidgetVertical _vertical = WidgetVertical::NONE;
     WidgetVerticalParam _verticalParam{};
 
+    int _nodeTransform_ID = 0;
+    void _onNodeTransformChange(int nodeTransform);
 public:
     UIWidget(Node *node, std::string uuid = "");
     void setHorizontal(WidgetHorizontal horizontal, WidgetHorizontalParam param);

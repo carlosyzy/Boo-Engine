@@ -15,6 +15,7 @@ UITree::UITree(Node *node, std::string uuid) : Component(node, uuid)
     this->_initContent();
     // this->_initSelect();
     // this->_initScrollView();
+    this->_nodeTransform_ID = this->_node->onTransformChange(&UITree::_onNodeTransformChange, this);
 }
 void UITree::_initContent()
 {
@@ -144,6 +145,98 @@ void UITree::onUpdateEvent(std::function<void()> callback)
 void UITree::updateTree()
 {
 }
+void UITree::_onNodeTransformChange(int nodeTransform)
+{
+    this->_updateTreeContent();
+}
+
+void UITree::_updateTreeContent()
+{
+    // std::cout << "UITree UITree::update  1" << std::endl;
+    Node2D *node = dynamic_cast<Node2D *>(this->_node);
+    const Size &size = node->getSize();
+
+    std::cout << "UITree UITree::update  1 " << size.getWidth() << std::endl;
+    std::cout << "UITree UITree::update  1 " << size.getHeight() << std::endl;
+
+    this->_nodeIndex = 0;
+    //     this->_treeSelectMap.clear();
+    //     this->_treeFoldMap.clear();
+    //     this->_ndSelect->setActive(false);
+    // std::cout << "UITree UITree::update  2" << std::endl;
+    if (this->_uiTreeData.layer >= 0)
+    {
+        this->_updateTreesItems(this->_uiTreeData);
+    }
+    // 刷新节点池状态
+    for (int i = this->_nodeIndex; i < this->_nodePools.size(); i++)
+    {
+        this->_nodePools[i]->setActive(false);
+    }
+    std::cout << "UITree UITree::update  4" << std::endl;
+    // 刷新容器的大小
+
+    //     // 刷新content的大小,位置===============================================start
+    this->_contentWidth = size.getWidth() - 10.0f;
+    this->_contentHeight = this->_nodeIndex * 22.0f;
+    std::cout << "UITree UITree::update  31 " << this->_nodeIndex * 22.0f << std::endl;
+    std::cout << "UITree UITree::update  32 " << size.getHeight() << std::endl;
+    std::cout << "UITree UITree::update  33 " << this->_topLen << std::endl;
+    // 重新计算_topLen
+    if (this->_contentHeight - this->_topLen < size.getHeight())
+    {
+        // 底部已经到底部
+        this->_topLen = this->_contentHeight - size.getHeight();
+    }
+    if (this->_topLen < 0.0f)
+    {
+        // 顶部已经到底部
+        this->_topLen = 0.0f;
+    }
+    this->_contentX = -size.getWidth() / 2.0f + this->_leftLen;
+    this->_contentY = size.getHeight() / 2.0f + this->_topLen;
+    this->_ndContent->setPosition(this->_contentX, this->_contentY, 0.0f);
+    this->_ndContent->setSize(this->_contentWidth, this->_contentHeight);
+    std::cout << "UITree UITree::update  5" << this->_contentWidth << ", " << this->_contentHeight << std::endl;
+    // 刷新content的大小,位置===============================================end
+
+    //     // 选择框 =============================================================start
+    //     this->_selectWidth = this->_contentWidth;
+    //     this->_selectHeight = 22.0f;
+    //     this->_ndSelect->setSize(this->_selectWidth, this->_selectHeight);
+    //     // 选择框 =============================================================end
+    //     // 滑动条==========================================================start
+    //     float offsetY = this->_contentHeight - size.height();
+    //     if (offsetY > 0)
+    //     {
+    //         // 内容高度大于容器高度,需要滑动条  更新背景
+    //         this->_scrollBarBgHeight = size.height() - 10.0f;
+    //         this->_scrollBarBgX = size.width() / 2 - this->_scrollBarBgWidth;
+    //         this->_scrollBarBgY = 0.0f;
+    //         this->_ndScrollBarBg->setPosition(size.width() / 2 - this->_scrollBarBgWidth, this->_scrollBarBgY, 0.0f);
+    //         this->_ndScrollBarBg->setSize(this->_scrollBarBgWidth, this->_scrollBarBgHeight);
+    //         this->_ndScrollBarBg->setActive(true);
+    //         this->_scrollBarHeight = this->_scrollBarBgHeight - offsetY;
+    //         if (this->_scrollBarHeight <= 20)
+    //         {
+    //             this->_scrollBarHeight = 20.f;
+    //         }
+    //         this->_scrollBarRate = offsetY / (this->_scrollBarBgHeight - this->_scrollBarHeight);
+    //         this->_ndScrollBar->setSize(this->_scrollBarWidth, this->_scrollBarHeight);
+    //         this->_scrollBarY = this->_scrollBarBgHeight / 2.0f - this->_scrollBarHeight / 2.0f - this->_topLen / this->_scrollBarRate;
+    //         this->_ndScrollBar->setPosition(this->_scrollBarX, this->_scrollBarY, 0);
+    //     }
+    //     else
+    //     {
+    //         this->_scrollBarRate = 1.0f;
+    //         this->_ndScrollBarBg->setActive(false);
+    //     }
+    //     if (this->_updateCallback != nullptr)
+    //     {
+    //         this->_updateCallback();
+    //     }
+    // }
+}
 
 void UITree::update(float deltaTime)
 {
@@ -152,85 +245,11 @@ void UITree::update(float deltaTime)
     // 刷新节点数状态
     if (this->_isDirty || this->_node->hasFrameTransformFlag())
     {
-        // std::cout << "UITree UITree::update  1" << std::endl;
-        Node2D *node = dynamic_cast<Node2D *>(this->_node);
-        this->_nodeIndex = 0;
-        //     this->_treeSelectMap.clear();
-        //     this->_treeFoldMap.clear();
-        //     this->_ndSelect->setActive(false);
-        // std::cout << "UITree UITree::update  2" << std::endl;
-        if (this->_uiTreeData.layer >= 0)
-        {
-            this->_updateTreesUI(this->_uiTreeData);
-        }
-        // 刷新节点池状态
-        for (int i = this->_nodeIndex; i < this->_nodePools.size(); i++)
-        {
-            this->_nodePools[i]->setActive(false);
-        }
-        std::cout << "UITree UITree::update  4" << std::endl;
-        // 刷新容器的大小
-        const Size &size = node->getSize();
-        //     // 刷新content的大小,位置===============================================start
-        this->_contentWidth = size.getWidth() - 10.0f;
-        this->_contentHeight = this->_nodeIndex * 22.0f;
-        // 重新计算_topLen
-        if (this->_contentHeight - this->_topLen < size.getHeight())
-        {
-            // 底部已经到底部
-            this->_topLen = this->_contentHeight - size.getHeight();
-        }
-        if (this->_topLen < 0.0f)
-        {
-            // 顶部已经到底部
-            this->_topLen = 0.0f;
-        }
-        this->_contentX = -size.getWidth() / 2.0f + this->_leftLen;
-        this->_contentY = size.getHeight() / 2.0f + this->_topLen;
-        this->_ndContent->setPosition(this->_contentX, this->_contentY, 0.0f);
-        this->_ndContent->setSize(this->_contentWidth, this->_contentHeight);
-        // 刷新content的大小,位置===============================================end
 
-        //     // 选择框 =============================================================start
-        //     this->_selectWidth = this->_contentWidth;
-        //     this->_selectHeight = 22.0f;
-        //     this->_ndSelect->setSize(this->_selectWidth, this->_selectHeight);
-        //     // 选择框 =============================================================end
-        //     // 滑动条==========================================================start
-        //     float offsetY = this->_contentHeight - size.height();
-        //     if (offsetY > 0)
-        //     {
-        //         // 内容高度大于容器高度,需要滑动条  更新背景
-        //         this->_scrollBarBgHeight = size.height() - 10.0f;
-        //         this->_scrollBarBgX = size.width() / 2 - this->_scrollBarBgWidth;
-        //         this->_scrollBarBgY = 0.0f;
-        //         this->_ndScrollBarBg->setPosition(size.width() / 2 - this->_scrollBarBgWidth, this->_scrollBarBgY, 0.0f);
-        //         this->_ndScrollBarBg->setSize(this->_scrollBarBgWidth, this->_scrollBarBgHeight);
-        //         this->_ndScrollBarBg->setActive(true);
-        //         this->_scrollBarHeight = this->_scrollBarBgHeight - offsetY;
-        //         if (this->_scrollBarHeight <= 20)
-        //         {
-        //             this->_scrollBarHeight = 20.f;
-        //         }
-        //         this->_scrollBarRate = offsetY / (this->_scrollBarBgHeight - this->_scrollBarHeight);
-        //         this->_ndScrollBar->setSize(this->_scrollBarWidth, this->_scrollBarHeight);
-        //         this->_scrollBarY = this->_scrollBarBgHeight / 2.0f - this->_scrollBarHeight / 2.0f - this->_topLen / this->_scrollBarRate;
-        //         this->_ndScrollBar->setPosition(this->_scrollBarX, this->_scrollBarY, 0);
-        //     }
-        //     else
-        //     {
-        //         this->_scrollBarRate = 1.0f;
-        //         this->_ndScrollBarBg->setActive(false);
-        //     }
-        //     if (this->_updateCallback != nullptr)
-        //     {
-        //         this->_updateCallback();
-        //     }
-        // }
         this->_isDirty = false;
     }
 }
-void UITree::_updateTreesUI(UITreeStructure &uiTreeData)
+void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
 {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -302,9 +321,15 @@ void UITree::_updateTreesUI(UITreeStructure &uiTreeData)
     else
     {
         node = this->_nodePools[this->_nodeIndex];
+
+        Node *select = node->getChildByName("NodeTreeItemSelect");
         Node *fold = node->getChildByName("NodeTreeItemFold");
         Node *icon = node->getChildByName("NodeTreeItemIcon");
         Node *name = node->getChildByName("NodeTreeItemName");
+        if(select != nullptr){
+            ndSelect = dynamic_cast<Node2D *>(select);
+            spSelect = dynamic_cast<UISprite *>(ndSelect->getComponent("UISprite"));
+        }
         if (fold != nullptr)
         {
             ndFold = dynamic_cast<Node2D *>(fold);
@@ -389,7 +414,7 @@ void UITree::_updateTreesUI(UITreeStructure &uiTreeData)
     {
         for (int i = 0; i < uiTreeData.children.size(); i++)
         {
-            this->_updateTreesUI(uiTreeData.children[i]);
+            this->_updateTreesItems(uiTreeData.children[i]);
         }
     }
 }
@@ -461,6 +486,7 @@ void UITree::loseFocusSelect()
 
 void UITree::destroy()
 {
+    this->_node->offTransformChange(this->_nodeTransform_ID);
     Component::destroy();
 }
 UITree::~UITree()

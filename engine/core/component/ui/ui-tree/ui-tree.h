@@ -53,6 +53,10 @@ class UITree : public Component
 {
 private:
 
+    int _nodeTransform_ID = 0;
+    void _onNodeTransformChange(int nodeTransform);
+   
+
     float _topLen;
     float _leftLen;
     Node2D *_ndContent;
@@ -95,7 +99,7 @@ private:
     std::vector<Node2D *> _nodePools;
     std::function<void(UITreeStructure *)> _selectCallback;
 
-    void _updateTreesUI(UITreeStructure &uiTreeData);
+    void _updateTreesItems(UITreeStructure &uiTreeData);
     // // item 的touch 事件
     // void _onTreeItemTouchEvent(NodeInputResult &result);
     // // item 折叠按钮的touch 事件
@@ -109,6 +113,8 @@ private:
 
     std::function<void()> _updateCallback;
 
+
+    void _updateTreeContent();
 protected:
     /** 是否需要刷新 */
     bool _isDirty = true;
@@ -123,6 +129,9 @@ protected:
 
 public:
     UITree(Node *node, std::string uuid = "");
+
+    
+
     void onSelectEvent(std::function<void(UITreeStructure *)> callback);
     void onUpdateEvent(std::function<void()> callback);
 

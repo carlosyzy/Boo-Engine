@@ -45,60 +45,15 @@ void Engine::_initEditor()
 	std::cout << "INIT EDITOR" << std::endl;
 	Editor::getInstance()->init();
 }
-void Engine::launchEditor()
-{
-	// std::cout << "launch editor" << std::endl;
-	// 初始化编辑器
-
-	// std::string project_path = "F:/worksapces/carlos-engine/project";
-	// std::string project_path = "/Users/yangzongyuan/personal/project/vulkan/project";
-	// Editor::getInstance()->setAssetsRoot(project_path);
-	// Editor::getInstance()->setHierarchyRoot(new Scene("Test"));
-}
-void Engine::launch()
-{
-	std::cout << "launch engine" << std::endl;
-	// 初始化场景
-	// this->openScene("Scene");
-	// Editor::getInstance()->setScene(this->_curScene);
-}
 
 /**
  * @brief 主循环
  */
 void Engine::tick()
 {
-	this->_startRendererThread();
-	// 窗口帧循环
-	WindowMgr::getInstance()->tick();
-	this->_stopRendererThread();
-}
-/**
- * @brief 启动渲染线程
- */
-void Engine::_startRendererThread()
-{
-	this->_isRenderering = true;
-	this->_renderThread = std::thread(&Engine::_updateRendererLoop, this); // 启动渲染线程
-}
-/**
- * @brief 停止渲染线程
- */
-void Engine::_stopRendererThread()
-{
-	this->_isRenderering = false;
-	if (this->_renderThread.joinable())
+	while (true)
 	{
-		this->_renderThread.join(); // 等待线程结束
-	}
-}
-/**
- * @brief 渲染线程循环
- */
-void Engine::_updateRendererLoop()
-{
-	while (this->_isRenderering)
-	{
+		WindowMgr::getInstance()->update();
 		long long deltaTime = TimeUtil::nowTime();
 		long t = deltaTime - this->_deltaTime;
 		if (t > 1000 / this->_frameRate)
@@ -122,6 +77,35 @@ void Engine::update(float dt)
 	Editor::getInstance()->update(dt);
 	Boo::game->update(dt);
 }
+// /**
+//  * @brief 启动渲染线程
+//  */
+// void Engine::_startRendererThread()
+// {
+// 	this->_isRenderering = true;
+// 	this->_renderThread = std::thread(&Engine::_updateRendererLoop, this); // 启动渲染线程
+// }
+// /**
+//  * @brief 停止渲染线程
+//  */
+// void Engine::_stopRendererThread()
+// {
+// 	this->_isRenderering = false;
+// 	if (this->_renderThread.joinable())
+// 	{
+// 		this->_renderThread.join(); // 等待线程结束
+// 	}
+// }
+// /**
+//  * @brief 渲染线程循环
+//  */
+// void Engine::_updateRendererLoop()
+// {
+// 	while (this->_isRenderering)
+// 	{
+
+// 	}
+// }
 
 Engine::~Engine()
 {

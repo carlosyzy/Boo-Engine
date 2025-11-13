@@ -50,7 +50,6 @@ private:
 		}
 	};
 	std::vector<TransformListener> _transformListeners;
-	
 
 protected:
 	/**
@@ -135,7 +134,7 @@ protected:
 	 * @brief 触发事件
 	 * @param eventName 事件名称
 	 */
-	void emitTransformChanged(uint32_t flag)
+	void _emitTransformChanged(uint32_t flag)
 	{
 		for (auto &listener : this->_transformListeners)
 		{
@@ -226,11 +225,11 @@ public:
 	uint64_t onTransformChange(Func func, T *instance)
 	{
 		uint64_t id = this->_nodeEventId++;
-		auto callback = [instance, func]()
+		auto callback = [instance, func](uint32_t flag)
 		{
-			if (instance->*func != nullptr && func != nullptr)
+			if (instance != nullptr && func != nullptr)
 			{
-				(instance->*func)();
+				(instance->*func)(flag);
 			}
 		};
 		this->_transformListeners.emplace_back(callback, dynamic_cast<void *>(instance), id);
@@ -275,7 +274,8 @@ public:
 	/**
 	 * 获取子节点
 	 */
-	Node *getChildByName(std::string name){
+	Node *getChildByName(std::string name)
+	{
 		for (auto &child : this->_children)
 		{
 			if (child->_name == name)

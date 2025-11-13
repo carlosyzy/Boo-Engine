@@ -142,7 +142,7 @@ void Node::_updateWorldTransformFlag(NodeTransformFlag flag)
 {
 	this->_worldTransformFlag |= static_cast<uint32_t>(flag);
 	this->_frameTransformFlag |= static_cast<uint32_t>(flag);
-	this->emitTransformChanged(this->_worldTransformFlag);
+	this->_emitTransformChanged(this->_worldTransformFlag);
 	for (auto &child : this->_children)
 	{
 		child->_updateWorldTransformFlag(flag);

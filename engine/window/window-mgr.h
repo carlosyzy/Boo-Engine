@@ -32,7 +32,7 @@ public:
 	void onMouseButton(int button, int action, int mods);
 	void onWindowSize();
 	bool getWindowSize(int& width, int& height);
-	void tick();
+	void update();
 	void destroy();
 
 	//

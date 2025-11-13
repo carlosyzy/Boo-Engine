@@ -26,7 +26,7 @@ void EditorHierarchyLayout::_initContent()
     paramHorizontal.left = 0.0f;
     paramHorizontal.right = 0.0f;
     WidgetVerticalParam paramVertical{};
-    paramVertical.top = 30.0f;
+    paramVertical.top = 25.0f;
     paramVertical.bottom = 0.0f;
     widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
     widget->setVertical(WidgetVertical::ALL, paramVertical);
@@ -158,13 +158,14 @@ void EditorHierarchyLayout::_initNodeTree()
     paramHorizontal.left = 0.0f;
     paramHorizontal.right = 0.0f;
     WidgetVerticalParam paramVertical{};
-    paramVertical.top = 30.0f;
+    paramVertical.top = 25.0f;
     paramVertical.bottom = 0.0f;
     widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
     widget->setVertical(WidgetVertical::ALL, paramVertical);
     // 渲染组件-后续删除
     UISprite *sprite = static_cast<UISprite *>(ndNodeTree->addComponent("UISprite"));
-    sprite->setColor(EditorConfig::theme);
+    // sprite->setColor(EditorConfig::theme);
+    sprite->setColor("#8f0077ff");
     sprite->setTexture(EditorConfig::texture);
     sprite->setMaterial(nullptr);
     // 添加节点树
