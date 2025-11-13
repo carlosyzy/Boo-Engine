@@ -245,7 +245,6 @@ Component *Node::getComponent(std::string name)
 {
 	return nullptr;
 }
-
 void Node::destroyAllChildren()
 {
 	// 递归销毁所有子节点

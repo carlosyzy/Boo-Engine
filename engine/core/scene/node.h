@@ -261,14 +261,30 @@ public:
 	 */
 	void addChild(Node *node);
 	/**
+	 * 获取子节点列表
+	 */
+	std::vector<Node *> getChildren() { return this->_children; }
+	/**
 	 * 删除子节点
 	 */
 	void removeChild(Node *node);
-
 	/*
 	 *删除所有子节点
 	 */
 	void destroyAllChildren();
+	/**
+	 * 获取子节点
+	 */
+	Node *getChildByName(std::string name){
+		for (auto &child : this->_children)
+		{
+			if (child->_name == name)
+			{
+				return child;
+			}
+		}
+		return nullptr;
+	}
 	/**
 	 * 添加组件
 	 */

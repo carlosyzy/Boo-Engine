@@ -1,0 +1,28 @@
+#pragma once
+
+#include <string>
+#include <unordered_map>
+#include <filesystem>
+#include "ui-tree.h"
+/**
+ * @brief 文件树
+ * 用于显示项目中的文件和文件夹
+ * 可以展开和折叠文件夹
+ * 可以选择文件
+ */
+class FileTree : public UITree
+{
+private:
+    std::string root;
+
+    void _setTrees(std::filesystem::directory_entry entry, UITreeStructure &uiTreeData, int layer);
+public:
+    FileTree(Node *node, std::string uuid = "");
+    void setRoot(std::string root);
+    void updateTree() override;
+    void update(float deltaTime) override;
+    void lateUpdate(float deltaTime) override;
+    void render() override;
+    void destroy() override;
+    ~FileTree();
+};

@@ -75,6 +75,7 @@ void Alpha::_updateLogoAlpha(float deltaTime)
 	{
 		return;
 	}
+	return;
 	this->_logoAlphaNum += deltaTime;
 	this->_spriteLogo->setAlpha(this->_logoAlphaNum / this->_alphaDuration);
 }
@@ -96,7 +97,6 @@ void Alpha::_updateLogoSize()
 	}
 	this->_width = _width;
 	this->_height = _height;
-
 	float width = this->_width * this->_logoRatio;
 	float height = width * this->_logoTxHeight / this->_logoTxWidth;
 	this->_ndLogo->setSize(width, height);

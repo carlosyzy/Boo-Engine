@@ -54,17 +54,18 @@ void Editor::_initRes()
 {
 	// 先加载公用resources文件,
 	const std::string &root = Boo::game->assetsManager()->root();
-	std::filesystem::path fullPath = std::filesystem::path(root) / "resources";
+	std::filesystem::path resources = std::filesystem::path(root) / "resources";
 	std::vector<std::string> paths;
-	for (const auto &entry : std::filesystem::recursive_directory_iterator(fullPath))
+	for (const auto &entry : std::filesystem::recursive_directory_iterator(resources))
 	{
-		if(std::filesystem::is_regular_file(entry.path())){
+		if (std::filesystem::is_regular_file(entry.path()))
+		{
 			std::filesystem::path path = std::filesystem::relative(entry.path(), std::filesystem::path(root));
 			paths.push_back(path.generic_string());
 			std::cout << "add resource " << path.generic_string() << std::endl;
 		}
 	}
-	//将在工程
+	// 将在工程
 	Boo::game->assetsManager()->loadListAsync(paths, &Editor::_onLoadCallBack, this);
 }
 void Editor::_onLoadCallBack(const int complete, const int all, const float progress)
@@ -93,8 +94,8 @@ void Editor::_launchEditor()
 }
 void Editor::_initHierarchy()
 {
-    // Node2D *layout = this->_editorLayout->getHierarchy();
-    // this->_hierarchy = new EditorHierarchy(layout);
+	Node2D *layout = this->_editorLayout->getHierarchy();
+	this->_hierarchy = new EditorHierarchy(layout);
 }
 // void Editor::_initAssets()
 // {
@@ -142,7 +143,7 @@ void Editor::update(float dt)
 	{
 		this->_editorLayout->update(dt);
 	}
-	// this->_hierarchy->update(dt);
+	this->_hierarchy->update(dt);
 	// this->_assets->update(dt);
 	// this->_property->update(dt);*/
 }

@@ -10,4 +10,6 @@ public:
     static const std::string fontColor;
     /// 图标颜色
     static const std::string iconColor;
+    /// texture
+    static const std::string texture;
 };

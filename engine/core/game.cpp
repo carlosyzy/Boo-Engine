@@ -45,6 +45,7 @@ void Game::_initComponents()
 {
 	this->registerComponentClass<UISprite>("UISprite");
 	this->registerComponentClass<UIWidget>("UIWidget");
+	this->registerComponentClass<NodeTree>("NodeTree");
 	this->registerComponentClass<UILayoutHorizontal>("UILayoutHorizontal");
 	/*
 	  this->_componentFactory->registerClass<Text>("Text");
