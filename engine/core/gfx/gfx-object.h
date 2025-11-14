@@ -108,5 +108,9 @@ public:
         return this->_pass;
     }
 
+    /**
+     * @brief 销毁GfxObject
+     */
+    void destroy();
     ~GfxObject();
 };

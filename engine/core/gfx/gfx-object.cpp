@@ -403,6 +403,22 @@ void GfxObject::reset()
     this->_updateProjMatUniformBuffer();
 }
 
+void GfxObject::destroy()
+{
+    this->clear();
+    this->_context = nullptr;
+    this->_pipeline = nullptr;
+    this->_pass = nullptr;
+    this->_texture = nullptr;
+    this->_vertexBuffer = VK_NULL_HANDLE;
+    this->_indexBuffer = VK_NULL_HANDLE;
+    this->_vertexMemory = VK_NULL_HANDLE;
+    this->_indexMemory = VK_NULL_HANDLE;
+
+}
+
+
+
 void GfxObject::_Log(std::string msg)
 {
     std::cout << "GfxObject: " << msg << std::endl;

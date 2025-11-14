@@ -129,12 +129,13 @@ bool WindowMgr::getWindowSize(int &width, int &height)
 	}
 	return false;
 }
-void WindowMgr::update()
+bool WindowMgr::isRunning()
 {
-	if (!glfwWindowShouldClose(this->_window))
-	{
-		glfwPollEvents();
-	}
+	return !glfwWindowShouldClose(this->_window);
+}
+void WindowMgr::tick()
+{
+	glfwPollEvents();
 }
 
 void WindowMgr::destroy()

@@ -51,12 +51,12 @@ void Engine::_initEditor()
  */
 void Engine::tick()
 {
-	while (true)
+	while (WindowMgr::getInstance()->isRunning())
 	{
-		WindowMgr::getInstance()->update();
+		WindowMgr::getInstance()->tick();
 		long long deltaTime = TimeUtil::nowTime();
 		long t = deltaTime - this->_deltaTime;
-		if (t > 1000 / this->_frameRate)
+		if (t > 1000.0f / this->_frameRate)
 		{
 			this->update(t / 1000.0f);
 			this->_deltaTime = deltaTime;
@@ -77,35 +77,6 @@ void Engine::update(float dt)
 	Editor::getInstance()->update(dt);
 	Boo::game->update(dt);
 }
-// /**
-//  * @brief 启动渲染线程
-//  */
-// void Engine::_startRendererThread()
-// {
-// 	this->_isRenderering = true;
-// 	this->_renderThread = std::thread(&Engine::_updateRendererLoop, this); // 启动渲染线程
-// }
-// /**
-//  * @brief 停止渲染线程
-//  */
-// void Engine::_stopRendererThread()
-// {
-// 	this->_isRenderering = false;
-// 	if (this->_renderThread.joinable())
-// 	{
-// 		this->_renderThread.join(); // 等待线程结束
-// 	}
-// }
-// /**
-//  * @brief 渲染线程循环
-//  */
-// void Engine::_updateRendererLoop()
-// {
-// 	while (this->_isRenderering)
-// 	{
-
-// 	}
-// }
 
 Engine::~Engine()
 {
