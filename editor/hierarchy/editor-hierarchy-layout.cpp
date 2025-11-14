@@ -51,7 +51,10 @@ void EditorHierarchyLayout::_initTitle()
     Node2D *ndTitle = new Node2D("Title");
     this->_root->addChild(ndTitle);
     ndTitle->setSize(100, 100);
-    // Sprite *sprite = ndTitle->addComponent<Sprite>("Sprite");
+    UISprite *sprite = dynamic_cast<UISprite *>(ndTitle->addComponent("UISprite"));
+    sprite->setColor("#ffe1e1ff");
+    sprite->setTexture(EditorConfig::texture);
+    sprite->setMaterial(nullptr);
     // sprite->setColor(EditorConfig::theme);
     // // 添加wedget组件
     // UIWidget *widget = ndTitle->addComponent<UIWidget>("UIWidget");

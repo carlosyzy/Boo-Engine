@@ -1,18 +1,12 @@
 #include "engine.h"
 #include <iostream>
-// #define STB_IMAGE_IMPLEMENTATION
-// #include "libs/stb/stb_image.h"
 #include "../editor/editor.h"
 #include "window/window-mgr.h"
-
-// #include "core/font/freetype-mgr.h"
-// #include "core/asset/asset-mgr.h"
 #include "core/utils/time-util.h"
-// #include "core/renderer/scene.h"
-// #include "core/global/global.h"
-// #include "core/utils/json.h"
-// #include "core/input/input-mgr.h"
 #include "boo.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "libs/stb/stb_image.h"
 
 Engine::Engine()
 {

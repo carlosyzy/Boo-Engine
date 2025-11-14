@@ -1,5 +1,4 @@
 #include "freetype-mgr.h"
-#include "../../libs/stb/stb_image_write.h"
 #include "../gfx/gfx-mgr.h"
 
 FreetypeMgr::FreetypeMgr()
@@ -37,7 +36,7 @@ void FreetypeMgr::crateFont(TextTexture &textTexture, const std::string &str, ui
     FT_Set_Pixel_Sizes(this->_face, 0, fontSize);
     // 开启抗锯齿
     std::vector<wchar_t> chars;
-    std::wstring wstr = this->_utf8_to_wstring(str);
+    std::wstring wstr = FmtUtil::utf8_to_wstring(str);
     for (wchar_t c : wstr)
     {
         // 避免重复添加
@@ -128,12 +127,6 @@ void FreetypeMgr::crateFont(TextTexture &textTexture, const std::string &str, ui
     textTexture.datas = rgbaDatas;
 }
 
-// UTF-8 string 转 wstring
-std::wstring FreetypeMgr::_utf8_to_wstring(const std::string &str)
-{
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    return converter.from_bytes(str);
-}
 
 FreetypeMgr::~FreetypeMgr()
 {

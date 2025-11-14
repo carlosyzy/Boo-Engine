@@ -10,7 +10,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "../math/vec2.h"
-#include "../utils/sdf-util.h"
+#include "../utils/fmt-util.h"
 #include "../utils/file-util.h"
 
 // 修改后的字符结构
@@ -32,7 +32,6 @@ private:
     std::string _fontPath;
     FT_Face _face;
     FT_Library _ft;
-    std::wstring _utf8_to_wstring(const std::string &str);
 
 public:
     FreetypeMgr();

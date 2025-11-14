@@ -1,5 +1,4 @@
 #include "texture.h"
-#define STB_IMAGE_IMPLEMENTATION
 #include "../../libs/stb/stb_image.h"
 #include "../gfx/gfx-mgr.h"
 Texture::Texture(const std::string uuid, const std::string path) : Asset(uuid, path)
