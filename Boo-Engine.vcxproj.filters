@@ -66,9 +66,6 @@
     <ClCompile Include="engine\core\game.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\global\event.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\global\global.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -178,6 +175,24 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\hierarchy\editor-hierarchy-layout.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\event\event.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\renderer\ui\ui-text.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\input\input-mgr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\utils\file-util.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\utils\sdf-util.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\utils\fmt-util.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -420,6 +435,129 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\hierarchy\editor-hierarchy-layout.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\event\event.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\renderer\ui\ui-text.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\input\input-mgr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\utils\file-util.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\utils\sdf-util.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\utils\fmt-util.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\boundary\boundary_point.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\boundary\facets.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\boundary\index.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\boundary\segment.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\boundary\types.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\detail\allocator_traits.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\detail\any_string.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\detail\encoding.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\detail\facet_id.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\detail\is_supported_char.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\util\locale_data.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\util\string.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\boundary.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\collator.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\config.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\conversion.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\date_time.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\date_time_facet.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\encoding.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\encoding_errors.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\encoding_utf.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\format.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\formatting.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\generator.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\generic_codecvt.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\gnu_gettext.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\hold_ptr.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\info.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\localization_backend.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\message.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\time_zone.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\utf.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\utf8_codecvt.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\libs\boost\locale\util.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

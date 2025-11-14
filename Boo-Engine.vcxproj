@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>F:\worksapces\Boo-Engine\engine\libs\stb;E:\software\vulkan\Include;E:\software\glfw\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\software\vulkan\Lib;E:\software\glfw\lib-vc2022;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>E:\software\vulkan\Lib;E:\software\glfw\lib-vc2022;E:\software\msys64\mingw64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>E:\software\vulkan\Include;E:\software\glfw\include;$(IncludePath)</IncludePath>
@@ -111,13 +111,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>F:\worksapces\Boo-Engine\engine\libs\stb;E:\software\vulkan\Include;E:\software\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\worksapces\Boo-Engine\engine\libs\stb;E:\software\vulkan\Include;E:\software\glfw\include;E:\software\msys64\mingw64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\software\vulkan\Lib;E:\software\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;vulkan-1.lib;shaderc_combinedd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\software\msys64\mingw64\lib;E:\software\vulkan\Lib;E:\software\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;vulkan-1.lib;shaderc_combinedd.lib;libfreetype.a;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CopyFileToFolders>
       <DestinationFolders>F:\worksapces\Boo-Engine\engine\resources;%(DestinationFolders)</DestinationFolders>
@@ -177,6 +177,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\component\ui\ui-tree\node-tree.cpp" />
     <ClCompile Include="engine\core\component\ui\ui-tree\ui-tree.cpp" />
     <ClCompile Include="engine\core\component\ui\ui-widget.cpp" />
+    <ClCompile Include="engine\core\event\event.cpp" />
     <ClCompile Include="engine\core\font\freetype-mgr.cpp" />
     <ClCompile Include="engine\core\game.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-context.cpp" />
@@ -189,8 +190,8 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\gfx\gfx-shader-compile.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-shader.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-texture.cpp" />
-    <ClCompile Include="engine\core\global\event.cpp" />
     <ClCompile Include="engine\core\global\global.cpp" />
+    <ClCompile Include="engine\core\input\input-mgr.cpp" />
     <ClCompile Include="engine\core\math\color.cpp" />
     <ClCompile Include="engine\core\math\mat4.cpp" />
     <ClCompile Include="engine\core\math\quat.cpp" />
@@ -199,10 +200,14 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\math\vec3.cpp" />
     <ClCompile Include="engine\core\renderer\ui\ui-sprite.cpp" />
     <ClCompile Include="engine\core\renderer\ui\ui-renderer.cpp" />
+    <ClCompile Include="engine\core\renderer\ui\ui-text.cpp" />
     <ClCompile Include="engine\core\scene\node-2d.cpp" />
     <ClCompile Include="engine\core\scene\node-3d.cpp" />
     <ClCompile Include="engine\core\scene\node.cpp" />
     <ClCompile Include="engine\core\scene\scene.cpp" />
+    <ClCompile Include="engine\core\utils\fmt-util.cpp" />
+    <ClCompile Include="engine\core\utils\file-util.cpp" />
+    <ClCompile Include="engine\core\utils\sdf-util.cpp" />
     <ClCompile Include="engine\core\utils\time-util.cpp" />
     <ClCompile Include="engine\core\utils\uuid-util.cpp" />
     <ClCompile Include="engine\libs\stb\stb_vorbis.c" />
@@ -235,6 +240,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\component\ui\ui-tree\node-tree.h" />
     <ClInclude Include="engine\core\component\ui\ui-tree\ui-tree.h" />
     <ClInclude Include="engine\core\component\ui\ui-widget.h" />
+    <ClInclude Include="engine\core\event\event.h" />
     <ClInclude Include="engine\core\font\freetype-mgr.h" />
     <ClInclude Include="engine\core\game.h" />
     <ClInclude Include="engine\core\gfx\gfx-context.h" />
@@ -252,6 +258,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\gfx\gfx-texture.h" />
     <ClInclude Include="engine\core\global\event.h" />
     <ClInclude Include="engine\core\global\global.h" />
+    <ClInclude Include="engine\core\input\input-mgr.h" />
     <ClInclude Include="engine\core\math\color.h" />
     <ClInclude Include="engine\core\math\mat4.h" />
     <ClInclude Include="engine\core\math\quat.h" />
@@ -260,12 +267,51 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\math\vec3.h" />
     <ClInclude Include="engine\core\renderer\ui\ui-sprite.h" />
     <ClInclude Include="engine\core\renderer\ui\ui-renderer.h" />
+    <ClInclude Include="engine\core\renderer\ui\ui-text.h" />
     <ClInclude Include="engine\core\scene\node-2d.h" />
     <ClInclude Include="engine\core\scene\node-3d.h" />
     <ClInclude Include="engine\core\scene\node.h" />
     <ClInclude Include="engine\core\scene\scene.h" />
+    <ClInclude Include="engine\core\utils\fmt-util.h" />
+    <ClInclude Include="engine\core\utils\file-util.h" />
+    <ClInclude Include="engine\core\utils\sdf-util.h" />
     <ClInclude Include="engine\core\utils\time-util.h" />
     <ClInclude Include="engine\core\utils\uuid-util.h" />
+    <ClInclude Include="engine\libs\boost\locale.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\boundary.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\boundary\boundary_point.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\boundary\facets.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\boundary\index.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\boundary\segment.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\boundary\types.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\collator.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\config.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\conversion.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\date_time.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\date_time_facet.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\detail\allocator_traits.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\detail\any_string.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\detail\encoding.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\detail\facet_id.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\detail\is_supported_char.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\encoding.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\encoding_errors.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\encoding_utf.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\format.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\formatting.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\generator.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\generic_codecvt.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\gnu_gettext.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\hold_ptr.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\info.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\localization_backend.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\message.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\time_zone.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\utf.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\utf8_codecvt.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\util.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\util\locale_data.hpp" />
+    <ClInclude Include="engine\libs\boost\locale\util\string.hpp" />
     <ClInclude Include="engine\libs\nlohmann\fifo_map.hpp" />
     <ClInclude Include="engine\libs\nlohmann\json.hpp" />
     <ClInclude Include="engine\libs\stb\stb_connected_components.h" />
