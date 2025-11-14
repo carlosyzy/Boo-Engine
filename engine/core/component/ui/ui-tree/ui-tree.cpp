@@ -43,6 +43,21 @@ void UITree::_initContent()
     //     this->_spContent->setMaterial(nullptr);
     // }
 }
+void UITree::setIcon(std::string iconKey, std::string iconPath)
+{
+    if (iconKey == "iconScene")
+    {
+        this->_iconMaps.iconScene = iconPath;
+    }
+    else if (iconKey == "iconNode2D")
+    {
+        this->_iconMaps.iconNode2D = iconPath;
+    }
+    else if (iconKey == "iconNode3D")
+    {
+        this->_iconMaps.iconNode3D = iconPath;
+    }
+}
 // void UITree::_initSelect()
 // {
 //     // this->_ndSelect = new Node2D("Select");
@@ -347,11 +362,13 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     // 折叠图标
     if (uiTreeData.isFold)
     {
-        spFold->setTexture("resources/texture/ic-arrow-right.png");
+        // spFold->setTexture("resources/texture/ic-arrow-right.png");
+        spFold->setTexture("resources/texture/ic-default.png");
     }
     else
     {
-        spFold->setTexture("resources/texture/ic-arrow-bottom.png");
+        // spFold->setTexture("resources/texture/ic-arrow-bottom.png");
+        spFold->setTexture("resources/texture/ic-default.png");
     }
     if (uiTreeData.children.size() > 0)
     {
@@ -359,11 +376,12 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     }
     else
     {
-        ndFold->setActive(false);
+        // ndFold->setActive(false);
     }
     itemWidth += ndFold->getSize().getWidth();
     // 图标
-    spIcon->setTexture(uiTreeData.iconKey);
+    // spIcon->setTexture(uiTreeData.iconKey);
+    spIcon->setTexture("resources/texture/ic-default.png");
     itemWidth += ndIcon->getSize().getWidth();
     // 创建名字
     std::cout << "name:" << uiTreeData.name << std::endl;
