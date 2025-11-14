@@ -1,4 +1,8 @@
 #include "game.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "../../libs/stb/stb_image_write.h"
+
+#include "gfx/gfx-pass.h"
 
 Game::Game() : _assetsManager(nullptr),
 			   _curScene(nullptr)
@@ -20,7 +24,6 @@ void Game::_initGFX()
 {
 	std::cout << "INIT GFX" << std::endl;
 	GfxMgr::getInstance()->init();
-	GfxMgr::getInstance()->createRenderPass("ui");
 }
 void Game::_initEvent()
 {

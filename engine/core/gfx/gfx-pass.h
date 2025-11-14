@@ -76,6 +76,12 @@ struct PassAttachmentColor
 // - 如果启用 MSAA（samples > 1），需额外配置解析附件（pResolveAttachments）。
  */
 
+enum class PassType
+{
+    Window,    /* // 渲染到窗口（SwapChain） */
+    Offscreen  /* // 渲染到纹理 */
+};
+
 class GfxPass
 {
 private:
@@ -83,12 +89,15 @@ private:
     GfxContext *_context;
     VkRenderPass _vkRenderPass = VK_NULL_HANDLE;
     PassAttachmentColor _attachmentColor;
+    PassType _passType;
 
     void _createVkRenderPass();
+    void _createWindowRenderPass();
+    void _createOffscreenRenderPass();
     void _Log(std::string msg);
 
 public:
-    GfxPass(std::string name, GfxContext *context);
+    GfxPass(std::string name, GfxContext *context, PassType passType = PassType::Window);
     void create();
     void clear();
     void reset();
@@ -100,6 +109,10 @@ public:
     VkRenderPass getVkRenderPass()
     {
         return this->_vkRenderPass;
+    }
+    PassType passType() const
+    {
+        return this->_passType;
     }
 
     ~GfxPass();

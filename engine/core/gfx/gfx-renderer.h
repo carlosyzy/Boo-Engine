@@ -19,6 +19,7 @@ class GfxShader;
 class GfxPipeline;
 class GfxQueue;
 class GfxObject;
+class GfxRenderTarget;
 
 class GfxRenderer
 {
@@ -48,6 +49,11 @@ private:
 
 	std::map<std::string, GfxQueue*> _queues;
 
+	/**
+	 * @brief 渲染目标（离屏渲染到纹理）
+	 */
+	std::map<std::string, GfxRenderTarget*> _renderTargets;
+
 	void _Log(std::string msg);
 
 public:
@@ -59,7 +65,7 @@ public:
 
 
 
-	void createRenderPass(std::string name);
+	void createRenderPass(std::string name, PassType passType = PassType::Window);
 	void createPipeline(std::string passName, std::string pipelineName);
 
 	/**
@@ -119,5 +125,36 @@ public:
 	 * @brief 创建SPIR-V着色器
 	 */
 	void createSpirvShader(const std::string& shaderName, const std::vector<char>& data);
+
+	/**
+	 * @brief 创建渲染目标（用于离屏渲染到纹理）
+	 * @param name 渲染目标名称
+	 * @param passName 使用的 Pass 名称（必须是 Offscreen 类型的 Pass）
+	 * @param width 纹理宽度
+	 * @param height 纹理高度
+	 */
+	void createRenderTarget(const std::string& name, const std::string& passName, uint32_t width, uint32_t height);
+
+	/**
+	 * @brief 销毁渲染目标
+	 * @param name 渲染目标名称
+	 */
+	void destroyRenderTarget(const std::string& name);
+
+	/**
+	 * @brief 获取渲染目标的输出纹理（可用作其他渲染的输入）
+	 * @param name 渲染目标名称
+	 * @return GfxTexture* 纹理指针，如果不存在返回 nullptr
+	 */
+	GfxTexture* getRenderTargetTexture(const std::string& name);
+
+	/**
+	 * @brief 保存渲染目标到文件
+	 * @param name 渲染目标名称
+	 * @param filePath 输出文件路径（支持 .png, .jpg, .bmp）
+	 * @return true 保存成功，false 保存失败
+	 */
+	bool saveRenderTargetToFile(const std::string& name, const std::string& filePath);
+
 	~GfxRenderer();
 };

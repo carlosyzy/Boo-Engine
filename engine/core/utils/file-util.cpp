@@ -1,5 +1,4 @@
 #include "file-util.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../../libs/stb/stb_image_write.h"
 
 // 保存单通道数据为PGM文件（更高效，文件更小）

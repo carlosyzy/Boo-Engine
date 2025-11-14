@@ -57,6 +57,16 @@ public:
 
     VkImageView getImageView();
     VkSampler getSampler();
+
+    /**
+     * @brief 保存纹理到文件
+     * @param filePath 输出文件路径（支持 .png, .jpg, .bmp）
+     * @param width 纹理宽度
+     * @param height 纹理高度
+     * @return true 保存成功，false 保存失败
+     */
+    bool saveToFile(const std::string& filePath, uint32_t width, uint32_t height);
+
     ~GfxTexture();
 };
 

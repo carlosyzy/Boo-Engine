@@ -6,8 +6,10 @@
 #include "gfx-shader.h"
 #include "gfx-queue.h"
 #include "gfx-object.h"
+#include "gfx-render-target.h"
 #include "../math/mat4.h"
 #include "gfx-shader-compile.h"
+#include "../utils/time-util.h"
 
 GfxRenderer::GfxRenderer(GfxContext *context)
 {
@@ -17,14 +19,18 @@ void GfxRenderer::init()
 {
     std::cout << "GfxRenderer:init" << std::endl;
     GfxShaderCompile::getInstance()->init();
+    this->createRenderPass("ui", PassType::Offscreen);
+    /* // 创建离屏渲染 Pass 和 RenderTarget */
+    // this->createRenderPass("offscreen_pass", PassType::Offscreen);
+    this->createRenderTarget("my_render_target", "ui", 1024, 1024);
 }
 
-void GfxRenderer::createRenderPass(std::string name)
+void GfxRenderer::createRenderPass(std::string name, PassType passType)
 {
     /*  // 创建渲染通道 */
     if (this->_passes.find(name) == this->_passes.end())
     {
-        GfxPass *pass = new GfxPass(name, this->_context);
+        GfxPass *pass = new GfxPass(name, this->_context, passType);
         pass->create();
         this->_passes[name] = pass;
     }
@@ -197,6 +203,11 @@ void GfxRenderer::cleanRendererState()
     {
         pass->clear();
     }
+    /*  // 渲染目标清除 */
+    for (auto &[name, renderTarget] : this->_renderTargets)
+    {
+        renderTarget->clear();
+    }
 }
 void GfxRenderer::resetRendererState()
 {
@@ -215,6 +226,11 @@ void GfxRenderer::resetRendererState()
     for (auto &[name, object] : this->_objects)
     {
         object->reset();
+    }
+    /*  // 渲染目标重置 */
+    for (auto &[name, renderTarget] : this->_renderTargets)
+    {
+        renderTarget->reset();
     }
 }
 
@@ -265,7 +281,6 @@ void GfxRenderer::destroyObject(std::string id)
         object = nullptr;
         this->_objects.erase(id);
     }
-    
 }
 void GfxRenderer::setObjectModelMatrix(std::string id, std::array<float, 16> modelMatrix)
 {
@@ -366,6 +381,70 @@ void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer
     {
         this->_queues["ui"]->render(imageIndex, commandBuffers);
     }
+    long long time = TimeUtil::nowTime();
+    this->saveRenderTargetToFile("my_render_target", std::to_string(time) + "_output.png");
+}
+
+void GfxRenderer::createRenderTarget(const std::string &name, const std::string &passName, uint32_t width, uint32_t height)
+{
+    /* // 检查是否已存在 */
+    if (this->_renderTargets.find(name) != this->_renderTargets.end())
+    {
+        this->_Log("createRenderTarget: name already exists");
+        return;
+    }
+
+    /* // 检查 Pass 是否存在 */
+    if (this->_passes.find(passName) == this->_passes.end())
+    {
+        this->_Log("createRenderTarget: pass not found");
+        return;
+    }
+
+    GfxPass *pass = this->_passes[passName];
+
+    /* // 创建 RenderTarget */
+    GfxRenderTarget *renderTarget = new GfxRenderTarget(name, this->_context, width, height);
+    renderTarget->create(pass);
+    this->_renderTargets[name] = renderTarget;
+
+    /* // 如果对应的 Queue 存在，设置 RenderTarget */
+    if (this->_queues.find(passName) != this->_queues.end())
+    {
+        this->_queues[passName]->setRenderTarget(renderTarget);
+    }
+
+    this->_Log("RenderTarget created: " + name);
+}
+
+void GfxRenderer::destroyRenderTarget(const std::string &name)
+{
+    if (this->_renderTargets.find(name) != this->_renderTargets.end())
+    {
+        delete this->_renderTargets[name];
+        this->_renderTargets.erase(name);
+        this->_Log("RenderTarget destroyed: " + name);
+    }
+}
+
+GfxTexture *GfxRenderer::getRenderTargetTexture(const std::string &name)
+{
+    if (this->_renderTargets.find(name) != this->_renderTargets.end())
+    {
+        return this->_renderTargets[name]->getColorTexture();
+    }
+    return nullptr;
+}
+
+bool GfxRenderer::saveRenderTargetToFile(const std::string &name, const std::string &filePath)
+{
+    if (this->_renderTargets.find(name) == this->_renderTargets.end())
+    {
+        this->_Log("saveRenderTargetToFile: RenderTarget not found - " + name);
+        return false;
+    }
+
+    return this->_renderTargets[name]->saveToFile(filePath);
 }
 
 void GfxRenderer::_Log(std::string msg)

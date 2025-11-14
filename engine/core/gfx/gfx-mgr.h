@@ -7,9 +7,11 @@
 #include <vector>
 #include <set>
 #include <map>
+#include "gfx-pass.h"
 
 class GfxContext;
 class GfxRenderer;
+
 
 class GfxMgr
 {
@@ -41,7 +43,7 @@ public:
 	/**
 	 * 创建渲染通道
 	 */
-	void createRenderPass(std::string name);
+	void createRenderPass(std::string name, PassType passType);
 	/**
 	 * 创建管线
 	 */

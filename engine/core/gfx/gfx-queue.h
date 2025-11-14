@@ -10,12 +10,14 @@
 class GfxContext;
 class GfxObject;
 class GfxPass;
+class GfxRenderTarget;
 
 class GfxQueue
 {
 private:
     GfxContext *_context;
     GfxPass *_pass;
+    GfxRenderTarget *_renderTarget; /* // 可选：如果设置，则渲染到 RenderTarget；否则渲染到 SwapChain */
     std::vector<GfxObject *> _opaqueQueue;
     std::vector<GfxObject *> _transparentQueue;
 
@@ -35,6 +37,11 @@ private:
     void _Log(std::string msg);
 public:
     GfxQueue(GfxContext *context,GfxPass *pass);
+    /**
+     * @brief 设置渲染目标（可选）
+     * 如果设置了 RenderTarget，则渲染到纹理；否则渲染到窗口
+     */
+    void setRenderTarget(GfxRenderTarget *renderTarget);
     /**
      * ui 渲染通道队列顶点输入
      */

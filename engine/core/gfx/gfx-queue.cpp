@@ -3,11 +3,22 @@
 #include "gfx-context.h"
 #include "gfx-object.h"
 #include "gfx-pipeline.h"
+#include "gfx-render-target.h"
 
 GfxQueue::GfxQueue(GfxContext *context, GfxPass *pass)
 {
     this->_context = context;
     this->_pass = pass;
+    this->_renderTarget = nullptr;
+    this->_createBuffers();
+}
+
+void GfxQueue::setRenderTarget(GfxRenderTarget *renderTarget)
+{
+    this->_renderTarget = renderTarget;
+    /* // 重新创建 Framebuffers 和 CommandBuffers */
+    this->_cleanFramebuffers();
+    this->_cleanCommandBuffers();
     this->_createBuffers();
 }
 /**
@@ -21,6 +32,19 @@ void GfxQueue::_createBuffers()
 void GfxQueue::_createFramebuffers()
 {
     this->_swapChainFramebuffers.clear();
+
+    /* // 如果设置了 RenderTarget，使用它的 Framebuffer（只需要一个） */
+    if (this->_renderTarget != nullptr)
+    {
+        /* // 离屏渲染模式：只创建一个 framebuffer（由 RenderTarget 管理） */
+        /* // 这里不需要创建，因为 RenderTarget 已经创建好了 */
+        /* // 我们只需要在 render() 时使用 RenderTarget 的 framebuffer */
+        this->_swapChainFramebuffers.resize(1);
+        this->_swapChainFramebuffers[0] = this->_renderTarget->getFramebuffer();
+        return;
+    }
+
+    /* // 否则，渲染到 SwapChain（窗口模式） */
     std::vector<VkImageView> &swapChainImageViews = this->_context->getSwapChainImageViews();
     this->_swapChainFramebuffers.resize(swapChainImageViews.size());
     for (size_t i = 0; i < swapChainImageViews.size(); i++)
@@ -133,9 +157,22 @@ void GfxQueue::_beginBindRenderPass(uint32_t imageIndex)
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassInfo.renderPass = this->_pass->getVkRenderPass();
-    renderPassInfo.framebuffer = this->_swapChainFramebuffers[imageIndex];
-    renderPassInfo.renderArea.offset = {0, 0};
-    renderPassInfo.renderArea.extent = this->_context->getSwapChainExtent();
+
+    /* // 选择正确的 framebuffer 和 extent */
+    if (this->_renderTarget != nullptr)
+    {
+        /* // 离屏渲染：使用 RenderTarget 的 framebuffer（索引总是 0） */
+        renderPassInfo.framebuffer = this->_swapChainFramebuffers[0];
+        renderPassInfo.renderArea.offset = {0, 0};
+        renderPassInfo.renderArea.extent = {this->_renderTarget->width(), this->_renderTarget->height()};
+    }
+    else
+    {
+        /* // 窗口渲染：使用 SwapChain 的 framebuffer */
+        renderPassInfo.framebuffer = this->_swapChainFramebuffers[imageIndex];
+        renderPassInfo.renderArea.offset = {0, 0};
+        renderPassInfo.renderArea.extent = this->_context->getSwapChainExtent();
+    }
 
     std::array<VkClearValue, 4> clearValues = {};/*  // 至少4个，因为最高索引是3 */
    /*  // 设置颜色附件的清除值（索引0） */
@@ -162,6 +199,13 @@ void GfxQueue::clear()
 }
 void GfxQueue::_cleanFramebuffers()
 {
+    /* // 如果使用 RenderTarget，framebuffer 由 RenderTarget 管理，不需要在这里销毁 */
+    if (this->_renderTarget != nullptr)
+    {
+        this->_swapChainFramebuffers.clear();
+        return;
+    }
+
    /*  // 销毁帧缓冲（Framebuffers） */
     for (auto framebuffer : this->_swapChainFramebuffers)
     {
