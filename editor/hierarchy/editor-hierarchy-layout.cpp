@@ -48,9 +48,9 @@ void EditorHierarchyLayout::_initTitle()
 {
     // float width = 120.0f;
     // float height = 25.0f;
-    // Node2D *ndTitle = new Node2D("Title");
-    // this->_content->addChild(ndTitle);
-    // ndTitle->setSize(width, height);
+    Node2D *ndTitle = new Node2D("Title");
+    this->_root->addChild(ndTitle);
+    ndTitle->setSize(100, 100);
     // Sprite *sprite = ndTitle->addComponent<Sprite>("Sprite");
     // sprite->setColor(EditorConfig::theme);
     // // 添加wedget组件
@@ -170,6 +170,9 @@ void EditorHierarchyLayout::_initNodeTree()
     // sprite->setMaterial(nullptr);
     // 添加节点树
     this->_nodeTree = static_cast<NodeTree *>(ndNodeTree->addComponent("NodeTree"));
+    this->_nodeTree->setIcon("iconScene", "res/ic-scene.png");
+    this->_nodeTree->setIcon("iconNode2D", "res/ic-2d.png");
+    this->_nodeTree->setIcon("iconNode3D", "res/ic-3d.png");
     this->_nodeTree->setScene(new Scene("Test"));
     // // 添加mask组件
     // UIMask *uiMask = ndContent->addComponent<UIMask>("UIMask");

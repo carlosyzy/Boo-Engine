@@ -22,9 +22,9 @@ class Scene;
 
 struct UITreeIconMap
 {
-    std::string iconScene = "resources/texture/ic-scene.png";
-    std::string iconNode2D = "resources/texture/ic-2d.png";
-    std::string iconNode3D = "resources/texture/ic-3d.png";
+    std::string iconScene = "resources/texture/icon/ic-scene.png";
+    std::string iconNode2D = "resources/texture/icon/ic-2d.png";
+    std::string iconNode3D = "resources/texture/icon/ic-3d.png";
 };
 
 struct UITreeStructure
@@ -129,8 +129,8 @@ protected:
 
 public:
     UITree(Node *node, std::string uuid = "");
-
     
+    void setIcon(std::string iconKey, std::string iconPath);
 
     void onSelectEvent(std::function<void(UITreeStructure *)> callback);
     void onUpdateEvent(std::function<void()> callback);
