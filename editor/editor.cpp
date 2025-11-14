@@ -84,6 +84,11 @@ void Editor::_onLoadCallBack(const int complete, const int all, const float prog
 void Editor::_launchEditor()
 {
 	std::cout << "launch editor" << std::endl;
+	Boo::game->assetsManager()->load("res/texture/logo.png");
+	Boo::game->assetsManager()->load("res/texture/ic-2d.png");
+	Boo::game->assetsManager()->load("res/texture/ic-scene.png");
+	Boo::game->assetsManager()->load("res/texture/ic-3d.png");
+
 	this->_editorLayout->launch();
 	this->_initHierarchy();
 	// this->_initAssets();

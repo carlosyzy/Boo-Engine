@@ -38,12 +38,14 @@ void Game::_initView()
 }
 void Game::_initFont()
 {
-	// FreetypeMgr::getInstance()->init();
+	this->_fontMgr = new FreetypeMgr();
+	this->_fontMgr->init();
 }
 
 void Game::_initComponents()
 {
 	this->registerComponentClass<UISprite>("UISprite");
+	this->registerComponentClass<UIText>("UIText");
 	this->registerComponentClass<UIWidget>("UIWidget");
 	this->registerComponentClass<NodeTree>("NodeTree");
 	this->registerComponentClass<UILayoutHorizontal>("UILayoutHorizontal");

@@ -30,12 +30,12 @@ void EditorHierarchyLayout::_initContent()
     paramVertical.bottom = 0.0f;
     widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
     widget->setVertical(WidgetVertical::ALL, paramVertical);
-    // 渲染组件
-    UISprite *sprite = dynamic_cast<UISprite *>(this->_content->addComponent("UISprite"));
-    sprite->setColor("#ffe1e1ff");
-    sprite->setTexture(EditorConfig::texture);
-    sprite->setMaterial(nullptr);
-    std::cout << "EditorHierarchyLayout::_initContent1:" << sprite << std::endl;
+    // 渲染组件 后续不需要
+    // UISprite *sprite = dynamic_cast<UISprite *>(this->_content->addComponent("UISprite"));
+    // sprite->setColor("#ffe1e1ff");
+    // sprite->setTexture(EditorConfig::texture);
+    // sprite->setMaterial(nullptr);
+    // std::cout << "EditorHierarchyLayout::_initContent1:" << sprite << std::endl;
 
     this->_initOperate();
     this->_initNodeTree();
@@ -155,7 +155,7 @@ void EditorHierarchyLayout::_initNodeTree()
     // 添加wedget组件
     UIWidget *widget = static_cast<UIWidget *>(ndNodeTree->addComponent("UIWidget"));
     WidgetHorizontalParam paramHorizontal{};
-    paramHorizontal.left = 0.0f;
+    paramHorizontal.left = 10.0f;
     paramHorizontal.right = 0.0f;
     WidgetVerticalParam paramVertical{};
     paramVertical.top = 25.0f;
@@ -163,11 +163,11 @@ void EditorHierarchyLayout::_initNodeTree()
     widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
     widget->setVertical(WidgetVertical::ALL, paramVertical);
     // 渲染组件-后续删除
-    UISprite *sprite = static_cast<UISprite *>(ndNodeTree->addComponent("UISprite"));
-    // sprite->setColor(EditorConfig::theme);
-    sprite->setColor("#8f0077ff");
-    sprite->setTexture(EditorConfig::texture);
-    sprite->setMaterial(nullptr);
+    // UISprite *sprite = static_cast<UISprite *>(ndNodeTree->addComponent("UISprite"));
+    // // sprite->setColor(EditorConfig::theme);
+    // sprite->setColor("#8f0077ff");
+    // sprite->setTexture(EditorConfig::texture);
+    // sprite->setMaterial(nullptr);
     // 添加节点树
     this->_nodeTree = static_cast<NodeTree *>(ndNodeTree->addComponent("NodeTree"));
     this->_nodeTree->setScene(new Scene("Test"));

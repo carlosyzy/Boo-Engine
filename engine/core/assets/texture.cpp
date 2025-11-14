@@ -7,6 +7,18 @@ Texture::Texture(const std::string uuid, const std::string path) : Asset(uuid, p
     this->_type = AssetType::Texture;
     this->_load();
 }
+Texture::Texture(const std::string uuid, int width, int height, int channels, std::vector<uint8_t> pixels) : Asset(uuid)
+{
+    this->_type = AssetType::Texture;
+    this->_width = width;
+    this->_height = height;
+    this->_channels = channels;
+    this->_pixelsVector = pixels;
+    this->createGfxTexture();
+}
+
+
+
 void Texture::_load()
 {
     // std::cout << "Loading texture: " << this->_uuid << " from path: " << this->_path << std::endl;

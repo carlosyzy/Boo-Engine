@@ -5,6 +5,7 @@
 #include "../../../scene/node.h"
 #include "../../../scene/node-2d.h"
 #include "../../../renderer/ui/ui-sprite.h"
+#include "../../../renderer/ui/ui-text.h"
 
 UITree::UITree(Node *node, std::string uuid) : Component(node, uuid)
 {
@@ -34,13 +35,13 @@ void UITree::_initContent()
     this->_ndContent->setAnchor(0, 1);
     this->_ndContent->setSize(300.0f, 200.0f);
     // 确定后不需要渲染组件
-    this->_spContent = static_cast<UISprite *>(this->_ndContent->addComponent("UISprite"));
-    if (this->_spContent != nullptr)
-    {
-        this->_spContent->setColor(34.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
-        this->_spContent->setTexture("resources/texture/ic-default.png");
-        this->_spContent->setMaterial(nullptr);
-    }
+    // this->_spContent = static_cast<UISprite *>(this->_ndContent->addComponent("UISprite"));
+    // if (this->_spContent != nullptr)
+    // {
+    //     this->_spContent->setColor(34.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
+    //     this->_spContent->setTexture("resources/texture/ic-default.png");
+    //     this->_spContent->setMaterial(nullptr);
+    // }
 }
 // void UITree::_initSelect()
 // {
@@ -144,6 +145,7 @@ void UITree::onUpdateEvent(std::function<void()> callback)
 
 void UITree::updateTree()
 {
+    this->_updateTreeContent();
 }
 void UITree::_onNodeTransformChange(int nodeTransform)
 {
@@ -178,8 +180,8 @@ void UITree::_updateTreeContent()
 
     //     // 刷新content的大小,位置===============================================start
     this->_contentWidth = size.getWidth() - 10.0f;
-    this->_contentHeight = this->_nodeIndex * 22.0f;
-    std::cout << "UITree UITree::update  31 " << this->_nodeIndex * 22.0f << std::endl;
+    this->_contentHeight = this->_nodeIndex * 25.0f;
+    std::cout << "UITree UITree::update  31 " << this->_nodeIndex * 25.0f << std::endl;
     std::cout << "UITree UITree::update  32 " << size.getHeight() << std::endl;
     std::cout << "UITree UITree::update  33 " << this->_topLen << std::endl;
     // 重新计算_topLen
@@ -238,17 +240,6 @@ void UITree::_updateTreeContent()
     // }
 }
 
-void UITree::update(float deltaTime)
-{
-    Component::update(deltaTime);
-    // 刷新节点数状态
-    // 刷新节点数状态
-    if (this->_isDirty || this->_node->hasFrameTransformFlag())
-    {
-
-        this->_isDirty = false;
-    }
-}
 void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
 {
     std::random_device rd;
@@ -260,7 +251,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
 
     float offset = 10.0f;
     float itemWidth = 10.0f;
-    float itemHeight = 22.0f;
+    float itemHeight = 25.0f;
     Node2D *node = nullptr;
     UISprite *sp = nullptr;
     Node2D *ndSelect = nullptr;
@@ -270,9 +261,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     Node2D *ndIcon = nullptr;
     UISprite *spIcon = nullptr;
     Node2D *ndName = nullptr;
-    UISprite *txtName = nullptr;
-
-    itemWidth += (uiTreeData.layer * offset);
+    UIText *txtName = nullptr;
 
     if (this->_nodeIndex >= this->_nodePools.size())
     {
@@ -280,10 +269,10 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         node = new Node2D("NodeTreeItem");
         this->_ndContent->addChild(node);
         // 后续删除
-        sp = dynamic_cast<UISprite *>(node->addComponent("UISprite"));
-        sp->setColor(340.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
-        sp->setTexture("resources/texture/ic-default.png");
-        sp->setMaterial(nullptr);
+        // sp = dynamic_cast<UISprite *>(node->addComponent("UISprite"));
+        // sp->setColor(340.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
+        // sp->setTexture("resources/texture/ic-default.png");
+        // sp->setMaterial(nullptr);
         // node->onNodeInputEvent(NodeInput::TOUCH_START, [this](NodeInputResult &result)
         //                        { this->_onTreeItemTouchEvent(result); }, true);
 
@@ -298,7 +287,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         // 折叠符号
         ndFold = new Node2D("NodeTreeItemFold");
         node->addChild(ndFold);
-        ndFold->setSize(20, 20);
+        ndFold->setSize(22.0f, 22.0f);
         spFold = dynamic_cast<UISprite *>(ndFold->addComponent("UISprite"));
         spFold->setMaterial(nullptr);
         // ndFold->onNodeInputEvent(NodeInput::TOUCH_START, [this](NodeInputResult &result)
@@ -306,16 +295,16 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         // 图标
         ndIcon = new Node2D("NodeTreeItemIcon");
         node->addChild(ndIcon);
-        ndIcon->setSize(16, 16);
+        ndIcon->setSize(20.0f, 20.0f);
         spIcon = dynamic_cast<UISprite *>(ndIcon->addComponent("UISprite"));
         spIcon->setMaterial(nullptr);
         // 名字
         ndName = new Node2D("NodeTreeItemName");
+        ndName->setSize(16.0f, 16.0f);
         node->addChild(ndName);
-        txtName = dynamic_cast<UISprite *>(ndName->addComponent("UISprite"));
+        txtName = dynamic_cast<UIText *>(ndName->addComponent("UIText"));
         txtName->setColor(204.0f / 255.0f, 207.0f / 255.0f, 213.0f / 255.0f, 1.0f);
         txtName->setMaterial(nullptr);
-        txtName->setTexture("resources/texture/ic-default.png");
         this->_nodePools.push_back(node);
     }
     else
@@ -326,7 +315,8 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         Node *fold = node->getChildByName("NodeTreeItemFold");
         Node *icon = node->getChildByName("NodeTreeItemIcon");
         Node *name = node->getChildByName("NodeTreeItemName");
-        if(select != nullptr){
+        if (select != nullptr)
+        {
             ndSelect = dynamic_cast<Node2D *>(select);
             spSelect = dynamic_cast<UISprite *>(ndSelect->getComponent("UISprite"));
         }
@@ -343,7 +333,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         if (name != nullptr)
         {
             ndName = dynamic_cast<Node2D *>(name);
-            txtName = dynamic_cast<UISprite *>(ndName->getComponent("UISprite"));
+            txtName = dynamic_cast<UIText *>(ndName->getComponent("UIText"));
         }
     }
     uiTreeData.index = this->_nodeIndex;
@@ -351,6 +341,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
 
     node->setActive(true);
     ndSelect->setActive(false);
+    itemWidth += (uiTreeData.layer * offset);
     // this->_treeSelectMap.emplace(node->uuid(), &uiTreeData);
     // this->_treeFoldMap.emplace(ndFold->uuid(), &uiTreeData);
     // 折叠图标
@@ -370,17 +361,17 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     {
         ndFold->setActive(false);
     }
-    itemWidth += 20.0f;
-
+    itemWidth += ndFold->getSize().getWidth();
     // 图标
     spIcon->setTexture(uiTreeData.iconKey);
-    itemWidth += 20.0f;
-    // // 创建名字
-    // txtName->setText(uiTreeData.name);
-    float itemNameWidth = randomGet(gen) * 50.0f + 50.0f;
-    float itemNameHight = 14.f;
-    ndName->setSize(itemNameWidth, itemNameHight);
+    itemWidth += ndIcon->getSize().getWidth();
+    // 创建名字
+    std::cout << "name:" << uiTreeData.name << std::endl;
+    txtName->setText(uiTreeData.name);
+    float itemNameWidth = ndName->getSize().getWidth();
+    float itemNameHight = ndName->getSize().getHeight();
     itemWidth += itemNameWidth;
+    itemWidth += 5.0f * 3;
 
     // 设置总宽度
     if (itemWidth < size.getWidth() - 10)
@@ -388,11 +379,15 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         itemWidth = size.getWidth() - 10;
     }
     // 折叠按钮
-    ndFold->setPosition(-itemWidth / 2.0 + (uiTreeData.layer * offset) + 10, 0.0f, 0.0f);
+    float startX = -itemWidth / 2.0 + (uiTreeData.layer * offset);
+    ndFold->setPosition(startX + ndFold->getSize().getWidth() / 2.0, 0.0f, 0.0f);
     // 图标
-    ndIcon->setPosition(-itemWidth / 2.0 + (uiTreeData.layer * offset) + 20 + 10, 0.0f, 0.0f);
+    startX += ndFold->getSize().getWidth() + 5.0f;
+    ndIcon->setPosition(startX + ndIcon->getSize().getWidth() / 2.0, 0.0f, 0.0f);
+    std::cout << "icon:" << ndIcon->getSize().getWidth() << " name:" << ndIcon->getSize().getHeight() << std::endl;
     // 名字
-    ndName->setPosition(-itemWidth / 2.0 + (uiTreeData.layer * offset) + 20 + 20 + 8 + (itemNameWidth / 2.0f), 0.0f, 0.0f);
+    startX += ndIcon->getSize().getWidth() + 5.0f;
+    ndName->setPosition(startX + itemNameWidth / 2.0, 0.0f, 0.0f);
 
     node->setSize(itemWidth, itemHeight);
     node->setPosition(itemWidth / 2.0f, -itemHeight / 2.0f - this->_nodeIndex * itemHeight, 0.0f);
@@ -455,6 +450,10 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
 //     }
 // }
 
+void UITree::update(float deltaTime)
+{
+    Component::update(deltaTime);
+}
 void UITree::lateUpdate(float deltaTime)
 {
     Component::lateUpdate(deltaTime);

@@ -4,18 +4,21 @@
 #include <functional>
 #include <unordered_map>
 #include "assets/assets-manager.h"
+#include "event/event.h"
+#include "scene/scene.h"
+#include "gfx/gfx-mgr.h"
+#include "alpha/alpha.h"
+#include "font/freetype-mgr.h"
+
+
 #include "component/component.h"
+#include "renderer/ui/ui-sprite.h"
+#include "renderer/ui/ui-text.h"
+
 #include "component/ui/ui-widget.h"
 #include "component/ui/ui-layout-horizontal.h"
 #include "component/ui/ui-tree/node-tree.h"
 
-
-
-#include "global/event.h"
-#include "scene/scene.h"
-#include "gfx/gfx-mgr.h"
-#include "alpha/alpha.h"
-#include "renderer/ui/ui-sprite.h"
 
 
 struct View
@@ -69,6 +72,10 @@ private:
      * @brief 资产系统
      */
     AssetsManager *_assetsManager;
+    /**
+     * @brief 字体系统
+     */
+    FreetypeMgr *_fontMgr;
 
     /**
      * @brief 当前场景
@@ -132,14 +139,18 @@ public:
     {
         return this->_event;
     }
+    AssetsManager *assetsManager()
+    {
+        return this->_assetsManager;
+    }
+    FreetypeMgr *fontMgr()
+    {
+        return this->_fontMgr;
+    }
+
     Scene *getScene()
     {
         return this->_curScene;
-    }
-    AssetsManager *assetsManager()
-    {
-        std::cout << "Game::assetsManager():" << this->_assetsManager << std::endl;
-        return this->_assetsManager;
     }
     // 注册组件类
     template <typename T = Component>

@@ -160,7 +160,7 @@ void GfxObject::setTexture(GfxTexture *texture)
 }
 void GfxObject::setModelMatrix(std::array<float, 16> &mat)
 {
-    std::cout << "setModelMatrix" << std::endl;
+    // std::cout << "setModelMatrix" << std::endl;
     this->_modelMatrix = mat;
     this->_updateModelMatUniformBuffer();
 }
