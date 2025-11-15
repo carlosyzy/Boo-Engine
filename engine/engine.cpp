@@ -5,8 +5,6 @@
 #include "core/utils/time-util.h"
 #include "boo.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "libs/stb/stb_image.h"
 
 Engine::Engine()
 {

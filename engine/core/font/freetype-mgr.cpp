@@ -133,8 +133,3 @@ FreetypeMgr::~FreetypeMgr()
     FT_Done_Face(this->_face);
     FT_Done_FreeType(this->_ft);
 }
-// void FreetypeMgr::destroy()
-// {
-//     FT_Done_Face(this->_face);
-//     FT_Done_FreeType(this->_ft);
-// }
