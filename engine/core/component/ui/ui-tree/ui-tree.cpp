@@ -362,13 +362,13 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     // 折叠图标
     if (uiTreeData.isFold)
     {
-        // spFold->setTexture("resources/texture/ic-arrow-right.png");
-        spFold->setTexture("resources/texture/ic-default.png");
+        spFold->setTexture("resources/texture/ic-arrow-right.png");
+        // spFold->setTexture("resources/texture/ic-default.png");
     }
     else
     {
-        // spFold->setTexture("resources/texture/ic-arrow-bottom.png");
-        spFold->setTexture("resources/texture/ic-default.png");
+        spFold->setTexture("resources/texture/ic-arrow-bottom.png");
+        // spFold->setTexture("resources/texture/ic-default.png");
     }
     if (uiTreeData.children.size() > 0)
     {
@@ -380,8 +380,8 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     }
     itemWidth += ndFold->getSize().getWidth();
     // 图标
-    // spIcon->setTexture(uiTreeData.iconKey);
-    spIcon->setTexture("resources/texture/ic-default.png");
+    spIcon->setTexture(uiTreeData.iconKey);
+    // spIcon->setTexture("resources/texture/ic-default.png");
     itemWidth += ndIcon->getSize().getWidth();
     // 创建名字
     std::cout << "name:" << uiTreeData.name << std::endl;

@@ -173,9 +173,9 @@ void EditorHierarchyLayout::_initNodeTree()
     // sprite->setMaterial(nullptr);
     // 添加节点树
     this->_nodeTree = static_cast<NodeTree *>(ndNodeTree->addComponent("NodeTree"));
-    this->_nodeTree->setIcon("iconScene", "res/ic-scene.png");
-    this->_nodeTree->setIcon("iconNode2D", "res/ic-2d.png");
-    this->_nodeTree->setIcon("iconNode3D", "res/ic-3d.png");
+    // this->_nodeTree->setIcon("iconScene", "res/ic-scene.png");
+    // this->_nodeTree->setIcon("iconNode2D", "res/ic-2d.png");
+    // this->_nodeTree->setIcon("iconNode3D", "res/ic-3d.png");
     this->_nodeTree->setScene(new Scene("Test"));
     // // 添加mask组件
     // UIMask *uiMask = ndContent->addComponent<UIMask>("UIMask");
