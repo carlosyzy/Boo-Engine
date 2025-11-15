@@ -111,13 +111,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>F:\worksapces\Boo-Engine\engine\libs\stb;E:\software\vulkan\Include;E:\software\glfw\include;E:\software\msys64\mingw64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\worksapces\Boo-Engine\engine\libs\stb;E:\software\vulkan\Include;E:\software\glfw\include;F:\worksapces\Boo-Engine\engine\libs\freetype2\win\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\software\msys64\mingw64\lib;E:\software\vulkan\Lib;E:\software\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;vulkan-1.lib;shaderc_combinedd.lib;libfreetype.a;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\software\msys64\mingw64\lib;E:\software\vulkan\Lib;E:\software\glfw\lib-vc2022;F:\worksapces\Boo-Engine\engine\libs\freetype2\win\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;vulkan-1.lib;shaderc_combinedd.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CopyFileToFolders>
       <DestinationFolders>F:\worksapces\Boo-Engine\engine\resources;%(DestinationFolders)</DestinationFolders>

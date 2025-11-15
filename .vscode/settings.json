@@ -137,6 +137,7 @@
     "ciso646": "cpp",
     "ios": "cpp",
     "locale": "cpp",
-    "*.rh": "cpp"
+    "*.rh": "cpp",
+    "source_location": "cpp"
   }
 }
