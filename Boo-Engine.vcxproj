@@ -191,7 +191,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\gfx\gfx-shader.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-texture.cpp" />
     <ClCompile Include="engine\core\global\global.cpp" />
-    <ClCompile Include="engine\core\input\input-mgr.cpp" />
+    <ClCompile Include="engine\core\input\input.cpp" />
     <ClCompile Include="engine\core\math\color.cpp" />
     <ClCompile Include="engine\core\math\mat4.cpp" />
     <ClCompile Include="engine\core\math\quat.cpp" />
@@ -211,8 +211,8 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\utils\time-util.cpp" />
     <ClCompile Include="engine\core\utils\uuid-util.cpp" />
     <ClCompile Include="engine\libs\stb\stb_vorbis.c" />
-    <ClCompile Include="engine\window\window-mgr.cpp" />
     <ClCompile Include="engine\engine.cpp" />
+    <ClCompile Include="engine\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="editor\editor-config.h" />
@@ -258,7 +258,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\gfx\gfx-texture.h" />
     <ClInclude Include="engine\core\global\event.h" />
     <ClInclude Include="engine\core\global\global.h" />
-    <ClInclude Include="engine\core\input\input-mgr.h" />
+    <ClInclude Include="engine\core\input\input.h" />
     <ClInclude Include="engine\core\math\color.h" />
     <ClInclude Include="engine\core\math\mat4.h" />
     <ClInclude Include="engine\core\math\quat.h" />
@@ -334,8 +334,8 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\libs\stb\stb_tilemap_editor.h" />
     <ClInclude Include="engine\libs\stb\stb_truetype.h" />
     <ClInclude Include="engine\libs\stb\stb_voxel_render.h" />
-    <ClInclude Include="engine\window\window-mgr.h" />
     <ClInclude Include="engine\engine.h" />
+    <ClInclude Include="engine\window\window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="engine\core\gfx\readme.md" />

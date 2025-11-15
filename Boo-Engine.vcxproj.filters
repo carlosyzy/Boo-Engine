@@ -54,9 +54,6 @@
     <ClCompile Include="engine\core\component\component.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\window\window-mgr.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\utils\time-util.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -183,9 +180,6 @@
     <ClCompile Include="engine\core\renderer\ui\ui-text.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\input\input-mgr.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\utils\file-util.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -193,6 +187,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\utils\fmt-util.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\window\window.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\input\input.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -234,9 +234,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\component\component-factory.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\window\window-mgr.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\utils\time-util.h">
@@ -443,9 +440,6 @@
     <ClInclude Include="engine\core\renderer\ui\ui-text.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\input\input-mgr.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="engine\core\utils\file-util.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -558,6 +552,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\libs\boost\locale\util.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\window\window.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\input\input.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
