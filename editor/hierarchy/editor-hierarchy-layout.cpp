@@ -14,6 +14,41 @@ EditorHierarchyLayout::EditorHierarchyLayout(Node2D *root)
     this->_initTitle();
     this->_initContent();
 }
+void EditorHierarchyLayout::_initTitle()
+{
+    Node2D *ndTitle = new Node2D("Title");
+    this->_root->addChild(ndTitle);
+    ndTitle->setSize(120.0f, 30.0f);
+    // 后续不需要这个组件
+    UISprite *sprite = dynamic_cast<UISprite *>(ndTitle->addComponent("UISprite"));
+    sprite->setColor(EditorConfig::title);
+    sprite->setTexture(EditorConfig::txDefault);
+    sprite->setMaterial(nullptr);
+    // 添加wedget组件
+    UIWidget *widget = dynamic_cast<UIWidget *>(ndTitle->addComponent("UIWidget"));
+    WidgetHorizontalParam paramHorizontal{};
+    paramHorizontal.left = 0.0f;
+    paramHorizontal.right = 0.0f;
+    WidgetVerticalParam paramVertical{};
+    paramVertical.top = 0.0f;
+    paramVertical.bottom = 0.0f;
+    widget->setHorizontal(WidgetHorizontal::LEFT, paramHorizontal);
+    widget->setVertical(WidgetVertical::TOP, paramVertical);
+
+    Node2D *ndTitleName = new Node2D("TitleName");
+    ndTitle->addChild(ndTitleName);
+    ndTitleName->setSize(100.0f, 25.0f);
+    ndTitleName->setPosition(-5.0f, 0.0f, 0.0f);
+    UISprite *spriteName = dynamic_cast<UISprite *>(ndTitleName->addComponent("UISprite"));
+    spriteName->setColor("#ffffffff");
+    spriteName->setTexture("res/ic-title-hierarchy.png");
+    spriteName->setMaterial(nullptr);
+
+    // 计算尺寸
+    float width = ndTitle->getSize().getWidth() * 0.95f;
+    float scale = width / 300.0f;
+    ndTitleName->setSize(width, 60.0f * scale);
+}
 void EditorHierarchyLayout::_initContent()
 {
     std::cout << "EditorHierarchyLayout::_initContent" << std::endl;
@@ -33,7 +68,7 @@ void EditorHierarchyLayout::_initContent()
     // 渲染组件 后续不需要
     // UISprite *sprite = dynamic_cast<UISprite *>(this->_content->addComponent("UISprite"));
     // sprite->setColor("#ffe1e1ff");
-    // sprite->setTexture(EditorConfig::texture);
+    // sprite->setTexture(EditorConfig::txDefault);
     // sprite->setMaterial(nullptr);
     // std::cout << "EditorHierarchyLayout::_initContent1:" << sprite << std::endl;
 
@@ -44,113 +79,116 @@ void EditorHierarchyLayout::_initContent()
     //                                         this->_onRootInputStartEventCallback(result);
     //                                     } });
 }
-void EditorHierarchyLayout::_initTitle()
-{
-    // float width = 120.0f;
-    // float height = 25.0f;
-    Node2D *ndTitle = new Node2D("Title");
-    this->_root->addChild(ndTitle);
-    ndTitle->setSize(100, 100);
-    UISprite *sprite = dynamic_cast<UISprite *>(ndTitle->addComponent("UISprite"));
-    sprite->setColor("#ffe1e1ff");
-    sprite->setTexture(EditorConfig::texture);
-    sprite->setMaterial(nullptr);
-    // sprite->setColor(EditorConfig::theme);
-    // // 添加wedget组件
-    // UIWidget *widget = ndTitle->addComponent<UIWidget>("UIWidget");
-    // if (widget != nullptr)
-    // {
-    //     WidgetHorizontalParam paramHorizontal{};
-    //     WidgetVerticalParam paramVertical{};
-    //     widget->setHorizontal(WidgetHorizontal::LEFT, paramHorizontal);
-    //     widget->setVertical(WidgetVertical::TOP, paramVertical);
-    // }
-    // // icon
-    // float iconWidth = 20.0f;
-    // float iconHeight = 20.0f;
-    // Node2D *ndIcon = new Node2D("TitleIcon");
-    // ndTitle->addChild(ndIcon);
-    // ndIcon->setSize(iconWidth, iconHeight);
-    // ndIcon->setPosition(-width / 2.0 + 5.0f + iconWidth / 2.0, 0.0, 0.0);
-    // Sprite *spriteIcon = ndIcon->addComponent<Sprite>("Sprite");
-    // spriteIcon->setColor(EditorConfig::iconColor);
-    // spriteIcon->setTexture("resources/textures/ic-title-hierarchy.png");
-    // // name
-    // float nameWidth = 72.0f;
-    // float nameHeight = 16.0f;
-    // Node2D *ndName = new Node2D("TitleName");
-    // ndTitle->addChild(ndName);
-    // ndName->setSize(nameWidth, nameHeight);
-    // ndName->setPosition(-width / 2.0 + 2.0f + iconWidth + 5.0f + nameWidth / 2.0, 0.0f, 0.0f);
-    // Text *txtName = ndName->addComponent<Text>("Text");
-    // txtName->setColor(EditorConfig::fontColor);
-    // txtName->setText("层级管理器");
-}
+
 void EditorHierarchyLayout::_initOperate()
 {
-    // Node2D *ndOperate = new Node2D("Operate");
-    // this->_content->addChild(ndOperate);
-    // ndOperate->setSize(100.0f, 20.0f);
-    // Sprite *sprite = ndOperate->addComponent<Sprite>("Sprite");
-    // sprite->setColor(EditorConfig::theme);
-    // // 添加wedget组件
-    // UIWidget *widget = ndOperate->addComponent<UIWidget>("UIWidget");
-    // if (widget != nullptr)
-    // {
-    //     WidgetHorizontalParam paramHorizontal{};
-    //     paramHorizontal.left = 0.0f;
-    //     paramHorizontal.right = 0.0f;
-    //     WidgetVerticalParam paramVertical{};
-    //     paramVertical.top = 26.0f;
-    //     widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
-    //     widget->setVertical(WidgetVertical::TOP, paramVertical);
-    // }
-    // // 添加按钮
-    // Node2D *ndOperateAdd = new Node2D("OperateAdd");
-    // ndOperate->addChild(ndOperateAdd);
-    // ndOperateAdd->setSize(14.0f, 14.0f);
-    // Sprite *spriteAdd = ndOperateAdd->addComponent<Sprite>("Sprite");
-    // spriteAdd->setColor(EditorConfig::iconColor);
-    // spriteAdd->setTexture("resources/textures/ic-add.png");
-    // UIWidget *widgetAdd = ndOperateAdd->addComponent<UIWidget>("UIWidget");
-    // WidgetHorizontalParam paramHorizontal{};
-    // paramHorizontal.left = 5.0f;
-    // widgetAdd->setHorizontal(WidgetHorizontal::LEFT, paramHorizontal);
-    // // 折叠按钮
-    // Node2D *ndOperateCollapse = new Node2D("OperateCollapse");
-    // ndOperate->addChild(ndOperateCollapse);
-    // ndOperateCollapse->setSize(14.0f, 14.0f);
-    // Sprite *spriteCollaps = ndOperateCollapse->addComponent<Sprite>("Sprite");
-    // spriteCollaps->setColor(EditorConfig::iconColor);
-    // spriteCollaps->setTexture("resources/textures/ic-flod.png");
-    // UIWidget *widgetCollaps = ndOperateCollapse->addComponent<UIWidget>("UIWidget");
-    // WidgetHorizontalParam widgetCollapsHParam{};
-    // widgetCollapsHParam.right = 5.0f;
-    // widgetCollaps->setHorizontal(WidgetHorizontal::RIGHT, widgetCollapsHParam);
+    this->_ndOperate = new Node2D("Operate");
+    this->_content->addChild(this->_ndOperate);
+    this->_ndOperate->setSize(150.0f, 25.0f);
 
-    // // 搜索
-    // Node2D *ndOperateSearch = new Node2D("OperateSearch");
-    // ndOperate->addChild(ndOperateSearch);
-    // ndOperateSearch->setSize(14.0f, 16.0f);
-    // Sprite *spriteeSearch = ndOperateSearch->addComponent<Sprite>("Sprite");
-    // spriteeSearch->setColor(24.0f / 255.0f, 30.0f / 255.0f, 35.0f / 255.0f, 1.0f);
-    // UIWidget *widgetSearch = ndOperateSearch->addComponent<UIWidget>("UIWidget");
-    // WidgetHorizontalParam widgetSearchHParam{};
-    // widgetSearchHParam.left = 28.0f;
-    // widgetSearchHParam.right = 28.0f;
-    // widgetSearch->setHorizontal(WidgetHorizontal::ALL, widgetSearchHParam);
-    // // 搜素图标
-    // Node2D *ndOperateSearchIcon = new Node2D("OperateSearch");
-    // ndOperateSearch->addChild(ndOperateSearchIcon);
-    // ndOperateSearchIcon->setSize(14.0f, 14.0f);
-    // Sprite *spriteeSearchIcon = ndOperateSearchIcon->addComponent<Sprite>("Sprite");
-    // spriteeSearchIcon->setColor(EditorConfig::iconColor);
-    // spriteeSearchIcon->setTexture("resources/textures/ic-search.png");
-    // UIWidget *widgetSearchIcon = ndOperateSearchIcon->addComponent<UIWidget>("UIWidget");
-    // WidgetHorizontalParam widgetSearchIconHParam{};
-    // widgetSearchIconHParam.left = 4.0f;
-    // widgetSearchIcon->setHorizontal(WidgetHorizontal::LEFT, widgetSearchIconHParam);
+    UISprite *sprite = dynamic_cast<UISprite *>(this->_ndOperate->addComponent("UISprite"));
+    sprite->setColor(EditorConfig::operate);
+    sprite->setTexture(EditorConfig::txDefault);
+    sprite->setMaterial(nullptr);
+    // 添加wedget组件
+    UIWidget *widget = dynamic_cast<UIWidget *>(this->_ndOperate->addComponent("UIWidget"));
+    WidgetHorizontalParam paramHorizontal{};
+    paramHorizontal.left = 0.0f;
+    paramHorizontal.right = 0.0f;
+    WidgetVerticalParam paramVertical{};
+    paramVertical.top = 0.0f;
+    paramVertical.bottom = 0.0f;
+    widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
+    widget->setVertical(WidgetVertical::TOP, paramVertical);
+
+    this->_initOperateAdd();
+    this->_initOperateFold();
+    this->_initOperateSearch();
 }
+void EditorHierarchyLayout::_initOperateAdd()
+{
+    this->_ndAdd = new Node2D("Add");
+    this->_ndOperate->addChild(this->_ndAdd);
+    this->_ndAdd->setSize(16.0f, 16.0f);
+    this->_spriteAdd = dynamic_cast<UISprite *>(this->_ndAdd->addComponent("UISprite"));
+    this->_spriteAdd->setTexture("resources/texture/ic-add.png");
+    this->_spriteAdd->setMaterial(nullptr);
+
+    // 添加wedget组件
+    UIWidget *widget = dynamic_cast<UIWidget *>(this->_ndAdd->addComponent("UIWidget"));
+    WidgetHorizontalParam paramHorizontal{};
+    paramHorizontal.left = 4.0f;
+    paramHorizontal.right = 0.0f;
+    WidgetVerticalParam paramVertical{};
+    paramVertical.top = 0.0f;
+    paramVertical.bottom = 0.0f;
+    widget->setHorizontal(WidgetHorizontal::LEFT, paramHorizontal);
+    widget->setVertical(WidgetVertical::NONE, paramVertical);
+}
+
+void EditorHierarchyLayout::_initOperateFold()
+{
+    this->_ndFold = new Node2D("Fold");
+    this->_ndOperate->addChild(this->_ndFold);
+    this->_ndFold->setSize(16, 16);
+    this->_spriteFold = dynamic_cast<UISprite *>(this->_ndFold->addComponent("UISprite"));
+    this->_spriteFold->setTexture("resources/texture/icon/ic-flod.png");
+    this->_spriteFold->setMaterial(nullptr);
+    // 添加wedget组件
+    UIWidget *widget = dynamic_cast<UIWidget *>(this->_ndFold->addComponent("UIWidget"));
+    WidgetHorizontalParam paramHorizontal{};
+    paramHorizontal.left = 0.0f;
+    paramHorizontal.right = 2.0f;
+    WidgetVerticalParam paramVertical{};
+    paramVertical.top = 0.0f;
+    paramVertical.bottom = 0.0f;
+    widget->setHorizontal(WidgetHorizontal::RIGHT, paramHorizontal);
+    widget->setVertical(WidgetVertical::NONE, paramVertical);
+}
+void EditorHierarchyLayout::_initOperateSearch()
+{
+    Node2D *ndSearchBg = new Node2D("NodeRearchBg");
+    ndSearchBg->setSize(100.0f, 20.0f);
+    this->_ndOperate->addChild(ndSearchBg);
+    // 渲染组件
+    UISprite *sprite = static_cast<UISprite *>(ndSearchBg->addComponent("UISprite"));
+    sprite->setColor("#151e2bff");
+    sprite->setTexture(EditorConfig::txDefault);
+    sprite->setMaterial(nullptr);
+    UIWidget *widget = static_cast<UIWidget *>(ndSearchBg->addComponent("UIWidget"));
+    WidgetHorizontalParam paramHorizontal{};
+    paramHorizontal.left = 28.0f;
+    paramHorizontal.right = 28.0f;
+    widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
+    // 搜索icon
+    this->_ndSearchIcon = new Node2D("SearchIcon");
+    this->_ndOperate->addChild(this->_ndSearchIcon);
+    this->_ndSearchIcon->setSize(14.0f, 14.0f);
+    this->_spriteSearchIcon = dynamic_cast<UISprite *>(this->_ndSearchIcon->addComponent("UISprite"));
+    this->_spriteSearchIcon->setMaterial(nullptr);
+    this->_spriteSearchIcon->setTexture("resources/texture/ic-search.png");
+    // 添加wedget组件
+    UIWidget *widget0 = dynamic_cast<UIWidget *>(this->_ndSearchIcon->addComponent("UIWidget"));
+    WidgetHorizontalParam paramHorizontal0{};
+    paramHorizontal0.left = 32.0f;
+    widget0->setHorizontal(WidgetHorizontal::LEFT, paramHorizontal0);
+
+     // 搜索框
+     this->_ndSearchBox = new Node2D("SearchBox");
+     this->_ndOperate->addChild(this->_ndSearchBox);
+     this->_ndSearchBox->setSize(100.0f, 18.0f);
+     this->_spriteSearchBox = dynamic_cast<UISprite *>(this->_ndSearchBox->addComponent("UISprite"));
+     this->_spriteSearchBox->setMaterial(nullptr);
+     this->_spriteSearchBox->setColor("#ffffffff");
+     this->_spriteSearchBox->setTexture(EditorConfig::txDefault);
+     // 添加wedget组件
+     UIWidget *widget1 = dynamic_cast<UIWidget *>(this->_ndSearchBox->addComponent("UIWidget"));
+     WidgetHorizontalParam paramHorizontal1{};
+     paramHorizontal1.left = 50.0f;
+     paramHorizontal1.right = 30.0f;
+     widget1->setHorizontal(WidgetHorizontal::ALL, paramHorizontal1);
+}
+
 void EditorHierarchyLayout::_initNodeTree()
 {
     Node2D *ndNodeTree = new Node2D("NodeTree");
@@ -158,7 +196,7 @@ void EditorHierarchyLayout::_initNodeTree()
     // 添加wedget组件
     UIWidget *widget = static_cast<UIWidget *>(ndNodeTree->addComponent("UIWidget"));
     WidgetHorizontalParam paramHorizontal{};
-    paramHorizontal.left = 10.0f;
+    paramHorizontal.left = 0.0f;
     paramHorizontal.right = 0.0f;
     WidgetVerticalParam paramVertical{};
     paramVertical.top = 25.0f;
@@ -166,11 +204,10 @@ void EditorHierarchyLayout::_initNodeTree()
     widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
     widget->setVertical(WidgetVertical::ALL, paramVertical);
     // 渲染组件-后续删除
-    // UISprite *sprite = static_cast<UISprite *>(ndNodeTree->addComponent("UISprite"));
-    // // sprite->setColor(EditorConfig::theme);
-    // sprite->setColor("#8f0077ff");
-    // sprite->setTexture(EditorConfig::texture);
-    // sprite->setMaterial(nullptr);
+    UISprite *sprite = static_cast<UISprite *>(ndNodeTree->addComponent("UISprite"));
+    sprite->setColor(EditorConfig::content);
+    sprite->setTexture(EditorConfig::txDefault);
+    sprite->setMaterial(nullptr);
     // 添加节点树
     this->_nodeTree = static_cast<NodeTree *>(ndNodeTree->addComponent("NodeTree"));
     // this->_nodeTree->setIcon("iconScene", "res/ic-scene.png");

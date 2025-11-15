@@ -5,12 +5,13 @@
 #include <functional>
 #include <iostream>
 #include <filesystem>
-#include "asset.h"
+
 #include "asset-load.h"
 #include "asset-cache.h"
 #include "texture.h"
 #include "material.h"
 #include "shader.h"
+
 
 
 

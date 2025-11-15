@@ -3,21 +3,15 @@
 #include <iostream>
 #include <functional>
 #include <unordered_map>
-#include "assets/assets-manager.h"
-#include "event/event.h"
-#include "scene/scene.h"
-#include "gfx/gfx-mgr.h"
-#include "alpha/alpha.h"
-#include "font/freetype-mgr.h"
 
 
-#include "component/component.h"
-#include "renderer/ui/ui-sprite.h"
-#include "renderer/ui/ui-text.h"
-
-#include "component/ui/ui-widget.h"
-#include "component/ui/ui-layout-horizontal.h"
-#include "component/ui/ui-tree/node-tree.h"
+class Event;
+class Scene;
+class Node;
+class Component;
+class AssetsManager;
+class FreetypeMgr;
+class Input;
 
 
 
@@ -76,6 +70,11 @@ private:
      * @brief 字体系统
      */
     FreetypeMgr *_fontMgr;
+    /**
+     * @brief 输入系统
+     */
+    Input *_input;
+    
 
     /**
      * @brief 当前场景
@@ -147,6 +146,10 @@ public:
     {
         return this->_fontMgr;
     }
+    Input *input()
+    {
+        return this->_input;
+    }
 
     Scene *getScene()
     {
@@ -195,10 +198,26 @@ public:
     }
     void unschedule(int scheduleID);
 
-    Scene *openScene(std::string sceneName);
+   /* Scene *openScene(std::string sceneName);*/
 
     void addCompClearCaches(Component *comp);
     void addNodeClearCaches(Node *node);
+
+    /**
+     * @brief 更新鼠标状态
+     * 
+     * @param button 鼠标按钮 0:左键 1:右键 2:中键
+     * @param action 鼠标操作 0:抬起 1:按下
+     * @param mods 键盘修饰键 0:无 1:Shift 2:Ctrl 3:Alt
+     */
+    void updateMouseState(int button, int action, int mods);
+    /**
+     * @brief 更新鼠标位置
+     * 
+     * @param xpos 鼠标X坐标
+     * @param ypos 鼠标Y坐标
+     */
+    void updateMousePos(double xpos, double ypos);
 
     void update(float dt);
 };

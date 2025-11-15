@@ -1,10 +1,9 @@
 #include "engine.h"
 #include <iostream>
 #include "../editor/editor.h"
-#include "window/window-mgr.h"
+#include "window/window.h"
 #include "core/utils/time-util.h"
 #include "boo.h"
-
 
 Engine::Engine()
 {
@@ -23,7 +22,8 @@ void Engine::init()
 void Engine::_initWindow()
 {
 	std::cout << "INIT WINDOW" << std::endl;
-	WindowMgr::getInstance()->init();
+	Boo::window = new Window(this);
+	Boo::window->init();
 }
 
 void Engine::_initGame()
@@ -43,9 +43,9 @@ void Engine::_initEditor()
  */
 void Engine::tick()
 {
-	while (WindowMgr::getInstance()->isRunning())
+	while (Boo::window->isRunning())
 	{
-		WindowMgr::getInstance()->tick();
+		Boo::window->tick();
 		long long deltaTime = TimeUtil::nowTime();
 		long t = deltaTime - this->_deltaTime;
 		if (t > 1000.0f / this->_frameRate)
@@ -60,14 +60,33 @@ void Engine::tick()
  */
 void Engine::update(float dt)
 {
-	int width, height;
-	bool isChange = WindowMgr::getInstance()->getWindowSize(width, height);
-	if (isChange)
+	Editor::getInstance()->update(dt);
+	if (Boo::game != nullptr)
+	{
+		Boo::game->update(dt);
+	}
+}
+
+void Engine::updateViewSize(float width, float height)
+{
+	if (Boo::game != nullptr)
 	{
 		Boo::game->setView(width, height);
 	}
-	Editor::getInstance()->update(dt);
-	Boo::game->update(dt);
+}
+void Engine::updateMouseState(int button, int action, int mods)
+{
+	if (Boo::game != nullptr)
+	{
+		Boo::game->updateMouseState(button, action, mods);
+	}
+}
+void Engine::updateMousePos(double xpos, double ypos)
+{
+	if (Boo::game != nullptr)
+	{
+		Boo::game->updateMousePos(xpos, ypos);
+	}
 }
 
 Engine::~Engine()

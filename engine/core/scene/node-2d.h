@@ -1,9 +1,13 @@
 #pragma once
+#include <iostream>
 #include "node.h"
+
+#include "../utils/uuid-util.h"
 #include "../math/vec2.h"
 #include "../math/size.h"
 #include "../math/mat4.h"
 
+enum class NodeInput;
 class Node2D : public Node
 {
 private:
@@ -16,7 +20,6 @@ protected:
 
 public:
     Node2D(const std::string name, const std::string uuid = "");
-    
 
     /**
      * 2d 节点的锚点
@@ -42,21 +45,22 @@ public:
     void lateUpdate(float deltaTime) override;
     void render();
 
-
     /**
-    * 添加组件
-    */
-    Component* addComponent(std::string name, std::string uuid = "") override;
+     * 添加组件
+     */
+    Component *addComponent(std::string name, std::string uuid = "") override;
     /*
-    * 获取组件
-    */
-    Component* getComponent(std::string name) override;
+     * 获取组件
+     */
+    Component *getComponent(std::string name) override;
 
     void clearNodeFrameFlag() override;
     void destroy() override;
     ~Node2D();
 
-    // void onNodeInputEvent(NodeInput input, std::function<void(NodeInputResult &)> callback, bool isIntercept = false);
-    // void offNodeInputEvent(NodeInput input, int inputID);
-    // void offAllNodeInputEvent();
+    template <typename T, typename Func>
+    int onNodeInputEvent(NodeInput input, Func func, T* instance, bool isIntercept = true);
+
+    void offNodeInputEvent(int inputID);
+    void offAllNodeInputEvent();
 };

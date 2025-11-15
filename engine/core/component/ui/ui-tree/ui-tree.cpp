@@ -266,7 +266,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
 
     float offset = 10.0f;
     float itemWidth = 10.0f;
-    float itemHeight = 25.0f;
+    float itemHeight = 22.0f;
     Node2D *node = nullptr;
     UISprite *sp = nullptr;
     Node2D *ndSelect = nullptr;
@@ -302,7 +302,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         // 折叠符号
         ndFold = new Node2D("NodeTreeItemFold");
         node->addChild(ndFold);
-        ndFold->setSize(22.0f, 22.0f);
+        ndFold->setSize(16.0f, 16.0f);
         spFold = dynamic_cast<UISprite *>(ndFold->addComponent("UISprite"));
         spFold->setMaterial(nullptr);
         // ndFold->onNodeInputEvent(NodeInput::TOUCH_START, [this](NodeInputResult &result)
@@ -310,12 +310,12 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         // 图标
         ndIcon = new Node2D("NodeTreeItemIcon");
         node->addChild(ndIcon);
-        ndIcon->setSize(20.0f, 20.0f);
+        ndIcon->setSize(16.0f, 16.0f);
         spIcon = dynamic_cast<UISprite *>(ndIcon->addComponent("UISprite"));
         spIcon->setMaterial(nullptr);
         // 名字
         ndName = new Node2D("NodeTreeItemName");
-        ndName->setSize(16.0f, 16.0f);
+        ndName->setSize(14.0f, 14.0f);
         node->addChild(ndName);
         txtName = dynamic_cast<UIText *>(ndName->addComponent("UIText"));
         txtName->setColor(204.0f / 255.0f, 207.0f / 255.0f, 213.0f / 255.0f, 1.0f);

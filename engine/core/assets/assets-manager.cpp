@@ -7,6 +7,8 @@
 #include <mach-o/dyld.h> // 必需的头文件
 #endif
 #include "../utils/time-util.h"
+#include "asset.h"
+
 
 AssetsManager::AssetsManager()
 {

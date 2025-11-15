@@ -5,11 +5,6 @@
 #include "../engine/core/assets/assets-manager.h"
 #include "editor-layout.h"
 #include "../engine/core/utils/time-util.h"
-
-// #include "../engine/core/renderer/scene.h"
-// #include "../engine/core/renderer/ui/sprite.h"
-// #include "../engine/core/global/event.h"
-// #include "../engine/core/global/global.h"
 #include "hierarchy/editor-hierarchy.h"
 #include "assets/editor-assets.h"
 #include "property/editor-property.h"
@@ -84,6 +79,12 @@ void Editor::_onLoadCallBack(const int complete, const int all, const float prog
 void Editor::_launchEditor()
 {
 	std::cout << "launch editor" << std::endl;
+	Boo::game->assetsManager()->load("res/ic-title-hierarchy.png");
+	Boo::game->assetsManager()->load("res/ic-title-assets.png");
+	Boo::game->assetsManager()->load("res/ic-title-property.png");
+	Boo::game->assetsManager()->load("res/ic-title-scene.png");
+
+
 	this->_editorLayout->launch();
 	this->_initHierarchy();
 	// this->_initAssets();

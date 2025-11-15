@@ -1,6 +1,6 @@
 #include "boo.h"
-
 namespace Boo
 {
-  Game *game = nullptr; // ✅ 真正分配内存
+	Game* game = nullptr;
+	Window* window = nullptr;
 }

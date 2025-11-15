@@ -4,10 +4,11 @@
 #include <cstdint>
 #include <functional>
 #include <iostream>
+#include <unordered_map>
 #include "../math/quat.h"
 #include "../math/vec3.h"
 #include "../math/mat4.h"
-#include <unordered_map>
+
 
 namespace NodeEvent
 {

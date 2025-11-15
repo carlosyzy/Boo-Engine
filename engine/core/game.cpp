@@ -5,6 +5,21 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include  "../libs/stb/stb_image_write.h"
 
+#include "assets/assets-manager.h"
+#include "event/event.h"
+#include "scene/scene.h"
+#include "gfx/gfx-mgr.h"
+#include "alpha/alpha.h"
+#include "font/freetype-mgr.h"
+#include "input/input.h"
+
+#include "component/component.h"
+#include "renderer/ui/ui-sprite.h"
+#include "renderer/ui/ui-text.h"
+
+#include "component/ui/ui-widget.h"
+#include "component/ui/ui-layout-horizontal.h"
+#include "component/ui/ui-tree/node-tree.h"
 
 Game::Game() : _assetsManager(nullptr),
 			   _curScene(nullptr)
@@ -34,7 +49,8 @@ void Game::_initEvent()
 }
 void Game::_initInput()
 {
-	/* InputMgr::getInstance()->init();*/
+	this->_input = new Input();
+	this->_input->init();
 }
 void Game::_initView()
 {
@@ -219,6 +235,18 @@ void Game::_updateClearCaches()
 	}
 	this->_nodeClearCaches.clear();
 }
+
+void Game::updateMouseState(int button, int action, int mods)
+{
+	this->_input->onMouseButton(button, action, mods);
+}
+void Game::updateMousePos(double xpos, double ypos)
+{
+	this->_input->onCursorPos(xpos, ypos);
+}
+
+
+
 Game::~Game()
 {
 }

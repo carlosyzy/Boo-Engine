@@ -1,7 +1,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include "gfx-context.h"
-#include "../../window/window-mgr.h"
 #include "gfx-mgr.h"
+#include "../../window/window.h"
+#include "../../boo.h"
 
 // 校验层
 const bool enableValidationLayers = true;
@@ -169,7 +170,7 @@ VkResult GfxContext::_createDebugUtilsMessengerEXT(VkInstance instance, const Vk
 
 void GfxContext::_createSurface()
 {
-    if (glfwCreateWindowSurface(this->_vkinstance, WindowMgr::getInstance()->getWindow(), nullptr, &this->_surface) != VK_SUCCESS)
+    if (glfwCreateWindowSurface(this->_vkinstance, Boo::window->getWindow(), nullptr, &this->_surface) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create window surface!");
     }
@@ -500,7 +501,7 @@ VkExtent2D GfxContext::_chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabil
     else
     {
         int width, height;
-        glfwGetFramebufferSize(WindowMgr::getInstance()->getWindow(), &width, &height);
+        glfwGetFramebufferSize(Boo::window->getWindow(), &width, &height);
 
         VkExtent2D actualExtent = {
             static_cast<uint32_t>(width),

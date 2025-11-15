@@ -10,7 +10,6 @@
 #include "../engine/core/assets/assets-manager.h"
 #include "../engine/core/component/ui/ui-widget.h"
 
-// #include "../engine/core/input/input-mgr.h"
 
 EditorLayout::EditorLayout()
 {
@@ -90,15 +89,15 @@ void EditorLayout::_initMenuUI()
 	this->_ndMenu->setSize(this->menu_width, this->menu_height);
 	this->_ndMenu->setPosition(this->menu_x, this->menu_y, 0.0f);
 	this->_ndMain->addChild(this->_ndMenu);
-	// 渲染组件-后期不需要
-	this->_spriteMenu = dynamic_cast<UISprite *>(this->_ndMenu->addComponent("UISprite"));
-	if (this->_spriteMenu != nullptr)
-	{
-		std::cout << "EditorLayout::_initMenuUI1" << std::endl;
-		this->_spriteMenu->setTexture("resources/texture/ic-default.png");
-		this->_spriteMenu->setColor(EditorConfig::theme);
-		this->_spriteMenu->setMaterial(nullptr);
-	}
+	// // 渲染组件-后期不需要
+	// this->_spriteMenu = dynamic_cast<UISprite *>(this->_ndMenu->addComponent("UISprite"));
+	// if (this->_spriteMenu != nullptr)
+	// {
+	// 	std::cout << "EditorLayout::_initMenuUI1" << std::endl;
+	// 	this->_spriteMenu->setTexture("resources/texture/ic-default.png");
+	// 	this->_spriteMenu->setColor(EditorConfig::theme);
+	// 	this->_spriteMenu->setMaterial(nullptr);
+	// }
 }
 void EditorLayout::_initHierarchyUI()
 {
@@ -106,13 +105,13 @@ void EditorLayout::_initHierarchyUI()
 	this->_ndMain->addChild(this->_ndHierarchy);
 	this->_ndHierarchy->setSize(this->hierarchy_width, this->hierarchy_height);
 	this->_ndHierarchy->setPosition(this->hierarchy_x, this->hierarchy_y, 0.0f);
-	this->_spriteHierarchy = dynamic_cast<UISprite *>(this->_ndHierarchy->addComponent("UISprite"));
-	if (this->_spriteHierarchy != nullptr)
-	{
-		this->_spriteHierarchy->setColor(EditorConfig::theme);
-		this->_spriteHierarchy->setTexture("resources/texture/ic-default.png");
-		this->_spriteHierarchy->setMaterial(nullptr);
-	}
+	// this->_spriteHierarchy = dynamic_cast<UISprite *>(this->_ndHierarchy->addComponent("UISprite"));
+	// if (this->_spriteHierarchy != nullptr)
+	// {
+	// 	this->_spriteHierarchy->setColor(EditorConfig::theme);
+	// 	this->_spriteHierarchy->setTexture("resources/texture/ic-default.png");
+	// 	this->_spriteHierarchy->setMaterial(nullptr);
+	// }
 }
 void EditorLayout::_initAssetsUI()
 {

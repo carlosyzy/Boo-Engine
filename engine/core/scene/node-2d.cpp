@@ -1,8 +1,8 @@
 #include "node-2d.h"
-#include <iostream>
-#include "node-2d.h"
-#include "../utils/uuid-util.h"
 #include "../../boo.h"
+#include "../input/input.h"
+#include "../component/component.h"
+
 Node2D::Node2D(const std::string name, const std::string uuid)
 {
 	this->_name = name;
@@ -119,8 +119,23 @@ void Node2D::clearNodeFrameFlag()
 {
 	Node::clearNodeFrameFlag();
 }
+template <typename T, typename Func>
+int Node2D::onNodeInputEvent(NodeInput input, Func func, T *instance, bool isIntercept )
+{
+	return Boo::game->input()->onNodeInputEvent(this, input, func, instance, isIntercept);
+}
+void Node2D::offNodeInputEvent(int inputID)
+{
+	Boo::game->input()->offNodeInputEvent(this, inputID);
+}
+void Node2D::offAllNodeInputEvent()
+{
+	Boo::game->input()->offAllNodeInputEvent(this);
+}
+
 void Node2D::destroy()
 {
+	this->offAllNodeInputEvent();
 	Node::destroy();
 }
 Node2D::~Node2D()
