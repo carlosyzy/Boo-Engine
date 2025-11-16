@@ -258,6 +258,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\gfx\gfx-texture.h" />
     <ClInclude Include="engine\core\global\event.h" />
     <ClInclude Include="engine\core\global\global.h" />
+    <ClInclude Include="engine\core\input\input-impl.h" />
     <ClInclude Include="engine\core\input\input.h" />
     <ClInclude Include="engine\core\math\color.h" />
     <ClInclude Include="engine\core\math\mat4.h" />
@@ -268,6 +269,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\renderer\ui\ui-sprite.h" />
     <ClInclude Include="engine\core\renderer\ui\ui-renderer.h" />
     <ClInclude Include="engine\core\renderer\ui\ui-text.h" />
+    <ClInclude Include="engine\core\scene\node-2d-impl.h" />
     <ClInclude Include="engine\core\scene\node-2d.h" />
     <ClInclude Include="engine\core\scene\node-3d.h" />
     <ClInclude Include="engine\core\scene\node.h" />

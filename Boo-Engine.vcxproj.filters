@@ -560,6 +560,12 @@
     <ClInclude Include="engine\core\input\input.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="engine\core\scene\node-2d-impl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\input\input-impl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="engine\readme.md" />
