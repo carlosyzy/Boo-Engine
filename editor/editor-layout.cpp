@@ -4,6 +4,7 @@
 #include "editor-config.h"
 #include "../engine/boo.h"
 #include "../engine/core/game.h"
+#include "../engine/core/input/input.h"
 #include "../engine/core/scene/scene.h"
 #include "../engine/core/scene/node-2d.h"
 #include "../engine/core/renderer/ui/ui-sprite.h"
@@ -16,6 +17,9 @@ EditorLayout::EditorLayout()
 	// 创建
 	this->_scene = new Scene("EDITOR");
 	this->_initLoadUI();
+
+	Node2D *root2D = this->_scene->getRoot2D();
+	Boo::game->input()->setRoot(root2D);
 }
 void EditorLayout::_initLoadUI()
 {

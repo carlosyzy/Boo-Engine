@@ -1,13 +1,14 @@
 #pragma once
 #include <iostream>
 #include "node.h"
-
 #include "../utils/uuid-util.h"
 #include "../math/vec2.h"
 #include "../math/size.h"
 #include "../math/mat4.h"
 
+struct NodeInputResult;
 enum class NodeInput;
+
 class Node2D : public Node
 {
 private:
@@ -53,14 +54,17 @@ public:
      * 获取组件
      */
     Component *getComponent(std::string name) override;
-
     void clearNodeFrameFlag() override;
-    void destroy() override;
-    ~Node2D();
 
     template <typename T, typename Func>
-    int onNodeInputEvent(NodeInput input, Func func, T* instance, bool isIntercept = true);
-
+    int onNodeInputEvent(NodeInput input, Func func, T *instance, bool isIntercept = true);
     void offNodeInputEvent(int inputID);
     void offAllNodeInputEvent();
+
+    bool inHitOnNode(float x, float y);
+
+    void destroy() override;
+    ~Node2D();
 };
+
+#include "node-2d-impl.h"

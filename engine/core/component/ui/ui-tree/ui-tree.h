@@ -13,7 +13,7 @@
 
 #include "../../../math/mat4.h"
 #include "../../../math/vec3.h"
-
+#include "../../../input/input.h"
 
 class Node;
 class Node2D;
@@ -52,10 +52,8 @@ struct UITreeStructure
 class UITree : public Component
 {
 private:
-
     int _nodeTransform_ID = 0;
     void _onNodeTransformChange(int nodeTransform);
-   
 
     float _topLen;
     float _leftLen;
@@ -66,42 +64,21 @@ private:
     float _contentX;
     float _contentY;
     void _initContent();
-    // //
-    // Node2D *_ndSelect;
-    // UISprite *_spSelect;
-    // float _selectWidth;
-    // float _selectHeight;
-    // float _selectX;
-    // float _selectY;
-    // void _initSelect();
 
-    // // 滑动条
-    // Node2D *_ndScrollBarBg;
-    // UISprite *_spScrollBarBg;
-    // float _scrollBarBgWidth;
-    // float _scrollBarBgHeight;
-    // float _scrollBarBgX;
-    // float _scrollBarBgY;
-
-    // Node2D *_ndScrollBar;
-    // UISprite *_spScrollBar;
-    // float _scrollBarWidth;
-    // float _scrollBarHeight;
-    // float _scrollBarX;
-    // float _scrollBarY;
-    // Vec3 _scrollBarTouch{};
-    // float _scrollBarRate = 1.0f;
-    // void _initScrollView();
-
-    // 当前选中的节点
-    std::string _selectUUID;
     int _nodeIndex;
     std::vector<Node2D *> _nodePools;
-    std::function<void(UITreeStructure *)> _selectCallback;
-
+    void _updateTreeContent();
     void _updateTreesItems(UITreeStructure &uiTreeData);
-    // // item 的touch 事件
-    // void _onTreeItemTouchEvent(NodeInputResult &result);
+    void _onTreeItemTouchEvent(NodeInputResult &result);
+
+    //   // 当前选中的节点
+    // std::string _selectUUID;
+
+    // 
+    // std::function<void(UITreeStructure *)> _selectCallback;
+
+    // item 的touch 事件
+
     // // item 折叠按钮的touch 事件
     // void _onTreeItemFoldTouchEvent(NodeInputResult &result);
     // // 滑动条touch 事件
@@ -111,10 +88,8 @@ private:
     // // 滑动条touch 结束事件
     // void _onScrollBarTouchEndEvent(NodeInputResult &result);
 
-    std::function<void()> _updateCallback;
+    // std::function<void()> _updateCallback;
 
-
-    void _updateTreeContent();
 protected:
     /** 是否需要刷新 */
     bool _isDirty = true;
@@ -129,11 +104,11 @@ protected:
 
 public:
     UITree(Node *node, std::string uuid = "");
-    
+
     void setIcon(std::string iconKey, std::string iconPath);
 
-    void onSelectEvent(std::function<void(UITreeStructure *)> callback);
-    void onUpdateEvent(std::function<void()> callback);
+    // void onSelectEvent(std::function<void(UITreeStructure *)> callback);
+    // void onUpdateEvent(std::function<void()> callback);
 
     void clearSelect();
     /** 失去焦点时淡化 */

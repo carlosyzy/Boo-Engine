@@ -58,6 +58,7 @@ private:
 	int _nodeInputCallId = 0;
 	std::unordered_map<std::string, NodeInputStruct> _nodeInputMap;
 	bool _propagateEvent(Node *node, int button, int action);
+	// void _emitNodeInput(Node2D *node, NodeInput input, NodeInputResult &result);
 
 public:
 	Input();
@@ -68,48 +69,10 @@ public:
 
 	template <typename T, typename Func>
 	int onNodeInputEvent(Node2D *node, NodeInput input, Func func, T *instance, bool isIntercept);
-	/*
-	int onNodeInputEvent(Node2D* node, NodeInput input, Func func, T* instance, bool isIntercept)
-	{
-		int id = this->_nodeInputCallId++;
-		if (this->_nodeInputMap.find(node->getUuid()) == this->_nodeInputMap.end())
-		{
-			NodeInputStruct nodeInputStruct;
-			nodeInputStruct.node = node;
-			nodeInputStruct.isIntercept = isIntercept;
-			nodeInputStruct.touchResult.node = node;
-			nodeInputStruct.status = 0;
-			this->_nodeInputMap.emplace(node->getUuid(), nodeInputStruct);
-		}
-		auto callback = [func, instance](NodeInputResult& result)
-			{
-				if (instance != nullptr && func != nullptr)
-				{
-					(instance->*func)(result);
-				}
-			};
-		if (input == NodeInput::TOUCH_START)
-		{
-			this->_nodeInputMap[node->getUuid()].touchStarts.emplace(id, callback);
-		}
-		else if (input == NodeInput::TOUCH_END)
-		{
-			this->_nodeInputMap[node->getUuid()].touchEnds.emplace(id, callback);
-		}
-		else if (input == NodeInput::TOUCH_MOVE)
-		{
-			this->_nodeInputMap[node->getUuid()].touchMoves.emplace(id, callback);
-		}
-		else if (input == NodeInput::TOUCH_CANCEL)
-		{
-			this->_nodeInputMap[node->getUuid()].touchCancels.emplace(id, callback);
-		}
-		return id;
-	}*/
-
 	void offNodeInputEvent(Node2D *node, int inputID);
-
 	void offAllNodeInputEvent(Node2D *node);
 
 	~Input();
 };
+
+#include "input-impl.h"

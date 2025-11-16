@@ -1,4 +1,6 @@
 #include "input.h"
+#include "../../boo.h"
+#include "../game.h"
 #include "../scene/node.h"
 #include "../scene/node-2d.h"
 
@@ -21,64 +23,38 @@ void Input::setRoot(Node2D *root)
 void Input::onMouseButton(int button, int action, int mods)
 {
     std::cout << "Input::onMouseButton  button: " << button << " action: " << action << " mods: " << mods << std::endl;
-    // if (this->_root == nullptr)
-    // {
-    //     return;
-    // }
-    // // std::cout << "Input::onMouseButton 1" << std::endl;
-    // // 正向遍历，拿到所有的节点
-    // std::vector<Node *> _nodes;
-    // // 首先收集所有节点（深度优先）
-    // std::function<void(Node *)> collectNodes = [&](Node *node)
-    // {
-    //     Node2D *node2d = dynamic_cast<Node2D *>(node);
-    //     // std::cout << "Input::onMouseButton 11 " << node2d->name() << std::endl;
-    //     if (node2d != nullptr && node2d->active())
-    //     {
-    //         // std::cout << "Input::onMouseButton 12 " << node2d->name() << std::endl;
-    //         // 点击的时候进行范围检测.
-    //         if (action == 1)
-    //         {
-    //             // std::cout << "Input::onMouseButton 13 " << node2d->name() << std::endl;
-    //             if (node2d->inMaskRect(this->_cursorX, this->_cursorY))
-    //             {
-    //                 // std::cout << "Input::onMouseButton ok 14 " << node2d->name() << std::endl;
-    //                 _nodes.push_back(node2d);
-    //                 for (auto &child : node2d->children())
-    //                 {
-    //                     collectNodes(child);
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 // std::cout << "Input::onMouseButton fail 14 " << node2d->name() << std::endl;
-    //             }
-    //         }
-    //         else
-    //         {
-    //             _nodes.push_back(node2d);
-    //             for (auto &child : node2d->children())
-    //             {
-    //                 collectNodes(child);
-    //             }
-    //         }
-    //     }
-    // };
-    // // std::cout << "Input::onMouseButton 2" << std::endl;
-    // collectNodes(this->_root);
-    // // std::cout << "Input::onMouseButton 3:   len" << _nodes.size() << std::endl;
-    // // 反向遍历，处理事件
-    // for (int i = _nodes.size() - 1; i >= 0; i--)
-    // {
-    //     Node *node = _nodes[i];
-    //     // std::cout << "touchstart node:" << node->uuid() << std::endl;
-    //     bool isIntercept = this->_propagateEvent(node, button, action);
-    //     if (isIntercept)
-    //     {
-    //         break;
-    //     }
-    // }
-    // // std::cout << "Input::onMouseButton 4:   len" << std::endl;
+    if (this->_root == nullptr)
+    {
+        return;
+    }
+    std::cout << "Input::onMouseButton 1" << std::endl;
+    // 正向遍历，拿到所有的节点
+    std::vector<Node *> _nodes;
+    // 首先收集所有节点（深度优先）
+    std::function<void(Node *)> collectNodes = [&](Node *node)
+    {
+        Node2D *node2d = dynamic_cast<Node2D *>(node);
+        if (node2d != nullptr && node2d->isActive())
+        {
+            // 点击的时候进行范围检测.
+            _nodes.push_back(node2d);
+            for (auto &child : node2d->getChildren())
+            {
+                collectNodes(child);
+            }
+        }
+    };
+    collectNodes(this->_root);
+    // 反向遍历，处理事件
+    for (int i = _nodes.size() - 1; i >= 0; i--)
+    {
+        Node *node = _nodes[i];
+        bool isIntercept = this->_propagateEvent(node, button, action);
+        if (isIntercept)
+        {
+            break;
+        }
+    }
 }
 /**
  * @brief 鼠标移动事件
@@ -87,163 +63,170 @@ void Input::onMouseButton(int button, int action, int mods)
  */
 void Input::onCursorPos(double xpos, double ypos)
 {
-    // View &view = Game::getInstance()->view();
-    // this->_cursorX = xpos - view.width / 2;
-    // this->_cursorY = view.height / 2 - ypos;
-
-    // if (this->_cursorX < -view.width / 2 || this->_cursorX > view.width / 2 || this->_cursorY < -view.height / 2 || this->_cursorY > view.height / 2)
-    // {
-    //     // 超出范围，不处理
-    //     // 触发所有节点的touchEnd事件
-    //     return;
-    // }
-    // // 触发所有节点的touchMove事件
-    // // 正向遍历，拿到所有的节点
-    // std::vector<Node *> _nodes;
-    // // 首先收集所有节点（深度优先）
-    // std::function<void(Node *)> collectNodes = [&](Node *node)
-    // {
-    //     Node2D *node2d = dynamic_cast<Node2D *>(node);
-    //     if (node2d != nullptr)
-    //     {
-    //         _nodes.push_back(node2d);
-    //         for (auto &child : node2d->children())
-    //         {
-    //             collectNodes(child);
-    //         }
-    //     }
-    // };
-    // collectNodes(this->_root);
-    // // 反向遍历，处理事件
-    // for (int i = _nodes.size() - 1; i >= 0; i--)
-    // {
-    //     Node *node = _nodes[i];
-    //     bool isIntercept = this->_propagateEvent(node, 0, 99);
-    //     if (isIntercept)
-    //     {
-    //         break;
-    //     }
-    // }
+    View *view = Boo::game->view();
+    this->_cursorX = xpos - view->width / 2;
+    this->_cursorY = view->height / 2 - ypos;
+    if (this->_cursorX < -view->width / 2 || this->_cursorX > view->width / 2 || this->_cursorY < -view->height / 2 || this->_cursorY > view->height / 2)
+    {
+        // 超出范围，不处理
+        return;
+    }
+    std::cout << "Input::onCursorPos  cursorX: " << this->_cursorX << " cursorY: " << this->_cursorY << std::endl;
+    // 触发所有节点的touchMove事件
+    // 正向遍历，拿到所有的节点
+    std::vector<Node *> _nodes;
+    // 首先收集所有节点（深度优先）
+    std::function<void(Node *)> collectNodes = [&](Node *node)
+    {
+        Node2D *node2d = dynamic_cast<Node2D *>(node);
+        if (node2d != nullptr && node2d->isActive())
+        {
+            _nodes.push_back(node2d);
+            for (auto &child : node2d->getChildren())
+            {
+                collectNodes(child);
+            }
+        }
+    };
+    collectNodes(this->_root);
+    // 反向遍历，处理事件
+    for (int i = _nodes.size() - 1; i >= 0; i--)
+    {
+        Node *node = _nodes[i];
+        bool isIntercept = this->_propagateEvent(node, 0, 99);
+        if (isIntercept)
+        {
+            break;
+        }
+    }
 }
 
 bool Input::_propagateEvent(Node *node, int button, int action)
 {
-    // Node2D *node2d = dynamic_cast<Node2D *>(node);
-    // if (node2d == nullptr)
-    // {
-    //     return false;
-    // }
-    // //
-    // if (this->_nodeInputMap.find(node2d->uuid()) != this->_nodeInputMap.end())
-    // {
-    //     // 点击
-    //     if (action == 1)
-    //     {
-    //         if (node2d->inHitOnNode(this->_cursorX, this->_cursorY))
-    //         {
-    //             this->_nodeInputMap[node2d->uuid()].status = 1;
-    //             // std::cout << "点击:" << node2d->name() << ",    " << this->_nodeInputMap[node2d->uuid()].status << ",    " << node2d->uuid() << std::endl;
-    //             for (auto &touchStart : this->_nodeInputMap[node2d->uuid()].touchStarts)
-    //             {
-    //                 // 点击
-    //                 this->_nodeInputMap[node2d->uuid()].touchResult.worldX = this->_cursorX;
-    //                 this->_nodeInputMap[node2d->uuid()].touchResult.worldY = this->_cursorY;
-    //                 this->_nodeInputMap[node2d->uuid()].touchResult.button = button;
-    //                 touchStart(this->_nodeInputMap[node2d->uuid()].touchResult);
-    //                 // 选中状态
-    //                 return this->_nodeInputMap[node2d->uuid()].isIntercept;
-    //             }
-    //         }
-    //     }
-    //     else if (action == 0)
-    //     {
-    //         if (this->_nodeInputMap[node->uuid()].status == 1)
-    //         {
-    //             this->_nodeInputMap[node->uuid()].status = 0;
-    //             if (node2d->inHitOnNode(this->_cursorX, this->_cursorY))
-    //             {
-    //                 for (auto &touchEnd : this->_nodeInputMap[node->uuid()].touchEnds)
-    //                 {
-    //                     this->_nodeInputMap[node->uuid()].touchResult.worldX = this->_cursorX;
-    //                     this->_nodeInputMap[node->uuid()].touchResult.worldY = this->_cursorY;
-    //                     this->_nodeInputMap[node->uuid()].touchResult.button = button;
-    //                     touchEnd(this->_nodeInputMap[node->uuid()].touchResult);
-    //                     // 取消选中状态
-    //                     return this->_nodeInputMap[node->uuid()].isIntercept;
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 for (auto &touchCancel : this->_nodeInputMap[node->uuid()].touchCancels)
-    //                 {
-    //                     this->_nodeInputMap[node->uuid()].touchResult.worldX = this->_cursorX;
-    //                     this->_nodeInputMap[node->uuid()].touchResult.worldY = this->_cursorY;
-    //                     this->_nodeInputMap[node->uuid()].touchResult.button = button;
-    //                     touchCancel(this->_nodeInputMap[node->uuid()].touchResult);
-    //                     // 取消选中状态
-    //                     return this->_nodeInputMap[node->uuid()].isIntercept;
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     else if (action == 99)
-    //     {
-    //         // 移动
-    //         if (this->_nodeInputMap[node->uuid()].status == 1)
-    //         {
-    //             // std::cout << "移动:" << node2d->name() << ",    " << this->_nodeInputMap[node->uuid()].status << std::endl;
-    //             for (auto &touchMove : this->_nodeInputMap[node->uuid()].touchMoves)
-    //             {
-    //                 this->_nodeInputMap[node->uuid()].touchResult.worldX = this->_cursorX;
-    //                 this->_nodeInputMap[node->uuid()].touchResult.worldY = this->_cursorY;
-    //                 // this->_nodeInputMap[node->uuid()].touchResult.button = button;
-    //                 touchMove(this->_nodeInputMap[node->uuid()].touchResult);
-    //                 return this->_nodeInputMap[node->uuid()].isIntercept;
-    //             }
-    //         }
-    //     }
-    // }
+    Node2D *node2d = dynamic_cast<Node2D *>(node);
+    if (node2d == nullptr)
+    {
+        return false;
+    }
+    if (this->_nodeInputMap.find(node2d->getUuid()) == this->_nodeInputMap.end())
+    {
+        return false;
+    }
+    if (action == 1) // 按下
+    {
+        if (node2d->inHitOnNode(this->_cursorX, this->_cursorY))
+        {
+            NodeInputStruct &nodeInput = this->_nodeInputMap[node2d->getUuid()];
+            nodeInput.status = 1;
+            nodeInput.touchResult.worldX = this->_cursorX;
+            nodeInput.touchResult.worldY = this->_cursorY;
+            nodeInput.touchResult.button = button;
+            std::map<int, std::function<void(NodeInputResult &)>> &touchStarts = this->_nodeInputMap[node2d->getUuid()].touchStarts;
+            for (auto it = touchStarts.begin(); it != touchStarts.end(); ++it)
+            {
+                if (it->second)
+                {
+                    it->second(this->_nodeInputMap[node2d->getUuid()].touchResult);
+                }
+            }
+        }
+    }
+    else if (action == 0) // 松开
+    {
+        if (this->_nodeInputMap[node2d->getUuid()].status == 1)
+        {
+            NodeInputStruct &nodeInput = this->_nodeInputMap[node2d->getUuid()];
+            nodeInput.status = 0;
+            nodeInput.touchResult.worldX = this->_cursorX;
+            nodeInput.touchResult.worldY = this->_cursorY;
+            nodeInput.touchResult.button = button;
+            bool isIn = node2d->inHitOnNode(this->_cursorX, this->_cursorY);
+            if (isIn)
+            {
+                std::map<int, std::function<void(NodeInputResult &)>> &touchEnds = this->_nodeInputMap[node2d->getUuid()].touchEnds;
+                for (auto it = touchEnds.begin(); it != touchEnds.end(); ++it)
+                {
+                    if (it->second)
+                    {
+                        it->second(this->_nodeInputMap[node2d->getUuid()].touchResult);
+                    }
+                }
+            }
+            else
+            {
+                std::map<int, std::function<void(NodeInputResult &)>> &touchCancels = this->_nodeInputMap[node2d->getUuid()].touchCancels;
+                for (auto it = touchCancels.begin(); it != touchCancels.end(); ++it)
+                {
+                    if (it->second)
+                    {
+                        it->second(this->_nodeInputMap[node2d->getUuid()].touchResult);
+                    }
+                }
+            }
+        }
+    }
+    else if (action == 99) // 移动
+    {
+        NodeInputStruct &nodeInput = this->_nodeInputMap[node2d->getUuid()];
+        if (nodeInput.status != 1)
+        {
+            return false;
+        }
+        nodeInput.touchResult.worldX = this->_cursorX;
+        nodeInput.touchResult.worldY = this->_cursorY;
+        std::map<int, std::function<void(NodeInputResult &)>> &touchMoves = this->_nodeInputMap[node2d->getUuid()].touchMoves;
+        for (auto it = touchMoves.begin(); it != touchMoves.end(); ++it)
+        {
+            if (it->second)
+            {
+                it->second(this->_nodeInputMap[node2d->getUuid()].touchResult);
+            }
+        }
+    }
+    else
+    {
+    }
     return false;
 }
-template <typename T, typename Func>
-int Input::onNodeInputEvent(Node2D *node, NodeInput input, Func func, T *instance, bool isIntercept)
-{
+// template <typename T, typename Func>
+// int Input::onNodeInputEvent(Node2D *node, NodeInput input, Func func, T *instance, bool isIntercept)
+// {
 
-    int id = this->_nodeInputCallId++;
-    if (this->_nodeInputMap.find(node->getUuid()) == this->_nodeInputMap.end())
-    {
-        NodeInputStruct nodeInputStruct;
-        nodeInputStruct.node = node;
-        nodeInputStruct.isIntercept = isIntercept;
-        nodeInputStruct.touchResult.node = node;
-        nodeInputStruct.status = 0;
-        this->_nodeInputMap.emplace(node->getUuid(), nodeInputStruct);
-    }
-    auto callback = [func, instance](NodeInputResult &result)
-    {
-        if (instance != nullptr && func != nullptr)
-        {
-            (instance->*func)(result);
-        }
-    };
-    if (input == NodeInput::TOUCH_START)
-    {
-        this->_nodeInputMap[node->getUuid()].touchStarts.emplace(id, callback);
-    }
-    else if (input == NodeInput::TOUCH_END)
-    {
-        this->_nodeInputMap[node->getUuid()].touchEnds.emplace(id, callback);
-    }
-    else if (input == NodeInput::TOUCH_MOVE)
-    {
-        this->_nodeInputMap[node->getUuid()].touchMoves.emplace(id, callback);
-    }
-    else if (input == NodeInput::TOUCH_CANCEL)
-    {
-        this->_nodeInputMap[node->getUuid()].touchCancels.emplace(id, callback);
-    }
-    return id;
-}
+//     int id = this->_nodeInputCallId++;
+//     if (this->_nodeInputMap.find(node->getUuid()) == this->_nodeInputMap.end())
+//     {
+//         NodeInputStruct nodeInputStruct;
+//         nodeInputStruct.node = node;
+//         nodeInputStruct.isIntercept = isIntercept;
+//         nodeInputStruct.touchResult.node = node;
+//         nodeInputStruct.status = 0;
+//         this->_nodeInputMap.emplace(node->getUuid(), nodeInputStruct);
+//     }
+//     auto callback = [func, instance](NodeInputResult &result)
+//     {
+//         if (instance != nullptr && func != nullptr)
+//         {
+//             (instance->*func)(result);
+//         }
+//     };
+//     if (input == NodeInput::TOUCH_START)
+//     {
+//         this->_nodeInputMap[node->getUuid()].touchStarts.emplace(id, callback);
+//     }
+//     else if (input == NodeInput::TOUCH_END)
+//     {
+//         this->_nodeInputMap[node->getUuid()].touchEnds.emplace(id, callback);
+//     }
+//     else if (input == NodeInput::TOUCH_MOVE)
+//     {
+//         this->_nodeInputMap[node->getUuid()].touchMoves.emplace(id, callback);
+//     }
+//     else if (input == NodeInput::TOUCH_CANCEL)
+//     {
+//         this->_nodeInputMap[node->getUuid()].touchCancels.emplace(id, callback);
+//     }
+//     return id;
+// }
 
 void Input::offNodeInputEvent(Node2D *node, int inputID)
 {

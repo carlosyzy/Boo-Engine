@@ -14,8 +14,6 @@ UITree::UITree(Node *node, std::string uuid) : Component(node, uuid)
     this->_leftLen = 0.0f;
     this->_nodeIndex = 0;
     this->_initContent();
-    // this->_initSelect();
-    // this->_initScrollView();
     this->_nodeTransform_ID = this->_node->onTransformChange(&UITree::_onNodeTransformChange, this);
 }
 void UITree::_initContent()
@@ -149,14 +147,14 @@ void UITree::setIcon(std::string iconKey, std::string iconPath)
 //     this->_isScrollBarTouching = false;
 // }
 
-void UITree::onSelectEvent(std::function<void(UITreeStructure *)> callback)
-{
-    this->_selectCallback = callback;
-}
-void UITree::onUpdateEvent(std::function<void()> callback)
-{
-    this->_updateCallback = callback;
-}
+// void UITree::onSelectEvent(std::function<void(UITreeStructure *)> callback)
+// {
+//     this->_selectCallback = callback;
+// }
+// void UITree::onUpdateEvent(std::function<void()> callback)
+// {
+//     this->_updateCallback = callback;
+// }
 
 void UITree::updateTree()
 {
@@ -290,7 +288,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         // sp->setMaterial(nullptr);
         // node->onNodeInputEvent(NodeInput::TOUCH_START, [this](NodeInputResult &result)
         //                        { this->_onTreeItemTouchEvent(result); }, true);
-
+        node->onNodeInputEvent(NodeInput::TOUCH_START, &UITree::_onTreeItemTouchEvent,this);
         // 选择框
         ndSelect = new Node2D("NodeTreeItemSelect");
         node->addChild(ndSelect);
@@ -431,6 +429,10 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         }
     }
 }
+void UITree::_onTreeItemTouchEvent(NodeInputResult &result)
+{
+    std::cout << "_onTreeItemTouchEvent:" << result.node->getUuid() << ": " << std::endl;
+}
 // void UITree::_onTreeItemTouchEvent(NodeInputResult &result)
 // {
 //     std::cout << "_onTreeItemTouchEvent:" << result.node->uuid() << ": " << std::endl;
@@ -483,7 +485,7 @@ void UITree::render()
 
 void UITree::clearSelect()
 {
-    this->_selectUUID = "";
+    // this->_selectUUID = "";
     // this->_ndSelect->setActive(false);
 }
 /** 失去焦点时淡化 */

@@ -119,11 +119,11 @@ void Node2D::clearNodeFrameFlag()
 {
 	Node::clearNodeFrameFlag();
 }
-template <typename T, typename Func>
-int Node2D::onNodeInputEvent(NodeInput input, Func func, T *instance, bool isIntercept )
-{
-	return Boo::game->input()->onNodeInputEvent(this, input, func, instance, isIntercept);
-}
+// template <typename T, typename Func>
+// int Node2D::onNodeInputEvent(NodeInput input, Func func, T *instance, bool isIntercept)
+// {
+// 	return Boo::game->input()->onNodeInputEvent(this, input, func, instance, isIntercept);
+// }
 void Node2D::offNodeInputEvent(int inputID)
 {
 	Boo::game->input()->offNodeInputEvent(this, inputID);
@@ -131,6 +131,29 @@ void Node2D::offNodeInputEvent(int inputID)
 void Node2D::offAllNodeInputEvent()
 {
 	Boo::game->input()->offAllNodeInputEvent(this);
+}
+/**
+ * 2d 节点的点击事件
+ * @param x
+ * @param y
+ * @return true
+ * @return false
+ */
+bool Node2D::inHitOnNode(float x, float y)
+{
+	const Mat4 &uiMat = this->uiWorldMatrix();
+	float _x = uiMat.getM30();
+	float _y = uiMat.getM31();
+	float _width = uiMat.getM00();
+	float _height = uiMat.getM11();
+	if (
+		x >= _x - _width / 2.0 && x <= _x + _width / 2.0 &&
+		y >= _y - _height / 2.0 && y <= _y + _height / 2.0)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void Node2D::destroy()
