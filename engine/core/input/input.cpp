@@ -22,12 +22,11 @@ void Input::setRoot(Node2D *root)
  */
 void Input::onMouseButton(int button, int action, int mods)
 {
-    std::cout << "Input::onMouseButton  button: " << button << " action: " << action << " mods: " << mods << std::endl;
+    // std::cout << "Input::onMouseButton  button: " << button << " action: " << action << " mods: " << mods << std::endl;
     if (this->_root == nullptr)
     {
         return;
     }
-    std::cout << "Input::onMouseButton 1" << std::endl;
     // 正向遍历，拿到所有的节点
     std::vector<Node *> _nodes;
     // 首先收集所有节点（深度优先）
@@ -115,7 +114,6 @@ bool Input::_propagateEvent(Node *node, int button, int action)
     if (action == 1) // 按下
     {
         bool isIn = node2d->inHitOnNode(this->_cursorX, this->_cursorY);
-        std::cout << "down: " << node2d->getUuid() << " isIn: " << isIn << std::endl;
         if (isIn)
         {
             NodeInputStruct &nodeInput = this->_nodeInputMap[node2d->getUuid()];
@@ -142,7 +140,6 @@ bool Input::_propagateEvent(Node *node, int button, int action)
         nodeInput.touchResult.worldY = this->_cursorY;
         nodeInput.touchResult.button = button;
         bool isIn = node2d->inHitOnNode(this->_cursorX, this->_cursorY);
-        std::cout << "up1: " << node2d->getUuid() << " isIn: " << isIn << std::endl;
         if (isIn)
         {
             std::map<int, std::function<void(NodeInputResult &)>> &touchEnds = this->_nodeInputMap[node2d->getUuid()].touchEnds;
@@ -150,7 +147,6 @@ bool Input::_propagateEvent(Node *node, int button, int action)
             {
                 if (it->second)
                 {
-                    std::cout << "up3: " << it->first << std::endl;
                     it->second(this->_nodeInputMap[node2d->getUuid()].touchResult);
                 }
             }

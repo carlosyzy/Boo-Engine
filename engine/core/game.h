@@ -185,7 +185,6 @@ public:
     int scheduleOnce(Func func, T *instance, float interval)
     {
         int id = this->_scheduleNextID_++;
-        std::cout << "scheduleOnce: " << id << std::endl;
         auto callback = [instance, func]()
         {
             (instance->*func)();
@@ -193,7 +192,6 @@ public:
         // this->_schedules[id] = ScheduleInfo(callback, instance, interval, 0.0f, true);
         ScheduleInfo scheduleInfo(callback, instance, interval, 0.0f, true);
         this->_schedules[id] = scheduleInfo;
-        std::cout << "scheduleOnce: " << id << " interval2: " << interval << std::endl;
         return id;
     }
     void unschedule(int scheduleID);

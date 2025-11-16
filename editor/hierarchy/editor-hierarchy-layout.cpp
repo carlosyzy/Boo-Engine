@@ -173,20 +173,20 @@ void EditorHierarchyLayout::_initOperateSearch()
     paramHorizontal0.left = 32.0f;
     widget0->setHorizontal(WidgetHorizontal::LEFT, paramHorizontal0);
 
-     // 搜索框
-     this->_ndSearchBox = new Node2D("SearchBox");
-     this->_ndOperate->addChild(this->_ndSearchBox);
-     this->_ndSearchBox->setSize(100.0f, 18.0f);
-     this->_spriteSearchBox = dynamic_cast<UISprite *>(this->_ndSearchBox->addComponent("UISprite"));
-     this->_spriteSearchBox->setMaterial(nullptr);
-     this->_spriteSearchBox->setColor("#ffffffff");
-     this->_spriteSearchBox->setTexture(EditorConfig::txDefault);
-     // 添加wedget组件
-     UIWidget *widget1 = dynamic_cast<UIWidget *>(this->_ndSearchBox->addComponent("UIWidget"));
-     WidgetHorizontalParam paramHorizontal1{};
-     paramHorizontal1.left = 50.0f;
-     paramHorizontal1.right = 30.0f;
-     widget1->setHorizontal(WidgetHorizontal::ALL, paramHorizontal1);
+    // 搜索框
+    this->_ndSearchBox = new Node2D("SearchBox");
+    this->_ndOperate->addChild(this->_ndSearchBox);
+    this->_ndSearchBox->setSize(100.0f, 18.0f);
+    this->_spriteSearchBox = dynamic_cast<UISprite *>(this->_ndSearchBox->addComponent("UISprite"));
+    this->_spriteSearchBox->setMaterial(nullptr);
+    this->_spriteSearchBox->setColor("#ffffffff");
+    this->_spriteSearchBox->setTexture(EditorConfig::txDefault);
+    // 添加wedget组件
+    UIWidget *widget1 = dynamic_cast<UIWidget *>(this->_ndSearchBox->addComponent("UIWidget"));
+    WidgetHorizontalParam paramHorizontal1{};
+    paramHorizontal1.left = 50.0f;
+    paramHorizontal1.right = 30.0f;
+    widget1->setHorizontal(WidgetHorizontal::ALL, paramHorizontal1);
 }
 
 void EditorHierarchyLayout::_initNodeTree()
@@ -210,84 +210,26 @@ void EditorHierarchyLayout::_initNodeTree()
     sprite->setMaterial(nullptr);
     // 添加节点树
     this->_nodeTree = static_cast<NodeTree *>(ndNodeTree->addComponent("NodeTree"));
-    // this->_nodeTree->setIcon("iconScene", "res/ic-scene.png");
-    // this->_nodeTree->setIcon("iconNode2D", "res/ic-2d.png");
-    // this->_nodeTree->setIcon("iconNode3D", "res/ic-3d.png");
-    this->_nodeTree->setScene(new Scene("Test"));
-    // // 添加mask组件
-    // UIMask *uiMask = ndContent->addComponent<UIMask>("UIMask");
-    // if (uiMask != nullptr)
-    // {
-    //     std::cout << "EditorHierarchyLayout create UIMask:" << uiMask << std::endl;
-    // }
-    // // 添加节点树
-    // this->_nodeTree = ndContent->addComponent<NodeTree>("NodeTree");
-    // this->_nodeTree->onSelectEvent([this](UITreeStructure *uiTreeData)
-    //                                { if (this->_onNodeTreeSelectEventCallback != nullptr){
-    //                                  this->_onNodeTreeSelectEventCallback(uiTreeData);
-    //                                } });
-    // this->_nodeTree->onUpdateEvent([this]()
-    //                                { if (this->_onNodeTreeUpdateEventCallback != nullptr){
-    //                                  this->_onNodeTreeUpdateEventCallback();
-    //                                } });
+    this->_nodeTree->onSelectEvent([this](std::string uuid)
+                                   { this->_onNodeTreeSelectEvent(uuid); });
 }
-
-// void EditorHierarchyLayout::onRootInputStartEvent(std::function<void(NodeInputResult &result)> callback)
-// {
-//     this->_onRootInputStartEventCallback = callback;
-// }
-// void EditorHierarchyLayout::onNodeTreeSelectEvent(std::function<void(UITreeStructure *uiTreeData)> callback)
-// {
-//     this->_onNodeTreeSelectEventCallback = callback;
-// }
-// void EditorHierarchyLayout::onNodeTreeUpdateEvent(std::function<void()> callback)
-// {
-//     this->_onNodeTreeUpdateEventCallback = callback;
-// }
-
-/*
- * @brief 失去焦点
- */
-void EditorHierarchyLayout::loseFocus()
-{
-    // if (this->_nodeTree != nullptr)
-    // {
-    //     std::cout << "EditorHierarchyLayout lose focus" << std::endl;
-    //     this->_nodeTree->loseFocusSelect();
-    // }
-}
-void EditorHierarchyLayout::clearNodeTreeSelect()
-{
-    // if (this->_nodeTree != nullptr)
-    // {
-    //     std::cout << "EditorHierarchyLayout clear node tree select" << std::endl;
-    //     this->_nodeTree->clearSelect();
-    // }
-}
-
 void EditorHierarchyLayout::setScene(Scene *scene)
 {
-    // if (this->_nodeTree != nullptr)
-    // {
-    //     this->_nodeTree->setScene(scene);
-    // }
+    if (this->_nodeTree != nullptr)
+    {
+        this->_nodeTree->setScene(scene);
+    }
 }
-void EditorHierarchyLayout::setNode(Node *node)
+void EditorHierarchyLayout::_onNodeTreeSelectEvent(std::string uuid)
 {
-    // if (this->_nodeTree != nullptr)
-    // {
-    //     this->_nodeTree->setNode(node);
-    // }
+    std::cout << "EditorHierarchyLayout _onNodeTreeSelectEvent:" << uuid << std::endl;
 }
-/*
- * @brief 更新树
- */
-void EditorHierarchyLayout::updateTree()
+void EditorHierarchyLayout::loseFocus()
 {
-    // if (this->_nodeTree != nullptr)
-    // {
-    //     this->_nodeTree->updateTree();
-    // }
+    if (this->_nodeTree != nullptr)
+    {
+        this->_nodeTree->hoverSelect();
+    }
 }
 
 EditorHierarchyLayout::~EditorHierarchyLayout()

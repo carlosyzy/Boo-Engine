@@ -18,7 +18,12 @@ EditorLayout::EditorLayout()
 	this->_scene = new Scene("EDITOR");
 	this->_initLoadUI();
 
+	// 初始化2D节点
 	Node2D *root2D = this->_scene->getRoot2D();
+	for (int i = 0; i < 20; i++) {
+		Node2D* node2D = new Node2D("Editor-Node2D-" + std::to_string(i));
+		root2D->addChild(node2D);
+	}
 	Boo::game->input()->setRoot(root2D);
 }
 void EditorLayout::_initLoadUI()
@@ -64,10 +69,10 @@ void EditorLayout::launch()
 	this->_initMainUI();
 	this->_initMenuUI();
 	this->_initHierarchyUI();
-	this->_initAssetsUI();
-	this->_initPropertyUI();
-	this->_initSceneUI();
-	this->_initToolUI();
+	// this->_initAssetsUI();
+	// this->_initPropertyUI();
+	// this->_initSceneUI();
+	// this->_initToolUI();
 }
 
 void EditorLayout::_initMainUI()

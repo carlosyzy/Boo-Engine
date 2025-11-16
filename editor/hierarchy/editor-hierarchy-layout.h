@@ -36,27 +36,11 @@ private:
 
     NodeTree *_nodeTree;
     void _initNodeTree();
-
-    // std::function<void(NodeInputResult &result)> _onRootInputStartEventCallback;
-    // std::function<void(UITreeStructure *uiTreeData)> _onNodeTreeSelectEventCallback;
-    // std::function<void()> _onNodeTreeUpdateEventCallback;
-
+    void _onNodeTreeSelectEvent(std::string uuid);
 public:
     EditorHierarchyLayout(Node2D *root);
     void setScene(Scene *Scene);
     void setNode(Node *node);
-    /*
-     * @brief 更新树
-     */
-    void updateTree();
-    /*
-     * @brief 失去焦点
-     */
     void loseFocus();
-    void clearNodeTreeSelect();
-
-    // void onRootInputStartEvent(std::function<void(NodeInputResult &result)> callback);
-    // void onNodeTreeSelectEvent(std::function<void(UITreeStructure *uiTreeData)> callback);
-    // void onNodeTreeUpdateEvent(std::function<void()> callback);
     ~EditorHierarchyLayout();
 };

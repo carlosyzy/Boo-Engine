@@ -49,17 +49,12 @@ void UIWidget::lateUpdate(float deltaTime)
         {
             return;
         }
-        std::cout << "UIWidget::lateUpdate" << std::endl;
         // 父节点尺寸
         const Size &parentSize = parent->getSize();
         // 当前节点尺寸
         const Size &ndSize = node->getSize();
         const Vec2 &ndAnchor = node->getAnchor();
         const Vec3 &ndScale = node->getScale();
-        std::cout << "UIWidget::lateUpdate parentSize: " << parentSize.getWidth() << ", " << parentSize.getHeight() << std::endl;
-        std::cout << "UIWidget::lateUpdate ndAnchor: " << ndAnchor.getX() << ", " << ndAnchor.getY() << std::endl;
-        std::cout << "UIWidget::lateUpdate ndScale: " << ndScale.getX() << ", " << ndScale.getY() << ", " << ndScale.getZ() << std::endl;
-        std::cout << "UIWidget::lateUpdate ndSize: " << ndSize.getWidth() << ", " << ndSize.getHeight() << std::endl;
 
         Size newSize;
         newSize.set(ndSize.getWidth(), ndSize.getHeight());
@@ -103,8 +98,6 @@ void UIWidget::lateUpdate(float deltaTime)
         // 更新节点的位置和尺寸
         node->setPosition(newPosition.getX(), newPosition.getY(), newPosition.getZ());
         node->setSize(newSize.getWidth(), newSize.getHeight()); /* code */
-        std::cout << "UIWidget::lateUpdate newPosition: " << newPosition.getX() << ", " << newPosition.getY() << ", " << newPosition.getZ() << std::endl;
-        std::cout << "UIWidget::lateUpdate newSize: " << newSize.getWidth() << ", " << newSize.getHeight() << std::endl;
         this->_flag = 0;
     }
 }

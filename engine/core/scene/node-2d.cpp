@@ -51,7 +51,6 @@ void Node2D::setSize(float width, float height)
 	{
 		return;
 	}
-	std::cout << "Node2D::setSize: " << width << ", " << height << std::endl;
 	this->_size.set(width, height);
 	this->_updateWorldTransformFlag(NodeTransformFlag::SIZE_FLAG);
 }

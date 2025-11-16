@@ -78,7 +78,7 @@ private:
     // 当前显示的节点树映射
     std::map<std::string, UITreeStructure> _treeUIMap;
     // 选择事件回调
-    void (*_selectCallback)(std::string);
+    std::function<void(std::string)> _selectCallback;
     void _refreshTreeItemUI(Node2D *ndItem, int state);
 
     // item 的touch 事件
@@ -110,8 +110,7 @@ public:
 
     void setIcon(std::string iconKey, std::string iconPath);
 
-    void onSelectEvent(void (*callback)(std::string));
-    // void onUpdateEvent(std::function<void()> callback);
+    void onSelectEvent(std::function<void(std::string)> callback);
 
     void clearSelect();
     /**

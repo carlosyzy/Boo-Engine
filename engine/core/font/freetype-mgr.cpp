@@ -31,7 +31,6 @@ void FreetypeMgr::init()
 }
 void FreetypeMgr::crateFont(TextTexture &textTexture, const std::string &str, uint32_t fontSize, uint32_t lineHeight)
 {
-    std::cout << "crateFont: " << str << std::endl;
     std::string textureUuid = "font-";
     FT_Set_Pixel_Sizes(this->_face, 0, fontSize);
     // 开启抗锯齿
@@ -42,7 +41,6 @@ void FreetypeMgr::crateFont(TextTexture &textTexture, const std::string &str, ui
         // 避免重复添加
         chars.push_back(c);
     }
-    std::cout << "crateFont1: " << str << std::endl;
     uint32_t x = 3;
     uint32_t y = 3;
     uint32_t atlasWidth = 6;
@@ -50,7 +48,6 @@ void FreetypeMgr::crateFont(TextTexture &textTexture, const std::string &str, ui
     uint32_t datumLine = 0;              // 基准线
     uint32_t datumLine_below_height = 0; // 基准线下边的高度
     uint32_t space = fontSize * 0.1;     // 空格宽度
-    std::cout << "space: " << space << std::endl;
     // 提前与计算宽高
     for (wchar_t c : chars)
     {
@@ -107,9 +104,7 @@ void FreetypeMgr::crateFont(TextTexture &textTexture, const std::string &str, ui
         }
         x += width + space; // 加1像素间隔
     }
-    FileUtil::saveAtlasAsPGM(textureUuid + ".ppm", atlasData, atlasWidth, atlasHeight);
-    std::cout << "datumLine: " << datumLine << std::endl;
-    std::cout << "datumLine_below_height: " << datumLine_below_height << std::endl;
+    // FileUtil::saveAtlasAsPGM(textureUuid + ".ppm", atlasData, atlasWidth, atlasHeight);
     // 转换为RGBA格式
     std::vector<uint8_t> rgbaDatas(atlasWidth * atlasHeight * 4, 0);
     for (uint32_t i = 0; i < atlasWidth * atlasHeight; i++)

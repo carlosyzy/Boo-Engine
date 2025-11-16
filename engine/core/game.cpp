@@ -93,6 +93,7 @@ void Game::_initAlpha()
 
 void Game::setView(int width, int height)
 {
+	std::cout << "setView: width:" << width << " height:" << height << std::endl;
 	this->_view->width = width;
 	this->_view->height = height;
 }

@@ -20,7 +20,6 @@ void Node::setActive(bool active, bool force)
 	{
 		return;
 	}
-	std::cout << "setActive:" << this->_name << ": " << active << std::endl;
 	this->_active = active;
 	this->_isActiveInHierarchy = ((this->_parent == nullptr) ? true : this->_parent->_isActiveInHierarchy) && this->_active;
 

@@ -100,7 +100,7 @@ void GfxRenderer::createTexture(std::string textureUuid, uint32_t width, uint32_
     {
         GfxTexture *texture = new GfxTexture(this->_context, pixels, width, height, channels);
         this->_textures[textureUuid] = texture;
-        std::cout << "createGfxTexture: " << textureUuid << std::endl;
+        // std::cout << "createGfxTexture: " << textureUuid << std::endl;
     }
 }
 
@@ -138,7 +138,6 @@ void GfxRenderer::createGlslShader(const std::string &shaderName, const std::str
     }
 
     std::string finalCacheKey = cacheKey.str();
-    // std::cout << "createGfxShader: " << finalCacheKey << std::endl;
     //  检查是否已存在
     if (this->_shaders.find(finalCacheKey) != this->_shaders.end())
     {
@@ -152,7 +151,6 @@ void GfxRenderer::createGlslShader(const std::string &shaderName, const std::str
         GfxShader *shader = new GfxShader(this->_context, finalCacheKey);
         shader->createShaderModule(spirvCode);
         this->_shaders[finalCacheKey] = shader;
-        // std::cout << "Created shader: " << finalCacheKey << std::endl;
     }
     catch (const std::exception &e)
     {
@@ -293,7 +291,6 @@ void GfxRenderer::setObjectProjMatrix(std::string id, std::array<float, 16> proj
 }
 void GfxRenderer::setObjectTexture(const std::string &id, const std::string &texture)
 {
-    std::cout << "setObjectTexture:id:" << id << " texture:" << texture << std::endl;
     if (this->_objects.find(id) != this->_objects.end())
     {
         if (this->_textures.find(texture) == this->_textures.end())
@@ -301,7 +298,6 @@ void GfxRenderer::setObjectTexture(const std::string &id, const std::string &tex
             this->_Log("setObjectTexture:texture not found");
             return;
         }
-        std::cout << "setObjectTexture:id:" << id << " texture:" << texture << std::endl;
         this->_objects[id]->setTexture(this->_textures[texture]);
         return;
     }
@@ -359,9 +355,6 @@ void GfxRenderer::submit(std::string id)
 
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
-    /*   // this->submit("text"); */
-    // std::cout << "renderer frameRenderer" << std::endl;
-
     if (this->_queues.find("ui") != this->_queues.end())
     {
         this->_queues["ui"]->render(imageIndex, commandBuffers);

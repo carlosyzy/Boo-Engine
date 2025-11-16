@@ -101,7 +101,7 @@ public:
 	 */
 	void launch();
 
-	Scene *scene()
+	Scene *getScene()
 	{
 		return this->_scene;
 	}
