@@ -16,6 +16,7 @@ UIRenderer::UIRenderer(Node *node, std::string uuid) : Component(node, uuid)
 	this->_layer = NodeLayer::Node2D;
 	// 创建渲染物体
 	GfxMgr::getInstance()->createObject(this->_uuid, "ui", this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
+	this->updateModelMatrix();
 }
 
 void UIRenderer::setColor(float r, float g, float b, float a)
@@ -66,6 +67,11 @@ void UIRenderer::setTexture(std::string texture)
 	Asset *tex = Boo::game->assetsManager()->get(texture);
 	this->setTexture(dynamic_cast<Texture *>(tex));
 }
+void UIRenderer::updateModelMatrix()
+{
+	Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
+	GfxMgr::getInstance()->setObjectModelMatrix(this->_uuid, node2D->uiWorldMatrix().data());
+}
 void UIRenderer::update(float deltaTime)
 {
 	Component::update(deltaTime);
@@ -76,17 +82,18 @@ void UIRenderer::lateUpdate(float deltaTime)
 }
 void UIRenderer::render()
 {
-	Component::render();
 	// 节点变换矩阵更新了
-	if (this->_node->hasFrameTransformFlag())
-	{
-		Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
-		GfxMgr::getInstance()->setObjectModelMatrix(this->_uuid, node2D->uiWorldMatrix().data());
-		/*UIMaskRect& maskRect = node2D->maskRect();*/
-		// std::cout << "UIRenderer::render: maskRect: " << node2D->uiWorldMatrix().data()[0] << ", " << node2D->uiWorldMatrix().data()[5] << ", " << std::endl;
-		// GfxMgr::getInstance()->setUIObjectMask(this->_uuid, 0, 0, 0, 0, 0);
-	}
+	// if (this->_node->hasFrameTransformFlag())
+	// {
+	// 	Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
+	// 	GfxMgr::getInstance()->setObjectModelMatrix(this->_uuid, node2D->uiWorldMatrix().data());
+	// 	/*UIMaskRect& maskRect = node2D->maskRect();*/
+	// 	// std::cout << "UIRenderer::render: maskRect: " << node2D->uiWorldMatrix().data()[0] << ", " << node2D->uiWorldMatrix().data()[5] << ", " << std::endl;
+	// 	// GfxMgr::getInstance()->setUIObjectMask(this->_uuid, 0, 0, 0, 0, 0);
+	// }
 
+	Component::render();
+	
 	if (!this->isEnabled())
 	{
 		return; // 组件未激活

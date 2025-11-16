@@ -85,6 +85,7 @@ public:
     void setMaterial(Material *mtl);
     void setTexture(Texture *texture);
     void setTexture(std::string text);
+    void updateModelMatrix();
     void update(float deltaTime) override;
     void lateUpdate(float deltaTime) override;
     void render() override;

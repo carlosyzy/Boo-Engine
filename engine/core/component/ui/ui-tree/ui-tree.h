@@ -42,10 +42,7 @@ struct UITreeStructure
     /** 节点在树中的索引 */
     int index;
     /** 节点-节点树时使用 */
-    Node *ndBind;
-    // /** 节点-文件树时使用 */
-    // std::string pathBind;
-    /** 子节点 */
+    Node2D *ndBind;
     std::vector<UITreeStructure> children;
 };
 
@@ -64,18 +61,25 @@ private:
     float _contentX;
     float _contentY;
     void _initContent();
+    void _onTreeContentTouchEvent(NodeInputResult &result);
+    void _onTreeContentHoverEvent(NodeInputResult &result);
 
     int _nodeIndex;
     std::vector<Node2D *> _nodePools;
+    UITreeStructure _hoverTreeItem;
     void _updateTreeContent();
     void _updateTreesItems(UITreeStructure &uiTreeData);
     void _onTreeItemTouchEvent(NodeInputResult &result);
+    void _onTreeItemCursorHoverEvent(NodeInputResult &result);
 
-    //   // 当前选中的节点
-    // std::string _selectUUID;
-
-    // 
-    // std::function<void(UITreeStructure *)> _selectCallback;
+    // 当前选中的节点树item
+    UITreeStructure _selectTreeItem;
+    bool _isSelectHover = false;
+    // 当前显示的节点树映射
+    std::map<std::string, UITreeStructure> _treeUIMap;
+    // 选择事件回调
+    void (*_selectCallback)(std::string);
+    void _refreshTreeItemUI(Node2D *ndItem, int state);
 
     // item 的touch 事件
 
@@ -97,8 +101,7 @@ protected:
     UITreeIconMap _iconMaps;
     // 节点树数据
     UITreeStructure _uiTreeData;
-    // item 选中节点树映射
-    std::map<std::string, UITreeStructure *> _treeSelectMap;
+
     // 折叠按钮-节点树item 映射
     std::map<std::string, UITreeStructure *> _treeFoldMap;
 
@@ -107,12 +110,14 @@ public:
 
     void setIcon(std::string iconKey, std::string iconPath);
 
-    // void onSelectEvent(std::function<void(UITreeStructure *)> callback);
+    void onSelectEvent(void (*callback)(std::string));
     // void onUpdateEvent(std::function<void()> callback);
 
     void clearSelect();
-    /** 失去焦点时淡化 */
-    void loseFocusSelect();
+    /**
+     * 悬停选中节点树item
+     */
+    void hoverSelect();
 
     virtual void updateTree() = 0;
     void update(float deltaTime) override;

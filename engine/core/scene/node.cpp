@@ -2,6 +2,7 @@
 #include "../utils/uuid-util.h"
 #include "../component/component.h"
 #include "../../boo.h"
+#include "../renderer/ui/ui-renderer.h"
 
 void Node::setName(const std::string &name)
 {
@@ -19,8 +20,10 @@ void Node::setActive(bool active, bool force)
 	{
 		return;
 	}
+	std::cout << "setActive:" << this->_name << ": " << active << std::endl;
 	this->_active = active;
 	this->_isActiveInHierarchy = ((this->_parent == nullptr) ? true : this->_parent->_isActiveInHierarchy) && this->_active;
+
 	this->_updateNodesActiveInHierarchyState(this->_isActiveInHierarchy);
 }
 
@@ -143,14 +146,22 @@ void Node::_updateWorldTransformFlag(NodeTransformFlag flag)
 	this->_worldTransformFlag |= static_cast<uint32_t>(flag);
 	this->_frameTransformFlag |= static_cast<uint32_t>(flag);
 	this->_emitTransformChanged(this->_worldTransformFlag);
+	// 更新渲染节点的模型矩阵
+	this->_updateRendererModelMatrix();
 	for (auto &child : this->_children)
 	{
 		child->_updateWorldTransformFlag(flag);
 	}
 }
+void Node::_updateRendererModelMatrix()
+{
+}
 void Node::_updateNodesActiveInHierarchyState(bool isActiveInHierarch)
 {
-
+	if (isActiveInHierarch)
+	{
+		this->_updateRendererModelMatrix();
+	}
 	for (auto &child : this->_children)
 	{
 		child->_updateNodesActiveInHierarchyState(isActiveInHierarch);
@@ -210,19 +221,21 @@ void Node::lateUpdate(float dt)
 }
 void Node::render()
 {
-	if (!this->_isActiveInHierarchy)
+	if (this->hasFrameTransformFlag())
 	{
-		return;
+		this->_updateRendererModelMatrix();
 	}
-
-	// 渲染组件
-	for (auto &component : this->_components)
+	if (this->_isActiveInHierarchy)
 	{
-		component->render();
-	}
-	for (auto &child : this->_children)
-	{
-		child->render();
+		// 渲染组件
+		for (auto &component : this->_components)
+		{
+			component->render();
+		}
+		for (auto &child : this->_children)
+		{
+			child->render();
+		}
 	}
 }
 void Node::clearNodeFrameFlag()

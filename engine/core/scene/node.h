@@ -131,6 +131,7 @@ protected:
 	 */
 	void _updateWorldTransformFlag(NodeTransformFlag flag);
 	void _updateNodesActiveInHierarchyState(bool isActiveInHierarch);
+	virtual void _updateRendererModelMatrix();
 	/**
 	 * @brief 触发事件
 	 * @param eventName 事件名称

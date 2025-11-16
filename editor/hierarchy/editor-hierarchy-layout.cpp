@@ -84,7 +84,7 @@ void EditorHierarchyLayout::_initOperate()
 {
     this->_ndOperate = new Node2D("Operate");
     this->_content->addChild(this->_ndOperate);
-    this->_ndOperate->setSize(150.0f, 25.0f);
+    this->_ndOperate->setSize(150.0f, 33.0f);
 
     UISprite *sprite = dynamic_cast<UISprite *>(this->_ndOperate->addComponent("UISprite"));
     sprite->setColor(EditorConfig::operate);
@@ -199,7 +199,7 @@ void EditorHierarchyLayout::_initNodeTree()
     paramHorizontal.left = 0.0f;
     paramHorizontal.right = 0.0f;
     WidgetVerticalParam paramVertical{};
-    paramVertical.top = 25.0f;
+    paramVertical.top = 33.0f;
     paramVertical.bottom = 0.0f;
     widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
     widget->setVertical(WidgetVertical::ALL, paramVertical);

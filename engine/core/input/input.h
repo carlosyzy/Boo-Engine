@@ -24,7 +24,8 @@ enum class NodeInput
 	TOUCH_START,
 	TOUCH_MOVE,
 	TOUCH_END,
-	TOUCH_CANCEL
+	TOUCH_CANCEL,
+	CURSOR_HOVER,
 };
 
 /**
@@ -46,6 +47,7 @@ struct NodeInputStruct
 	std::map<int, std::function<void(NodeInputResult &)>> touchMoves;
 	std::map<int, std::function<void(NodeInputResult &)>> touchEnds;
 	std::map<int, std::function<void(NodeInputResult &)>> touchCancels;
+	std::map<int, std::function<void(NodeInputResult &)>> cursorHovers;
 };
 
 class Input
@@ -68,7 +70,7 @@ public:
 	void onCursorPos(double xpos, double ypos);
 
 	template <typename T, typename Func>
-	int onNodeInputEvent(Node2D *node, NodeInput input, Func func, T *instance, bool isIntercept);
+	int onNodeInputEvent(Node2D *node, NodeInput input, Func func, T *instance, bool isIntercept=true);
 	void offNodeInputEvent(Node2D *node, int inputID);
 	void offAllNodeInputEvent(Node2D *node);
 

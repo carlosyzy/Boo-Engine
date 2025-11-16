@@ -2,6 +2,7 @@
 #include "../../boo.h"
 #include "../input/input.h"
 #include "../component/component.h"
+#include "../renderer/ui/ui-renderer.h"
 
 Node2D::Node2D(const std::string name, const std::string uuid)
 {
@@ -54,6 +55,7 @@ void Node2D::setSize(float width, float height)
 	this->_size.set(width, height);
 	this->_updateWorldTransformFlag(NodeTransformFlag::SIZE_FLAG);
 }
+
 /**
  * 2d 节点的世界变换矩阵
  */
@@ -113,6 +115,21 @@ void Node2D::lateUpdate(float dt)
 void Node2D::render()
 {
 	Node::render();
+}
+/**
+ * 刷新渲染组件的模型矩阵
+ */
+void Node2D::_updateRendererModelMatrix()
+{
+	Node::_updateRendererModelMatrix();
+	for (auto &component : this->_components)
+	{
+		UIRenderer *uiRenderer = dynamic_cast<UIRenderer *>(component);
+		if (uiRenderer != nullptr)
+		{
+			uiRenderer->updateModelMatrix();
+		}
+	}
 }
 
 void Node2D::clearNodeFrameFlag()
