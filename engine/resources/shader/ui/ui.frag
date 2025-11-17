@@ -15,20 +15,19 @@ layout(location = 0) out vec4 outColor;
 // 正确的推送常量块声明
 layout(push_constant) uniform PushConstants {
     vec4 defaultColor;  // 使用vec4而不是float
-    vec4 maskRect;
 } PushConsts;
 void main() {
     // // 使用推送常量块中的颜色
     vec4 color = PushConsts.defaultColor;
     vec4 texColor = texture(texSampler, fragTexCoord);
     
-    vec4 mask = PushConsts.maskRect;
-    if(mask.z > 0.0 && mask.w > 0.0){   
-        if (worldPos.x < mask.x || worldPos.x > mask.x + mask.z ||
-            worldPos.y < mask.y || worldPos.y > mask.y + mask.w) {
-            discard;
-        }
-    }
+    // vec4 mask = PushConsts.maskRect;
+    // if(mask.z > 0.0 && mask.w > 0.0){   
+    //     if (worldPos.x < mask.x || worldPos.x > mask.x + mask.z ||
+    //         worldPos.y < mask.y || worldPos.y > mask.y + mask.w) {
+    //         discard;
+    //     }
+    // }
 
     outColor = color*texColor;
 }

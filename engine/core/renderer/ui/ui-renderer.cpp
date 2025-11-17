@@ -82,16 +82,6 @@ void UIRenderer::lateUpdate(float deltaTime)
 }
 void UIRenderer::render()
 {
-	// 节点变换矩阵更新了
-	// if (this->_node->hasFrameTransformFlag())
-	// {
-	// 	Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
-	// 	GfxMgr::getInstance()->setObjectModelMatrix(this->_uuid, node2D->uiWorldMatrix().data());
-	// 	/*UIMaskRect& maskRect = node2D->maskRect();*/
-	// 	// std::cout << "UIRenderer::render: maskRect: " << node2D->uiWorldMatrix().data()[0] << ", " << node2D->uiWorldMatrix().data()[5] << ", " << std::endl;
-	// 	// GfxMgr::getInstance()->setUIObjectMask(this->_uuid, 0, 0, 0, 0, 0);
-	// }
-
 	Component::render();
 	
 	if (!this->isEnabled())
@@ -115,7 +105,7 @@ void UIRenderer::render()
 		return;
 	}
 	// 提交渲染对象
-	GfxMgr::getInstance()->submit(this->_uuid);
+	GfxMgr::getInstance()->submitObjectRender(this->_uuid);
 }
 void UIRenderer::destroy()
 {

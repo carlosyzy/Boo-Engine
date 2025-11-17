@@ -41,7 +41,7 @@ struct UniformBufferObject
 struct PushConstants
 {
 	float defaultColor[4];
-	float maskRect[4];
+	// float maskRect[4];
 };
 /* // // 图形对象类型
 // enum  GfxRendererPassTypeE

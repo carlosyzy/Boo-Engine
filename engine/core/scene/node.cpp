@@ -22,7 +22,6 @@ void Node::setActive(bool active, bool force)
 	}
 	this->_active = active;
 	this->_isActiveInHierarchy = ((this->_parent == nullptr) ? true : this->_parent->_isActiveInHierarchy) && this->_active;
-
 	this->_updateNodesActiveInHierarchyState(this->_isActiveInHierarchy);
 }
 

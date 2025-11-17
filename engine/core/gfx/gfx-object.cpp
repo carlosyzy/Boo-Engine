@@ -5,9 +5,7 @@
 #include "gfx-context.h"
 #include "../../boo.h"
 
-GfxObject::GfxObject(GfxContext *context) : _color{1.0f, 1.0f, 1.0f, 1.0f},
-                                            _uiMask{0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
-
+GfxObject::GfxObject(GfxContext *context) : _color{1.0f, 1.0f, 1.0f, 1.0f}
 {
     this->_context = context;
     this->_pipeline = nullptr;
@@ -150,7 +148,6 @@ void GfxObject::setColor(float r, float g, float b, float a)
     this->_color[2] = b;
     this->_color[3] = a;
     // std::cout << "setColor1:r:" << r << " g:" << g << " b:" << b << " a:" << a << std::endl;
-
 }
 void GfxObject::setTexture(GfxTexture *texture)
 {
@@ -174,13 +171,14 @@ void GfxObject::setProjMatrix(std::array<float, 16> &mat)
     // this->_projMatrix = mat;
     // this->_updateProjMatUniformBuffer();
 }
-void GfxObject::setUIMask(float x, float y, float width, float height, float angle)
+void GfxObject::addUIMask(std::string maskId, std::vector<float> mask)
 {
-    this->_uiMask[0] = x;
-    this->_uiMask[1] = y;
-    this->_uiMask[2] = width;
-    this->_uiMask[3] = height;
-    this->_uiMask[4] = angle;
+    if (mask.size() < 7)
+    {
+        std::cerr << "Invalid mask size!" << std::endl;
+        return;
+    }
+    this->_uiMasks[maskId] = mask;
 }
 /**
  * @brief 更新描述符集
@@ -337,12 +335,21 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     /*  // 绑定渲染管线 */
     vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipeline());
 
-    /* // // 设置视口
-    // vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &this->_viewport);
+    // 设置视口
+    VkViewport _viewport{};
+    // 裁剪区域 原点左上角为(0,0)
+    VkRect2D _scissor{};
+    _viewport.x = 0.0f;
+    _viewport.y = 0.0f;
+    _viewport.width = (float)Boo::game->view()->width;
+    _viewport.height = (float)Boo::game->view()->height;
+    _viewport.minDepth = 0.0f;
+    _viewport.maxDepth = 1.0f;
+    _scissor.offset = {0, 0};
+    _scissor.extent = {(uint32_t)(Boo::game->view()->width), (uint32_t)(Boo::game->view()->height)};
+    // vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &_viewport);
     // // 设置裁剪区域
-    // vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &this->_scissor);
-
-
+    // vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &_scissor);
 
     // 该函数用于提交绘制操作到指令缓冲
     // 参数1：需要执行的指令缓冲对象
@@ -359,17 +366,17 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
        // 绑定描述符集
        // std::cout <<"1111:"<< this->_descriptorSets[imageIndex]<< std::endl; */
     vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipelineLayout(), 0, 1, &this->_descriptorSets[imageIndex], 0, nullptr);
- 
+
     // std::cout << "render:22222 "<< std::endl;
     PushConstants pushConstants{};
     pushConstants.defaultColor[0] = this->_color[0];
     pushConstants.defaultColor[1] = this->_color[1];
     pushConstants.defaultColor[2] = this->_color[2];
     pushConstants.defaultColor[3] = this->_color[3];
-    pushConstants.maskRect[0] = this->_uiMask[0];
-    pushConstants.maskRect[1] = this->_uiMask[1];
-    pushConstants.maskRect[2] = this->_uiMask[2];
-    pushConstants.maskRect[3] = this->_uiMask[3];
+    // pushConstants.maskRect[0] = this->_uiMask[0];
+    // pushConstants.maskRect[1] = this->_uiMask[1];
+    // pushConstants.maskRect[2] = this->_uiMask[2];
+    // pushConstants.maskRect[3] = this->_uiMask[3];
 
     vkCmdPushConstants(commandBuffers[imageIndex], this->_pipeline->getVKPipelineLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstants), &pushConstants);
     /*  // 绘制
@@ -414,10 +421,7 @@ void GfxObject::destroy()
     this->_indexBuffer = VK_NULL_HANDLE;
     this->_vertexMemory = VK_NULL_HANDLE;
     this->_indexMemory = VK_NULL_HANDLE;
-
 }
-
-
 
 void GfxObject::_Log(std::string msg)
 {

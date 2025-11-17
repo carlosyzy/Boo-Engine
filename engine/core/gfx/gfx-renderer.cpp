@@ -310,14 +310,6 @@ void GfxRenderer::setObjectColor(std::string id, float r, float g, float b, floa
         return;
     }
 }
-void GfxRenderer::setUIObjectMask(std::string id, float x, float y, float width, float height, float angle)
-{
-    if (this->_objects.find(id) != this->_objects.end())
-    {
-        this->_objects[id]->setUIMask(x, y, width, height, angle);
-        return;
-    }
-}
 void GfxRenderer::setObjectPipeline(std::string id, std::string pipeline)
 {
     if (this->_objects.find(id) == this->_objects.end())
@@ -331,11 +323,21 @@ void GfxRenderer::setObjectPipeline(std::string id, std::string pipeline)
         // return; */
     }
     this->_objects[id]->setPipeline(this->_pipelines[pipeline]);
-    std::cout << "setObjectPipeline:id:" << id << " pipeline:" << pipeline << std::endl;
+    // std::cout << "setObjectPipeline:id:" << id << " pipeline:" << pipeline << std::endl;
     return;
 }
+void GfxRenderer::addUIObjectMask(std::string id, std::string maskId, std::vector<float> mask)
+{
+    if (this->_objects.find(id) != this->_objects.end())
+    {
+        this->_objects[id]->addUIMask(maskId, mask);
+        return;
+    }
+}
 
-void GfxRenderer::submit(std::string id)
+
+
+void GfxRenderer::submitObjectRender(std::string id)
 {
     // std::cout << "renderer submit   :" << id << std::endl;
     if (this->_objects.find(id) == this->_objects.end())

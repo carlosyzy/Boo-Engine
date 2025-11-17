@@ -82,6 +82,7 @@ public:
 	void setObjectColor(std::string id, float r, float g, float b, float a);
 	void setObjectPipeline(std::string id, std::string pipeline);
 	void setUIObjectMask(std::string id, float x, float y, float width, float height, float angle);
+	void addUIObjectMask(std::string id, std::string maskId, std::vector<float> mask);
 	void destroyObject(std::string id);
 
 
@@ -100,7 +101,7 @@ public:
 	   * @brief 提交渲染对象
 	   * @param id 物体ID
 	   */
-	void submit(std::string id);
+	void submitObjectRender(std::string id);
 	/**
 	 * 创建 or 销毁渲染纹理
 	 */

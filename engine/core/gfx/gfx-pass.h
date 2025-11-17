@@ -7,6 +7,16 @@
 class GfxContext;
 
 /**
+ * pass 支持
+ * 1.非多重采样和多重采样模式,
+ * 	   附件描述数量的区别,多重采样多了一个 解析附件
+ * 2.离屏和非离屏模式     
+ * 	   参数区别
+ */
+
+
+
+/**
  * @brief UI Pass 颜色附件
  */
 struct PassAttachmentColor

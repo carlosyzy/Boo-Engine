@@ -54,6 +54,10 @@ private:
     // 节点清理相关
     std::vector<Node *> _nodeClearCaches;
 
+
+    float _logicTime = 0.0f;
+    float _renderTime = 0.0f;
+
     /**
      * @brief 事件系统
      */
@@ -128,6 +132,8 @@ public:
      * @brief 初始化游戏
      */
     void init();
+
+
 
     void setView(int width, int height);
     View *view()

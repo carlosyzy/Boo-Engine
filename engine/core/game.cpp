@@ -3,7 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../libs/stb/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include  "../libs/stb/stb_image_write.h"
+#include "../libs/stb/stb_image_write.h"
 
 #include "assets/assets-manager.h"
 #include "event/event.h"
@@ -12,6 +12,7 @@
 #include "alpha/alpha.h"
 #include "font/freetype-mgr.h"
 #include "input/input.h"
+#include "utils/time-util.h"
 
 #include "component/component.h"
 #include "renderer/ui/ui-sprite.h"
@@ -36,6 +37,10 @@ void Game::init()
 	this->_initComponents();
 	this->_initAssets();
 	this->_initAlpha();
+
+	// 
+	// GfxMgr::getInstance()->createPipeline("ui", "Blend:1|DepthTest:0|DepthWrite:0|vert:" + std::filesystem::path("resources/shader/ui/ui.vert.spv").generic_string() + "|frag:" + std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string());
+	// GfxMgr::getInstance()->createPipeline("ui-mask", "Blend:1|DepthTest:0|DepthWrite:0|vert:" + std::filesystem::path("resources/shader/ui/ui-mask.vert.spv").generic_string() + "|frag:" + std::filesystem::path("resources/shader/ui/ui-mask.frag.spv").generic_string());
 }
 void Game::_initGFX()
 {
@@ -104,7 +109,7 @@ void Game::unschedule(int scheduleID)
 }
 /**
  * @brief 创建组件
- * 
+ *
  * @param className 组件类名
  * @param node 节点
  * @param uuid 组件UUID
@@ -134,12 +139,15 @@ void Game::addNodeClearCaches(Node *node)
 
 void Game::update(float dt)
 {
+	long long start = TimeUtil::nowTime();
 	this->_update(dt);
 	this->_lateUpdate(dt);
+	this->_logicTime = TimeUtil::nowTime() - start;
+	start = TimeUtil::nowTime();
 	this->_render(dt);
+	this->_renderTime = TimeUtil::nowTime() - start;
 	this->_clear();
-	// 更新渲染器
-	GfxMgr::getInstance()->update();
+	// std::cout << "Game::update: logicTime: " << this->_logicTime << " renderTime: " << this->_renderTime << std::endl;
 }
 void Game::_update(float dt)
 {
@@ -166,6 +174,8 @@ void Game::_render(float dt)
 	{
 		this->_curScene->render();
 	}
+	// 更新渲染器
+	GfxMgr::getInstance()->update();
 }
 void Game::_clear()
 {
@@ -245,8 +255,6 @@ void Game::updateMousePos(double xpos, double ypos)
 {
 	this->_input->onCursorPos(xpos, ypos);
 }
-
-
 
 Game::~Game()
 {

@@ -2,6 +2,7 @@
 #include "gfx-mgr.h"
 #include "gfx-context.h"
 
+
 GfxPass::GfxPass(std::string name, GfxContext *context)
 {
     this->_name = name;

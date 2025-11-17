@@ -160,18 +160,18 @@ void GfxMgr::setObjectTexture(const std::string& id, const  std::string& texture
 {
     this->_renderer->setObjectTexture(id, texture);
 }
-void GfxMgr::setUIObjectMask(std::string id, float x, float y, float width, float height, float angle)
+void GfxMgr::addUIObjectMask(std::string id, std::string maskId, std::vector<float> mask)
 {
-    this->_renderer->setUIObjectMask(id, x, y, width, height, angle);
+    this->_renderer->addUIObjectMask(id, maskId, mask);
 }
 void GfxMgr::setObjectPipeline(std::string id, std::string pipeline)
 {
     this->_renderer->setObjectPipeline(id, pipeline);
 }
 
-void GfxMgr::submit(std::string id)
+void GfxMgr::submitObjectRender(std::string id)
 {
-    this->_renderer->submit(id);
+    this->_renderer->submitObjectRender(id);
 }
 
 void GfxMgr::update()
