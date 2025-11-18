@@ -146,10 +146,10 @@ void GfxPipeline::_createPipeline()
 	// dynamicState.pDynamicStates = dynamicStates.data();
 
 	// 视口和裁剪状态（现在只设置数量，具体值将在命令缓冲区中动态设置）
-	VkPipelineViewportStateCreateInfo viewportState{};
-	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-	viewportState.viewportCount = 1; // 使用动态状态，这里只需要指定数量
-	viewportState.scissorCount = 1;  // 使用动态状态，这里只需要指定数量
+	// VkPipelineViewportStateCreateInfo viewportState{};
+	// viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+	// viewportState.viewportCount = 1; // 使用动态状态，这里只需要指定数量
+	// viewportState.scissorCount = 1;  // 使用动态状态，这里只需要指定数量
 	// 注意：pViewports 和 pScissors 设置为 nullptr，因为使用动态状态
 	// // ==================== 关键修改结束 ==================== 
 
