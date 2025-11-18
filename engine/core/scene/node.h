@@ -53,8 +53,10 @@ private:
 	std::vector<TransformListener> _transformListeners;
 
 protected:
+	// int _visibility = 1;  后续与摄像机的Visibility对应
 	/**
 	 * 当前节点类型
+	 * 固定不变的,在创建时就已经确定了
 	 */
 	NodeLayer _layer;
 	/**
