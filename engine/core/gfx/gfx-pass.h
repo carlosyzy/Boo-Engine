@@ -3,14 +3,120 @@
 #include <vector>
 #include <string>
 #include "gfx-struct.h"
-
+#include "gfx-pass-struct.h"
+#include <unordered_map>
 class GfxContext;
+
+class GfxPass
+{
+private:
+	std::string _name;
+	GfxContext *_context;
+	VkRenderPass _vkRenderPass = VK_NULL_HANDLE;
+	GfxPassStruct _gfxPassStruct;
+
+	void _createVkRenderPass();
+	void _Log(std::string msg);
+
+public:
+	GfxPass(std::string name, GfxContext *context);
+	void create(GfxPassStruct gfxPassStruct);
+	void clear();
+	void reset();
+
+	std::string name()
+	{
+		return this->_name;
+	}
+	/**
+	 * @brief 获取附件的加载操作
+	 *
+	 * @param loadOp 加载操作类型
+	 * @return VkAttachmentLoadOp Vulkan 附件加载操作
+	 */
+	VkAttachmentLoadOp getAttachmentLoadOp(GfxPassAttachmentLoadOp loadOp)
+	{
+		if (loadOp == GfxPassAttachmentLoadOp::Load)
+		{
+			return VK_ATTACHMENT_LOAD_OP_LOAD;
+		}
+		else if (loadOp == GfxPassAttachmentLoadOp::Clear)
+		{
+			return VK_ATTACHMENT_LOAD_OP_CLEAR;
+		}
+		else if (loadOp == GfxPassAttachmentLoadOp::DontCare)
+		{
+			return VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		}
+		return VK_ATTACHMENT_LOAD_OP_CLEAR;
+	}
+	/**
+	 * @brief 获取附件的存储操作
+	 *
+	 * @param storeOp 存储操作类型
+	 * @return VkAttachmentStoreOp Vulkan 附件存储操作
+	 */
+	VkAttachmentStoreOp getAttachmentStoreOp(GfxPassAttachmentStoreOp storeOp)
+	{
+		if (storeOp == GfxPassAttachmentStoreOp::Store)
+		{
+			return VK_ATTACHMENT_STORE_OP_STORE;
+		}
+		else if (storeOp == GfxPassAttachmentStoreOp::DontCare)
+		{
+			return VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		}
+		return VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	}
+	/**
+	 * @brief 获取附件的布局类型
+	 *
+	 * @param finalLayout 最终布局类型
+	 * @return VkImageLayout Vulkan 附件最终布局
+	 */
+	VkImageLayout getAttachmentLayout(GfxPassAttachmentLayout layout)
+	{
+		if (layout == GfxPassAttachmentLayout::Unspecified)
+		{
+			return VK_IMAGE_LAYOUT_UNDEFINED;
+		}
+		else if (layout == GfxPassAttachmentLayout::Color)
+		{
+			return VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		}
+		else if (layout == GfxPassAttachmentLayout::Shader)
+		{
+			return VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		}
+		else if (layout == GfxPassAttachmentLayout::Depth)
+		{
+			return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		}
+		else if (layout == GfxPassAttachmentLayout::Present)
+		{
+			return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		}
+		return VK_IMAGE_LAYOUT_UNDEFINED;
+	}
+
+	VkRenderPass getVkRenderPass()
+	{
+		return this->_vkRenderPass;
+	}
+
+	~GfxPass();
+};
+
+
+// const std::unordered_map<std::string, int> GfxPassColorAttachmenloadOp = {
+// 	{"Load", 0},
+// 	{"Clear", 1}};
 
 /**
  * pass 支持
  * 1.非多重采样和多重采样模式,
  * 	   附件描述数量的区别,多重采样多了一个 解析附件
- * 2.离屏和非离屏模式     
+ * 2.离屏和非离屏模式
  * 	   参数区别
  */
 
@@ -122,39 +228,5 @@ class GfxContext;
  * 		    stencilStoreOp:VK_ATTACHMENT_STORE_OP_STORE; 必须存储Stencil！
  * 		    initialLayout:VK_IMAGE_LAYOUT_UNDEFINED
  * 		    finalLayout:VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
- * 
- * 
  */
-
-
-
-class GfxPass
-{
-private:
-    std::string _name;
-    GfxContext *_context;
-    VkRenderPass _vkRenderPass = VK_NULL_HANDLE;
-
-    void _createVkRenderPass();
-    void _Log(std::string msg);
-
-public:
-    GfxPass(std::string name, GfxContext *context);
-    void create();
-    void clear();
-    void reset();
-
-    std::string name()
-    {
-        return this->_name;
-    }
-    VkRenderPass getVkRenderPass()
-    {
-        return this->_vkRenderPass;
-    }
-
-    ~GfxPass();
-};
-
-
 

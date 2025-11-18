@@ -7,6 +7,7 @@
 #include "gfx-struct.h"
 #include "gfx-renderer.h"
 #include "gfx-pass.h"
+#include "gfx-pass-struct.h"
 #include "gfx-texture.h"
 #include "gfx-shader.h"
 #include "gfx-queue.h"
@@ -100,9 +101,9 @@ VkSampleCountFlagBits GfxMgr::_getMaxMSAAUsableSampleCount()
 
     return VK_SAMPLE_COUNT_1_BIT;
 }
-void GfxMgr::createRenderPass(std::string name)
+void GfxMgr::createRenderPass(std::string name, GfxPassStruct passStruct)
 {
-    this->_renderer->createRenderPass(name);
+    this->_renderer->createRenderPass(name, passStruct);
 }
 void GfxMgr::createPipeline(std::string passName, std::string pipelineName)
 {

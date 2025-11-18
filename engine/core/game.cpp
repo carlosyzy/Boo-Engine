@@ -46,7 +46,7 @@ void Game::_initGFX()
 {
 	std::cout << "INIT GFX" << std::endl;
 	GfxMgr::getInstance()->init();
-	GfxMgr::getInstance()->createRenderPass("ui");
+	// GfxMgr::getInstance()->createRenderPass("ui");
 }
 void Game::_initEvent()
 {

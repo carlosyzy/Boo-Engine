@@ -2,6 +2,7 @@
 #include "gfx-context.h"
 #include "gfx-texture.h"
 #include "gfx-pass.h"
+#include "gfx-pass-struct.h"
 #include "gfx-pipeline.h"
 #include "gfx-shader.h"
 #include "gfx-queue.h"
@@ -17,15 +18,36 @@ void GfxRenderer::init()
 {
     std::cout << "GfxRenderer:init" << std::endl;
     GfxShaderCompile::getInstance()->init();
+    this->_initDefaultUIPasses();
+}
+void GfxRenderer::_initDefaultUIPasses()
+{
+    std::cout << "GfxRenderer:_initDefaultUIPasses" << std::endl;
+    // 创建一个默认的ui pass
+    GfxPassStruct uiPassStruct = {};
+    uiPassStruct.attachmentCount = 1;
+    uiPassStruct.colorAttachment.enable = true;
+    uiPassStruct.colorAttachment.attachment = 0;
+    uiPassStruct.colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    uiPassStruct.colorAttachment.loadOp = GfxPassAttachmentLoadOp::Clear;
+    uiPassStruct.colorAttachment.storeOp = GfxPassAttachmentStoreOp::Store;
+    uiPassStruct.colorAttachment.stencilLoadOp = GfxPassAttachmentLoadOp::DontCare;
+    uiPassStruct.colorAttachment.stencilStoreOp = GfxPassAttachmentStoreOp::DontCare;
+    uiPassStruct.colorAttachment.initialLayout = GfxPassAttachmentLayout::Unspecified;
+    uiPassStruct.colorAttachment.finalLayout = GfxPassAttachmentLayout::Present;
+    uiPassStruct.colorAttachment.refLayout = GfxPassAttachmentLayout::Color;
+    // uiPassStruct.colorAttachment.clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
+    // uiPassStruct.colorAttachment.clearDepthStencil = {1.0f, 0};
+    this->createRenderPass("ui", uiPassStruct);
 }
 
-void GfxRenderer::createRenderPass(std::string name)
+void GfxRenderer::createRenderPass(std::string name, GfxPassStruct passStruct)
 {
     /*  // 创建渲染通道 */
     if (this->_passes.find(name) == this->_passes.end())
     {
         GfxPass *pass = new GfxPass(name, this->_context);
-        pass->create();
+        pass->create(passStruct);
         this->_passes[name] = pass;
     }
     /*  // 创建对应的渲染队列 */
@@ -263,7 +285,6 @@ void GfxRenderer::destroyObject(std::string id)
         object = nullptr;
         this->_objects.erase(id);
     }
-    
 }
 void GfxRenderer::setObjectModelMatrix(std::string id, std::array<float, 16> modelMatrix)
 {
@@ -334,8 +355,6 @@ void GfxRenderer::addUIObjectMask(std::string id, std::string maskId, std::vecto
         return;
     }
 }
-
-
 
 void GfxRenderer::submitObjectRender(std::string id)
 {

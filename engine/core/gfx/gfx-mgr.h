@@ -10,6 +10,7 @@
 
 class GfxContext;
 class GfxRenderer;
+struct GfxPassStruct;
 
 class GfxMgr
 {
@@ -41,7 +42,7 @@ public:
 	/**
 	 * 创建渲染通道
 	 */
-	void createRenderPass(std::string name);
+	void createRenderPass(std::string name, GfxPassStruct passStruct);
 	/**
 	 * 创建管线
 	 */

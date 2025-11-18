@@ -10,11 +10,12 @@
 #include <unordered_map>
 #include <sstream>
 #include <vulkan/vulkan_core.h>
-#include "gfx-pass.h"
+
 
 class GfxContext;
 class GfxTexture;
 class GfxPass;
+struct GfxPassStruct;
 class GfxShader;
 class GfxPipeline;
 class GfxQueue;
@@ -50,16 +51,20 @@ private:
 
 	void _Log(std::string msg);
 
+	void _initDefaultUIPasses();
+
 public:
 	GfxRenderer(GfxContext* context);
 	void init();
+
+
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer>& commandBuffers);
 	void cleanRendererState();
 	void resetRendererState();
-
-
-
-	void createRenderPass(std::string name);
+	/**
+	 * 创建通道
+	 */
+	void createRenderPass(std::string name, GfxPassStruct passStruct);
 	void createPipeline(std::string passName, std::string pipelineName);
 
 	/**
