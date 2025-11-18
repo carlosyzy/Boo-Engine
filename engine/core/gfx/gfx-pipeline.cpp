@@ -122,28 +122,28 @@ void GfxPipeline::_createPipeline()
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
-	/* // 裁剪定义哪一块区域的像素实际被存储在帧缓存中。任何位于裁剪范围之外都会被光栅化丢弃 */
-	// VkRect2D scissor{};
-	// scissor.offset = { 0, 0 };
-	// scissor.extent = this->_context->getSwapChainExtent();
+	 // 裁剪定义哪一块区域的像素实际被存储在帧缓存中。任何位于裁剪范围之外都会被光栅化丢弃
+	VkRect2D scissor{};
+	scissor.offset = { 0, 0 };
+	scissor.extent = this->_context->getSwapChainExtent();
 
-	// VkPipelineViewportStateCreateInfo viewportState{};
-	// viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-	// viewportState.viewportCount = 1;
-	// viewportState.pViewports = &viewport;
-	// viewportState.scissorCount = 1;
-	// viewportState.pScissors = &scissor;
+	VkPipelineViewportStateCreateInfo viewportState{};
+	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+	viewportState.viewportCount = 1;
+	viewportState.pViewports = &viewport;
+	viewportState.scissorCount = 1;
+	viewportState.pScissors = &scissor;
 
 	// ==================== 关键修改：启用动态视口和裁剪 ====================
 	// 定义动态状态（视口和裁剪区域将在命令缓冲区中动态设置）
-	std::vector<VkDynamicState> dynamicStates = {
-	    VK_DYNAMIC_STATE_VIEWPORT,
-	    VK_DYNAMIC_STATE_SCISSOR // 启用动态裁剪
-	};
-	VkPipelineDynamicStateCreateInfo dynamicState{};
-	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-	dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
-	dynamicState.pDynamicStates = dynamicStates.data();
+	// std::vector<VkDynamicState> dynamicStates = {
+	//     VK_DYNAMIC_STATE_VIEWPORT,
+	//     VK_DYNAMIC_STATE_SCISSOR // 启用动态裁剪
+	// };
+	// VkPipelineDynamicStateCreateInfo dynamicState{};
+	// dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+	// dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+	// dynamicState.pDynamicStates = dynamicStates.data();
 
 	// 视口和裁剪状态（现在只设置数量，具体值将在命令缓冲区中动态设置）
 	VkPipelineViewportStateCreateInfo viewportState{};
@@ -264,7 +264,7 @@ void GfxPipeline::_createPipeline()
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
 	pipelineInfo.pViewportState = &viewportState;
-	pipelineInfo.pDynamicState = &dynamicState;  // 关键：设置动态状态 
+	// pipelineInfo.pDynamicState = &dynamicState;  // 关键：设置动态状态 
 	pipelineInfo.pRasterizationState = &rasterizer;
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pColorBlendState = &colorBlending;
