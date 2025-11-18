@@ -15,8 +15,9 @@ AssetsManager::AssetsManager()
 }
 void AssetsManager::init()
 {
-	this->_assetLoad = new AssetLoad(this);
+	
 	this->_initRoot();
+	this->_assetLoad = new AssetLoad(this);
 }
 void AssetsManager::_initRoot()
 {

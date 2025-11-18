@@ -52,7 +52,7 @@ enum class GfxPassAttachmentLayout
 	/**
 	 * 图像内容不重要，可以被丢弃,RenderPass 开始时需要清除的附件,最佳性能，驱动不需要保存原有内容
 	 */
-	Unspecified = 0,
+	Undefined = 0,
 	/**
 	 * 图像用作颜色附件，适合片段着色器写入,颜色缓冲区
 	 */
@@ -76,15 +76,15 @@ enum class GfxPassAttachmentLayout
 struct GfxPassAttachment
 {
 	bool enable = false;
-	// VkFormat format;
+	VkFormat format;
 	VkSampleCountFlagBits samples;
 	GfxPassAttachmentLoadOp loadOp = GfxPassAttachmentLoadOp::Load;
 	GfxPassAttachmentStoreOp storeOp = GfxPassAttachmentStoreOp::Store;
 	GfxPassAttachmentLoadOp stencilLoadOp = GfxPassAttachmentLoadOp::DontCare;
 	GfxPassAttachmentStoreOp stencilStoreOp = GfxPassAttachmentStoreOp::DontCare;
-	GfxPassAttachmentLayout initialLayout = GfxPassAttachmentLayout::Unspecified;
-	GfxPassAttachmentLayout finalLayout = GfxPassAttachmentLayout::Unspecified;
-	GfxPassAttachmentLayout refLayout = GfxPassAttachmentLayout::Unspecified;
+	GfxPassAttachmentLayout initialLayout = GfxPassAttachmentLayout::Undefined;
+	GfxPassAttachmentLayout finalLayout = GfxPassAttachmentLayout::Undefined;
+	GfxPassAttachmentLayout refLayout = GfxPassAttachmentLayout::Undefined;
 	uint32_t attachment = 0;
 	// VkClearColorValue clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
 	// VkClearDepthStencilValue clearDepthStencil = {1.0f, 0};

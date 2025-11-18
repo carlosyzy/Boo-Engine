@@ -19,12 +19,6 @@ void Alpha::_init()
 }
 void Alpha::_initRes()
 {
-	Boo::game->assetsManager()->load("resources/texture/logo.png");
-	Boo::game->assetsManager()->load("resources/texture/ic-default.png");
-	Boo::game->assetsManager()->load("resources/shader/ui/ui.vert.spv");
-	Boo::game->assetsManager()->load("resources/shader/ui/ui.frag.spv");
-	Boo::game->assetsManager()->load("resources/shader/ui/ui-mask.vert.spv");
-	Boo::game->assetsManager()->load("resources/shader/ui/ui-mask.frag.spv");
 	Texture* textureLogo = static_cast<Texture*>(Boo::game->assetsManager()->get("resources/texture/logo.png"));
 	if (textureLogo != nullptr)
 	{

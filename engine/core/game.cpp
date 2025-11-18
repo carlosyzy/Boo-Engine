@@ -88,6 +88,13 @@ void Game::_initAssets()
 	std::cout << "INIT ASSETS MGR" << std::endl;
 	this->_assetsManager = new AssetsManager();
 	this->_assetsManager->init();
+	// 加载必加资源
+	this->_assetsManager->load("resources/texture/logo.png");
+	this->_assetsManager->load("resources/texture/ic-default.png");
+	this->_assetsManager->load("resources/shader/ui/ui.vert.spv");
+	this->_assetsManager->load("resources/shader/ui/ui.frag.spv");
+	this->_assetsManager->load("resources/shader/ui/ui-mask.vert.spv");
+	this->_assetsManager->load("resources/shader/ui/ui-mask.frag.spv");
 }
 void Game::_initAlpha()
 {

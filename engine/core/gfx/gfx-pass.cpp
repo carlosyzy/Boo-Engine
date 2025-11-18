@@ -27,7 +27,7 @@ void GfxPass::_createVkRenderPass()
     if (this->_gfxPassStruct.colorAttachment.enable)
     {
         uint32_t attachment = this->_gfxPassStruct.colorAttachment.attachment;
-        attachments[attachment].format = this->_context->getSwapChainImageFormat();
+        attachments[attachment].format = this->_gfxPassStruct.colorAttachment.format;
         attachments[attachment].samples = this->_gfxPassStruct.colorAttachment.samples;
         attachments[attachment].loadOp = this->getAttachmentLoadOp(this->_gfxPassStruct.colorAttachment.loadOp);
         attachments[attachment].storeOp = this->getAttachmentStoreOp(this->_gfxPassStruct.colorAttachment.storeOp);
@@ -45,7 +45,7 @@ void GfxPass::_createVkRenderPass()
     if (this->_gfxPassStruct.resolveAttachment.enable)
     {
         uint32_t attachment = this->_gfxPassStruct.resolveAttachment.attachment;
-        attachments[attachment].format = this->_context->getSwapChainImageFormat();
+        attachments[attachment].format = this->_gfxPassStruct.resolveAttachment.format;
         attachments[attachment].samples = this->_gfxPassStruct.resolveAttachment.samples;
         attachments[attachment].loadOp = this->getAttachmentLoadOp(this->_gfxPassStruct.resolveAttachment.loadOp);
         attachments[attachment].storeOp = this->getAttachmentStoreOp(this->_gfxPassStruct.resolveAttachment.storeOp);
@@ -62,7 +62,7 @@ void GfxPass::_createVkRenderPass()
     if (this->_gfxPassStruct.depthAttachment.enable)
     {
         uint32_t attachment = this->_gfxPassStruct.depthAttachment.attachment;
-        attachments[attachment].format = VK_FORMAT_D32_SFLOAT;
+        attachments[attachment].format = this->_gfxPassStruct.depthAttachment.format;
         attachments[attachment].samples = this->_gfxPassStruct.depthAttachment.samples;
         attachments[attachment].loadOp = this->getAttachmentLoadOp(this->_gfxPassStruct.depthAttachment.loadOp);
         attachments[attachment].storeOp = this->getAttachmentStoreOp(this->_gfxPassStruct.depthAttachment.storeOp);
@@ -82,7 +82,7 @@ void GfxPass::_createVkRenderPass()
     dependency.srcAccessMask = 0;
     dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
     dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-
+    dependency.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
     
 
     VkRenderPassCreateInfo renderPassInfo = {};

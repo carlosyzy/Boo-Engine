@@ -76,7 +76,7 @@ public:
 	 */
 	VkImageLayout getAttachmentLayout(GfxPassAttachmentLayout layout)
 	{
-		if (layout == GfxPassAttachmentLayout::Unspecified)
+		if (layout == GfxPassAttachmentLayout::Undefined)
 		{
 			return VK_IMAGE_LAYOUT_UNDEFINED;
 		}

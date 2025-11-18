@@ -25,19 +25,31 @@ void GfxRenderer::_initDefaultUIPasses()
     std::cout << "GfxRenderer:_initDefaultUIPasses" << std::endl;
     // 创建一个默认的ui pass
     GfxPassStruct uiPassStruct = {};
-    uiPassStruct.attachmentCount = 1;
+    uiPassStruct.attachmentCount = 2;
     uiPassStruct.colorAttachment.enable = true;
     uiPassStruct.colorAttachment.attachment = 0;
+    uiPassStruct.colorAttachment.format = this->_context->getSwapChainImageFormat();
     uiPassStruct.colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-    uiPassStruct.colorAttachment.loadOp = GfxPassAttachmentLoadOp::Clear;
+    uiPassStruct.colorAttachment.loadOp = GfxPassAttachmentLoadOp::Clear;  //后续有3d 后 会改为Load
     uiPassStruct.colorAttachment.storeOp = GfxPassAttachmentStoreOp::Store;
     uiPassStruct.colorAttachment.stencilLoadOp = GfxPassAttachmentLoadOp::DontCare;
     uiPassStruct.colorAttachment.stencilStoreOp = GfxPassAttachmentStoreOp::DontCare;
-    uiPassStruct.colorAttachment.initialLayout = GfxPassAttachmentLayout::Unspecified;
+    uiPassStruct.colorAttachment.initialLayout = GfxPassAttachmentLayout::Undefined;
     uiPassStruct.colorAttachment.finalLayout = GfxPassAttachmentLayout::Present;
     uiPassStruct.colorAttachment.refLayout = GfxPassAttachmentLayout::Color;
-    // uiPassStruct.colorAttachment.clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
-    // uiPassStruct.colorAttachment.clearDepthStencil = {1.0f, 0};
+
+    uiPassStruct.depthAttachment.enable = true;
+    uiPassStruct.depthAttachment.attachment = 1;
+    uiPassStruct.depthAttachment.format = VK_FORMAT_D24_UNORM_S8_UINT;
+    uiPassStruct.depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    uiPassStruct.depthAttachment.loadOp = GfxPassAttachmentLoadOp::Clear;
+    uiPassStruct.depthAttachment.storeOp = GfxPassAttachmentStoreOp::DontCare;
+    uiPassStruct.depthAttachment.stencilLoadOp = GfxPassAttachmentLoadOp::Clear;
+    uiPassStruct.depthAttachment.stencilStoreOp = GfxPassAttachmentStoreOp::Store;
+    uiPassStruct.depthAttachment.initialLayout = GfxPassAttachmentLayout::Undefined;
+    uiPassStruct.depthAttachment.finalLayout = GfxPassAttachmentLayout::Depth;
+    uiPassStruct.depthAttachment.refLayout = GfxPassAttachmentLayout::Depth;
+   
     this->createRenderPass("ui", uiPassStruct);
 }
 
