@@ -9,8 +9,8 @@ GfxPass::GfxPass(std::string name, GfxContext *context)
 }
 void GfxPass::create()
 {
-    PassAttachmentColor attachmentColor{};
-    this->_attachmentColor = attachmentColor; /* // 不用引用，外部的销毁 */
+    // PassAttachmentColor attachmentColor{};
+    // this->_attachmentColor = attachmentColor; /* // 不用引用，外部的销毁 */
     this->_createVkRenderPass();
 }
 void GfxPass::_createVkRenderPass()
@@ -56,7 +56,7 @@ void GfxPass::_createVkRenderPass()
     colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
     /* // 一个渲染流程包含多个子流程，子流程依赖上一流程处理后的帧缓冲内容 */
     VkAttachmentReference colorAttachmentRef{};
