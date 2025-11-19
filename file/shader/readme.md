@@ -4,7 +4,6 @@
 
 // 可以通过如下两个命令，将顶点着色器和像素着色器编译为.spv格式。
 glslangValidator -V -S vert ui.vert -o ui.vert.spv
-
 glslangValidator -V -S geom ui.geom -o ui.geom.spv
 glslangValidator -V -S frag ui.frag -o ui.frag.spv
 
