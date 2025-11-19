@@ -100,13 +100,13 @@ struct GfxPassAttachment
 struct GfxPassStruct
 {
 	/**
-	 * 是否开启MSAA
+	 * 是否可开启MSAA
 	 */
-	bool msaa = false;
-	/**
-	 * 是否离屏渲染
-	 */
-	bool offscreen = false;
+	bool canMSAA = false;
+	// /**
+	//  * 是否离屏渲染
+	//  */
+	// bool offscreen = false;
 	/**
 	 * 附件数量
 	 */

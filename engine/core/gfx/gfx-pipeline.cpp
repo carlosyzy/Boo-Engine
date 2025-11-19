@@ -4,12 +4,12 @@
 #include "gfx-mgr.h"
 #include "gfx-context.h"
 
-GfxPipeline::GfxPipeline(std::string name, GfxContext* context)
+GfxPipeline::GfxPipeline(std::string name, GfxContext *context)
 {
 	this->_name = name;
 	this->_context = context;
 }
-void GfxPipeline::create(GfxPass* pass, GfxShader* vertexShader, GfxShader* fragmentShader, std::unordered_map<std::string, std::string> pipelineState)
+void GfxPipeline::create(GfxPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, std::unordered_map<std::string, std::string> pipelineState)
 {
 
 	this->_pass = pass;
@@ -29,44 +29,41 @@ void GfxPipeline::_createPipeline()
 	this->_Log("create graphics pipeline start...");
 	// 第一步：初始化着色器模块 */
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
-	// this->_initShaderStage(shaderStages);
 	/**
 	 * 要实际使用Shader，我们需要通过 VkPipelineShaderStageCreateInfo 结构将它们分配给特定的管道阶段，作为实际管道创建过程的一部分。
 	 *  我们将首先在 createGraphicsPipeline 函数中填充顶点着色器的结构。
 	 */
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
 	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	/*  // VK_SHADER_STAGE_VERTEX_BIT代表是顶点着色器 */
+	// VK_SHADER_STAGE_VERTEX_BIT代表是顶点着色器
 	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
 	vertShaderStageInfo.module = this->_vertexShader->getShaderModule();
-	/*   // 指定想调用什么函数。这意味着可以将多个片段着色器组合到一个着色器模块中，并使用不同的入口点来区分它们的行为。 */
+	// 指定想调用什么函数。这意味着可以将多个片段着色器组合到一个着色器模块中，并使用不同的入口点来区分它们的行为。
 	vertShaderStageInfo.pName = "main";
 
 	VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
 	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	/*    // VK_SHADER_STAGE_FRAGMENT_BIT代表是像素着色器 */
+	// VK_SHADER_STAGE_FRAGMENT_BIT代表是像素着色器
 	fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
 	fragShaderStageInfo.module = this->_fragmentShader->getShaderModule();
 	fragShaderStageInfo.pName = "main";
 
-	/*  // VkPipelineShaderStageCreateInfo geomShaderStageInfo{};
-	 // geomShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	 // geomShaderStageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
-	 // geomShaderStageInfo.module = shader->getGeomShaderModule();
-	 // geomShaderStageInfo.pName = "main";
-	 // std::cout << "create graphics pipeline : shader ok..." << std::endl; */
-	shaderStages = { vertShaderStageInfo, fragShaderStageInfo };
+	// VkPipelineShaderStageCreateInfo geomShaderStageInfo{};
+	// geomShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	// geomShaderStageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
+	// geomShaderStageInfo.module = shader->getGeomShaderModule();
+	// geomShaderStageInfo.pName = "main";
+	// std::cout << "create graphics pipeline : shader ok..." << std::endl;
+	shaderStages = {vertShaderStageInfo, fragShaderStageInfo};
 
-
-
-	/*  // 第二步：初始化顶点输入 */
+	// 第二步：初始化顶点输入
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 	// 顶点输入描述 绑定描述
 	VkVertexInputBindingDescription vInputBindDescription{};
 	vInputBindDescription.binding = 0;
 	vInputBindDescription.stride = (3 + 4 + 3 + 2) * sizeof(float);
 	vInputBindDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-	std::vector<VkVertexInputBindingDescription> vertexInputBindings = { vInputBindDescription };
+	std::vector<VkVertexInputBindingDescription> vertexInputBindings = {vInputBindDescription};
 	// 顶点属性描述
 	VkVertexInputAttributeDescription vInputAttribDescriptionPos{};
 	vInputAttribDescriptionPos.location = 0;
@@ -93,9 +90,9 @@ void GfxPipeline::_createPipeline()
 	vInputAttribDescriptionTexCoord.offset = sizeof(float) * (3 + 4 + 3);
 
 	std::vector<VkVertexInputAttributeDescription> vertexInputAttributes = {
-		vInputAttribDescriptionPos,      /* // Position */
-		vInputAttribDescriptionColor,   /*  // Color */
-		vInputAttribDescriptionNormal,   /* // Normal */
+		vInputAttribDescriptionPos,		 /* // Position */
+		vInputAttribDescriptionColor,	 /*  // Color */
+		vInputAttribDescriptionNormal,	 /* // Normal */
 		vInputAttribDescriptionTexCoord, /* // TexCoord */
 	};
 
@@ -111,9 +108,9 @@ void GfxPipeline::_createPipeline()
 	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
 
-	 // 第三步：视口和裁剪
-	 // 视口是输出渲染结果的帧缓冲区域，一般情况下是(0,0)到(width,height)
-	 // 视口将要显示的是交换链中的图像，所以尺寸应该与交换链中图像代销保持一致 
+	// 第三步：视口和裁剪
+	// 视口是输出渲染结果的帧缓冲区域，一般情况下是(0,0)到(width,height)
+	// 视口将要显示的是交换链中的图像，所以尺寸应该与交换链中图像代销保持一致
 	VkViewport viewport{};
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
@@ -122,9 +119,9 @@ void GfxPipeline::_createPipeline()
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
-	 // 裁剪定义哪一块区域的像素实际被存储在帧缓存中。任何位于裁剪范围之外都会被光栅化丢弃
+	// 裁剪定义哪一块区域的像素实际被存储在帧缓存中。任何位于裁剪范围之外都会被光栅化丢弃
 	VkRect2D scissor{};
-	scissor.offset = { 0, 0 };
+	scissor.offset = {0, 0};
 	scissor.extent = this->_context->getSwapChainExtent();
 
 	VkPipelineViewportStateCreateInfo viewportState{};
@@ -136,14 +133,15 @@ void GfxPipeline::_createPipeline()
 
 	// ==================== 关键修改：启用动态视口和裁剪 ====================
 	// 定义动态状态（视口和裁剪区域将在命令缓冲区中动态设置）
-	// std::vector<VkDynamicState> dynamicStates = {
-	//     VK_DYNAMIC_STATE_VIEWPORT,
-	//     VK_DYNAMIC_STATE_SCISSOR // 启用动态裁剪
-	// };
-	// VkPipelineDynamicStateCreateInfo dynamicState{};
-	// dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-	// dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
-	// dynamicState.pDynamicStates = dynamicStates.data();
+	std::vector<VkDynamicState> dynamicStates = {
+	    // VK_DYNAMIC_STATE_VIEWPORT,
+	    // VK_DYNAMIC_STATE_SCISSOR // 启用动态裁剪
+		VK_DYNAMIC_STATE_STENCIL_REFERENCE
+	};
+	VkPipelineDynamicStateCreateInfo dynamicState{};
+	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+	dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+	dynamicState.pDynamicStates = dynamicStates.data();
 
 	// 视口和裁剪状态（现在只设置数量，具体值将在命令缓冲区中动态设置）
 	// VkPipelineViewportStateCreateInfo viewportState{};
@@ -151,13 +149,13 @@ void GfxPipeline::_createPipeline()
 	// viewportState.viewportCount = 1; // 使用动态状态，这里只需要指定数量
 	// viewportState.scissorCount = 1;  // 使用动态状态，这里只需要指定数量
 	// 注意：pViewports 和 pScissors 设置为 nullptr，因为使用动态状态
-	// // ==================== 关键修改结束 ==================== 
+	// // ==================== 关键修改结束 ====================
 
 	/*  // 第四步：光栅化，将顶点构成的几何图元转换为片段，交由片段着色器着色 */
 	VkPipelineRasterizationStateCreateInfo rasterizer{};
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer.depthClampEnable = VK_FALSE;
-	rasterizer.rasterizerDiscardEnable = VK_FALSE;  
+	rasterizer.rasterizerDiscardEnable = VK_FALSE;
 	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 	rasterizer.lineWidth = 1.0f;
 	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT; // 背面剔除
@@ -167,8 +165,8 @@ void GfxPipeline::_createPipeline()
 	/* // 第五步：多重采样，减少边缘锯齿 */
 	VkPipelineMultisampleStateCreateInfo multisampling{};
 	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-	multisampling.sampleShadingEnable = VK_TRUE;    /*  // 可选：启用样本着色，用于更高质量的抗锯齿 */
-	multisampling.rasterizationSamples = MsaaSamples;/*  // <-- 使用之前获取的样本数 */
+	multisampling.sampleShadingEnable = MsaaSamples == VK_SAMPLE_COUNT_1_BIT ? VK_FALSE : VK_TRUE; /*  // 可选：启用样本着色，用于更高质量的抗锯齿 */
+	multisampling.rasterizationSamples = MsaaSamples;											   /*  // <-- 使用之前获取的样本数 */
 	multisampling.minSampleShading = 1.0f;
 	multisampling.pSampleMask = nullptr;
 	multisampling.alphaToCoverageEnable = VK_FALSE;
@@ -196,6 +194,8 @@ void GfxPipeline::_createPipeline()
 		depthStencil.depthWriteEnable = VK_FALSE; /* // 禁止写入深度 */
 	}
 	depthStencil.depthCompareOp = VK_COMPARE_OP_ALWAYS;
+
+
 	depthStencil.stencilTestEnable = VK_TRUE;
 	depthStencil.front.failOp = VK_STENCIL_OP_KEEP;
 	depthStencil.front.depthFailOp = VK_STENCIL_OP_KEEP;
@@ -212,7 +212,6 @@ void GfxPipeline::_createPipeline()
 	depthStencil.back.compareMask = 0xFF;
 	depthStencil.back.writeMask = 0xFF;
 	depthStencil.back.reference = 1;
-
 
 	/* // 第七步：颜色缓和，片段着色器返回的颜色需要和帧缓冲中对应像素的颜色进行混合 */
 	VkPipelineColorBlendAttachmentState colorBlendAttachment{};
@@ -233,8 +232,7 @@ void GfxPipeline::_createPipeline()
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 
 	std::vector<VkDescriptorSetLayout> setLayouts = {
-		this->_descriptorSetLayout
-	};
+		this->_descriptorSetLayout};
 	/* // 绑定描述符集
 	// 先获取描述符集布局 */
 	pipelineLayoutInfo.setLayoutCount = setLayouts.size();
@@ -264,7 +262,7 @@ void GfxPipeline::_createPipeline()
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
 	pipelineInfo.pViewportState = &viewportState;
-	// pipelineInfo.pDynamicState = &dynamicState;  // 关键：设置动态状态 
+	pipelineInfo.pDynamicState = &dynamicState;  // 关键：设置动态状态
 	pipelineInfo.pRasterizationState = &rasterizer;
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pColorBlendState = &colorBlending;
@@ -287,15 +285,14 @@ void GfxPipeline::_createPipeline()
 /**
  * 初始化着色器阶段
  */
-void GfxPipeline::_initShaderStage(std::vector<VkPipelineShaderStageCreateInfo>& shaderStages)
+void GfxPipeline::_initShaderStage(std::vector<VkPipelineShaderStageCreateInfo> &shaderStages)
 {
-	
 }
 
 /**
  * 初始化深度测试
  */
-void GfxPipeline::_initPipelineDepth(VkPipelineDepthStencilStateCreateInfo& depthStencil)
+void GfxPipeline::_initPipelineDepth(VkPipelineDepthStencilStateCreateInfo &depthStencil)
 {
 	/* // this->_Log("initPipelineDepth"); */
 
@@ -320,7 +317,7 @@ void GfxPipeline::_initPipelineDepth(VkPipelineDepthStencilStateCreateInfo& dept
 /**
  * 初始化颜色混合
  */
-void GfxPipeline::_initPipelineColorBlend(VkPipelineColorBlendAttachmentState& colorBlendAttachment)
+void GfxPipeline::_initPipelineColorBlend(VkPipelineColorBlendAttachmentState &colorBlendAttachment)
 {
 	this->_Log("initPipelineColorBlend");
 
@@ -376,7 +373,7 @@ void GfxPipeline::_createDescriptorSetLayout()
 	layoutInfo.pBindings = bindings.data();
 
 	if (vkCreateDescriptorSetLayout(this->_context->getVkDevice(),
-		&layoutInfo, nullptr, &this->_descriptorSetLayout) != VK_SUCCESS)
+									&layoutInfo, nullptr, &this->_descriptorSetLayout) != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to create object descriptor set layout!");
 	}

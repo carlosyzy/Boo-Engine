@@ -2,12 +2,28 @@
 #include "../../boo.h"
 #include "../assets/assets-manager.h"
 #include "../renderer/ui/ui-sprite.h"
+#include "../gfx/gfx-mgr.h"
 
 Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid), _logoAlphaNum(0.0f)
 {
 	this->_alphaDuration = 2.0f;
 	this->_logoAlphaNum = 0.0f;
 	this->_logoRatio = 0.35f;
+
+	// // 创建一个默认的ui pipeline
+    // std::string vert1 = std::filesystem::path("resources/shader/ui/ui.vert.spv").generic_string();
+    // std::string frag1 = std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string();
+    // std::string pipeline1 = "Blend:1|DepthTest:0|DepthWrite:0|DepthCompareOp:0|StencilTest:0|StencilModel:0|PolygonMode:0|CullMode:0|vert:" + vert1 + "|frag:" + frag1;
+    // GfxMgr::getInstance()->createPipeline("ui", pipeline1);
+
+
+	// // 模式ui 遮罩 模式为Fill 时 启用cullMode 为Back
+    // std::string vert = std::filesystem::path("resources/shader/ui/ui-mask.vert.spv").generic_string();
+    // std::string frag = std::filesystem::path("resources/shader/ui/ui-mask.frag.spv").generic_string();
+    // std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|DepthCompareOp:0|StencilTest:0|StencilModel:0|PolygonMode:0|CullMode:1|vert:" + vert + "|frag:" + frag;
+    // GfxMgr::getInstance()->createPipeline("ui-mask", pipeline);
+
+
 	this->_init();
 }
 

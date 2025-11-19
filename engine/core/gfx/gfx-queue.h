@@ -31,12 +31,9 @@ private:
     /* //命令缓冲区是用于记录和执行 GPU 命令的内存块。在 Vulkan 中，几乎所有渲染操作都需要通过命令缓冲区来执行。 */
     std::vector<VkCommandBuffer> _commandBuffers;
 
-    // GfxTexture *_colorMsaaTexture;
     GfxTexture *_colorTexture;
     GfxTexture *_depthTexture;
     void _createTextures();
-    // void _createColorTexture();
-    // void _createDepthTexture();
 
     /*  //更新帧缓冲区和命令缓冲区 */
     void _createBuffers();

@@ -51,7 +51,11 @@ private:
 
 	void _Log(std::string msg);
 
+	/**
+	 * @brief 初始化默认UI通道
+	 */
 	void _initDefaultUIPasses();
+	void _initDefaultUIPipeline();
 
 public:
 	GfxRenderer(GfxContext* context);

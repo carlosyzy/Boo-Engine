@@ -19,6 +19,7 @@ void GfxRenderer::init()
     std::cout << "GfxRenderer:init" << std::endl;
     GfxShaderCompile::getInstance()->init();
     this->_initDefaultUIPasses();
+    this->_initDefaultUIPipeline();
 }
 void GfxRenderer::_initDefaultUIPasses()
 {
@@ -26,8 +27,7 @@ void GfxRenderer::_initDefaultUIPasses()
     // 创建一个默认的ui pass
     GfxPassStruct uiPassStruct = {};
     uiPassStruct.attachmentCount = 2;
-    uiPassStruct.msaa=false;
-    uiPassStruct.offscreen=false;
+    uiPassStruct.canMSAA = false;
 
     uiPassStruct.colorAttachment.enable = true;
     uiPassStruct.colorAttachment.attachment = 0;
@@ -54,6 +54,20 @@ void GfxRenderer::_initDefaultUIPasses()
     uiPassStruct.depthAttachment.refLayout = GfxPassAttachmentLayout::Depth;
 
     this->createRenderPass("ui", uiPassStruct);
+}
+
+void GfxRenderer::_initDefaultUIPipeline()
+{
+    // 创建一个默认的ui pipeline
+    // std::string vert = std::filesystem::path("resources/shader/ui/ui.vert.spv").generic_string();
+    // std::string frag = std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string();
+    // std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|DepthCompareOp:0|StencilTest:0|StencilModel:0|PolygonMode:0|CullMode:0|vert:" + vert + "|frag:" + frag;
+    // this->createPipeline("ui", pipeline);
+    // // 模式ui 遮罩 模式为Fill 时 启用cullMode 为Back
+    // std::string vert = std::filesystem::path("resources/shader/ui/ui-mask.vert.spv").generic_string();
+    // std::string frag = std::filesystem::path("resources/shader/ui/ui-mask.frag.spv").generic_string();
+    // std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|DepthCompareOp:0|StencilTest:0|StencilModel:0|PolygonMode:0|CullMode:1|vert:" + vert + "|frag:" + frag;
+    // this->createPipeline("ui-mask", pipeline);
 }
 
 void GfxRenderer::createRenderPass(std::string name, GfxPassStruct passStruct)
@@ -98,6 +112,7 @@ void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)
             std::string key = token.substr(0, colon_pos);
             std::string value = token.substr(colon_pos + 1);
             properties[key] = value;
+            std::cout << "createPipeline:key: " << key << " value: " << value << std::endl;
         }
     }
     std::cout << "createPipeline:name: " << pipelineName << std::endl;
