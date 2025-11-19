@@ -7,7 +7,10 @@
 // 校验层
 const bool enableValidationLayers = true;
 std::vector<const char *> ValidationLayers = {"VK_LAYER_KHRONOS_validation"};
-std::vector<const char *> DeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+std::vector<const char *> DeviceExtensions = {
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME, // 交换链扩展
+    VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME // 扩展动态状态
+};
 
 GfxContext::GfxContext()
 {
@@ -25,6 +28,26 @@ void GfxContext::init()
     this->_createImageViews();
     this->_createSyncObjects();
     this->_createMsaaAttachmentTexture();
+
+
+    const std::vector<VkFormat> candidates = {
+        VK_FORMAT_D32_SFLOAT_S8_UINT,    // 32位深度 + 8位模板
+        VK_FORMAT_D24_UNORM_S8_UINT,     // 24位深度 + 8位模板
+        VK_FORMAT_D16_UNORM_S8_UINT,     // 16位深度 + 8位模板
+        VK_FORMAT_D32_SFLOAT,            // 只有深度（无模板）
+        VK_FORMAT_D16_UNORM              // 只有深度（无模板）
+    };
+    
+    for (VkFormat format : candidates) {
+        VkFormatProperties props;
+        vkGetPhysicalDeviceFormatProperties(this->_physicalDevice, format, &props);
+        
+        // 检查是否支持作为深度模板附件
+        if (props.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+            std::cout << "Found supported depth stencil format: " << format << std::endl;
+        }
+    }
+
 }
 void GfxContext::_createInstance()
 {

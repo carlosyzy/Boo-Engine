@@ -81,8 +81,9 @@ struct GfxPassAttachment
 	bool enable = false;
 	/**
 	 * 0: 附件格式 表示和 swapchain 一致
-	 * 1: VK_FORMAT_D24_UNORM_S8_UINT	 24位深度,8位模版
-	 * 2: VK_FORMAT_D32_SFLOAT   32位深度 无模版
+	 * 1: VK_FORMAT_D32_SFLOAT   32位深度 无模版
+	 * 2: VK_FORMAT_D24_UNORM_S8_UINT	 24位深度,8位模版
+	 * 3: VK_FORMAT_D32_SFLOAT_S8_UINT  32位深度,8位模版
 	 */
 	uint32_t format = 0;
 	VkSampleCountFlagBits samples;

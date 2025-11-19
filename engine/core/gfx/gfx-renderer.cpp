@@ -43,7 +43,7 @@ void GfxRenderer::_initDefaultUIPasses()
 
     uiPassStruct.depthAttachment.enable = true;
     uiPassStruct.depthAttachment.attachment = 1;
-    uiPassStruct.depthAttachment.format = 1; // VK_FORMAT_D24_UNORM_S8_UINT;
+    uiPassStruct.depthAttachment.format = 3; // VK_FORMAT_D32_UNORM_S8_UINT;
     uiPassStruct.depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
     uiPassStruct.depthAttachment.loadOp = GfxPassAttachmentLoadOp::Clear;
     uiPassStruct.depthAttachment.storeOp = GfxPassAttachmentStoreOp::DontCare;

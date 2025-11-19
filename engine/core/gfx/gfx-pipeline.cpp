@@ -147,9 +147,7 @@ void GfxPipeline::_createPipeline()
 	std::vector<VkDynamicState> dynamicStates = {
 		// VK_DYNAMIC_STATE_VIEWPORT,
 		// VK_DYNAMIC_STATE_SCISSOR // 启用动态裁剪
-		VK_DYNAMIC_STATE_STENCIL_OP, //必须：用于 vkCmdSetStencilOp
-		VK_DYNAMIC_STATE_STENCIL_REFERENCE //必须：用于 vkCmdSetStencilReference
-	};
+		VK_DYNAMIC_STATE_STENCIL_REFERENCE};
 	VkPipelineDynamicStateCreateInfo dynamicState{};
 	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 	dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
@@ -210,7 +208,7 @@ void GfxPipeline::_createPipeline()
 		depthStencil.back.compareMask = 0xFF;
 		depthStencil.back.writeMask = 0xFF;
 		depthStencil.back.reference = 1;
-		std::cout<<this->_name<<" pipeline depthStencil"<<std::endl;
+		std::cout << this->_name << " pipeline depthStencil" << std::endl;
 	}
 
 	/* // 第七步：颜色缓和，片段着色器返回的颜色需要和帧缓冲中对应像素的颜色进行混合 */

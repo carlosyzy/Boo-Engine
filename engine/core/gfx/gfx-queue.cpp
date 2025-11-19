@@ -34,7 +34,9 @@ void GfxQueue::_createTextures()
     // 创建深度纹理
     if (passStruct.depthAttachment.enable)
     {
+        
         VkFormat depthFormat = this->_pass->getAttachmentFormat(passStruct.depthAttachment.format);
+        std::cout << "depthAttachment.format: " << passStruct.depthAttachment.format << " depthFormat: " << depthFormat << std::endl;
         this->_depthTexture = new GfxTexture(this->_context);
         this->_depthTexture->createImage(width, height, depthFormat, VK_IMAGE_TILING_OPTIMAL,
                                          VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,

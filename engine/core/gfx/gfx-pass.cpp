@@ -27,7 +27,7 @@ void GfxPass::_createVkRenderPass()
     if (this->_gfxPassStruct.colorAttachment.enable)
     {
         uint32_t attachment = this->_gfxPassStruct.colorAttachment.attachment;
-        attachments[attachment].format = this->getAttachmentFormat(this->_gfxPassStruct.colorAttachment.attachment);
+        attachments[attachment].format = this->getAttachmentFormat(this->_gfxPassStruct.colorAttachment.format);
         attachments[attachment].samples = this->_gfxPassStruct.colorAttachment.samples;
         attachments[attachment].loadOp = this->getAttachmentLoadOp(this->_gfxPassStruct.colorAttachment.loadOp);
         attachments[attachment].storeOp = this->getAttachmentStoreOp(this->_gfxPassStruct.colorAttachment.storeOp);
@@ -37,7 +37,7 @@ void GfxPass::_createVkRenderPass()
         attachments[attachment].finalLayout = this->getAttachmentLayout(this->_gfxPassStruct.colorAttachment.finalLayout);
 
         colorAttachmentRef.attachment = attachment;
-        colorAttachmentRef.layout = this->getAttachmentLayout(this->_gfxPassStruct.colorAttachment.finalLayout);
+        colorAttachmentRef.layout = this->getAttachmentLayout(this->_gfxPassStruct.colorAttachment.refLayout);
         subpass.pColorAttachments = &colorAttachmentRef;
     }
     // 解析附件
@@ -45,7 +45,7 @@ void GfxPass::_createVkRenderPass()
     if (this->_gfxPassStruct.resolveAttachment.enable)
     {
         uint32_t attachment = this->_gfxPassStruct.resolveAttachment.attachment;
-        attachments[attachment].format = this->getAttachmentFormat(this->_gfxPassStruct.resolveAttachment.attachment);
+        attachments[attachment].format = this->getAttachmentFormat(this->_gfxPassStruct.resolveAttachment.format);
         attachments[attachment].samples = this->_gfxPassStruct.resolveAttachment.samples;
         attachments[attachment].loadOp = this->getAttachmentLoadOp(this->_gfxPassStruct.resolveAttachment.loadOp);
         attachments[attachment].storeOp = this->getAttachmentStoreOp(this->_gfxPassStruct.resolveAttachment.storeOp);
@@ -54,7 +54,7 @@ void GfxPass::_createVkRenderPass()
         attachments[attachment].initialLayout = this->getAttachmentLayout(this->_gfxPassStruct.resolveAttachment.initialLayout);
         attachments[attachment].finalLayout = this->getAttachmentLayout(this->_gfxPassStruct.resolveAttachment.finalLayout);
         resolveAttachmentRef.attachment = attachment;
-        resolveAttachmentRef.layout = this->getAttachmentLayout(this->_gfxPassStruct.resolveAttachment.finalLayout);
+        resolveAttachmentRef.layout = this->getAttachmentLayout(this->_gfxPassStruct.resolveAttachment.refLayout);
         subpass.pResolveAttachments = &resolveAttachmentRef;
     }
     // 深度附件
@@ -62,7 +62,7 @@ void GfxPass::_createVkRenderPass()
     if (this->_gfxPassStruct.depthAttachment.enable)
     {
         uint32_t attachment = this->_gfxPassStruct.depthAttachment.attachment;
-        attachments[attachment].format = this->getAttachmentFormat(this->_gfxPassStruct.depthAttachment.attachment);
+        attachments[attachment].format = this->getAttachmentFormat(this->_gfxPassStruct.depthAttachment.format);
         attachments[attachment].samples = this->_gfxPassStruct.depthAttachment.samples;
         attachments[attachment].loadOp = this->getAttachmentLoadOp(this->_gfxPassStruct.depthAttachment.loadOp);
         attachments[attachment].storeOp = this->getAttachmentStoreOp(this->_gfxPassStruct.depthAttachment.storeOp);
@@ -71,7 +71,7 @@ void GfxPass::_createVkRenderPass()
         attachments[attachment].initialLayout = this->getAttachmentLayout(this->_gfxPassStruct.depthAttachment.initialLayout);
         attachments[attachment].finalLayout = this->getAttachmentLayout(this->_gfxPassStruct.depthAttachment.finalLayout);
         depthAttachmentRef.attachment = attachment;
-        depthAttachmentRef.layout = this->getAttachmentLayout(this->_gfxPassStruct.depthAttachment.finalLayout);
+        depthAttachmentRef.layout = this->getAttachmentLayout(this->_gfxPassStruct.depthAttachment.refLayout);
         subpass.pDepthStencilAttachment = &depthAttachmentRef;
     }
 
@@ -111,7 +111,15 @@ VkFormat GfxPass::getAttachmentFormat(uint32_t attachment)
     }
     else if (attachment == 1)
     {
+        return VK_FORMAT_D32_SFLOAT;
+    }
+    else if (attachment == 2)
+    {
         return VK_FORMAT_D24_UNORM_S8_UINT;
+    }
+    else if (attachment == 3)
+    {
+        return VK_FORMAT_D32_SFLOAT_S8_UINT;
     }
     return VK_FORMAT_UNDEFINED;
 }
