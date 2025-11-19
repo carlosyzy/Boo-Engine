@@ -26,11 +26,14 @@ void GfxRenderer::_initDefaultUIPasses()
     // 创建一个默认的ui pass
     GfxPassStruct uiPassStruct = {};
     uiPassStruct.attachmentCount = 2;
+    uiPassStruct.msaa=false;
+    uiPassStruct.offscreen=false;
+
     uiPassStruct.colorAttachment.enable = true;
     uiPassStruct.colorAttachment.attachment = 0;
-    uiPassStruct.colorAttachment.format = this->_context->getSwapChainImageFormat();
+    uiPassStruct.colorAttachment.format = 0; // 保持和swapchain 一致// this->_context->getSwapChainImageFormat();
     uiPassStruct.colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-    uiPassStruct.colorAttachment.loadOp = GfxPassAttachmentLoadOp::Clear;  //后续有3d 后 会改为Load
+    uiPassStruct.colorAttachment.loadOp = GfxPassAttachmentLoadOp::Clear; // 后续有3d 后 会改为Load
     uiPassStruct.colorAttachment.storeOp = GfxPassAttachmentStoreOp::Store;
     uiPassStruct.colorAttachment.stencilLoadOp = GfxPassAttachmentLoadOp::DontCare;
     uiPassStruct.colorAttachment.stencilStoreOp = GfxPassAttachmentStoreOp::DontCare;
@@ -40,7 +43,7 @@ void GfxRenderer::_initDefaultUIPasses()
 
     uiPassStruct.depthAttachment.enable = true;
     uiPassStruct.depthAttachment.attachment = 1;
-    uiPassStruct.depthAttachment.format = VK_FORMAT_D24_UNORM_S8_UINT;
+    uiPassStruct.depthAttachment.format = 1; // VK_FORMAT_D24_UNORM_S8_UINT;
     uiPassStruct.depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
     uiPassStruct.depthAttachment.loadOp = GfxPassAttachmentLoadOp::Clear;
     uiPassStruct.depthAttachment.storeOp = GfxPassAttachmentStoreOp::DontCare;
@@ -49,7 +52,7 @@ void GfxRenderer::_initDefaultUIPasses()
     uiPassStruct.depthAttachment.initialLayout = GfxPassAttachmentLayout::Undefined;
     uiPassStruct.depthAttachment.finalLayout = GfxPassAttachmentLayout::Depth;
     uiPassStruct.depthAttachment.refLayout = GfxPassAttachmentLayout::Depth;
-   
+
     this->createRenderPass("ui", uiPassStruct);
 }
 
@@ -65,7 +68,9 @@ void GfxRenderer::createRenderPass(std::string name, GfxPassStruct passStruct)
     /*  // 创建对应的渲染队列 */
     if (this->_queues.find(name) == this->_queues.end())
     {
-        this->_queues[name] = new GfxQueue(this->_context, this->_passes[name]);
+        GfxQueue *queue = new GfxQueue(name, this->_context);
+        this->_queues[name] = queue;
+        queue->create(this->_passes[name]);
     }
 }
 void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)

@@ -24,80 +24,37 @@ public:
 	void clear();
 	void reset();
 
+	GfxPassStruct &getGfxPassStruct()
+	{
+		return this->_gfxPassStruct;
+	}
+
 	std::string name()
 	{
 		return this->_name;
 	}
+	VkFormat getAttachmentFormat(uint32_t attachment);
 	/**
 	 * @brief 获取附件的加载操作
 	 *
 	 * @param loadOp 加载操作类型
 	 * @return VkAttachmentLoadOp Vulkan 附件加载操作
 	 */
-	VkAttachmentLoadOp getAttachmentLoadOp(GfxPassAttachmentLoadOp loadOp)
-	{
-		if (loadOp == GfxPassAttachmentLoadOp::Load)
-		{
-			return VK_ATTACHMENT_LOAD_OP_LOAD;
-		}
-		else if (loadOp == GfxPassAttachmentLoadOp::Clear)
-		{
-			return VK_ATTACHMENT_LOAD_OP_CLEAR;
-		}
-		else if (loadOp == GfxPassAttachmentLoadOp::DontCare)
-		{
-			return VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		}
-		return VK_ATTACHMENT_LOAD_OP_CLEAR;
-	}
+	VkAttachmentLoadOp getAttachmentLoadOp(GfxPassAttachmentLoadOp loadOp);
 	/**
 	 * @brief 获取附件的存储操作
 	 *
 	 * @param storeOp 存储操作类型
 	 * @return VkAttachmentStoreOp Vulkan 附件存储操作
 	 */
-	VkAttachmentStoreOp getAttachmentStoreOp(GfxPassAttachmentStoreOp storeOp)
-	{
-		if (storeOp == GfxPassAttachmentStoreOp::Store)
-		{
-			return VK_ATTACHMENT_STORE_OP_STORE;
-		}
-		else if (storeOp == GfxPassAttachmentStoreOp::DontCare)
-		{
-			return VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		}
-		return VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	}
+	VkAttachmentStoreOp getAttachmentStoreOp(GfxPassAttachmentStoreOp storeOp);
 	/**
 	 * @brief 获取附件的布局类型
 	 *
 	 * @param finalLayout 最终布局类型
 	 * @return VkImageLayout Vulkan 附件最终布局
 	 */
-	VkImageLayout getAttachmentLayout(GfxPassAttachmentLayout layout)
-	{
-		if (layout == GfxPassAttachmentLayout::Undefined)
-		{
-			return VK_IMAGE_LAYOUT_UNDEFINED;
-		}
-		else if (layout == GfxPassAttachmentLayout::Color)
-		{
-			return VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-		}
-		else if (layout == GfxPassAttachmentLayout::Shader)
-		{
-			return VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		}
-		else if (layout == GfxPassAttachmentLayout::Depth)
-		{
-			return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-		}
-		else if (layout == GfxPassAttachmentLayout::Present)
-		{
-			return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-		}
-		return VK_IMAGE_LAYOUT_UNDEFINED;
-	}
+	VkImageLayout getAttachmentLayout(GfxPassAttachmentLayout layout);
 
 	VkRenderPass getVkRenderPass()
 	{
@@ -106,7 +63,6 @@ public:
 
 	~GfxPass();
 };
-
 
 // const std::unordered_map<std::string, int> GfxPassColorAttachmenloadOp = {
 // 	{"Load", 0},
@@ -229,4 +185,3 @@ public:
  * 		    initialLayout:VK_IMAGE_LAYOUT_UNDEFINED
  * 		    finalLayout:VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
  */
-

@@ -4,10 +4,15 @@
 #include "gfx-object.h"
 #include "gfx-pipeline.h"
 
-GfxQueue::GfxQueue(GfxContext *context, GfxPass *pass)
+GfxQueue::GfxQueue(std::string name, GfxContext *context)
 {
+    this->_name = name;
     this->_context = context;
+}
+void GfxQueue::create(GfxPass *pass)
+{
     this->_pass = pass;
+    
     this->_createBuffers();
 }
 /**
@@ -15,50 +20,93 @@ GfxQueue::GfxQueue(GfxContext *context, GfxPass *pass)
  */
 void GfxQueue::_createBuffers()
 {
+    this->_createTextures();
     this->_createFramebuffers();
     this->_createCommandBuffers();
 }
+
+void GfxQueue::_createTextures()
+{
+    float width = (float)this->_context->getSwapChainExtent().width;
+    float height = (float)this->_context->getSwapChainExtent().height;
+    GfxPassStruct &passStruct = this->_pass->getGfxPassStruct();
+
+    // 创建深度纹理
+    if (passStruct.depthAttachment.enable)
+    {
+        VkFormat depthFormat = this->_pass->getAttachmentFormat(passStruct.depthAttachment.format);
+        this->_depthTexture = new GfxTexture(this->_context);
+        this->_depthTexture->createImage(width, height, depthFormat, VK_IMAGE_TILING_OPTIMAL,
+                                         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, MsaaSamples);
+        this->_depthTexture->createImageView(depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+    }
+
+    // if (passStruct.msaa && passStruct.offscreen)
+    // {
+    //     VkFormat colorFormat = this->_pass->getAttachmentFormat(passStruct.colorAttachment.format);
+    //     this->_colorTexture = new GfxTexture(this->_context);
+    //     this->_colorTexture->createImage(width, height, colorFormat, VK_IMAGE_TILING_OPTIMAL,
+    //                                      VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+    //                                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, MsaaSamples);
+    //     this->_colorTexture->createImageView(colorFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+    // }
+    // else if (passStruct.offscreen)
+    // {
+    //     // VkFormat colorFormat = this->_pass->getAttachmentFormat(passStruct.colorAttachment.format);
+    //     // this->_colorTexture = new GfxTexture(this->_context);
+    //     // this->_colorTexture->createImage(width, height, colorFormat, VK_IMAGE_TILING_OPTIMAL,
+    //     //                                  VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+    //     //                                  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, MsaaSamples);
+    //     // std::cout << "this->_colorMsaaTexture createImage end" << std::endl;
+    //     // this->_colorTexture->createImageView(colorFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+    // }
+    // // if(passStruct.offscreen){
+    // // }
+    // // viewport.width = (float)this->_context->getSwapChainExtent().width;
+    // // viewport.height = (float)this->_context->getSwapChainExtent().height;
+    // // this->_colorTexture = new GfxTexture(this->_context);
+    // // this->_depthTexture = new GfxTexture(this->_context);
+}
+
 void GfxQueue::_createFramebuffers()
 {
-    this->_swapChainFramebuffers.clear();
+    this->_framebuffers.clear();
     std::vector<VkImageView> &swapChainImageViews = this->_context->getSwapChainImageViews();
-    this->_swapChainFramebuffers.resize(swapChainImageViews.size());
+    this->_framebuffers.resize(swapChainImageViews.size());
+    GfxPassStruct &passStruct = this->_pass->getGfxPassStruct();
+
     for (size_t i = 0; i < swapChainImageViews.size(); i++)
     {
+        std::vector<VkImageView> attachments = {};
+        attachments.push_back(swapChainImageViews[i]);
+        attachments.push_back(this->_depthTexture->getImageView());
         // 多重采样
         // std::array<VkImageView, 3> attachments = {
         //     this->_context->getColorMsaaTexture()->getImageView(),/*  // 多重采样颜色附件 */
         //     swapChainImageViews[i],                                /* // 解析附件（单采样，指向交换链图像） */
         //     this->_context->getDepthMsaaTexture()->getImageView() /*  // 多重采样深度附件 */
         // };
-        VkImageView attachments[] = {swapChainImageViews[i]};
-
         VkFramebufferCreateInfo framebufferInfo = {};
         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         framebufferInfo.renderPass = this->_pass->getVkRenderPass();
 
-        // 多重采样
-        // framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());   /* // 指定附着的个数 */
-        // framebufferInfo.pAttachments = attachments.data();                   /*  // 渲染流程对象用于描述附着信息的pAttachment数组 */
-
-        framebufferInfo.attachmentCount = 1;        // 指定附着的个数
-        framebufferInfo.pAttachments = attachments; // 渲染流程对象用于描述附着信息的pAttachment数组
-
+        framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());   /* // 指定附着的个数 */
+        framebufferInfo.pAttachments = attachments.data();                   /*  // 渲染流程对象用于描述附着信息的pAttachment数组 */
+        std::cout << "framebufferInfo.attachmentCount = " << framebufferInfo.attachmentCount << std::endl;
         framebufferInfo.width = this->_context->getSwapChainExtent().width;   /*  // width和height用于指定帧缓冲的大小 */
         framebufferInfo.height = this->_context->getSwapChainExtent().height; /* // 交换链图像都是单层，layers设置为1 */
         framebufferInfo.layers = 1;
-
-        if (vkCreateFramebuffer(this->_context->getVkDevice(), &framebufferInfo, nullptr, &this->_swapChainFramebuffers[i]) != VK_SUCCESS)
-
+        if (vkCreateFramebuffer(this->_context->getVkDevice(), &framebufferInfo, nullptr, &this->_framebuffers[i]) != VK_SUCCESS)
         {
             throw std::runtime_error("Failed to create framebuffer!");
         }
     }
-    /* // this->_Log("create framebuffers success..."); */
 }
+
 void GfxQueue::_createCommandBuffers()
 {
-    this->_commandBuffers.resize(this->_swapChainFramebuffers.size());
+    this->_commandBuffers.resize(this->_framebuffers.size());
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.commandPool = this->_context->getCommandPool();
@@ -140,7 +188,7 @@ void GfxQueue::_beginBindRenderPass(uint32_t imageIndex)
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassInfo.renderPass = this->_pass->getVkRenderPass();
-    renderPassInfo.framebuffer = this->_swapChainFramebuffers[imageIndex];
+    renderPassInfo.framebuffer = this->_framebuffers[imageIndex];
     renderPassInfo.renderArea.offset = {0, 0};
     renderPassInfo.renderArea.extent = this->_context->getSwapChainExtent();
 
@@ -153,7 +201,6 @@ void GfxQueue::_beginBindRenderPass(uint32_t imageIndex)
     clearValues[2].depthStencil = {1.0f, 0}; /* // 深度=1.0f，模板=0 */
     renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
     renderPassInfo.pClearValues = clearValues.data();
-
     /* // renderPassInfo.clearValueCount = 1;
     // VkClearValue clearColor{};
     // clearColor.color = {1.0f, 1.0f, 1.0f, 0.0f};
@@ -164,17 +211,26 @@ void GfxQueue::_beginBindRenderPass(uint32_t imageIndex)
 
 void GfxQueue::clear()
 {
+    this->_clearTextures();
     this->_cleanFramebuffers();
     this->_cleanCommandBuffers();
+}
+void GfxQueue::_clearTextures()
+{
+    if (this->_depthTexture != nullptr)
+    {
+       delete this->_depthTexture;
+       this->_depthTexture = nullptr;
+    }
 }
 void GfxQueue::_cleanFramebuffers()
 {
     /*  // 销毁帧缓冲（Framebuffers） */
-    for (auto framebuffer : this->_swapChainFramebuffers)
+    for (auto framebuffer : this->_framebuffers)
     {
         vkDestroyFramebuffer(this->_context->getVkDevice(), framebuffer, nullptr);
     }
-    this->_swapChainFramebuffers.clear();
+    this->_framebuffers.clear();
 }
 void GfxQueue::_cleanCommandBuffers()
 {

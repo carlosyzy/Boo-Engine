@@ -75,8 +75,16 @@ enum class GfxPassAttachmentLayout
  */
 struct GfxPassAttachment
 {
+	/**
+	 * 是否启用附件
+	 */
 	bool enable = false;
-	VkFormat format;
+	/**
+	 * 0: 附件格式 表示和 swapchain 一致
+	 * 1: VK_FORMAT_D24_UNORM_S8_UINT	 24位深度,8位模版
+	 * 2: VK_FORMAT_D32_SFLOAT   32位深度 无模版
+	 */
+	uint32_t format = 0;
 	VkSampleCountFlagBits samples;
 	GfxPassAttachmentLoadOp loadOp = GfxPassAttachmentLoadOp::Load;
 	GfxPassAttachmentStoreOp storeOp = GfxPassAttachmentStoreOp::Store;
@@ -88,10 +96,20 @@ struct GfxPassAttachment
 	uint32_t attachment = 0;
 	// VkClearColorValue clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
 	// VkClearDepthStencilValue clearDepthStencil = {1.0f, 0};
-
 };
 struct GfxPassStruct
 {
+	/**
+	 * 是否开启MSAA
+	 */
+	bool msaa = false;
+	/**
+	 * 是否离屏渲染
+	 */
+	bool offscreen = false;
+	/**
+	 * 附件数量
+	 */
 	uint32_t attachmentCount = 0;
 	/**
 	 * 颜色附件

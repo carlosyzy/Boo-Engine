@@ -10,31 +10,49 @@
 class GfxContext;
 class GfxObject;
 class GfxPass;
+class GfxTexture;
+struct GfxPassStruct;
 
 class GfxQueue
 {
 private:
+    std::string _name;
     GfxContext *_context;
     GfxPass *_pass;
+
+    // 渲染队列 ui统一在transparent队列
+    // 不透明队列
     std::vector<GfxObject *> _opaqueQueue;
+    // 透明队列
     std::vector<GfxObject *> _transparentQueue;
 
-
-   /*  //帧缓冲区:它连接了渲染通道（Render Pass） 和交换链图像（Swap Chain Images） */
-    std::vector<VkFramebuffer> _swapChainFramebuffers;
+    /*  //帧缓冲区:它连接了渲染通道（Render Pass） 和交换链图像（Swap Chain Images） */
+    std::vector<VkFramebuffer> _framebuffers;
     /* //命令缓冲区是用于记录和执行 GPU 命令的内存块。在 Vulkan 中，几乎所有渲染操作都需要通过命令缓冲区来执行。 */
     std::vector<VkCommandBuffer> _commandBuffers;
-   /*  //更新帧缓冲区和命令缓冲区 */
+
+    // GfxTexture *_colorMsaaTexture;
+    GfxTexture *_colorTexture;
+    GfxTexture *_depthTexture;
+    void _createTextures();
+    // void _createColorTexture();
+    // void _createDepthTexture();
+
+    /*  //更新帧缓冲区和命令缓冲区 */
     void _createBuffers();
     void _createFramebuffers();
     void _createCommandBuffers();
+
+    void _clearTextures();
     void _cleanFramebuffers();
     void _cleanCommandBuffers();
-    void _beginBindRenderPass(uint32_t imageIndex);
 
+    void _beginBindRenderPass(uint32_t imageIndex);
     void _Log(std::string msg);
+
 public:
-    GfxQueue(GfxContext *context,GfxPass *pass);
+    GfxQueue(std::string name, GfxContext *context);
+    void create(GfxPass *pass);
     /**
      * ui 渲染通道队列顶点输入
      */
