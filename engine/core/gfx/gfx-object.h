@@ -15,6 +15,7 @@ class GfxObject
 private:
     GfxContext *_context;
     GfxPipeline *_pipeline;
+    GfxPipeline *_pipelineMask;
     GfxPass *_pass;
     GfxTexture *_texture;
 
@@ -71,6 +72,7 @@ public:
     void setPass(GfxPass *pass);
     void setVertexs(std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices);
     void setPipeline(GfxPipeline *pipeline);
+    void setUIMaskPipeline(GfxPipeline *pipelineMask);
     void setColor(float r, float g, float b, float a);
     void setTexture(GfxTexture *texture);
     void setModelMatrix(std::array<float, 16> &mat);

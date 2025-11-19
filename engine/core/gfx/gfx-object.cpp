@@ -140,6 +140,10 @@ void GfxObject::setPipeline(GfxPipeline *pipeline)
     this->_pipeline = pipeline;
     this->_updateDescriptorSet();
 }
+void GfxObject::setUIMaskPipeline(GfxPipeline *pipelineMask)
+{
+    this->_pipelineMask = pipelineMask;
+}
 
 void GfxObject::setColor(float r, float g, float b, float a)
 {
@@ -331,6 +335,53 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
 
     if (!this->_pipeline || this->_vertexBuffer == VK_NULL_HANDLE || this->_indexBuffer == VK_NULL_HANDLE)
         return;
+
+    // 绑定UI遮罩渲染管线
+    // std::cout << "ui masks size: " <<  this->_pipelineMask<< std::endl;
+    vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipelineMask->getVKPipeline());
+    VkDeviceSize offsets1[1] = {0};
+    vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets1);
+    // // 为每个遮罩设置不同的 Stencil 引用值
+    uint32_t stencilRef = 1;
+    vkCmdSetStencilReference(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, stencilRef);
+    vkCmdSetStencilOp(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_BIT, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_INCREMENT_AND_WRAP, VK_COMPARE_OP_ALWAYS);
+    // 绘制多边形遮罩
+    std::vector<float> testRect = {
+        // 左下
+        100.0f, 100.0f, 0.0f, 1.0f,
+        // 右下
+        300.0f, 100.0f, 0.0f, 1.0f,
+        // 左上
+        100.0f, 300.0f, 0.0f, 1.0f,
+        // 右下
+        300.0f, 100.0f, 0.0f, 1.0f,
+        // 右上
+        300.0f, 300.0f, 0.0f, 1.0f,
+        // 左上
+        100.0f, 300.0f, 0.0f, 1.0f};
+    VkBuffer maskVertexBuffer;
+    VkDeviceMemory maskVertexMemory;
+    GfxMgr::getInstance()->createBuffer(
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+        &maskVertexBuffer,
+        &maskVertexMemory,
+        testRect.size() * sizeof(float), /* // 总字节数 */
+        testRect.data()                  /*  // 数据指针 */
+    );
+    vkCmdDraw(commandBuffers[imageIndex], static_cast<uint32_t>(testRect.size()), 1, 0, 0);
+    if (maskVertexBuffer != VK_NULL_HANDLE)
+    {
+        vkDestroyBuffer(this->_context->getVkDevice(), maskVertexBuffer, nullptr);
+        maskVertexBuffer = VK_NULL_HANDLE;
+    }
+    if (maskVertexMemory != VK_NULL_HANDLE)
+    {
+        vkFreeMemory(this->_context->getVkDevice(), maskVertexMemory, nullptr);
+        maskVertexMemory = VK_NULL_HANDLE;
+    }
+
+
     // std::cout << "render: "<< std::endl;
     /*  // 绑定渲染管线 */
     vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipeline());
@@ -431,3 +482,126 @@ void GfxObject::_Log(std::string msg)
 GfxObject::~GfxObject()
 {
 }
+
+// rivate:
+//     void applyUIMasks(VkCommandBuffer cmdBuffer, uint32_t imageIndex) {
+//         // 确保有可用的 Stencil Pipeline
+//         if (!this->_pipeline || !this->_pipeline->hasStencilMaskPipeline()) {
+//             return;
+//         }
+
+//         // 绑定 Stencil Write Pipeline
+//         vkCmdBindPipeline(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+//                          this->_pipeline->getStencilMaskPipeline());
+
+//         // 为每个遮罩设置不同的 Stencil 引用值
+//         uint32_t stencilRef = 1;
+
+//         for (auto& [maskId, mask] : this->_uiMasks) {
+//             if (mask.size() < 7) continue; // 需要至少7个参数: x,y,width,height,op,rotation,更多参数...
+
+//             // 设置 Stencil 引用值
+//             vkCmdSetStencilReference(cmdBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, stencilRef);
+
+//             // 根据遮罩操作类型设置不同的 Stencil 状态
+//             MaskOperation op = static_cast<MaskOperation>(static_cast<int>(mask[4]));
+//             setupStencilStateForOperation(cmdBuffer, op);
+
+//             // 创建遮罩几何体并绘制
+//             std::vector<Vertex> maskVertices = createMaskGeometry(mask);
+//             drawMaskGeometry(cmdBuffer, maskVertices);
+
+//             stencilRef++;
+//         }
+
+//         // 切换回正常的渲染 Pipeline（会在主render函数中重新绑定）
+//     }
+
+//     void setupStencilStateForOperation(VkCommandBuffer cmdBuffer, MaskOperation operation) {
+//         // 动态设置 Stencil 操作
+//         switch (operation) {
+//             case MaskOperation::ADD:
+//                 vkCmdSetStencilOp(cmdBuffer, VK_STENCIL_FACE_FRONT_AND_BACK,
+//                                  VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP,
+//                                  VK_STENCIL_OP_INCREMENT_AND_WRAP);
+//                 break;
+//             case MaskOperation::SUBTRACT:
+//                 vkCmdSetStencilOp(cmdBuffer, VK_STENCIL_FACE_FRONT_AND_BACK,
+//                                  VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP,
+//                                  VK_STENCIL_OP_DECREMENT_AND_WRAP);
+//                 break;
+//             case MaskOperation::REPLACE:
+//                 vkCmdSetStencilOp(cmdBuffer, VK_STENCIL_FACE_FRONT_AND_BACK,
+//                                  VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP,
+//                                  VK_STENCIL_OP_REPLACE);
+//                 break;
+//         }
+//     }
+
+//     std::vector<Vertex> createMaskGeometry(const std::vector<float>& mask) {
+//         std::vector<Vertex> vertices;
+
+//         if (mask.size() < 7) return vertices;
+
+//         float x = mask[0];
+//         float y = mask[1];
+//         float width = mask[2];
+//         float height = mask[3];
+//         float rotation = mask[5]; // 旋转角度
+
+//         // 创建矩形遮罩几何体（支持旋转）
+//         if (rotation == 0.0f) {
+//             // 无旋转的简单矩形
+//             vertices = {
+//                 {{x, y, 0.0f, 1.0f}},
+//                 {{x + width, y, 0.0f, 1.0f}},
+//                 {{x + width, y + height, 0.0f, 1.0f}},
+//                 {{x, y + height, 0.0f, 1.0f}}
+//             };
+//         } else {
+//             // 带旋转的矩形（需要计算旋转后的顶点）
+//             float centerX = x + width / 2.0f;
+//             float centerY = y + height / 2.0f;
+//             float cosR = cos(rotation);
+//             float sinR = sin(rotation);
+
+//             std::vector<glm::vec2> corners = {
+//                 {x - centerX, y - centerY},
+//                 {x + width - centerX, y - centerY},
+//                 {x + width - centerX, y + height - centerY},
+//                 {x - centerX, y + height - centerY}
+//             };
+
+//             for (auto& corner : corners) {
+//                 glm::vec2 rotated = {
+//                     corner.x * cosR - corner.y * sinR + centerX,
+//                     corner.x * sinR + corner.y * cosR + centerY
+//                 };
+//                 vertices.push_back({{rotated.x, rotated.y, 0.0f, 1.0f}});
+//             }
+//         }
+
+//         return vertices;
+//     }
+
+//     void drawMaskGeometry(VkCommandBuffer cmdBuffer, const std::vector<Vertex>& vertices) {
+//         if (vertices.size() < 3) return;
+
+//         // 创建临时顶点缓冲区（在实际项目中应该预分配）
+//         VkBuffer maskVertexBuffer;
+//         VkDeviceMemory maskVertexMemory;
+
+//         // 这里需要实现顶点缓冲区的创建和绑定
+//         // createTemporaryVertexBuffer(vertices, maskVertexBuffer, maskVertexMemory);
+
+//         // 绘制遮罩几何体（三角形列表）
+//         // vkCmdDraw(cmdBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+
+//         // 清理临时资源
+//         // destroyTemporaryVertexBuffer(maskVertexBuffer, maskVertexMemory);
+//     }
+
+//     void cleanupUIMasks(VkCommandBuffer cmdBuffer) {
+//         // 如果需要清理 Stencil Buffer，可以在这里执行清除操作
+//         // 或者依赖 RenderPass 的自动清除
+//     }

@@ -36,20 +36,36 @@ Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid)
 	uiPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
 	// 剔除模式 背面
 	uiPipelineStruct.cullMode = GfxPipelineCullMode::Back;
-
 	GfxMgr::getInstance()->createPipeline("ui.mtl", uiPipelineStruct);
 
-	// // 创建一个默认的ui pipeline
-	// std::string vert1 = std::filesystem::path("resources/shader/ui/ui.vert.spv").generic_string();
-	// std::string frag1 = std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string();
-	// std::string pipeline1 = "Blend:1|DepthTest:0|DepthWrite:0|DepthCompareOp:0|StencilTest:0|StencilModel:0|PolygonMode:0|CullMode:0|vert:" + vert1 + "|frag:" + frag1;
-	// GfxMgr::getInstance()->createPipeline("ui", pipeline1);
+	// 模式ui 遮罩 模式为Fill 时 启用cullMode 为Back
+	GfxPipelineStruct uiMaskPipelineStruct = {};
+	uiMaskPipelineStruct.name = "ui-mask";
+	uiMaskPipelineStruct.vert = std::filesystem::path("resources/shader/ui/ui-mask.vert.spv").generic_string();
+	uiMaskPipelineStruct.frag = std::filesystem::path("resources/shader/ui/ui-mask.frag.spv").generic_string();
+	uiMaskPipelineStruct.pass = "ui";
+	uiMaskPipelineStruct.depthTest = 0;
+	uiMaskPipelineStruct.depthWrite = 0;
+	uiMaskPipelineStruct.depthCompareOp = GfxPipelineCompareOp::Always;
+	// 模版测试 关闭
+	uiMaskPipelineStruct.stencilTest = 1;
+	//ui 遮罩,正面和背面保持一致
+	uiMaskPipelineStruct.stencilFrontCompareOp = GfxPipelineCompareOp::Always;
+	uiMaskPipelineStruct.stencilFrontFailOp = GfxPipelineStencilOp::Keep;
+	uiMaskPipelineStruct.stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep;
+	uiMaskPipelineStruct.stencilFrontPassOp = GfxPipelineStencilOp::Increment_Add;
+	uiMaskPipelineStruct.stencilBackCompareOp = GfxPipelineCompareOp::Always;
+	uiMaskPipelineStruct.stencilBackFailOp = GfxPipelineStencilOp::Keep;
+	uiMaskPipelineStruct.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
+	uiMaskPipelineStruct.stencilBackPassOp = GfxPipelineStencilOp::Increment_Add;// Decrement_Subtract;
 
-	// // 模式ui 遮罩 模式为Fill 时 启用cullMode 为Back
-	// std::string vert = std::filesystem::path("resources/shader/ui/ui-mask.vert.spv").generic_string();
-	// std::string frag = std::filesystem::path("resources/shader/ui/ui-mask.frag.spv").generic_string();
-	// std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|DepthCompareOp:0|StencilTest:0|StencilModel:0|PolygonMode:0|CullMode:1|vert:" + vert + "|frag:" + frag;
-	// GfxMgr::getInstance()->createPipeline("ui-mask", pipeline);
+	// 颜色混合 开启
+	uiMaskPipelineStruct.colorBlend = 0;
+	// 多边形模式 填充
+	uiMaskPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
+	// 剔除模式 背面
+	uiMaskPipelineStruct.cullMode = GfxPipelineCullMode::Back;
+	GfxMgr::getInstance()->createPipeline("ui-mask.mtl", uiMaskPipelineStruct);
 
 	this->_init();
 }

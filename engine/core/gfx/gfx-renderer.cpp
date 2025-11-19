@@ -336,8 +336,12 @@ void GfxRenderer::createObject(std::string id, std::string passName, std::vector
         this->_Log("createGfxObject:id already exists");
         return;
     }
-
     GfxObject *object = new GfxObject(this->_context);
+    if(this->_pipelines.find("ui-mask.mtl") == this->_pipelines.end()){
+        this->_Log("createGfxObject:ui-mask pipeline not found,Currently, creation is not supported");
+        return;
+    }
+    object->setUIMaskPipeline(this->_pipelines["ui-mask.mtl"]);
     object->setVertexs(points, colors, normals, uvs, indices);
     this->_objects[id] = object;
     this->_queues[passName]->submit(object);
