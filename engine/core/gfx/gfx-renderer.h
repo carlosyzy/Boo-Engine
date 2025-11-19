@@ -18,6 +18,7 @@ class GfxPass;
 struct GfxPassStruct;
 class GfxShader;
 class GfxPipeline;
+struct GfxPipelineStruct;
 class GfxQueue;
 class GfxObject;
 
@@ -70,6 +71,9 @@ public:
 	 */
 	void createRenderPass(std::string name, GfxPassStruct passStruct);
 	void createPipeline(std::string passName, std::string pipelineName);
+	void createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct);
+
+
 
 	/**
 	 * @brief 创建模型渲染对象

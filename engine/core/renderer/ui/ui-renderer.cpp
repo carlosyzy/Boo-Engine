@@ -42,11 +42,11 @@ void UIRenderer::setAlpha(float alpha)
 void UIRenderer::setMaterial(Material *mtl)
 {
 	this->_material = mtl;
-	std::string vert = std::filesystem::path("resources/shader/ui/ui.vert.spv").generic_string();
-	std::string frag = std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string();
-	std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + vert + "|frag:" + frag;
-	GfxMgr::getInstance()->createPipeline("ui", pipeline);
-	GfxMgr::getInstance()->setObjectPipeline(this->_uuid, pipeline);
+	// std::string vert = std::filesystem::path("resources/shader/ui/ui.vert.spv").generic_string();
+	// std::string frag = std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string();
+	// std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + vert + "|frag:" + frag;
+	// GfxMgr::getInstance()->createPipeline("ui", pipeline);
+	GfxMgr::getInstance()->setObjectPipeline(this->_uuid, "ui.mtl");
 }
 void UIRenderer::setTexture(Texture *texture)
 {
@@ -83,7 +83,7 @@ void UIRenderer::lateUpdate(float deltaTime)
 void UIRenderer::render()
 {
 	Component::render();
-	
+
 	if (!this->isEnabled())
 	{
 		return; // 组件未激活

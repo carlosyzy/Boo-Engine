@@ -4,6 +4,7 @@
 #include "gfx-pass.h"
 #include "gfx-pass-struct.h"
 #include "gfx-pipeline.h"
+#include "gfx-pipeline-struct.h"
 #include "gfx-shader.h"
 #include "gfx-queue.h"
 #include "gfx-object.h"
@@ -19,7 +20,6 @@ void GfxRenderer::init()
     std::cout << "GfxRenderer:init" << std::endl;
     GfxShaderCompile::getInstance()->init();
     this->_initDefaultUIPasses();
-    this->_initDefaultUIPipeline();
 }
 void GfxRenderer::_initDefaultUIPasses()
 {
@@ -54,20 +54,6 @@ void GfxRenderer::_initDefaultUIPasses()
     uiPassStruct.depthAttachment.refLayout = GfxPassAttachmentLayout::Depth;
 
     this->createRenderPass("ui", uiPassStruct);
-}
-
-void GfxRenderer::_initDefaultUIPipeline()
-{
-    // 创建一个默认的ui pipeline
-    // std::string vert = std::filesystem::path("resources/shader/ui/ui.vert.spv").generic_string();
-    // std::string frag = std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string();
-    // std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|DepthCompareOp:0|StencilTest:0|StencilModel:0|PolygonMode:0|CullMode:0|vert:" + vert + "|frag:" + frag;
-    // this->createPipeline("ui", pipeline);
-    // // 模式ui 遮罩 模式为Fill 时 启用cullMode 为Back
-    // std::string vert = std::filesystem::path("resources/shader/ui/ui-mask.vert.spv").generic_string();
-    // std::string frag = std::filesystem::path("resources/shader/ui/ui-mask.frag.spv").generic_string();
-    // std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|DepthCompareOp:0|StencilTest:0|StencilModel:0|PolygonMode:0|CullMode:1|vert:" + vert + "|frag:" + frag;
-    // this->createPipeline("ui-mask", pipeline);
 }
 
 void GfxRenderer::createRenderPass(std::string name, GfxPassStruct passStruct)
@@ -145,6 +131,79 @@ void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)
     /*  // 创建管线 */
     GfxPipeline *pipeline = new GfxPipeline(pipelineName, this->_context);
     pipeline->create(this->_passes[passName], this->_shaders[shaderVert], this->_shaders[shaderFrag], properties);
+    this->_pipelines[pipelineName] = pipeline;
+}
+
+void GfxRenderer::createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct)
+{
+
+    if (this->_shaders.find(pipelineStruct.vert) == this->_shaders.end())
+    {
+        std::cout << "createPipeline:vert not found:" << pipelineStruct.vert << std::endl;
+        return;
+    }
+    if (this->_shaders.find(pipelineStruct.frag) == this->_shaders.end())
+    {
+        std::cout << "createPipeline:frag not found:" << pipelineStruct.frag << std::endl;
+        return;
+    }
+    if (this->_passes.find(pipelineStruct.pass) == this->_passes.end())
+    {
+        std::cout << "createPipeline:pass not found:" << pipelineStruct.pass << std::endl;
+        return;
+    }
+    // // 更具GfxPipelineStruct结构调,定义出pipeline的唯一标识名字
+    // std::string pipelineName = pipelineStruct.name;
+    // pipelineName += "|Pass:" + pipelineStruct.pass + "|Vert:" + pipelineStruct.vert + "|Frag:" + pipelineStruct.frag;
+    // std::map<std::string, int> properties;
+    // properties["DepthTest"] = pipelineStruct.depthTest;
+    // properties["DepthWrite"] = pipelineStruct.depthWrite;
+    // properties["DepthCompareOp"] = static_cast<uint32_t>(pipelineStruct.depthCompareOp);
+    // // 模版测试 关闭
+    // properties["StencilTest"] = pipelineStruct.stencilTest;
+    // if (pipelineStruct.stencilTest != 0)
+    // {
+    //     properties["StencilFrontCompareOp"] = static_cast<uint32_t>(pipelineStruct.stencilFrontCompareOp);
+    //     properties["StencilFrontFailOp"] = static_cast<uint32_t>(pipelineStruct.stencilFrontFailOp);
+    //     properties["StencilFrontDepthFailOp"] = static_cast<uint32_t>(pipelineStruct.stencilFrontDepthFailOp);
+    //     properties["StencilFrontPassOp"] = static_cast<uint32_t>(pipelineStruct.stencilFrontPassOp);
+    //     properties["StencilFrontCompareMask"] = static_cast<uint32_t>(pipelineStruct.stencilFrontCompareMask);
+    //     properties["StencilFrontWriteMask"] = static_cast<uint32_t>(pipelineStruct.stencilFrontWriteMask);
+    //     properties["StencilFrontReference"] = static_cast<uint32_t>(pipelineStruct.stencilFrontRreference);
+    //     properties["StencilBackCompareOp"] = static_cast<uint32_t>(pipelineStruct.stencilBackCompareOp);
+    //     properties["StencilBackFailOp"] = static_cast<uint32_t>(pipelineStruct.stencilBackFailOp);
+    //     properties["StencilBackDepthFailOp"] = static_cast<uint32_t>(pipelineStruct.stencilBackDepthFailOp);
+    //     properties["StencilBackPassOp"] = static_cast<uint32_t>(pipelineStruct.stencilBackPassOp);
+    //     properties["StencilBackCompareMask"] = static_cast<uint32_t>(pipelineStruct.stencilBackCompareMask);
+    //     properties["StencilBackWriteMask"] = static_cast<uint32_t>(pipelineStruct.stencilBackWriteMask);
+    //     properties["StencilBackReference"] = static_cast<uint32_t>(pipelineStruct.stencilBackRreference);
+    // }
+    // // 颜色混合
+    // properties["ColorBlend"] = pipelineStruct.colorBlend;
+    // if (pipelineStruct.colorBlend != 0)
+    // {
+    //     properties["ColorBlendSrcFactor"] = static_cast<uint32_t>(pipelineStruct.srcColorBlendFactor);
+    //     properties["ColorBlendDstFactor"] = static_cast<uint32_t>(pipelineStruct.dstColorBlendFactor);
+    //     properties["ColorBlendOp"] = static_cast<uint32_t>(pipelineStruct.colorBlendOp);
+    //     properties["ColorBlendSrcAlphaFactor"] = static_cast<uint32_t>(pipelineStruct.srcAlphaBlendFactor);
+    //     properties["ColorBlendDstAlphaFactor"] = static_cast<uint32_t>(pipelineStruct.dstAlphaBlendFactor);
+    //     properties["ColorBlendAlphaOp"] = static_cast<uint32_t>(pipelineStruct.alphaBlendOp);
+    //     properties["ColorWriteMask"] = pipelineStruct.colorWriteMask;
+    // }
+    // // 多边形模式
+    // properties["PolygonMode"] = static_cast<uint32_t>(pipelineStruct.polygonMode);
+    // // 剔除模式
+    // properties["CullMode"] = static_cast<uint32_t>(pipelineStruct.cullMode);
+
+    // // 遍历map,将key和value添加到properties中
+    // for (auto &[key, value] : properties)
+    // {
+    //     pipelineName += "|" + key + ":" + std::to_string(value);
+    // }
+    // std::cout << "createPipeline:pipelineName: " << pipelineName << std::endl;
+    // ui|Vert:resources/shader/ui/ui.vert.spv|Fragresources/shader/ui/ui.frag.spv|ColorBlend:1|ColorBlendAlphaOp:0|ColorBlendDstAlphaFactor:6|ColorBlendDstFactor:6|ColorBlendOp:0|ColorBlendSrcAlphaFactor:0|ColorBlendSrcFactor:4|CullMode:2|DepthCompareOp:7|DepthTest:0|DepthWrite:0|PolygonMode:0|StencilTest:0|colorWriteMask:4
+    GfxPipeline *pipeline = new GfxPipeline(pipelineName, this->_context);
+    pipeline->create(this->_passes[pipelineStruct.pass], this->_shaders[pipelineStruct.vert], this->_shaders[pipelineStruct.frag], pipelineStruct);
     this->_pipelines[pipelineName] = pipeline;
 }
 

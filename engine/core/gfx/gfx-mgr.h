@@ -11,6 +11,9 @@
 class GfxContext;
 class GfxRenderer;
 struct GfxPassStruct;
+struct GfxPipelineStruct;
+
+
 
 class GfxMgr
 {
@@ -47,6 +50,7 @@ public:
 	 * 创建管线
 	 */
 	void createPipeline(std::string passName, std::string pipelineName);
+	void createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct);
 
 	/**
 	 * @brief 创建模型渲染对象

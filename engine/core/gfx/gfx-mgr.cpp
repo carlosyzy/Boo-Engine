@@ -8,6 +8,7 @@
 #include "gfx-renderer.h"
 #include "gfx-pass.h"
 #include "gfx-pass-struct.h"
+#include "gfx-pipeline-struct.h"
 #include "gfx-texture.h"
 #include "gfx-shader.h"
 #include "gfx-queue.h"
@@ -105,10 +106,16 @@ void GfxMgr::createRenderPass(std::string name, GfxPassStruct passStruct)
 {
     this->_renderer->createRenderPass(name, passStruct);
 }
+//旧的
 void GfxMgr::createPipeline(std::string passName, std::string pipelineName)
 {
     this->_renderer->createPipeline(passName, pipelineName);
 }
+void GfxMgr::createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct)
+{
+    this->_renderer->createPipeline(pipelineName, pipelineStruct);
+}
+
 void GfxMgr::createTexture(std::string texture, uint32_t width, uint32_t height, uint32_t channels, const std::vector<uint8_t> *pixels)
 {
     this->_renderer->createTexture(texture, width, height, channels, pixels);

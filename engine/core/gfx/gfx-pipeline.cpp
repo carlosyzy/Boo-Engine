@@ -1,4 +1,5 @@
 #include "gfx-pipeline.h"
+
 #include "gfx-pass.h"
 #include "gfx-shader.h"
 #include "gfx-mgr.h"
@@ -12,21 +13,31 @@ GfxPipeline::GfxPipeline(std::string name, GfxContext *context)
 void GfxPipeline::create(GfxPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, std::unordered_map<std::string, std::string> pipelineState)
 {
 
+	// this->_pass = pass;
+	// this->_vertexShader = vertexShader;
+	// this->_fragmentShader = fragmentShader;
+	// this->_pipelineState = pipelineState;
+	// this->_createDescriptorSetLayout();
+	// this->_createPipeline();
+}
+void GfxPipeline::create(GfxPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, GfxPipelineStruct pipelineStruct)
+{
 	this->_pass = pass;
 	this->_vertexShader = vertexShader;
 	this->_fragmentShader = fragmentShader;
-	this->_pipelineState = pipelineState;
+	this->_pipelineStruct = pipelineStruct;
 	this->_createDescriptorSetLayout();
 	this->_createPipeline();
 }
-bool GfxPipeline::isTransparent()
-{
-	return this->_pipelineState["Blend"] == "1";
-}
+
+// bool GfxPipeline::isTransparent()
+// {
+// 	return this->_pipelineState["Blend"] == "1";
+// }
 
 void GfxPipeline::_createPipeline()
 {
-	this->_Log("create graphics pipeline start...");
+	std::cout << "create graphics pipeline start..." << std::endl;
 	// 第一步：初始化着色器模块 */
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 	/**
@@ -134,10 +145,9 @@ void GfxPipeline::_createPipeline()
 	// ==================== 关键修改：启用动态视口和裁剪 ====================
 	// 定义动态状态（视口和裁剪区域将在命令缓冲区中动态设置）
 	std::vector<VkDynamicState> dynamicStates = {
-	    // VK_DYNAMIC_STATE_VIEWPORT,
-	    // VK_DYNAMIC_STATE_SCISSOR // 启用动态裁剪
-		VK_DYNAMIC_STATE_STENCIL_REFERENCE
-	};
+		// VK_DYNAMIC_STATE_VIEWPORT,
+		// VK_DYNAMIC_STATE_SCISSOR // 启用动态裁剪
+		VK_DYNAMIC_STATE_STENCIL_REFERENCE};
 	VkPipelineDynamicStateCreateInfo dynamicState{};
 	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 	dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
@@ -156,17 +166,17 @@ void GfxPipeline::_createPipeline()
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer.depthClampEnable = VK_FALSE;
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
-	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+	rasterizer.polygonMode = this->getPolygonMode(this->_pipelineStruct.polygonMode);
 	rasterizer.lineWidth = 1.0f;
-	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT; // 背面剔除
+	rasterizer.cullMode = this->getCullMode(this->_pipelineStruct.cullMode); // 背面剔除
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE; // 禁用深度偏移
 
 	/* // 第五步：多重采样，减少边缘锯齿 */
 	VkPipelineMultisampleStateCreateInfo multisampling{};
 	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-	multisampling.sampleShadingEnable = MsaaSamples == VK_SAMPLE_COUNT_1_BIT ? VK_FALSE : VK_TRUE; /*  // 可选：启用样本着色，用于更高质量的抗锯齿 */
-	multisampling.rasterizationSamples = MsaaSamples;											   /*  // <-- 使用之前获取的样本数 */
+	multisampling.sampleShadingEnable = VK_FALSE;				// MsaaSamples == VK_SAMPLE_COUNT_1_BIT ? VK_FALSE : VK_TRUE; /*  // 可选：启用样本着色，用于更高质量的抗锯齿 */
+	multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT; // MsaaSamples;											   /*  // <-- 使用之前获取的样本数 */
 	multisampling.minSampleShading = 1.0f;
 	multisampling.pSampleMask = nullptr;
 	multisampling.alphaToCoverageEnable = VK_FALSE;
@@ -177,56 +187,53 @@ void GfxPipeline::_createPipeline()
 	// 2d 暂时这么处理，后边需要动态的设置 */
 	VkPipelineDepthStencilStateCreateInfo depthStencil{};
 	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-	if (this->_pipelineState.find("DepthTest") != this->_pipelineState.end() && this->_pipelineState["DepthTest"] == "1")
-	{
-		depthStencil.depthTestEnable = VK_TRUE; /* // 禁用深度测试 */
-	}
-	else
-	{
-		depthStencil.depthTestEnable = VK_FALSE; /* // 禁止写入深度 */
-	}
-	if (this->_pipelineState.find("DepthWrite") != this->_pipelineState.end() && this->_pipelineState["DepthWrite"] == "1")
-	{
-		depthStencil.depthWriteEnable = VK_TRUE; /* // 禁用深度测试 */
-	}
-	else
-	{
-		depthStencil.depthWriteEnable = VK_FALSE; /* // 禁止写入深度 */
-	}
-	depthStencil.depthCompareOp = VK_COMPARE_OP_ALWAYS;
+	depthStencil.depthTestEnable = this->_pipelineStruct.depthTest != 0 ? VK_TRUE : VK_FALSE;	/* // 禁用深度测试 */
+	depthStencil.depthWriteEnable = this->_pipelineStruct.depthWrite != 0 ? VK_TRUE : VK_FALSE; /* // 禁止写入深度 */
+	depthStencil.depthCompareOp = this->getCompareOp(this->_pipelineStruct.depthCompareOp);
 
-
-	depthStencil.stencilTestEnable = VK_TRUE;
-	depthStencil.front.failOp = VK_STENCIL_OP_KEEP;
-	depthStencil.front.depthFailOp = VK_STENCIL_OP_KEEP;
-	depthStencil.front.passOp = VK_STENCIL_OP_INCREMENT_AND_WRAP;
-	depthStencil.front.compareOp = VK_COMPARE_OP_ALWAYS;
-	depthStencil.front.compareMask = 0xFF;
-	depthStencil.front.writeMask = 0xFF;
-	depthStencil.front.reference = 1;
-
-	depthStencil.back.failOp = VK_STENCIL_OP_KEEP;
-	depthStencil.back.depthFailOp = VK_STENCIL_OP_KEEP;
-	depthStencil.back.passOp = VK_STENCIL_OP_DECREMENT_AND_WRAP;
-	depthStencil.back.compareOp = VK_COMPARE_OP_ALWAYS;
-	depthStencil.back.compareMask = 0xFF;
-	depthStencil.back.writeMask = 0xFF;
-	depthStencil.back.reference = 1;
+	depthStencil.stencilTestEnable = this->_pipelineStruct.stencilTest != 0 ? VK_TRUE : VK_FALSE;
+	if (this->_pipelineStruct.stencilTest != 0)
+	{
+		depthStencil.front.failOp = this->getStencilOp(this->_pipelineStruct.stencilFrontFailOp);
+		depthStencil.front.depthFailOp = this->getStencilOp(this->_pipelineStruct.stencilFrontDepthFailOp);
+		depthStencil.front.passOp = this->getStencilOp(this->_pipelineStruct.stencilFrontPassOp);
+		depthStencil.front.compareOp = this->getCompareOp(this->_pipelineStruct.stencilFrontCompareOp);
+		depthStencil.front.compareMask = 0xFF; // 比较所有位
+		depthStencil.front.writeMask = 0xFF;   // 写入所有位
+		depthStencil.front.reference = 1;	   // 参考值（会被动态覆盖）
+		depthStencil.back.failOp = this->getStencilOp(this->_pipelineStruct.stencilBackFailOp);
+		depthStencil.back.depthFailOp = this->getStencilOp(this->_pipelineStruct.stencilBackDepthFailOp);
+		depthStencil.back.passOp = this->getStencilOp(this->_pipelineStruct.stencilBackPassOp);
+		depthStencil.back.compareOp = this->getCompareOp(this->_pipelineStruct.stencilBackCompareOp);
+		depthStencil.back.compareMask = 0xFF;
+		depthStencil.back.writeMask = 0xFF;
+		depthStencil.back.reference = 1;
+	}
 
 	/* // 第七步：颜色缓和，片段着色器返回的颜色需要和帧缓冲中对应像素的颜色进行混合 */
 	VkPipelineColorBlendAttachmentState colorBlendAttachment{};
-	this->_initPipelineColorBlend(colorBlendAttachment);
+	colorBlendAttachment.blendEnable = this->_pipelineStruct.colorBlend != 0 ? VK_TRUE : VK_FALSE;
+	if (this->_pipelineStruct.colorBlend != 0)
+	{
+		colorBlendAttachment.srcColorBlendFactor = this->getBlendFactor(this->_pipelineStruct.srcColorBlendFactor); // VK_BLEND_FACTOR_ONE;
+		colorBlendAttachment.dstColorBlendFactor = this->getBlendFactor(this->_pipelineStruct.dstColorBlendFactor); // VK_BLEND_FACTOR_ZERO;
+		colorBlendAttachment.colorBlendOp = this->getBlendOp(this->_pipelineStruct.colorBlendOp);					// VK_BLEND_OP_ADD;
+		colorBlendAttachment.srcAlphaBlendFactor = this->getBlendFactor(this->_pipelineStruct.srcAlphaBlendFactor); // VK_BLEND_FACTOR_ONE;
+		colorBlendAttachment.dstAlphaBlendFactor = this->getBlendFactor(this->_pipelineStruct.dstAlphaBlendFactor); // VK_BLEND_FACTOR_ZERO;
+		colorBlendAttachment.alphaBlendOp = this->getBlendOp(this->_pipelineStruct.alphaBlendOp);					// VK_BLEND_OP_ADD;
+		colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+	}
 
 	VkPipelineColorBlendStateCreateInfo colorBlending{};
 	colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 	colorBlending.logicOpEnable = VK_FALSE;
 	colorBlending.attachmentCount = 1;
 	colorBlending.pAttachments = &colorBlendAttachment;
-	/*   // colorBlending.logicOp = VK_LOGIC_OP_COPY;
-	  // colorBlending.blendConstants[0] = 0.0f;
-	  // colorBlending.blendConstants[1] = 0.0f;
-	  // colorBlending.blendConstants[2] = 0.0f;
-	  // colorBlending.blendConstants[3] = 0.0f; */
+	colorBlending.logicOp = VK_LOGIC_OP_COPY;
+	colorBlending.blendConstants[0] = 0.0f;
+	colorBlending.blendConstants[1] = 0.0f;
+	colorBlending.blendConstants[2] = 0.0f;
+	colorBlending.blendConstants[3] = 0.0f;
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -247,13 +254,13 @@ void GfxPipeline::_createPipeline()
 	pipelineLayoutInfo.pushConstantRangeCount = 1;
 	pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
-	this->_Log("create graphics pipeline : start bind 1111...");
 	/*  // 第八步：管线布局， */
 	if (vkCreatePipelineLayout(this->_context->getVkDevice(), &pipelineLayoutInfo, nullptr, &this->_vkPipelineLayout) != VK_SUCCESS)
 	{
-		throw std::runtime_error("failed to create pipeline layout!");
+		// throw std::runtime_error("failed to create pipeline layout!");
+		std::cout << "failed to create pipeline layout!" << std::endl;
+		return;
 	}
-	this->_Log("create graphics pipeline : pipelineLayout ok...");
 
 	VkGraphicsPipelineCreateInfo pipelineInfo{};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -262,91 +269,90 @@ void GfxPipeline::_createPipeline()
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
 	pipelineInfo.pViewportState = &viewportState;
-	pipelineInfo.pDynamicState = &dynamicState;  // 关键：设置动态状态
+	pipelineInfo.pDynamicState = &dynamicState; // 关键：设置动态状态
 	pipelineInfo.pRasterizationState = &rasterizer;
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDepthStencilState = &depthStencil;
 	pipelineInfo.layout = this->_vkPipelineLayout;
-	this->_Log("create graphics pipeline : start bind pass0...");
 	pipelineInfo.renderPass = this->_pass->getVkRenderPass();
-	this->_Log("create graphics pipeline : start bind pass1...");
 
 	pipelineInfo.subpass = 0;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-	this->_Log("create graphics pipeline : start bind pass2...");
 	if (vkCreateGraphicsPipelines(this->_context->getVkDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &this->_vkPipeline) != VK_SUCCESS)
 	{
-		throw std::runtime_error("Failed to create graphics pipeline!");
+		// throw std::runtime_error("Failed to create graphics pipeline!");
+		std::cout << "failed to create graphics pipeline!" << std::endl;
+		return;
 	}
-	this->_Log("create graphics pipeline success...");
+	std::cout << "create graphics pipeline " << this->_name << " success!" << std::endl;
 }
-/**
- * 初始化着色器阶段
- */
-void GfxPipeline::_initShaderStage(std::vector<VkPipelineShaderStageCreateInfo> &shaderStages)
-{
-}
+// /**
+//  * 初始化着色器阶段
+//  */
+// void GfxPipeline::_initShaderStage(std::vector<VkPipelineShaderStageCreateInfo> &shaderStages)
+// {
+// }
 
-/**
- * 初始化深度测试
- */
-void GfxPipeline::_initPipelineDepth(VkPipelineDepthStencilStateCreateInfo &depthStencil)
-{
-	/* // this->_Log("initPipelineDepth"); */
+// /**
+//  * 初始化深度测试
+//  */
+// void GfxPipeline::_initPipelineDepth(VkPipelineDepthStencilStateCreateInfo &depthStencil)
+// {
+// 	/* // this->_Log("initPipelineDepth"); */
 
-	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-	if (this->_pipelineState.find("DepthTest") != this->_pipelineState.end() && this->_pipelineState["DepthTest"] == "1")
-	{
-		depthStencil.depthTestEnable = VK_TRUE; /* // 禁用深度测试 */
-	}
-	else
-	{
-		depthStencil.depthTestEnable = VK_FALSE; /* // 禁止写入深度 */
-	}
-	if (this->_pipelineState.find("DepthWrite") != this->_pipelineState.end() && this->_pipelineState["DepthWrite"] == "1")
-	{
-		depthStencil.depthWriteEnable = VK_TRUE; /* // 禁用深度测试 */
-	}
-	else
-	{
-		depthStencil.depthWriteEnable = VK_FALSE; /* // 禁止写入深度 */
-	}
-}
-/**
- * 初始化颜色混合
- */
-void GfxPipeline::_initPipelineColorBlend(VkPipelineColorBlendAttachmentState &colorBlendAttachment)
-{
-	this->_Log("initPipelineColorBlend");
+// 	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+// 	if (this->_pipelineState.find("DepthTest") != this->_pipelineState.end() && this->_pipelineState["DepthTest"] == "1")
+// 	{
+// 		depthStencil.depthTestEnable = VK_TRUE; /* // 禁用深度测试 */
+// 	}
+// 	else
+// 	{
+// 		depthStencil.depthTestEnable = VK_FALSE; /* // 禁止写入深度 */
+// 	}
+// 	if (this->_pipelineState.find("DepthWrite") != this->_pipelineState.end() && this->_pipelineState["DepthWrite"] == "1")
+// 	{
+// 		depthStencil.depthWriteEnable = VK_TRUE; /* // 禁用深度测试 */
+// 	}
+// 	else
+// 	{
+// 		depthStencil.depthWriteEnable = VK_FALSE; /* // 禁止写入深度 */
+// 	}
+// }
+// /**
+//  * 初始化颜色混合
+//  */
+// void GfxPipeline::_initPipelineColorBlend(VkPipelineColorBlendAttachmentState &colorBlendAttachment)
+// {
+// 	this->_Log("initPipelineColorBlend");
 
-	if (this->_pipelineState.find("Blend") != this->_pipelineState.end())
-	{
-		if (this->_pipelineState["Blend"] == "0")
-		{
-			colorBlendAttachment.blendEnable = VK_FALSE;
-			colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
-			colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
-			colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
-			colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-			colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-			colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
-			colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-		}
-		else if (this->_pipelineState["Blend"] == "1")
-		{
-			colorBlendAttachment.blendEnable = VK_TRUE;
-			colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-			colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-			colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
-			colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-			colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-			colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
-			colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-		}
-	}
-}
+// 	if (this->_pipelineState.find("Blend") != this->_pipelineState.end())
+// 	{
+// 		if (this->_pipelineState["Blend"] == "0")
+// 		{
+// 			colorBlendAttachment.blendEnable = VK_FALSE;
+// 			colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+// 			colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
+// 			colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+// 			colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+// 			colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+// 			colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+// 			colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+// 		}
+// 		else if (this->_pipelineState["Blend"] == "1")
+// 		{
+// 			colorBlendAttachment.blendEnable = VK_TRUE;
+// 			colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+// 			colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+// 			colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+// 			colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+// 			colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+// 			colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+// 			colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+// 		}
+// 	}
+// }
 
 void GfxPipeline::_createDescriptorSetLayout()
 {
@@ -375,9 +381,144 @@ void GfxPipeline::_createDescriptorSetLayout()
 	if (vkCreateDescriptorSetLayout(this->_context->getVkDevice(),
 									&layoutInfo, nullptr, &this->_descriptorSetLayout) != VK_SUCCESS)
 	{
-		throw std::runtime_error("failed to create object descriptor set layout!");
+		// throw std::runtime_error("failed to create object descriptor set layout!");
+		std::cout << "failed to create object descriptor set layout!" << std::endl;
+		return;
 	}
-	this->_Log("create graphics pipeline : descriptorSetLayout ok...");
+	std::cout << "create graphics pipeline : descriptorSetLayout ok..." << std::endl;
+}
+VkPolygonMode GfxPipeline::getPolygonMode(GfxPipelinePolygonMode polygonMode)
+{
+	if (polygonMode == GfxPipelinePolygonMode::Fill)
+	{
+		return VK_POLYGON_MODE_FILL;
+	}
+	else if (polygonMode == GfxPipelinePolygonMode::Line)
+	{
+		return VK_POLYGON_MODE_LINE;
+	}
+	else
+	{
+		return VK_POLYGON_MODE_POINT;
+	}
+}
+VkCullModeFlags GfxPipeline::getCullMode(GfxPipelineCullMode cullMode)
+{
+	if (cullMode == GfxPipelineCullMode::Back)
+	{
+		return VK_CULL_MODE_BACK_BIT;
+	}
+	else if (cullMode == GfxPipelineCullMode::Front)
+	{
+		return VK_CULL_MODE_FRONT_BIT;
+	}
+	else
+	{
+		return VK_CULL_MODE_NONE;
+	}
+}
+VkCompareOp GfxPipeline::getCompareOp(GfxPipelineCompareOp compareOp)
+{
+	if (compareOp == GfxPipelineCompareOp::Never)
+	{
+		return VK_COMPARE_OP_NEVER;
+	}
+	else if (compareOp == GfxPipelineCompareOp::Less)
+	{
+		return VK_COMPARE_OP_LESS;
+	}
+	else if (compareOp == GfxPipelineCompareOp::LessOrEqual)
+	{
+		return VK_COMPARE_OP_LESS_OR_EQUAL;
+	}
+	else if (compareOp == GfxPipelineCompareOp::Greater)
+	{
+		return VK_COMPARE_OP_GREATER;
+	}
+	else if (compareOp == GfxPipelineCompareOp::GreaterOrEqual)
+	{
+		return VK_COMPARE_OP_GREATER_OR_EQUAL;
+	}
+	else if (compareOp == GfxPipelineCompareOp::Equal)
+	{
+		return VK_COMPARE_OP_EQUAL;
+	}
+	else if (compareOp == GfxPipelineCompareOp::NotEqual)
+	{
+		return VK_COMPARE_OP_NOT_EQUAL;
+	}
+	else
+	{
+		return VK_COMPARE_OP_ALWAYS;
+	}
+}
+VkStencilOp GfxPipeline::getStencilOp(GfxPipelineStencilOp stencilOp)
+{
+	if (stencilOp == GfxPipelineStencilOp::Keep)
+	{
+		return VK_STENCIL_OP_KEEP;
+	}
+	else if (stencilOp == GfxPipelineStencilOp::Increment_Add)
+	{
+		return VK_STENCIL_OP_INCREMENT_AND_WRAP;
+	}
+	else if (stencilOp == GfxPipelineStencilOp::Decrement_Subtract)
+	{
+		return VK_STENCIL_OP_DECREMENT_AND_WRAP;
+	}
+	return VK_STENCIL_OP_INVERT;
+}
+
+VkBlendFactor GfxPipeline::getBlendFactor(GfxPipelineColorBlendFactor blendFactor)
+{
+	if (blendFactor == GfxPipelineColorBlendFactor::Zero)
+	{
+		return VK_BLEND_FACTOR_ZERO;
+	}
+	else if (blendFactor == GfxPipelineColorBlendFactor::One)
+	{
+		return VK_BLEND_FACTOR_ONE;
+	}
+	else if (blendFactor == GfxPipelineColorBlendFactor::SrcColor)
+	{
+		return VK_BLEND_FACTOR_SRC_COLOR;
+	}
+	else if (blendFactor == GfxPipelineColorBlendFactor::DstColor)
+	{
+		return VK_BLEND_FACTOR_DST_COLOR;
+	}
+	else if (blendFactor == GfxPipelineColorBlendFactor::SrcAlpha)
+	{
+		return VK_BLEND_FACTOR_SRC_ALPHA;
+	}
+	else if (blendFactor == GfxPipelineColorBlendFactor::DstAlpha)
+	{
+		return VK_BLEND_FACTOR_DST_ALPHA;
+	}
+	else if (blendFactor == GfxPipelineColorBlendFactor::OneMinusSrcAlpha)
+	{
+		return VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+	}
+	else if (blendFactor == GfxPipelineColorBlendFactor::OneMinusDstAlpha)
+	{
+		return VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA;
+	}
+	return VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
+}
+VkBlendOp GfxPipeline::getBlendOp(GfxPipelineColorBlendOp blendOp)
+{
+	if (blendOp == GfxPipelineColorBlendOp::Add)
+	{
+		return VK_BLEND_OP_ADD;
+	}
+	else if (blendOp == GfxPipelineColorBlendOp::Subtract)
+	{
+		return VK_BLEND_OP_SUBTRACT;
+	}
+	else
+	{
+		return VK_BLEND_OP_MIN;
+	}
 }
 
 void GfxPipeline::clear()
@@ -394,22 +535,12 @@ void GfxPipeline::clear()
 		vkDestroyPipelineLayout(this->_context->getVkDevice(), this->_vkPipelineLayout, nullptr);
 		this->_vkPipelineLayout = VK_NULL_HANDLE;
 	}
-	/*  // // 销毁描述符集布局（Descriptor Set Layout）
-	 // if (this->_descriptorSetLayout != VK_NULL_HANDLE)
-	 // {
-	 //     vkDestroyDescriptorSetLayout(this->_context->getVkDevice(), this->_descriptorSetLayout, nullptr);
-	 //     this->_descriptorSetLayout = VK_NULL_HANDLE;
-	 // } */
 }
 void GfxPipeline::reset()
 {
 	this->_createPipeline();
 }
 
-void GfxPipeline::_Log(std::string msg)
-{
-	std::cout << "GfxPipeline: " << msg << std::endl;
-}
 GfxPipeline::~GfxPipeline()
 {
 }
