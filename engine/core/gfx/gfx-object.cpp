@@ -30,7 +30,7 @@ GfxObject::GfxObject(GfxContext *context) : _color{1.0f, 1.0f, 1.0f, 1.0f}
         0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  // 右上角
         -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // 左上角
     };
-    this->addUIMask("test_rect_mask", testMaskRect);
+    // this->addUIMask("test_rect_mask", testMaskRect);
     std::cout << "GfxObject: Test mask - Center 200x200 rect (-100,-100) to (100,100)" << std::endl;
 
     std::cout << "GfxObject: Test mask DISABLED for debugging" << std::endl;

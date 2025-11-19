@@ -67,12 +67,12 @@ Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid)
 	uiMaskPipelineStruct.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
 	uiMaskPipelineStruct.stencilBackPassOp = GfxPipelineStencilOp::Increment_Add;// Decrement_Subtract;
 
-	// 颜色混合 开启
+	// 颜色混合 关闭（只写Stencil）
 	uiMaskPipelineStruct.colorBlend = 0;
 	// 多边形模式 填充
 	uiMaskPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
-	// 剔除模式 背面
-	uiMaskPipelineStruct.cullMode = GfxPipelineCullMode::Back;
+	// 剔除模式 关闭（遮罩是2D平面，不需要剔除）
+	uiMaskPipelineStruct.cullMode = GfxPipelineCullMode::None;
 	GfxMgr::getInstance()->createPipeline("ui-mask.mtl", uiMaskPipelineStruct);
 
 	this->_init();
