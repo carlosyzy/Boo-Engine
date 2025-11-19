@@ -147,7 +147,9 @@ void GfxPipeline::_createPipeline()
 	std::vector<VkDynamicState> dynamicStates = {
 		// VK_DYNAMIC_STATE_VIEWPORT,
 		// VK_DYNAMIC_STATE_SCISSOR // 启用动态裁剪
-		VK_DYNAMIC_STATE_STENCIL_REFERENCE};
+		VK_DYNAMIC_STATE_STENCIL_REFERENCE,
+		VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK,
+		VK_DYNAMIC_STATE_STENCIL_WRITE_MASK};
 	VkPipelineDynamicStateCreateInfo dynamicState{};
 	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 	dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
@@ -223,6 +225,11 @@ void GfxPipeline::_createPipeline()
 		colorBlendAttachment.dstAlphaBlendFactor = this->getBlendFactor(this->_pipelineStruct.dstAlphaBlendFactor); // VK_BLEND_FACTOR_ZERO;
 		colorBlendAttachment.alphaBlendOp = this->getBlendOp(this->_pipelineStruct.alphaBlendOp);					// VK_BLEND_OP_ADD;
 		colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+	}
+	else
+	{
+		// 禁用颜色写入（用于只写Stencil的遮罩管线）
+		colorBlendAttachment.colorWriteMask = 0;  // 不写入任何颜色通道
 	}
 
 	VkPipelineColorBlendStateCreateInfo colorBlending{};

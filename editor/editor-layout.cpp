@@ -69,10 +69,10 @@ void EditorLayout::launch()
 	this->_initMainUI();
 	this->_initMenuUI();
 	this->_initHierarchyUI();
-	// this->_initAssetsUI();
-	// this->_initPropertyUI();
-	// this->_initSceneUI();
-	// this->_initToolUI();
+	this->_initAssetsUI();
+	this->_initPropertyUI();
+	this->_initSceneUI();
+	this->_initToolUI();
 }
 
 void EditorLayout::_initMainUI()

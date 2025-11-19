@@ -21,8 +21,16 @@ Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid)
 	uiPipelineStruct.depthTest = 0;
 	uiPipelineStruct.depthWrite = 0;
 	uiPipelineStruct.depthCompareOp = GfxPipelineCompareOp::Always;
-	// 模版测试 关闭
-	uiPipelineStruct.stencilTest = 0;
+	// 模版测试 启用（用于UI遮罩）
+	uiPipelineStruct.stencilTest = 1;
+	uiPipelineStruct.stencilFrontCompareOp = GfxPipelineCompareOp::Equal;  // 只在模板值相等时绘制
+	uiPipelineStruct.stencilFrontFailOp = GfxPipelineStencilOp::Keep;      // 测试失败：保持
+	uiPipelineStruct.stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep; // 深度失败：保持
+	uiPipelineStruct.stencilFrontPassOp = GfxPipelineStencilOp::Keep;      // 测试通过：保持（不修改模板值）
+	uiPipelineStruct.stencilBackCompareOp = GfxPipelineCompareOp::Equal;
+	uiPipelineStruct.stencilBackFailOp = GfxPipelineStencilOp::Keep;
+	uiPipelineStruct.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
+	uiPipelineStruct.stencilBackPassOp = GfxPipelineStencilOp::Keep;
 	// 颜色混合 开启
 	uiPipelineStruct.colorBlend = 1;
 	uiPipelineStruct.srcColorBlendFactor = GfxPipelineColorBlendFactor::SrcAlpha;

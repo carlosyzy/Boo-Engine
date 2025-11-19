@@ -36,6 +36,11 @@ private:
      * @brief UI对象的裁剪区域
      */
     std::map<std::string, std::vector<float>> _uiMasks;
+    /**
+     * @brief 临时遮罩顶点缓冲区（每帧重建，延迟清理）
+     */
+    std::vector<VkBuffer> _maskTempBuffers;
+    std::vector<VkDeviceMemory> _maskTempMemories;
    
 
 
