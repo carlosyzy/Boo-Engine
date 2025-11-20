@@ -30,6 +30,11 @@ private:
     GfxPass *_pass;
     GfxTexture *_texture;
 
+    /**
+     * @brief UI遮罩行为 0 不遮罩 1 遮罩
+     */
+    uint32_t _uiMaskBehavior = 0;
+
     float _color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
     /**
      * @brief 模型矩阵
@@ -43,16 +48,7 @@ private:
      * @brief 投影矩阵
      */
     std::array<float, 16> _projMatrix;
-    /**
-     * @brief UI对象的裁剪区域
-     */
-    std::map<std::string, std::vector<float>> _uiMasks;
-    /**
-     * @brief 临时遮罩顶点缓冲区（每帧重建，延迟清理）
-     */
-    std::vector<VkBuffer> _maskTempBuffers;
-    std::vector<VkDeviceMemory> _maskTempMemories;
-
+    
     int _indexSize;
     VkBuffer _vertexBuffer = VK_NULL_HANDLE; /* // 顶点数据Buffer */
     VkBuffer _indexBuffer = VK_NULL_HANDLE;  /* // 顶点index数据buffer */
@@ -85,6 +81,14 @@ public:
     void setVertexs(std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices);
     void setPass(GfxPass *pass);
     void setPipeline(GfxPipeline *pipeline);
+    void setUIMaskPipeline(GfxPipeline *pipelineAdd, GfxPipeline *pipelineSub);
+    /**
+     * @brief 设置UI遮罩行为
+     *
+     * @param behavior 行为 0 不遮罩 1 遮罩
+     */
+    void setUIMaskBehavior(uint32_t behavior);
+
     void setColor(float r, float g, float b, float a);
     void setTexture(GfxTexture *texture);
     void setModelMatrix(std::array<float, 16> &mat);
@@ -123,6 +127,14 @@ public:
     GfxPass *pass()
     {
         return this->_pass;
+    }
+    GfxObjectType getType()
+    {
+        return this->_type;
+    }
+    uint32_t getUIMaskBehavior()
+    {
+        return this->_uiMaskBehavior;
     }
 
     /**

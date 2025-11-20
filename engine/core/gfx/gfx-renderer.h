@@ -58,6 +58,7 @@ private:
 	void _initDefaultUIPasses();
 	void _initDefaultUIShaders();
 	void _initDefaultUIPipeline();
+	void _initDefaultUIMaskPipeline();
 
 public:
 	GfxRenderer(GfxContext* context);
@@ -113,7 +114,13 @@ public:
 	void createUIMaskObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices);
 	void setObjectPass(std::string id, std::string pass);
 	void setObjectPipeline(std::string id, std::string pipeline);
-	
+	/**
+	 * @brief 设置UI遮罩行为
+	 *
+	 * @param id 物体ID
+	 * @param behavior 行为 0 不遮罩 1 遮罩
+	 */
+	void setObjectUIMaskBehavior(std::string id, uint32_t behavior);
 	void setObjectModelMatrix(std::string id, std::array<float, 16> modelMatrix);
 	void setObjectViewMatrix(std::string id, std::array<float, 16> viewMatrix);
 	void setObjectProjMatrix(std::string id, std::array<float, 16> projMatrix);

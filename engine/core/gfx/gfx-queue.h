@@ -26,6 +26,8 @@ private:
     GfxPass *_pass;
     GfxQueueRendererStatus _rendererStatus;
 
+    uint32_t _stencilRef = 0;
+
     // 渲染队列 ui统一在transparent队列
     // 不透明队列
     std::vector<GfxObject *> _opaqueQueue;

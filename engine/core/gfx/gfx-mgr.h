@@ -89,6 +89,13 @@ public:
 	void setObjectPass(std::string id, std::string pass);
 	void setObjectPipeline(std::string id, std::string pipeline);
 	/**
+	 * @brief 设置UI遮罩行为
+	 *
+	 * @param id 物体ID
+	 * @param behavior 行为 0 不遮罩 1 遮罩
+	 */
+	void setObjectUIMaskBehavior(std::string id, uint32_t behavior);
+	/**
 	 * @brief 销毁模型渲染对象
 	 *
 	 * @param id 物体ID

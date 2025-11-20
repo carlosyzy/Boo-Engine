@@ -149,6 +149,10 @@ void GfxMgr::createUIMaskObject(std::string id, std::vector<float> &points, std:
 {
     this->_renderer->createUIMaskObject(id, points, colors, normals, uvs, indices);
 }
+void GfxMgr::setObjectUIMaskBehavior(std::string id, uint32_t behavior)
+{
+    this->_renderer->setObjectUIMaskBehavior(id, behavior);
+}
 void GfxMgr::setObjectPass(std::string id, std::string pass)
 {
     this->_renderer->setObjectPass(id, pass);

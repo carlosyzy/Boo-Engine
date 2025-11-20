@@ -74,7 +74,6 @@ void GfxObject::_createUniformBuffers()
     }
 }
 
-
 void GfxObject::setVertexs(std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
 {
     /* // 等待设备空闲 */
@@ -151,8 +150,15 @@ void GfxObject::setPipeline(GfxPipeline *pipeline)
     this->_pipeline = pipeline;
     this->_updateDescriptorSet();
 }
-
-
+/**
+ * @brief 设置UI遮罩行为
+ *
+ * @param behavior 行为 0 不遮罩 1 遮罩
+ */
+void GfxObject::setUIMaskBehavior(uint32_t behavior)
+{
+    this->_uiMaskBehavior = behavior;
+}
 void GfxObject::setColor(float r, float g, float b, float a)
 {
     this->_color[0] = r;
@@ -295,7 +301,7 @@ void GfxObject::_cleanUniformBuffers()
 }
 /**
  * @brief 更新模型矩阵到统一缓冲区
- * 
+ *
  */
 void GfxObject::_updateModelMatUniformBuffer()
 {
@@ -346,23 +352,45 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     if (!this->_pipeline || this->_vertexBuffer == VK_NULL_HANDLE || this->_indexBuffer == VK_NULL_HANDLE)
         return;
 
-    // // ===== 清理上一帧的临时遮罩 buffers =====
-    // for (size_t i = 0; i < this->_maskTempBuffers.size(); i++)
-    // {
-    //     if (this->_maskTempBuffers[i] != VK_NULL_HANDLE)
-    //     {
-    //         vkDestroyBuffer(this->_context->getVkDevice(), this->_maskTempBuffers[i], nullptr);
-    //     }
-    //     if (this->_maskTempMemories[i] != VK_NULL_HANDLE)
-    //     {
-    //         vkFreeMemory(this->_context->getVkDevice(), this->_maskTempMemories[i], nullptr);
-    //     }
-    // }
-    // this->_maskTempBuffers.clear();
-    // this->_maskTempMemories.clear();
-
-    // VkBuffer maskVertexBuffer = VK_NULL_HANDLE;
-    // VkDeviceMemory maskVertexMemory = VK_NULL_HANDLE;
+    // vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS,
+    //                         this->_pipelineMask->getVKPipelineLayout(), 0, 1,
+    //                         &this->_descriptorSets[imageIndex], 0, nullptr);
+    vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipeline());
+    vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipelineLayout(), 0, 1, &this->_descriptorSets[imageIndex], 0, nullptr);
+    if (this->_type == GfxObjectType::UI)
+    {
+        VkDeviceSize offsets[1] = {0};
+        vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
+        vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+        PushConstants pushConstants{};
+        pushConstants.defaultColor[0] = this->_color[0];
+        pushConstants.defaultColor[1] = this->_color[1];
+        pushConstants.defaultColor[2] = this->_color[2];
+        pushConstants.defaultColor[3] = this->_color[3];
+        vkCmdPushConstants(commandBuffers[imageIndex], this->_pipeline->getVKPipelineLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstants), &pushConstants);
+        vkCmdDrawIndexed(
+            commandBuffers[imageIndex],
+            this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
+            1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
+            0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
+            0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
+            0                 /* // 实例偏移 */
+        );
+    }
+    else if (this->_type == GfxObjectType::UI_MASK)
+    {
+        VkDeviceSize offsets[1] = {0};
+        vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
+        vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+        vkCmdDrawIndexed(
+            commandBuffers[imageIndex],
+            this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
+            1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
+            0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
+            0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
+            0                 /* // 实例偏移 */
+        );
+    }
 
     // std::vector<float> testMaskRect = {
     //     -0.3f, 0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  /** @brief 左上 */
@@ -385,7 +413,6 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     // // 保存到成员变量，下一帧渲染时清理
     // this->_maskTempBuffers.push_back(maskVertexBuffer);
     // this->_maskTempMemories.push_back(maskVertexMemory);
-
     // // 决定是否使用遮罩：检查遮罩管线和遮罩数据是否存在
     // bool useMask = (this->_pipelineMask != nullptr && !this->_uiMasks.empty());
     // uint32_t stencilRef = useMask ? 1 : 0; // 有遮罩：reference=1，无遮罩：reference=0
@@ -471,73 +498,73 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     // ===== 第二步：绘制 UI 内容 =====
     // 绑定 UI 渲染管线（管线配置：compareOp=Equal, passOp=Keep）
 
-    // 设置 Stencil 参数：
-    // - 有遮罩：reference=1, 只在 Stencil=1 的遮罩区域绘制
-    // - 无遮罩：reference=0, 在整个屏幕绘制（因为清除后 Stencil=0）
-    vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipeline());
-    // vkCmdSetStencilReference(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 1);
-    // vkCmdSetStencilCompareMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
-    // vkCmdSetStencilWriteMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0x00);   // 不写入模板（保持遮罩）
+    // // 设置 Stencil 参数：
+    // // - 有遮罩：reference=1, 只在 Stencil=1 的遮罩区域绘制
+    // // - 无遮罩：reference=0, 在整个屏幕绘制（因为清除后 Stencil=0）
+    // vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipeline());
+    // vkCmdSetStencilReference(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0);
+    // // vkCmdSetStencilCompareMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
+    // // vkCmdSetStencilWriteMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0x00);   // 不写入模板（保持遮罩）
 
-    // 设置视口
-    VkViewport _viewport{};
-    // 裁剪区域 原点左上角为(0,0)
-    VkRect2D _scissor{};
-    _viewport.x = 0.0f;
-    _viewport.y = 0.0f;
-    _viewport.width = (float)Boo::game->view()->width;
-    _viewport.height = (float)Boo::game->view()->height;
-    _viewport.minDepth = 0.0f;
-    _viewport.maxDepth = 1.0f;
-    _scissor.offset = {0, 0};
-    _scissor.extent = {(uint32_t)(Boo::game->view()->width), (uint32_t)(Boo::game->view()->height)};
-    // vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &_viewport);
-    // // 设置裁剪区域
-    // vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &_scissor);
+    // // 设置视口
+    // VkViewport _viewport{};
+    // // 裁剪区域 原点左上角为(0,0)
+    // VkRect2D _scissor{};
+    // _viewport.x = 0.0f;
+    // _viewport.y = 0.0f;
+    // _viewport.width = (float)Boo::game->view()->width;
+    // _viewport.height = (float)Boo::game->view()->height;
+    // _viewport.minDepth = 0.0f;
+    // _viewport.maxDepth = 1.0f;
+    // _scissor.offset = {0, 0};
+    // _scissor.extent = {(uint32_t)(Boo::game->view()->width), (uint32_t)(Boo::game->view()->height)};
+    // // vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &_viewport);
+    // // // 设置裁剪区域
+    // // vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &_scissor);
 
-    // 该函数用于提交绘制操作到指令缓冲
-    // 参数1：需要执行的指令缓冲对象
-    // 参数2：顶点缓冲数量
-    // 参数3：用于实例渲染，为1时表示不进行实例渲染
-    // 参数4：用于定义着色器变量gl_VertexIndex的值
-    // 参数5：用于定义着色器变量gl_InstanceIndex的值
-    // std::cout << "this->_indexSize1: " << this->_indexSize << std::endl;
-    // Render scene */
+    // // 该函数用于提交绘制操作到指令缓冲
+    // // 参数1：需要执行的指令缓冲对象
+    // // 参数2：顶点缓冲数量
+    // // 参数3：用于实例渲染，为1时表示不进行实例渲染
+    // // 参数4：用于定义着色器变量gl_VertexIndex的值
+    // // 参数5：用于定义着色器变量gl_InstanceIndex的值
+    // // std::cout << "this->_indexSize1: " << this->_indexSize << std::endl;
+    // // Render scene */
 
-    VkDeviceSize offsets[1] = {0};
-    // vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &maskVertexBuffer, offsets);
-    vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
-    vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-    /*    //  std::cout << "render:1111 "<< std::endl;
-       // 绑定描述符集
-       // std::cout <<"1111:"<< this->_descriptorSets[imageIndex]<< std::endl; */
-    vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipelineLayout(), 0, 1, &this->_descriptorSets[imageIndex], 0, nullptr);
+    // VkDeviceSize offsets[1] = {0};
+    // // vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &maskVertexBuffer, offsets);
+    // vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
+    // vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+    // /*    //  std::cout << "render:1111 "<< std::endl;
+    //    // 绑定描述符集
+    //    // std::cout <<"1111:"<< this->_descriptorSets[imageIndex]<< std::endl; */
+    // vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipelineLayout(), 0, 1, &this->_descriptorSets[imageIndex], 0, nullptr);
 
-    // std::cout << "render:22222 "<< std::endl;
-    PushConstants pushConstants{};
-    pushConstants.defaultColor[0] = this->_color[0];
-    pushConstants.defaultColor[1] = this->_color[1];
-    pushConstants.defaultColor[2] = this->_color[2];
-    pushConstants.defaultColor[3] = this->_color[3];
-    // pushConstants.maskRect[0] = this->_uiMask[0];
-    // pushConstants.maskRect[1] = this->_uiMask[1];
-    // pushConstants.maskRect[2] = this->_uiMask[2];
-    // pushConstants.maskRect[3] = this->_uiMask[3];
+    // // std::cout << "render:22222 "<< std::endl;
+    // PushConstants pushConstants{};
+    // pushConstants.defaultColor[0] = this->_color[0];
+    // pushConstants.defaultColor[1] = this->_color[1];
+    // pushConstants.defaultColor[2] = this->_color[2];
+    // pushConstants.defaultColor[3] = this->_color[3];
+    // // pushConstants.maskRect[0] = this->_uiMask[0];
+    // // pushConstants.maskRect[1] = this->_uiMask[1];
+    // // pushConstants.maskRect[2] = this->_uiMask[2];
+    // // pushConstants.maskRect[3] = this->_uiMask[3];
 
-    vkCmdPushConstants(commandBuffers[imageIndex], this->_pipeline->getVKPipelineLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstants), &pushConstants);
+    // vkCmdPushConstants(commandBuffers[imageIndex], this->_pipeline->getVKPipelineLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstants), &pushConstants);
 
-    // vkCmdDraw(commandBuffers[imageIndex], this->_indexSize, 1, 0, 0);
-    /*  // 绘制
-      std::cout << "render:33333 "<< std::endl; */
-    vkCmdDrawIndexed(
-        commandBuffers[imageIndex],
-        this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
-        1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
-        0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
-        0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
-        0                 /* // 实例偏移 */
-    );
-    // 临时遮罩 buffers 会在下一帧渲染开始时清理
+    // // vkCmdDraw(commandBuffers[imageIndex], this->_indexSize, 1, 0, 0);
+    // /*  // 绘制
+    //   std::cout << "render:33333 "<< std::endl; */
+    // vkCmdDrawIndexed(
+    //     commandBuffers[imageIndex],
+    //     this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
+    //     1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
+    //     0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
+    //     0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
+    //     0                 /* // 实例偏移 */
+    // );
+    // // 临时遮罩 buffers 会在下一帧渲染开始时清理
 }
 void GfxObject::clear()
 {
@@ -547,21 +574,6 @@ void GfxObject::clear()
         vkFreeDescriptorSets(this->_context->getVkDevice(), this->_context->getDescriptorPool(), static_cast<uint32_t>(this->_descriptorSets.size()), &descriptorSet);
     }
     this->_descriptorSets.clear();
-
-    // 清理临时遮罩 buffers
-    for (size_t i = 0; i < this->_maskTempBuffers.size(); i++)
-    {
-        if (this->_maskTempBuffers[i] != VK_NULL_HANDLE)
-        {
-            vkDestroyBuffer(this->_context->getVkDevice(), this->_maskTempBuffers[i], nullptr);
-        }
-        if (this->_maskTempMemories[i] != VK_NULL_HANDLE)
-        {
-            vkFreeMemory(this->_context->getVkDevice(), this->_maskTempMemories[i], nullptr);
-        }
-    }
-    this->_maskTempBuffers.clear();
-    this->_maskTempMemories.clear();
 
     // /*  // 销毁缓冲区 */
     this->_cleanUniformBuffers();
