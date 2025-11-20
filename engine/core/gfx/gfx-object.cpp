@@ -477,7 +477,10 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
 
     std::vector<float> testMaskRect = {
         -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  /** @brief 左上 */
-        -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, /** @brief 坐下 */
+        -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, /** @brief 左下 */
+        0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,  /** @brief 右下 */
+
+        -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  /** @brief 左上 */
         0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,  /** @brief 右下 */
         0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,   /** @brief 右上 */
     };
@@ -496,7 +499,8 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
 
 
     VkDeviceSize offsets[1] = {0};
-    vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &maskVertexBuffer, offsets);
+    // vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &maskVertexBuffer, offsets);
+    vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
     vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
     /*    //  std::cout << "render:1111 "<< std::endl;
        // 绑定描述符集
@@ -515,17 +519,20 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     // pushConstants.maskRect[3] = this->_uiMask[3];
 
     vkCmdPushConstants(commandBuffers[imageIndex], this->_pipeline->getVKPipelineLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstants), &pushConstants);
+
+    vkCmdDraw(commandBuffers[imageIndex], this->_indexSize, 1, 0, 0);
     /*  // 绘制
      //  std::cout << "render:33333 "<< std::endl; */
-    vkCmdDrawIndexed(
-        commandBuffers[imageIndex],
-        this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
-        1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
-        0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
-        0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
-        0                 /* // 实例偏移 */
-    );
+    // vkCmdDrawIndexed(
+    //     commandBuffers[imageIndex],
+    //     this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
+    //     1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
+    //     0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
+    //     0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
+    //     0                 /* // 实例偏移 */
+    // );
     // 临时遮罩 buffers 会在下一帧渲染开始时清理
+    
 }
 void GfxObject::clear()
 {
