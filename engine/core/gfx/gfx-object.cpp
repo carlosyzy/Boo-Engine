@@ -371,10 +371,35 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     this->_maskTempBuffers.clear();
     this->_maskTempMemories.clear();
 
+    VkBuffer maskVertexBuffer = VK_NULL_HANDLE;
+    VkDeviceMemory maskVertexMemory = VK_NULL_HANDLE;
+
+    std::vector<float> testMaskRect = {
+        -0.3f, 0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  /** @brief 左上 */
+        -0.3f, -0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, /** @brief 左下 */
+        0.3f, -0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,  /** @brief 右下 */
+
+        -0.3f, 0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, /** @brief 左上 */
+        0.3f, -0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, /** @brief 右下 */
+        0.3f, 0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,  /** @brief 右上 */
+    };
+    GfxMgr::getInstance()->createBuffer(
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+        &maskVertexBuffer,
+        &maskVertexMemory,
+        testMaskRect.size() * sizeof(float),
+        testMaskRect.data());
+    // 顶点缓冲区
+
+    // 保存到成员变量，下一帧渲染时清理
+    this->_maskTempBuffers.push_back(maskVertexBuffer);
+    this->_maskTempMemories.push_back(maskVertexMemory);
+
     // 决定是否使用遮罩：检查遮罩管线和遮罩数据是否存在
     bool useMask = (this->_pipelineMask != nullptr && !this->_uiMasks.empty());
     uint32_t stencilRef = useMask ? 1 : 0; // 有遮罩：reference=1，无遮罩：reference=0
-    useMask=false;
+    useMask = true;
     if (useMask)
     {
         // 绑定UI遮罩渲染管线（管线配置：compareOp=Always, passOp=Increment）
@@ -390,50 +415,67 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
         vkCmdSetStencilCompareMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
         vkCmdSetStencilWriteMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);   // 写入所有位
 
-        // 遍历所有遮罩并绘制
-        for (auto &[maskId, maskData] : this->_uiMasks)
-        {
-            // 验证顶点数据大小：每个顶点需要 12 个浮点数
-            // position(3) + color(4) + normal(3) + uv(2) = 12 floats
-            if (maskData.size() < 12 || maskData.size() % 12 != 0)
-            {
-                std::cerr << "Mask '" << maskId << "' has invalid size: " << maskData.size()
-                          << " (must be multiple of 12)" << std::endl;
-                continue;
-            }
+        VkDeviceSize maskOffsets[1] = {0};
+        vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &maskVertexBuffer, maskOffsets);
+        // vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, maskOffsets);
+        // vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+        // 绘制遮罩（顶点数 = maskData.size() / 12）
+        // 每个顶点：position(3) + color(4) + normal(3) + uv(2) = 12 floats
+        // uint32_t vertexCount = static_cast<uint32_t>(testMaskRect.size() / 12);
+        vkCmdDraw(commandBuffers[imageIndex], 6, 1, 0, 0);
+        // vkCmdDrawIndexed(
+        //     commandBuffers[imageIndex],
+        //     this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
+        //     1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
+        //     0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
+        //     0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
+        //     0                 /* // 实例偏移 */
+        // );
 
-            VkBuffer maskVertexBuffer = VK_NULL_HANDLE;
-            VkDeviceMemory maskVertexMemory = VK_NULL_HANDLE;
-            GfxMgr::getInstance()->createBuffer(
-                VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                &maskVertexBuffer,
-                &maskVertexMemory,
-                maskData.size() * sizeof(float),
-                maskData.data());
+        // // 遍历所有遮罩并绘制
+        // for (auto &[maskId, maskData] : this->_uiMasks)
+        // {
+        //     // 验证顶点数据大小：每个顶点需要 12 个浮点数
+        //     // position(3) + color(4) + normal(3) + uv(2) = 12 floats
+        //     if (maskData.size() < 12 || maskData.size() % 12 != 0)
+        //     {
+        //         std::cerr << "Mask '" << maskId << "' has invalid size: " << maskData.size()
+        //                   << " (must be multiple of 12)" << std::endl;
+        //         continue;
+        //     }
 
-            // // 保存到成员变量，下一帧渲染时清理
-            // this->_maskTempBuffers.push_back(maskVertexBuffer);
-            // this->_maskTempMemories.push_back(maskVertexMemory);
+        //     VkBuffer maskVertexBuffer = VK_NULL_HANDLE;
+        //     VkDeviceMemory maskVertexMemory = VK_NULL_HANDLE;
+        //     GfxMgr::getInstance()->createBuffer(
+        //         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        //         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+        //         &maskVertexBuffer,
+        //         &maskVertexMemory,
+        //         maskData.size() * sizeof(float),
+        //         maskData.data());
 
-            // 绑定遮罩顶点缓冲区
-            VkDeviceSize maskOffsets[1] = {0};
-            // vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &maskVertexBuffer, maskOffsets);
-            vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, maskOffsets);
-            vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-            // 绘制遮罩（顶点数 = maskData.size() / 12）
-            // 每个顶点：position(3) + color(4) + normal(3) + uv(2) = 12 floats
-            uint32_t vertexCount = static_cast<uint32_t>(maskData.size() / 12);
-            // vkCmdDraw(commandBuffers[imageIndex], this->_indexSize, 1, 0, 0);
-            vkCmdDrawIndexed(
-                commandBuffers[imageIndex],
-                this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
-                1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
-                0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
-                0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
-                0                 /* // 实例偏移 */
-            );
-        }
+        //     // // 保存到成员变量，下一帧渲染时清理
+        //     // this->_maskTempBuffers.push_back(maskVertexBuffer);
+        //     // this->_maskTempMemories.push_back(maskVertexMemory);
+
+        //     // 绑定遮罩顶点缓冲区
+        //     VkDeviceSize maskOffsets[1] = {0};
+        //     // vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &maskVertexBuffer, maskOffsets);
+        //     vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, maskOffsets);
+        //     vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+        //     // 绘制遮罩（顶点数 = maskData.size() / 12）
+        //     // 每个顶点：position(3) + color(4) + normal(3) + uv(2) = 12 floats
+        //     uint32_t vertexCount = static_cast<uint32_t>(maskData.size() / 12);
+        //     // vkCmdDraw(commandBuffers[imageIndex], this->_indexSize, 1, 0, 0);
+        //     vkCmdDrawIndexed(
+        //         commandBuffers[imageIndex],
+        //         this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
+        //         1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
+        //         0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
+        //         0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
+        //         0                 /* // 实例偏移 */
+        //     );
+        // }
     }
 
     // ===== 第二步：绘制 UI 内容 =====
@@ -472,32 +514,6 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     // std::cout << "this->_indexSize1: " << this->_indexSize << std::endl;
     // Render scene */
 
-    VkBuffer maskVertexBuffer = VK_NULL_HANDLE;
-    VkDeviceMemory maskVertexMemory = VK_NULL_HANDLE;
-
-    std::vector<float> testMaskRect = {
-        -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  /** @brief 左上 */
-        -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, /** @brief 左下 */
-        0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,  /** @brief 右下 */
-
-        -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  /** @brief 左上 */
-        0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,  /** @brief 右下 */
-        0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,   /** @brief 右上 */
-    };
-    GfxMgr::getInstance()->createBuffer(
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-        &maskVertexBuffer,
-        &maskVertexMemory,
-        testMaskRect.size() * sizeof(float),
-        testMaskRect.data());
-        // 顶点缓冲区
-  
-    // 保存到成员变量，下一帧渲染时清理
-    this->_maskTempBuffers.push_back(maskVertexBuffer);
-    this->_maskTempMemories.push_back(maskVertexMemory);
-
-
     VkDeviceSize offsets[1] = {0};
     // vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &maskVertexBuffer, offsets);
     vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
@@ -520,19 +536,18 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
 
     vkCmdPushConstants(commandBuffers[imageIndex], this->_pipeline->getVKPipelineLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstants), &pushConstants);
 
-    vkCmdDraw(commandBuffers[imageIndex], this->_indexSize, 1, 0, 0);
+    // vkCmdDraw(commandBuffers[imageIndex], this->_indexSize, 1, 0, 0);
     /*  // 绘制
-     //  std::cout << "render:33333 "<< std::endl; */
-    // vkCmdDrawIndexed(
-    //     commandBuffers[imageIndex],
-    //     this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
-    //     1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
-    //     0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
-    //     0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
-    //     0                 /* // 实例偏移 */
-    // );
+      std::cout << "render:33333 "<< std::endl; */
+    vkCmdDrawIndexed(
+        commandBuffers[imageIndex],
+        this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
+        1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
+        0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
+        0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
+        0                 /* // 实例偏移 */
+    );
     // 临时遮罩 buffers 会在下一帧渲染开始时清理
-    
 }
 void GfxObject::clear()
 {
