@@ -22,8 +22,8 @@ void GfxRenderer::init()
     std::cout << "GfxRenderer:init" << std::endl;
     GfxShaderCompile::getInstance()->init();
     this->_initDefaultUIPasses();
-    // this->_initDefaultUIShaders();
-    // this->_initDefaultUIPipeline();
+    this->_initDefaultUIShaders();
+    this->_initDefaultUIPipeline();
 }
 /**
  * 创建内置默认的ui pass
@@ -32,7 +32,7 @@ void GfxRenderer::_initDefaultUIPasses()
 {
     // 创建一个默认的ui pass
     GfxPassStruct uiPassStruct = {};
-    uiPassStruct.name = "ui";
+    uiPassStruct.name = "built-ui";
     uiPassStruct.attachmentCount = 2;
     uiPassStruct.canMSAA = false;
 
@@ -587,9 +587,9 @@ void GfxRenderer::submitObjectRender(std::string id)
 
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
-    if (this->_queues.find("ui") != this->_queues.end())
+    for (auto &queue : this->_queues)
     {
-        this->_queues["ui"]->render(imageIndex, commandBuffers);
+         queue.second->render(imageIndex, commandBuffers);
     }
 }
 

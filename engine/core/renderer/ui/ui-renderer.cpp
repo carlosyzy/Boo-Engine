@@ -46,9 +46,9 @@ void UIRenderer::setMaterial(Material *mtl)
 	// std::string frag = std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string();
 	// std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + vert + "|frag:" + frag;
 	// GfxMgr::getInstance()->createPipeline("ui", pipeline);
-	GfxMgr::getInstance()->setObjectPass(this->_uuid, "ui");
+	GfxMgr::getInstance()->setObjectPass(this->_uuid, "built-ui");
 	// GfxMgr::getInstance()->setObjectPipeline(this->_uuid, "ui-mask.mtl");
-	GfxMgr::getInstance()->setObjectPipeline(this->_uuid, "ui.mtl");
+	GfxMgr::getInstance()->setObjectPipeline(this->_uuid, "built-ui");
 }
 void UIRenderer::setTexture(Texture *texture)
 {
