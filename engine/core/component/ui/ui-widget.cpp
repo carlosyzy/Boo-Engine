@@ -103,7 +103,14 @@ void UIWidget::lateUpdate(float deltaTime)
 }
 void UIWidget::render()
 {
+    Component::render();
 }
+void UIWidget::lateRender()
+{
+    Component::lateRender();
+}
+
+
 
 void UIWidget::destroy()
 {

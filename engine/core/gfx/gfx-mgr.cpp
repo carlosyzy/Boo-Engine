@@ -106,11 +106,6 @@ void GfxMgr::createRenderPass(std::string name, GfxPassStruct passStruct)
 {
     this->_renderer->createRenderPass(name, passStruct);
 }
-//旧的
-void GfxMgr::createPipeline(std::string passName, std::string pipelineName)
-{
-    this->_renderer->createPipeline(passName, pipelineName);
-}
 void GfxMgr::createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct)
 {
     this->_renderer->createPipeline(pipelineName, pipelineStruct);
@@ -136,14 +131,35 @@ void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<
 {
     this->_renderer->createSpirvShader(shaderName, data);
 }
+
+
+/**
+ * 旧的
+ * 过时的
+ */
 void GfxMgr::createObject(std::string id, std::string renderPassType, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
 {
     this->_renderer->createObject(id, renderPassType,  points, colors, normals, uvs, indices);
 }
-/* // void GfxMgr::resetGfxObjectRendererState(std::string id, std::string renderPassType, std::string pipelineType)
-// {
-//     this->_renderer->resetGfxObjectRendererState(id, renderPassType, pipelineType);
-// } */
+void GfxMgr::createUIObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
+{
+    this->_renderer->createUIObject(id, points, colors, normals, uvs, indices);
+}
+void GfxMgr::createUIMaskObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
+{
+    this->_renderer->createUIMaskObject(id, points, colors, normals, uvs, indices);
+}
+void GfxMgr::setObjectPass(std::string id, std::string pass)
+{
+    this->_renderer->setObjectPass(id, pass);
+}
+void GfxMgr::setObjectPipeline(std::string id, std::string pipeline)
+{
+    this->_renderer->setObjectPipeline(id, pipeline);
+}
+
+
+
 void GfxMgr::destroyObject(std::string id)
 {
     this->_renderer->destroyObject(id);
@@ -168,14 +184,7 @@ void GfxMgr::setObjectTexture(const std::string& id, const  std::string& texture
 {
     this->_renderer->setObjectTexture(id, texture);
 }
-void GfxMgr::addUIObjectMask(std::string id, std::string maskId, std::vector<float> mask)
-{
-    this->_renderer->addUIObjectMask(id, maskId, mask);
-}
-void GfxMgr::setObjectPipeline(std::string id, std::string pipeline)
-{
-    this->_renderer->setObjectPipeline(id, pipeline);
-}
+
 
 void GfxMgr::submitObjectRender(std::string id)
 {

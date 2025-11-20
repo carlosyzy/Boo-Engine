@@ -28,12 +28,18 @@ void Component::render()
     if (!this->isEnabled())
         return; // 组件未激活
 }
+void Component::lateRender()
+{
+    if (!this->isEnabled())
+        return; // 组件未激活
+}
 
 void Component::destroy()
 {
     std::cout << "Component::destroy" << std::endl;
     Boo::game->addCompClearCaches(this);
 }
-Component::~Component() {
+Component::~Component()
+{
     std::cout << "Component::~destructor" << std::endl;
 }

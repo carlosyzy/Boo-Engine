@@ -89,6 +89,7 @@ public:
     void update(float deltaTime) override;
     void lateUpdate(float deltaTime) override;
     void render() override;
+    void lateRender() override;
     virtual void destroy() override;
     
 

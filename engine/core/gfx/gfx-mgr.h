@@ -13,8 +13,6 @@ class GfxRenderer;
 struct GfxPassStruct;
 struct GfxPipelineStruct;
 
-
-
 class GfxMgr
 {
 private:
@@ -49,7 +47,6 @@ public:
 	/**
 	 * 创建管线
 	 */
-	void createPipeline(std::string passName, std::string pipelineName);
 	void createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct);
 
 	/**
@@ -66,6 +63,32 @@ public:
 	 */
 	void createObject(std::string id, std::string renderPassType, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices);
 	/**
+	 * @brief 创建UI渲染对象
+	 *
+	 * @param id 物体ID
+	 * @param pipelineType 管线类型
+	 * @param points 顶点数据
+	 * @param colors 颜色数据
+	 * @param normals 法线数据
+	 * @param uvs uv数据
+	 * @param indices 索引数据
+	 */
+	void createUIObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices);
+	/**
+	 * @brief 创建UI遮罩渲染对象
+	 *
+	 * @param id 物体ID
+	 * @param pipelineType 管线类型
+	 * @param points 顶点数据
+	 * @param colors 颜色数据
+	 * @param normals 法线数据
+	 * @param uvs uv数据
+	 * @param indices 索引数据
+	 */
+	void createUIMaskObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices);
+	void setObjectPass(std::string id, std::string pass);
+	void setObjectPipeline(std::string id, std::string pipeline);
+	/**
 	 * @brief 销毁模型渲染对象
 	 *
 	 * @param id 物体ID
@@ -78,8 +101,8 @@ public:
 	void setObjectProjMatrix(std::string id, const std::array<float, 16> &projMatrix);
 	void setObjectTexture(const std::string &id, const std::string &texture);
 	void setObjectColor(std::string id, float r, float g, float b, float a);
-	void setObjectPipeline(std::string id, std::string pipeline);
-	void addUIObjectMask(std::string id, std::string maskId, std::vector<float> mask);
+
+	// void addUIObjectMask(std::string id, std::string maskId, std::vector<float> mask);
 	// void submitUIObjectMask(std::string id);
 
 	/**

@@ -6,8 +6,10 @@
 #include "gfx-pipeline.h"
 #include "gfx-pipeline-struct.h"
 #include "gfx-shader.h"
+#include "gfx-shader-struct.h"
 #include "gfx-queue.h"
 #include "gfx-object.h"
+#include "gfx-object-struct.h"
 #include "../math/mat4.h"
 #include "gfx-shader-compile.h"
 
@@ -20,12 +22,17 @@ void GfxRenderer::init()
     std::cout << "GfxRenderer:init" << std::endl;
     GfxShaderCompile::getInstance()->init();
     this->_initDefaultUIPasses();
+    // this->_initDefaultUIShaders();
+    // this->_initDefaultUIPipeline();
 }
+/**
+ * 创建内置默认的ui pass
+ */
 void GfxRenderer::_initDefaultUIPasses()
 {
-    std::cout << "GfxRenderer:_initDefaultUIPasses" << std::endl;
     // 创建一个默认的ui pass
     GfxPassStruct uiPassStruct = {};
+    uiPassStruct.name = "ui";
     uiPassStruct.attachmentCount = 2;
     uiPassStruct.canMSAA = false;
 
@@ -53,7 +60,91 @@ void GfxRenderer::_initDefaultUIPasses()
     uiPassStruct.depthAttachment.finalLayout = GfxPassAttachmentLayout::Depth;
     uiPassStruct.depthAttachment.refLayout = GfxPassAttachmentLayout::Depth;
 
-    this->createRenderPass("ui", uiPassStruct);
+    this->createRenderPass(uiPassStruct.name, uiPassStruct);
+}
+/**
+ * 创建内置默认的ui shader
+ */
+void GfxRenderer::_initDefaultUIShaders()
+{
+    std::string shaderVertName = "built-ui.vert";
+    GfxShader *shader = new GfxShader(this->_context, shaderVertName);
+    shader->createShaderModule(GfxShaderUIVertSPV, GfxShaderUIVertSPVSize);
+    this->_shaders[shaderVertName] = shader;
+
+    std::string shaderFragName = "built-ui.frag";
+    shader = new GfxShader(this->_context, shaderFragName);
+    shader->createShaderModule(GfxShaderUIFragSPV, GfxShaderUIFragSPVSize);
+    this->_shaders[shaderFragName] = shader;
+}
+/**
+ * 创建内置默认的ui pipeline
+ */
+void GfxRenderer::_initDefaultUIPipeline()
+{
+    // 创建Pass是在摄像机初始化的时候
+    // 创建Pipeline应该是渲染物体第一次调用的时候
+    GfxPipelineStruct uiPipelineStruct = {};
+    uiPipelineStruct.name = "built-ui";
+    uiPipelineStruct.vert = "built-ui.vert";
+    uiPipelineStruct.frag = "built-ui.frag";
+    uiPipelineStruct.pass = "built-ui";
+    uiPipelineStruct.depthTest = 0;
+    uiPipelineStruct.depthWrite = 0;
+    uiPipelineStruct.depthCompareOp = GfxPipelineCompareOp::Always;
+    // 模版测试 启用（用于UI遮罩）
+    uiPipelineStruct.stencilTest = 1;
+    uiPipelineStruct.stencilFrontCompareOp = GfxPipelineCompareOp::Equal;  // 只在模板值相等时绘制
+    uiPipelineStruct.stencilFrontFailOp = GfxPipelineStencilOp::Keep;      // 测试失败：保持
+    uiPipelineStruct.stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep; // 深度失败：保持
+    uiPipelineStruct.stencilFrontPassOp = GfxPipelineStencilOp::Keep;      // 测试通过：保持（不修改模板值）
+    uiPipelineStruct.stencilBackCompareOp = GfxPipelineCompareOp::Equal;
+    uiPipelineStruct.stencilBackFailOp = GfxPipelineStencilOp::Keep;
+    uiPipelineStruct.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
+    uiPipelineStruct.stencilBackPassOp = GfxPipelineStencilOp::Keep;
+    // 颜色混合 开启
+    uiPipelineStruct.colorBlend = 1;
+    uiPipelineStruct.srcColorBlendFactor = GfxPipelineColorBlendFactor::SrcAlpha;
+    uiPipelineStruct.dstColorBlendFactor = GfxPipelineColorBlendFactor::OneMinusSrcAlpha;
+    uiPipelineStruct.colorBlendOp = GfxPipelineColorBlendOp::Add;
+    uiPipelineStruct.srcAlphaBlendFactor = GfxPipelineColorBlendFactor::One;
+    uiPipelineStruct.dstAlphaBlendFactor = GfxPipelineColorBlendFactor::OneMinusSrcAlpha;
+    uiPipelineStruct.alphaBlendOp = GfxPipelineColorBlendOp::Add;
+    uiPipelineStruct.colorWriteMask = 4;
+    // 多边形模式 填充
+    uiPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
+    // 剔除模式 背面
+    uiPipelineStruct.cullMode = GfxPipelineCullMode::Back;
+    this->createPipeline(uiPipelineStruct.name, uiPipelineStruct);
+
+    // // 模式ui 遮罩 模式为Fill 时 启用cullMode 为Back
+    // GfxPipelineStruct uiMaskPipelineStruct = {};
+    // uiMaskPipelineStruct.name = "ui-mask.mtl";
+    // uiMaskPipelineStruct.vert = std::filesystem::path("resources/shader/ui/ui-mask.vert.spv").generic_string();
+    // uiMaskPipelineStruct.frag = std::filesystem::path("resources/shader/ui/ui-mask.frag.spv").generic_string();
+    // uiMaskPipelineStruct.pass = "ui";
+    // uiMaskPipelineStruct.depthTest = 0;
+    // uiMaskPipelineStruct.depthWrite = 0;
+    // uiMaskPipelineStruct.depthCompareOp = GfxPipelineCompareOp::Always;
+    // // 模版测试 关闭
+    // uiMaskPipelineStruct.stencilTest = 1;
+    // // ui 遮罩,正面和背面保持一致
+    // uiMaskPipelineStruct.stencilFrontCompareOp = GfxPipelineCompareOp::Always;
+    // uiMaskPipelineStruct.stencilFrontFailOp = GfxPipelineStencilOp::Keep;
+    // uiMaskPipelineStruct.stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep;
+    // uiMaskPipelineStruct.stencilFrontPassOp = GfxPipelineStencilOp::Replace;
+    // uiMaskPipelineStruct.stencilBackCompareOp = GfxPipelineCompareOp::Always;
+    // uiMaskPipelineStruct.stencilBackFailOp = GfxPipelineStencilOp::Keep;
+    // uiMaskPipelineStruct.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
+    // uiMaskPipelineStruct.stencilBackPassOp = GfxPipelineStencilOp::Replace;
+
+    // // 颜色混合 关闭（只写Stencil）
+    // uiMaskPipelineStruct.colorBlend = 0;
+    // // 多边形模式 填充
+    // uiMaskPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
+    // // 剔除模式 关闭（遮罩是2D平面，不需要剔除）
+    // uiMaskPipelineStruct.cullMode = GfxPipelineCullMode::None;
+    // this->createPipeline("ui-mask.mtl", uiMaskPipelineStruct);
 }
 
 void GfxRenderer::createRenderPass(std::string name, GfxPassStruct passStruct)
@@ -73,66 +164,66 @@ void GfxRenderer::createRenderPass(std::string name, GfxPassStruct passStruct)
         queue->create(this->_passes[name]);
     }
 }
-void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)
-{
-    /*  // 创建管线 */
-    if (this->_pipelines.find(pipelineName) != this->_pipelines.end())
-    {
-        this->_Log("createPipeline:name already exists");
-        return;
-    }
-    /*  // 通过name解析出pipeline的关键信息
-     // 哈希 有序 */
-    std::unordered_map<std::string, std::string> properties;
-    /* // 创建字符串流对象，将输入字符串包装成流 */
-    std::stringstream ss(pipelineName);
-    std::string token;
-    while (std::getline(ss, token, '|'))
-    {
-        /*  // 4. 在token中查找冒号的位置 */
-        size_t colon_pos = token.find(':');
-        /*  // 5. 如果找到冒号 */
-        if (colon_pos != std::string::npos)
-        {
-            /*  // 6. 提取冒号前的部分作为key */
-            std::string key = token.substr(0, colon_pos);
-            std::string value = token.substr(colon_pos + 1);
-            properties[key] = value;
-            std::cout << "createPipeline:key: " << key << " value: " << value << std::endl;
-        }
-    }
-    std::cout << "createPipeline:name: " << pipelineName << std::endl;
-    if (properties.find("vert") == properties.end())
-    {
-        this->_Log("createPipeline:vert or frag not found");
-        return;
-    }
-    if (properties.find("frag") == properties.end())
-    {
-        this->_Log("createPipeline:frag not found");
-        return;
-    }
-    std::string shaderVert = properties["vert"];
-    std::string shaderFrag = properties["frag"];
-    // std::cout << "createPipeline:vert: " << shaderVert << std::endl;
-    // std::cout << "createPipeline:frag: " << shaderFrag << std::endl;
-    /* // 先检测shader */
-    if (this->_shaders.find(shaderVert) == this->_shaders.end())
-    {
-        std::cout << "createPipeline:vert not found:" << shaderVert << std::endl;
-        return;
-    }
+// void GfxRenderer::createPipeline(std::string passName, std::string pipelineName)
+// {
+//     /*  // 创建管线 */
+//     if (this->_pipelines.find(pipelineName) != this->_pipelines.end())
+//     {
+//         this->_Log("createPipeline:name already exists");
+//         return;
+//     }
+//     /*  // 通过name解析出pipeline的关键信息
+//      // 哈希 有序 */
+//     std::unordered_map<std::string, std::string> properties;
+//     /* // 创建字符串流对象，将输入字符串包装成流 */
+//     std::stringstream ss(pipelineName);
+//     std::string token;
+//     while (std::getline(ss, token, '|'))
+//     {
+//         /*  // 4. 在token中查找冒号的位置 */
+//         size_t colon_pos = token.find(':');
+//         /*  // 5. 如果找到冒号 */
+//         if (colon_pos != std::string::npos)
+//         {
+//             /*  // 6. 提取冒号前的部分作为key */
+//             std::string key = token.substr(0, colon_pos);
+//             std::string value = token.substr(colon_pos + 1);
+//             properties[key] = value;
+//             std::cout << "createPipeline:key: " << key << " value: " << value << std::endl;
+//         }
+//     }
+//     std::cout << "createPipeline:name: " << pipelineName << std::endl;
+//     if (properties.find("vert") == properties.end())
+//     {
+//         this->_Log("createPipeline:vert or frag not found");
+//         return;
+//     }
+//     if (properties.find("frag") == properties.end())
+//     {
+//         this->_Log("createPipeline:frag not found");
+//         return;
+//     }
+//     std::string shaderVert = properties["vert"];
+//     std::string shaderFrag = properties["frag"];
+//     // std::cout << "createPipeline:vert: " << shaderVert << std::endl;
+//     // std::cout << "createPipeline:frag: " << shaderFrag << std::endl;
+//     /* // 先检测shader */
+//     if (this->_shaders.find(shaderVert) == this->_shaders.end())
+//     {
+//         std::cout << "createPipeline:vert not found:" << shaderVert << std::endl;
+//         return;
+//     }
 
-    if (this->_shaders.find(shaderFrag) == this->_shaders.end())
-    {
-        std::cout << "createPipeline:frag not found:" << shaderFrag << std::endl;
-        return;
-    }
-    /*  // 创建管线 */
-    GfxPipeline *pipeline = new GfxPipeline(pipelineName, this->_context);
-    pipeline->create(this->_passes[passName], this->_shaders[shaderVert], this->_shaders[shaderFrag], properties);
-    this->_pipelines[pipelineName] = pipeline;
-}
+//     if (this->_shaders.find(shaderFrag) == this->_shaders.end())
+//     {
+//         std::cout << "createPipeline:frag not found:" << shaderFrag << std::endl;
+//         return;
+//     }
+//     /*  // 创建管线 */
+//     GfxPipeline *pipeline = new GfxPipeline(pipelineName, this->_context);
+//     pipeline->create(this->_passes[passName], this->_shaders[shaderVert], this->_shaders[shaderFrag], properties);
+//     this->_pipelines[pipelineName] = pipeline;
+// }
 
 void GfxRenderer::createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct)
 {
@@ -216,7 +307,6 @@ void GfxRenderer::createTexture(std::string textureUuid, uint32_t width, uint32_
         // std::cout << "createGfxTexture: " << textureUuid << std::endl;
     }
 }
-
 void GfxRenderer::destroyTexture(std::string textureUuid)
 {
     if (this->_textures.find(textureUuid) != this->_textures.end())
@@ -331,54 +421,114 @@ void GfxRenderer::resetRendererState()
 
 void GfxRenderer::createObject(std::string id, std::string passName, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
 {
-    if (this->_objects.find(id) != this->_objects.end())
-    {
-        this->_Log("createGfxObject:id already exists");
-        return;
-    }
-    GfxObject *object = new GfxObject(this->_context);
-    if(this->_pipelines.find("ui-mask.mtl") == this->_pipelines.end()){
-        this->_Log("createGfxObject:ui-mask pipeline not found,Currently, creation is not supported");
-        return;
-    }
-    object->setUIMaskPipeline(this->_pipelines["ui-mask.mtl"]);
-    object->setVertexs(points, colors, normals, uvs, indices);
-    this->_objects[id] = object;
-    this->_queues[passName]->submit(object);
+    // if (this->_objects.find(id) != this->_objects.end())
+    // {
+    //     this->_Log("createGfxObject:id already exists");
+    //     return;
+    // }
+    // GfxObject *object = new GfxObject(this->_context);
+    // if(this->_pipelines.find("ui-mask.mtl") == this->_pipelines.end()){
+    //     this->_Log("createGfxObject:ui-mask pipeline not found,Currently, creation is not supported");
+    //     return;
+    // }
+    // object->setUIMaskPipeline(this->_pipelines["ui-mask.mtl"]);
+    // object->setVertexs(points, colors, normals, uvs, indices);
+    // this->_objects[id] = object;
+    // this->_queues[passName]->submit(object);
 
-    if (this->_passes.find(passName) != this->_passes.end())
-    {
+    // if (this->_passes.find(passName) != this->_passes.end())
+    // {
 
-        object->setPass(this->_passes[passName]);
-    }
-    else
-    {
-        this->_Log("createGfxObject:renderPassType not found,Currently, creation is not supported");
-    }
-    /*  if (this->_pipelines.find(pipelineType) == this->_pipelines.end())
-      {
-          this->_Log("createGfxObject:pipelineType not found,Currently, creation is not supported");
-          return;
-      }
-      else
-      {
-          object->setPipeline(this->_pipelines[pipelineType]);
-      }*/
+    //     object->setPass(this->_passes[passName]);
+    // }
+    // else
+    // {
+    //     this->_Log("createGfxObject:renderPassType not found,Currently, creation is not supported");
+    // }
+    // /*  if (this->_pipelines.find(pipelineType) == this->_pipelines.end())
+    //   {
+    //       this->_Log("createGfxObject:pipelineType not found,Currently, creation is not supported");
+    //       return;
+    //   }
+    //   else
+    //   {
+    //       object->setPipeline(this->_pipelines[pipelineType]);
+    //   }*/
 }
-/* // void GfxRenderer::resetGfxObjectRendererState(std::string id, std::string renderPassType, std::string pipelineType)
-// {
-//     this->_Log("Currently not supported");
-// } */
-void GfxRenderer::destroyObject(std::string id)
+void GfxRenderer::createUIObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
 {
     if (this->_objects.find(id) != this->_objects.end())
     {
-        std::cout << "destroyGfxObject:id:aaaaaaaaaa" << id << std::endl;
-        GfxObject *object = this->_objects[id];
-        object->destroy();
-        delete object;
-        object = nullptr;
-        this->_objects.erase(id);
+        std::cerr << "GfxRenderer: createUIObject:id already exists" << std::endl;
+        return;
+    }
+    GfxObject *object = new GfxObject(GfxObjectType::UI, this->_context);
+    object->setVertexs(points, colors, normals, uvs, indices);
+    this->_objects[id] = object;
+    // object->setUIMaskPipeline(this->_pipelines["ui-mask.mtl"]);
+    // this->_queues["ui-pass"]->submit(object);
+}
+void GfxRenderer::createUIMaskObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
+{
+    if (this->_objects.find(id) != this->_objects.end())
+    {
+        std::cerr << "GfxRenderer: createUIMaskObject:id already exists" << std::endl;
+        return;
+    }
+    GfxObject *object = new GfxObject(GfxObjectType::UI_MASK, this->_context);
+    object->setVertexs(points, colors, normals, uvs, indices);
+    this->_objects[id] = object;
+    // object->setUIMaskPipeline(this->_pipelines["ui-mask.mtl"]);
+    // this->_queues["ui-pass"]->submit(object);
+}
+void GfxRenderer::setObjectPass(std::string id, std::string pass)
+{
+    if (this->_objects.find(id) == this->_objects.end())
+    {
+        std::cerr << "GfxRenderer: setObjectPass:object id not found" << std::endl;
+        return;
+    }
+    if (this->_passes.find(pass) == this->_passes.end())
+    {
+        std::cerr << "GfxRenderer: setObjectPass:pass not found" << std::endl;
+        return;
+    }
+    this->_objects[id]->setPass(this->_passes[pass]);
+}
+
+void GfxRenderer::setObjectPipeline(std::string id, std::string pipeline)
+{
+    if (this->_objects.find(id) == this->_objects.end())
+    {
+        std::cerr << "GfxRenderer: setObjectPipeline:object id not found" << std::endl;
+        return;
+    }
+    if (this->_pipelines.find(pipeline) == this->_pipelines.end())
+    {
+        std::cerr << "GfxRenderer: setObjectPipeline:pipeline not found" << std::endl;
+        return;
+    }
+    this->_objects[id]->setPipeline(this->_pipelines[pipeline]);
+}
+void GfxRenderer::setObjectTexture(const std::string &id, const std::string &texture)
+{
+    if (this->_objects.find(id) != this->_objects.end())
+    {
+        if (this->_textures.find(texture) == this->_textures.end())
+        {
+            this->_Log("setObjectTexture:texture not found");
+            return;
+        }
+        this->_objects[id]->setTexture(this->_textures[texture]);
+        return;
+    }
+}
+void GfxRenderer::setObjectColor(std::string id, float r, float g, float b, float a)
+{
+    if (this->_objects.find(id) != this->_objects.end())
+    {
+        this->_objects[id]->setColor(r, g, b, a);
+        return;
     }
 }
 void GfxRenderer::setObjectModelMatrix(std::string id, std::array<float, 16> modelMatrix)
@@ -405,65 +555,31 @@ void GfxRenderer::setObjectProjMatrix(std::string id, std::array<float, 16> proj
         return;
     }
 }
-void GfxRenderer::setObjectTexture(const std::string &id, const std::string &texture)
+void GfxRenderer::destroyObject(std::string id)
 {
     if (this->_objects.find(id) != this->_objects.end())
     {
-        if (this->_textures.find(texture) == this->_textures.end())
-        {
-            this->_Log("setObjectTexture:texture not found");
-            return;
-        }
-        this->_objects[id]->setTexture(this->_textures[texture]);
-        return;
-    }
-}
-void GfxRenderer::setObjectColor(std::string id, float r, float g, float b, float a)
-{
-    if (this->_objects.find(id) != this->_objects.end())
-    {
-        this->_objects[id]->setColor(r, g, b, a);
-        return;
-    }
-}
-void GfxRenderer::setObjectPipeline(std::string id, std::string pipeline)
-{
-    if (this->_objects.find(id) == this->_objects.end())
-    {
-        this->_Log("setObjectPipeline:id not found");
-        return;
-    }
-    if (this->_pipelines.find(pipeline) == this->_pipelines.end())
-    {
-        /* // this->_Log("setObjectPipeline:pipeline not found");
-        // return; */
-    }
-    this->_objects[id]->setPipeline(this->_pipelines[pipeline]);
-    // std::cout << "setObjectPipeline:id:" << id << " pipeline:" << pipeline << std::endl;
-    return;
-}
-void GfxRenderer::addUIObjectMask(std::string id, std::string maskId, std::vector<float> mask)
-{
-    if (this->_objects.find(id) != this->_objects.end())
-    {
-        this->_objects[id]->addUIMask(maskId, mask);
-        return;
+        std::cout << "destroyGfxObject:id:aaaaaaaaaa" << id << std::endl;
+        GfxObject *object = this->_objects[id];
+        object->destroy();
+        delete object;
+        object = nullptr;
+        this->_objects.erase(id);
     }
 }
 
 void GfxRenderer::submitObjectRender(std::string id)
 {
-    // std::cout << "renderer submit   :" << id << std::endl;
     if (this->_objects.find(id) == this->_objects.end())
     {
-        this->_Log("submit:id not found");
+        std::cerr << "GfxRenderer submitObjectRender:id not found" << std::endl;
         return;
     }
     GfxObject *object = this->_objects[id];
     GfxPass *pass = object->pass();
     if (pass == nullptr || this->_queues.find(pass->name()) == this->_queues.end())
     {
-        this->_Log("submit:pass not found");
+        std::cerr << "GfxRenderer submitObjectRender:pass not found" << std::endl;
         return;
     }
     this->_queues[pass->name()]->submit(object);

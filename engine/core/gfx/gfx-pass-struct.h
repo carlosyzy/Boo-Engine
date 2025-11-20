@@ -101,6 +101,10 @@ struct GfxPassAttachment
 struct GfxPassStruct
 {
 	/**
+	 * 渲染 pass 名称
+	 */
+	std::string name = "";
+	/**
 	 * 是否可开启MSAA
 	 */
 	bool canMSAA = false;

@@ -8,8 +8,10 @@
 UIMask::UIMask(Node *node, std::string uuid) : Component(node, uuid)
 {
     this->_name = "UIMask";
-    //默认裁剪区域为整个UI对象
-    GfxMgr::getInstance()->addUIObjectMask(this->_node->getUuid(), this->_uuid, {0.0f, 0.0f, 1.0f, 1.0f, 0.0f});
+    // 默认裁剪区域为整个UI对象
+    // GfxMgr::getInstance()->createUIObject(this->_uuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
+    // GfxMgr::getInstance()->setObjectPass(this->_uuid, "ui");
+    // GfxMgr::getInstance()->setObjectPipeline(this->_uuid, "ui.mtl");
 }
 void UIMask::update(float deltaTime)
 {
@@ -22,9 +24,13 @@ void UIMask::lateUpdate(float deltaTime)
 void UIMask::render()
 {
     Component::render();
-    //提交遮罩状态到渲染器
-    // GfxMgr::getInstance()->setMask(this->_node->getGlobalPosition(), this->_node->getGlobalScale());
-
+    // 提交遮罩状态到渲染器
+    // GfxMgr::getInstance()->submitObjectRender(this->_uuid);
+}
+void UIMask::lateRender()
+{
+    Component::lateRender();
+    // GfxMgr::getInstance()->submitObjectRender(this->_uuid);
 }
 void UIMask::destroy()
 {

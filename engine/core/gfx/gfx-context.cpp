@@ -27,26 +27,25 @@ void GfxContext::init()
     this->_createSwapChainKHR();
     this->_createImageViews();
     this->_createSyncObjects();
-    this->_createMsaaAttachmentTexture();
-
-
-    const std::vector<VkFormat> candidates = {
-        VK_FORMAT_D32_SFLOAT_S8_UINT,    // 32位深度 + 8位模板
-        VK_FORMAT_D24_UNORM_S8_UINT,     // 24位深度 + 8位模板
-        VK_FORMAT_D16_UNORM_S8_UINT,     // 16位深度 + 8位模板
-        VK_FORMAT_D32_SFLOAT,            // 只有深度（无模板）
-        VK_FORMAT_D16_UNORM              // 只有深度（无模板）
-    };
+    // this->_createMsaaAttachmentTexture();
     
-    for (VkFormat format : candidates) {
-        VkFormatProperties props;
-        vkGetPhysicalDeviceFormatProperties(this->_physicalDevice, format, &props);
+    // const std::vector<VkFormat> candidates = {
+    //     VK_FORMAT_D32_SFLOAT_S8_UINT,    // 32位深度 + 8位模板
+    //     VK_FORMAT_D24_UNORM_S8_UINT,     // 24位深度 + 8位模板
+    //     VK_FORMAT_D16_UNORM_S8_UINT,     // 16位深度 + 8位模板
+    //     VK_FORMAT_D32_SFLOAT,            // 只有深度（无模板）
+    //     VK_FORMAT_D16_UNORM              // 只有深度（无模板）
+    // };
+    
+    // for (VkFormat format : candidates) {
+    //     VkFormatProperties props;
+    //     vkGetPhysicalDeviceFormatProperties(this->_physicalDevice, format, &props);
         
-        // 检查是否支持作为深度模板附件
-        if (props.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
-            std::cout << "Found supported depth stencil format: " << format << std::endl;
-        }
-    }
+    //     // 检查是否支持作为深度模板附件
+    //     if (props.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+    //         std::cout << "Found supported depth stencil format: " << format << std::endl;
+    //     }
+    // }
 
 }
 void GfxContext::_createInstance()
@@ -398,12 +397,12 @@ void GfxContext::resetSwapChain()
     this->_createSwapChainKHR();
     this->_createImageViews();
     this->_createSyncObjects();
-    this->_createMsaaAttachmentTexture();
+    // this->_createMsaaAttachmentTexture();
 }
 
 void GfxContext::cleanSwapChain()
 {
-    this->_cleanMsaaAttachmentTexture();
+    // this->_cleanMsaaAttachmentTexture();
     this->_cleanSyncObjects();
     this->_cleanImageViews();
     this->_cleanSwapChainKHR();
@@ -652,42 +651,42 @@ void GfxContext::_cleanSyncObjects()
     }
     this->_renderFinishedSemaphores.clear();
 }
-/**
- * @brief 创建MSAA附件纹理
- *
- */
-void GfxContext::_createMsaaAttachmentTexture()
-{
-    this->_colorMsaaTexture = new GfxTexture(this);
-    this->_colorMsaaTexture->createImage(this->_swapChainExtent.width, this->_swapChainExtent.height, this->_swapChainImageFormat, VK_IMAGE_TILING_OPTIMAL,
-                                         VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT|VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, MsaaSamples);
-    std::cout << "this->_colorMsaaTexture createImage end" << std::endl;
-    this->_colorMsaaTexture->createImageView(this->_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
-    std::cout << "this->_colorMsaaTexture createImageView end" << std::endl;
-    this->_depthMsaaTexture = new GfxTexture(this);
-    this->_depthMsaaTexture->createImage(this->_swapChainExtent.width, this->_swapChainExtent.height, VK_FORMAT_D32_SFLOAT, VK_IMAGE_TILING_OPTIMAL,
-                                         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, MsaaSamples);
-    this->_depthMsaaTexture->createImageView(VK_FORMAT_D32_SFLOAT, VK_IMAGE_ASPECT_DEPTH_BIT);
-}
-/**
- * @brief 清理MSAA附件纹理
- *
- */
-void GfxContext::_cleanMsaaAttachmentTexture()
-{
-    if (this->_colorMsaaTexture != nullptr)
-    {
-        delete this->_colorMsaaTexture;
-        this->_colorMsaaTexture = nullptr;
-    }
-    if (this->_depthMsaaTexture != nullptr)
-    {
-        delete this->_depthMsaaTexture;
-        this->_depthMsaaTexture = nullptr;
-    }
-}
+// /**
+//  * @brief 创建MSAA附件纹理
+//  *
+//  */
+// void GfxContext::_createMsaaAttachmentTexture()
+// {
+//     this->_colorMsaaTexture = new GfxTexture(this);
+//     this->_colorMsaaTexture->createImage(this->_swapChainExtent.width, this->_swapChainExtent.height, this->_swapChainImageFormat, VK_IMAGE_TILING_OPTIMAL,
+//                                          VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT|VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+//                                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, MsaaSamples);
+//     std::cout << "this->_colorMsaaTexture createImage end" << std::endl;
+//     this->_colorMsaaTexture->createImageView(this->_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+//     std::cout << "this->_colorMsaaTexture createImageView end" << std::endl;
+//     this->_depthMsaaTexture = new GfxTexture(this);
+//     this->_depthMsaaTexture->createImage(this->_swapChainExtent.width, this->_swapChainExtent.height, VK_FORMAT_D32_SFLOAT, VK_IMAGE_TILING_OPTIMAL,
+//                                          VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+//                                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, MsaaSamples);
+//     this->_depthMsaaTexture->createImageView(VK_FORMAT_D32_SFLOAT, VK_IMAGE_ASPECT_DEPTH_BIT);
+// }
+// /**
+//  * @brief 清理MSAA附件纹理
+//  *
+//  */
+// void GfxContext::_cleanMsaaAttachmentTexture()
+// {
+//     if (this->_colorMsaaTexture != nullptr)
+//     {
+//         delete this->_colorMsaaTexture;
+//         this->_colorMsaaTexture = nullptr;
+//     }
+//     if (this->_depthMsaaTexture != nullptr)
+//     {
+//         delete this->_depthMsaaTexture;
+//         this->_depthMsaaTexture = nullptr;
+//     }
+// }
 
 void GfxContext::frameFencesPrepare(size_t currentFrame)
 {

@@ -132,13 +132,13 @@ private:
     void _createSyncObjects();
     void _cleanSyncObjects();
 
-    /**
-     * 多重采样-颜色附件贴图和深度附件贴图
-     */
-    GfxTexture *_colorMsaaTexture;
-    GfxTexture *_depthMsaaTexture;
-    void _createMsaaAttachmentTexture();
-    void _cleanMsaaAttachmentTexture();
+    // /**
+    //  * 多重采样-颜色附件贴图和深度附件贴图
+    //  */
+    // GfxTexture *_colorMsaaTexture;
+    // GfxTexture *_depthMsaaTexture;
+    // void _createMsaaAttachmentTexture();
+    // void _cleanMsaaAttachmentTexture();
     
 
     QueueFamilyIndices _findQueueFamilies(VkPhysicalDevice device);
@@ -196,14 +196,14 @@ public:
     {
         return this->_descriptorPool;
     }
-    GfxTexture *getColorMsaaTexture() const
-    {
-        return this->_colorMsaaTexture;
-    }
-    GfxTexture *getDepthMsaaTexture() const
-    {
-        return this->_depthMsaaTexture;
-    }
+    // GfxTexture *getColorMsaaTexture() const
+    // {
+    //     return this->_colorMsaaTexture;
+    // }
+    // GfxTexture *getDepthMsaaTexture() const
+    // {
+    //     return this->_depthMsaaTexture;
+    // }
 
     ~GfxContext();
 };

@@ -1,39 +1,36 @@
 #include "gfx-object.h"
+#include "gfx-object-struct.h"
 #include "gfx-pipeline.h"
 #include "gfx-texture.h"
 #include "gfx-mgr.h"
 #include "gfx-context.h"
 #include "../../boo.h"
 
-GfxObject::GfxObject(GfxContext *context) : _color{1.0f, 1.0f, 1.0f, 1.0f}
+GfxObject::GfxObject(GfxObjectType type, GfxContext *context) : _type(type), _color{1.0f, 1.0f, 1.0f, 1.0f}
 {
     this->_context = context;
     this->_pipeline = nullptr;
-    this->_texture = nullptr;
     this->_pass = nullptr;
+    this->_texture = nullptr;
     this->_createUniformBuffers();
     this->_updateProjMatUniformBuffer();
     this->_updateViewMatUniformBuffer();
-
-    // ===== 测试遮罩：添加一个矩形遮罩区域 =====
-    // 坐标系统：屏幕中心为原点 (0, 0)，Y 轴向上
-    // 暂时禁用测试遮罩，调试完成后再启用
-    // 矩形：屏幕中心 200x200 像素矩形（-100 到 100）
-
-    std::vector<float> testMaskRect = {
-        // 第一个三角形（左下、右下、左上）
-        -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // 左下角
-        0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  // 右下角
-        -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  // 左上角
-        // 第二个三角形（右下、右上、左上）
-        0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // 右下角
-        0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  // 右上角
-        -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // 左上角
-    };
-    // this->addUIMask("test_rect_mask", testMaskRect);
-    std::cout << "GfxObject: Test mask - Center 200x200 rect (-100,-100) to (100,100)" << std::endl;
-
-    std::cout << "GfxObject: Test mask DISABLED for debugging" << std::endl;
+    // // ===== 测试遮罩：添加一个矩形遮罩区域 =====
+    // // 坐标系统：屏幕中心为原点 (0, 0)，Y 轴向上
+    // // 暂时禁用测试遮罩，调试完成后再启用
+    // // 矩形：屏幕中心 200x200 像素矩形（-100 到 100）
+    // std::vector<float> testMaskRect = {
+    //     // 第一个三角形（左下、右下、左上）
+    //     -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // 左下角
+    //     0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  // 右下角
+    //     -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  // 左上角
+    //     // 第二个三角形（右下、右上、左上）
+    //     0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // 右下角
+    //     0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  // 右上角
+    //     -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // 左上角
+    // };
+    // // this->addUIMask("test_rect_mask", testMaskRect);
+    // std::cout << "GfxObject: Test mask - Center 200x200 rect (-100,-100) to (100,100)" << std::endl;
 }
 
 void GfxObject::_createUniformBuffers()
@@ -43,26 +40,22 @@ void GfxObject::_createUniformBuffers()
     this->_uniformBuffersMemory.resize(swapChainSize);
     this->_uniformBuffersMapped.resize(swapChainSize);
     VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-
     for (size_t i = 0; i < swapChainSize; i++)
     {
-        /*  // 创建缓冲区 */
+        // 创建缓冲区
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
         bufferInfo.size = bufferSize;
         bufferInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
         if (vkCreateBuffer(this->_context->getVkDevice(), &bufferInfo, nullptr, &this->_uniformBuffers[i]) != VK_SUCCESS)
         {
             throw std::runtime_error("Failed to create uniform buffer!");
         }
-
-        /*  // 获取内存需求 */
+        // 获取内存需求
         VkMemoryRequirements memRequirements;
         vkGetBufferMemoryRequirements(this->_context->getVkDevice(), this->_uniformBuffers[i], &memRequirements);
-
-        /*  // 分配内存 */
+        // 分配内存
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
@@ -74,20 +67,15 @@ void GfxObject::_createUniformBuffers()
         {
             throw std::runtime_error("Failed to allocate uniform buffer memory!");
         }
-        /* // 绑定内存 */
+        // 绑定内存
         vkBindBufferMemory(this->_context->getVkDevice(), this->_uniformBuffers[i], this->_uniformBuffersMemory[i], 0);
-        /* // 映射内存 */
+        // 映射内存
         vkMapMemory(this->_context->getVkDevice(), this->_uniformBuffersMemory[i], 0, bufferSize, 0, &this->_uniformBuffersMapped[i]);
     }
-
-    /* // this->_Log(" success..."); */
 }
 
-void GfxObject::setPass(GfxPass *pass)
-{
-    this->_pass = pass;
-}
-void GfxObject::setVertexs(std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
+
+void GfxObject::setVertexs(std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
 {
     /* // 等待设备空闲 */
     vkDeviceWaitIdle(this->_context->getVkDevice());
@@ -154,16 +142,16 @@ void GfxObject::setVertexs(std::vector<float> points, std::vector<float> colors,
         indices.size() * sizeof(uint32_t),
         indices.data());
 }
-
+void GfxObject::setPass(GfxPass *pass)
+{
+    this->_pass = pass;
+}
 void GfxObject::setPipeline(GfxPipeline *pipeline)
 {
     this->_pipeline = pipeline;
     this->_updateDescriptorSet();
 }
-void GfxObject::setUIMaskPipeline(GfxPipeline *pipelineMask)
-{
-    this->_pipelineMask = pipelineMask;
-}
+
 
 void GfxObject::setColor(float r, float g, float b, float a)
 {
@@ -195,17 +183,10 @@ void GfxObject::setProjMatrix(std::array<float, 16> &mat)
     // this->_projMatrix = mat;
     // this->_updateProjMatUniformBuffer();
 }
-void GfxObject::addUIMask(std::string maskId, std::vector<float> mask)
-{
-    if (mask.size() < 7)
-    {
-        std::cerr << "Invalid mask size!" << std::endl;
-        return;
-    }
-    this->_uiMasks[maskId] = mask;
-}
+
 /**
  * @brief 更新描述符集
+ *  描述图集公有化
  */
 void GfxObject::_updateDescriptorSet()
 {
@@ -312,7 +293,10 @@ void GfxObject::_cleanUniformBuffers()
     this->_uniformBuffersMemory.clear();
     this->_uniformBuffersMapped.clear();
 }
-
+/**
+ * @brief 更新模型矩阵到统一缓冲区
+ * 
+ */
 void GfxObject::_updateModelMatUniformBuffer()
 {
     if (this->_uniformBuffersMapped.empty())
@@ -323,7 +307,10 @@ void GfxObject::_updateModelMatUniformBuffer()
         memcpy(this->_uniformBuffersMapped[i], this->_modelMatrix.data(), sizeof(float) * 16);
     }
 }
-
+/**
+ * @brief 更新视图矩阵到统一缓冲区
+ * 后续会根据相机位置更新视图矩阵
+ */
 void GfxObject::_updateViewMatUniformBuffer()
 {
     if (this->_uniformBuffersMapped.empty())
@@ -335,6 +322,9 @@ void GfxObject::_updateViewMatUniformBuffer()
         memcpy((char *)this->_uniformBuffersMapped[i] + sizeof(float) * 16, this->_viewMatrix.data(), sizeof(float) * 16);
     }
 }
+/**
+ * @brief 更新投影矩阵到统一缓冲区
+ */
 void GfxObject::_updateProjMatUniformBuffer()
 {
     this->_projMatrix[0] = this->_projMatrix[5] = this->_projMatrix[10] = this->_projMatrix[15] = 1.0f;
@@ -356,127 +346,127 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     if (!this->_pipeline || this->_vertexBuffer == VK_NULL_HANDLE || this->_indexBuffer == VK_NULL_HANDLE)
         return;
 
-    // ===== 清理上一帧的临时遮罩 buffers =====
-    for (size_t i = 0; i < this->_maskTempBuffers.size(); i++)
-    {
-        if (this->_maskTempBuffers[i] != VK_NULL_HANDLE)
-        {
-            vkDestroyBuffer(this->_context->getVkDevice(), this->_maskTempBuffers[i], nullptr);
-        }
-        if (this->_maskTempMemories[i] != VK_NULL_HANDLE)
-        {
-            vkFreeMemory(this->_context->getVkDevice(), this->_maskTempMemories[i], nullptr);
-        }
-    }
-    this->_maskTempBuffers.clear();
-    this->_maskTempMemories.clear();
+    // // ===== 清理上一帧的临时遮罩 buffers =====
+    // for (size_t i = 0; i < this->_maskTempBuffers.size(); i++)
+    // {
+    //     if (this->_maskTempBuffers[i] != VK_NULL_HANDLE)
+    //     {
+    //         vkDestroyBuffer(this->_context->getVkDevice(), this->_maskTempBuffers[i], nullptr);
+    //     }
+    //     if (this->_maskTempMemories[i] != VK_NULL_HANDLE)
+    //     {
+    //         vkFreeMemory(this->_context->getVkDevice(), this->_maskTempMemories[i], nullptr);
+    //     }
+    // }
+    // this->_maskTempBuffers.clear();
+    // this->_maskTempMemories.clear();
 
-    VkBuffer maskVertexBuffer = VK_NULL_HANDLE;
-    VkDeviceMemory maskVertexMemory = VK_NULL_HANDLE;
+    // VkBuffer maskVertexBuffer = VK_NULL_HANDLE;
+    // VkDeviceMemory maskVertexMemory = VK_NULL_HANDLE;
 
-    std::vector<float> testMaskRect = {
-        -0.3f, 0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  /** @brief 左上 */
-        -0.3f, -0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, /** @brief 左下 */
-        0.3f, -0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,  /** @brief 右下 */
+    // std::vector<float> testMaskRect = {
+    //     -0.3f, 0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  /** @brief 左上 */
+    //     -0.3f, -0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, /** @brief 左下 */
+    //     0.3f, -0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,  /** @brief 右下 */
 
-        -0.3f, 0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, /** @brief 左上 */
-        0.3f, -0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, /** @brief 右下 */
-        0.3f, 0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,  /** @brief 右上 */
-    };
-    GfxMgr::getInstance()->createBuffer(
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-        &maskVertexBuffer,
-        &maskVertexMemory,
-        testMaskRect.size() * sizeof(float),
-        testMaskRect.data());
-    // 顶点缓冲区
+    //     -0.3f, 0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, /** @brief 左上 */
+    //     0.3f, -0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, /** @brief 右下 */
+    //     0.3f, 0.3f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,  /** @brief 右上 */
+    // };
+    // GfxMgr::getInstance()->createBuffer(
+    //     VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+    //     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+    //     &maskVertexBuffer,
+    //     &maskVertexMemory,
+    //     testMaskRect.size() * sizeof(float),
+    //     testMaskRect.data());
+    // // 顶点缓冲区
 
-    // 保存到成员变量，下一帧渲染时清理
-    this->_maskTempBuffers.push_back(maskVertexBuffer);
-    this->_maskTempMemories.push_back(maskVertexMemory);
+    // // 保存到成员变量，下一帧渲染时清理
+    // this->_maskTempBuffers.push_back(maskVertexBuffer);
+    // this->_maskTempMemories.push_back(maskVertexMemory);
 
-    // 决定是否使用遮罩：检查遮罩管线和遮罩数据是否存在
-    bool useMask = (this->_pipelineMask != nullptr && !this->_uiMasks.empty());
-    uint32_t stencilRef = useMask ? 1 : 0; // 有遮罩：reference=1，无遮罩：reference=0
-    useMask = true;
-    if (useMask)
-    {
-        // 绑定UI遮罩渲染管线（管线配置：compareOp=Always, passOp=Increment）
-        vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipelineMask->getVKPipeline());
+    // // 决定是否使用遮罩：检查遮罩管线和遮罩数据是否存在
+    // bool useMask = (this->_pipelineMask != nullptr && !this->_uiMasks.empty());
+    // uint32_t stencilRef = useMask ? 1 : 0; // 有遮罩：reference=1，无遮罩：reference=0
+    // useMask = true;
+    // if (useMask)
+    // {
+    //     // 绑定UI遮罩渲染管线（管线配置：compareOp=Always, passOp=Increment）
+    //     vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipelineMask->getVKPipeline());
 
-        // 绑定 descriptor sets（遮罩管线也需要，即使不使用纹理）
-        vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                this->_pipelineMask->getVKPipelineLayout(), 0, 1,
-                                &this->_descriptorSets[imageIndex], 0, nullptr);
+    //     // 绑定 descriptor sets（遮罩管线也需要，即使不使用纹理）
+    //     vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS,
+    //                             this->_pipelineMask->getVKPipelineLayout(), 0, 1,
+    //                             &this->_descriptorSets[imageIndex], 0, nullptr);
 
-        // 设置 Stencil 参数：写入模式
-        vkCmdSetStencilReference(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 1);
-        vkCmdSetStencilCompareMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
-        vkCmdSetStencilWriteMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);   // 写入所有位
+    //     // 设置 Stencil 参数：写入模式
+    //     vkCmdSetStencilReference(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 1);
+    //     vkCmdSetStencilCompareMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
+    //     vkCmdSetStencilWriteMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);   // 写入所有位
 
-        VkDeviceSize maskOffsets[1] = {0};
-        vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &maskVertexBuffer, maskOffsets);
-        // vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, maskOffsets);
-        // vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-        // 绘制遮罩（顶点数 = maskData.size() / 12）
-        // 每个顶点：position(3) + color(4) + normal(3) + uv(2) = 12 floats
-        // uint32_t vertexCount = static_cast<uint32_t>(testMaskRect.size() / 12);
-        vkCmdDraw(commandBuffers[imageIndex], 6, 1, 0, 0);
-        // vkCmdDrawIndexed(
-        //     commandBuffers[imageIndex],
-        //     this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
-        //     1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
-        //     0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
-        //     0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
-        //     0                 /* // 实例偏移 */
-        // );
+    //     VkDeviceSize maskOffsets[1] = {0};
+    //     vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &maskVertexBuffer, maskOffsets);
+    //     // vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, maskOffsets);
+    //     // vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+    //     // 绘制遮罩（顶点数 = maskData.size() / 12）
+    //     // 每个顶点：position(3) + color(4) + normal(3) + uv(2) = 12 floats
+    //     // uint32_t vertexCount = static_cast<uint32_t>(testMaskRect.size() / 12);
+    //     vkCmdDraw(commandBuffers[imageIndex], 6, 1, 0, 0);
+    //     // vkCmdDrawIndexed(
+    //     //     commandBuffers[imageIndex],
+    //     //     this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
+    //     //     1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
+    //     //     0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
+    //     //     0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
+    //     //     0                 /* // 实例偏移 */
+    //     // );
 
-        // // 遍历所有遮罩并绘制
-        // for (auto &[maskId, maskData] : this->_uiMasks)
-        // {
-        //     // 验证顶点数据大小：每个顶点需要 12 个浮点数
-        //     // position(3) + color(4) + normal(3) + uv(2) = 12 floats
-        //     if (maskData.size() < 12 || maskData.size() % 12 != 0)
-        //     {
-        //         std::cerr << "Mask '" << maskId << "' has invalid size: " << maskData.size()
-        //                   << " (must be multiple of 12)" << std::endl;
-        //         continue;
-        //     }
+    //     // // 遍历所有遮罩并绘制
+    //     // for (auto &[maskId, maskData] : this->_uiMasks)
+    //     // {
+    //     //     // 验证顶点数据大小：每个顶点需要 12 个浮点数
+    //     //     // position(3) + color(4) + normal(3) + uv(2) = 12 floats
+    //     //     if (maskData.size() < 12 || maskData.size() % 12 != 0)
+    //     //     {
+    //     //         std::cerr << "Mask '" << maskId << "' has invalid size: " << maskData.size()
+    //     //                   << " (must be multiple of 12)" << std::endl;
+    //     //         continue;
+    //     //     }
 
-        //     VkBuffer maskVertexBuffer = VK_NULL_HANDLE;
-        //     VkDeviceMemory maskVertexMemory = VK_NULL_HANDLE;
-        //     GfxMgr::getInstance()->createBuffer(
-        //         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-        //         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        //         &maskVertexBuffer,
-        //         &maskVertexMemory,
-        //         maskData.size() * sizeof(float),
-        //         maskData.data());
+    //     //     VkBuffer maskVertexBuffer = VK_NULL_HANDLE;
+    //     //     VkDeviceMemory maskVertexMemory = VK_NULL_HANDLE;
+    //     //     GfxMgr::getInstance()->createBuffer(
+    //     //         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+    //     //         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+    //     //         &maskVertexBuffer,
+    //     //         &maskVertexMemory,
+    //     //         maskData.size() * sizeof(float),
+    //     //         maskData.data());
 
-        //     // // 保存到成员变量，下一帧渲染时清理
-        //     // this->_maskTempBuffers.push_back(maskVertexBuffer);
-        //     // this->_maskTempMemories.push_back(maskVertexMemory);
+    //     //     // // 保存到成员变量，下一帧渲染时清理
+    //     //     // this->_maskTempBuffers.push_back(maskVertexBuffer);
+    //     //     // this->_maskTempMemories.push_back(maskVertexMemory);
 
-        //     // 绑定遮罩顶点缓冲区
-        //     VkDeviceSize maskOffsets[1] = {0};
-        //     // vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &maskVertexBuffer, maskOffsets);
-        //     vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, maskOffsets);
-        //     vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-        //     // 绘制遮罩（顶点数 = maskData.size() / 12）
-        //     // 每个顶点：position(3) + color(4) + normal(3) + uv(2) = 12 floats
-        //     uint32_t vertexCount = static_cast<uint32_t>(maskData.size() / 12);
-        //     // vkCmdDraw(commandBuffers[imageIndex], this->_indexSize, 1, 0, 0);
-        //     vkCmdDrawIndexed(
-        //         commandBuffers[imageIndex],
-        //         this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
-        //         1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
-        //         0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
-        //         0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
-        //         0                 /* // 实例偏移 */
-        //     );
-        // }
-    }
+    //     //     // 绑定遮罩顶点缓冲区
+    //     //     VkDeviceSize maskOffsets[1] = {0};
+    //     //     // vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &maskVertexBuffer, maskOffsets);
+    //     //     vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, maskOffsets);
+    //     //     vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+    //     //     // 绘制遮罩（顶点数 = maskData.size() / 12）
+    //     //     // 每个顶点：position(3) + color(4) + normal(3) + uv(2) = 12 floats
+    //     //     uint32_t vertexCount = static_cast<uint32_t>(maskData.size() / 12);
+    //     //     // vkCmdDraw(commandBuffers[imageIndex], this->_indexSize, 1, 0, 0);
+    //     //     vkCmdDrawIndexed(
+    //     //         commandBuffers[imageIndex],
+    //     //         this->_indexSize, /* // 只绘制3个索引（第一个三角形） */
+    //     //         1,                /* // 实例数 （2的话代表绘制2个实例，也就是绘制两次） */
+    //     //         0,                /* // 第一个顶点的索引 每个 UI 元素占用 6 个顶点 */
+    //     //         0,                /*  // 第一个实例的索引 从第 0 个实例开始绘制 */
+    //     //         0                 /* // 实例偏移 */
+    //     //     );
+    //     // }
+    // }
 
     // ===== 第二步：绘制 UI 内容 =====
     // 绑定 UI 渲染管线（管线配置：compareOp=Equal, passOp=Keep）
@@ -485,9 +475,9 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     // - 有遮罩：reference=1, 只在 Stencil=1 的遮罩区域绘制
     // - 无遮罩：reference=0, 在整个屏幕绘制（因为清除后 Stencil=0）
     vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipeline());
-    vkCmdSetStencilReference(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 1);
-    vkCmdSetStencilCompareMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
-    vkCmdSetStencilWriteMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0x00);   // 不写入模板（保持遮罩）
+    // vkCmdSetStencilReference(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 1);
+    // vkCmdSetStencilCompareMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
+    // vkCmdSetStencilWriteMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0x00);   // 不写入模板（保持遮罩）
 
     // 设置视口
     VkViewport _viewport{};
@@ -573,7 +563,7 @@ void GfxObject::clear()
     this->_maskTempBuffers.clear();
     this->_maskTempMemories.clear();
 
-    /*  // 销毁缓冲区 */
+    // /*  // 销毁缓冲区 */
     this->_cleanUniformBuffers();
 }
 void GfxObject::reset()

@@ -7,11 +7,16 @@
 #include <set>
 #include <map>
 #include <cstdint>
+#include "gfx-queue-struct.h"
+
 class GfxContext;
 class GfxObject;
 class GfxPass;
 class GfxTexture;
 struct GfxPassStruct;
+
+
+
 
 class GfxQueue
 {
@@ -19,6 +24,7 @@ private:
     std::string _name;
     GfxContext *_context;
     GfxPass *_pass;
+    GfxQueueRendererStatus _rendererStatus;
 
     // 渲染队列 ui统一在transparent队列
     // 不透明队列
@@ -50,6 +56,8 @@ private:
 public:
     GfxQueue(std::string name, GfxContext *context);
     void create(GfxPass *pass);
+    void add(GfxObject *object);
+    void remove(GfxObject *object);
     /**
      * ui 渲染通道队列顶点输入
      */

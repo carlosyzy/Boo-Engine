@@ -14,7 +14,7 @@ Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid)
 	// 创建Pass是在摄像机初始化的时候
 	// 创建Pipeline应该是渲染物体第一次调用的时候
 	GfxPipelineStruct uiPipelineStruct = {};
-	uiPipelineStruct.name = "ui";
+	uiPipelineStruct.name = "ui.mtl";
 	uiPipelineStruct.vert = std::filesystem::path("resources/shader/ui/ui.vert.spv").generic_string();
 	uiPipelineStruct.frag = std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string();
 	uiPipelineStruct.pass = "ui";
@@ -44,11 +44,11 @@ Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid)
 	uiPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
 	// 剔除模式 背面
 	uiPipelineStruct.cullMode = GfxPipelineCullMode::Back;
-	GfxMgr::getInstance()->createPipeline("ui.mtl", uiPipelineStruct);
+	GfxMgr::getInstance()->createPipeline(uiPipelineStruct.name, uiPipelineStruct);
 
 	// 模式ui 遮罩 模式为Fill 时 启用cullMode 为Back
 	GfxPipelineStruct uiMaskPipelineStruct = {};
-	uiMaskPipelineStruct.name = "ui-mask";
+	uiMaskPipelineStruct.name = "ui-mask.mtl";
 	uiMaskPipelineStruct.vert = std::filesystem::path("resources/shader/ui/ui-mask.vert.spv").generic_string();
 	uiMaskPipelineStruct.frag = std::filesystem::path("resources/shader/ui/ui-mask.frag.spv").generic_string();
 	uiMaskPipelineStruct.pass = "ui";
@@ -73,7 +73,7 @@ Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid)
 	uiMaskPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
 	// 剔除模式 关闭（遮罩是2D平面，不需要剔除）
 	uiMaskPipelineStruct.cullMode = GfxPipelineCullMode::None;
-	GfxMgr::getInstance()->createPipeline("ui-mask.mtl", uiMaskPipelineStruct);
+	GfxMgr::getInstance()->createPipeline(uiMaskPipelineStruct.name, uiMaskPipelineStruct);
 
 	this->_init();
 }

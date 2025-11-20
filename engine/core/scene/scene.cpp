@@ -49,6 +49,10 @@ void Scene::render()
 {
 	Node::render();
 }
+void Scene::lateRender()
+{
+	Node::lateRender();
+}
 void Scene::clearNodeFrameFlag()
 {
 	Node::clearNodeFrameFlag();

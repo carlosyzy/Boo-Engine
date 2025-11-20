@@ -1,4 +1,5 @@
 #include "gfx-queue.h"
+#include "gfx-queue-struct.h"
 #include "gfx-pass.h"
 #include "gfx-context.h"
 #include "gfx-object.h"
@@ -12,7 +13,6 @@ GfxQueue::GfxQueue(std::string name, GfxContext *context)
 void GfxQueue::create(GfxPass *pass)
 {
     this->_pass = pass;
-    
     this->_createBuffers();
 }
 /**
@@ -36,7 +36,6 @@ void GfxQueue::_createTextures()
     {
         
         VkFormat depthFormat = this->_pass->getAttachmentFormat(passStruct.depthAttachment.format);
-        std::cout << "depthAttachment.format: " << passStruct.depthAttachment.format << " depthFormat: " << depthFormat << std::endl;
         this->_depthTexture = new GfxTexture(this->_context);
         this->_depthTexture->createImage(width, height, depthFormat, VK_IMAGE_TILING_OPTIMAL,
                                          VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
@@ -95,7 +94,7 @@ void GfxQueue::_createFramebuffers()
 
         framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());   /* // 指定附着的个数 */
         framebufferInfo.pAttachments = attachments.data();                   /*  // 渲染流程对象用于描述附着信息的pAttachment数组 */
-        std::cout << "framebufferInfo.attachmentCount = " << framebufferInfo.attachmentCount << std::endl;
+        // std::cout << "framebufferInfo.attachmentCount = " << framebufferInfo.attachmentCount << std::endl;
         framebufferInfo.width = this->_context->getSwapChainExtent().width;   /*  // width和height用于指定帧缓冲的大小 */
         framebufferInfo.height = this->_context->getSwapChainExtent().height; /* // 交换链图像都是单层，layers设置为1 */
         framebufferInfo.layers = 1;
@@ -119,7 +118,6 @@ void GfxQueue::_createCommandBuffers()
     {
         throw std::runtime_error("Failed to allocate command buffers!");
     }
-    /*  // this->_Log("create commandBuffers success..."); */
 }
 
 void GfxQueue::submit(GfxObject *object)
@@ -154,13 +152,13 @@ void GfxQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &command
     }
     /*  // 绑定render pass */
     this->_beginBindRenderPass(imageIndex);
-    // std::cout << "render:queue pass" << std::endl;
-    /* // 更新渲染物体 */
-    for (auto object : this->_opaqueQueue)
-    {
-        // std::cout << "render:opaque" << std::endl;
-        object->render(imageIndex, this->_commandBuffers);
-    }
+    // // std::cout << "render:queue pass" << std::endl;
+    // /* // 更新渲染物体 */
+    // for (auto object : this->_opaqueQueue)
+    // {
+    //     // std::cout << "render:opaque" << std::endl;
+    //     object->render(imageIndex, this->_commandBuffers);
+    // }
 
     for (auto object : this->_transparentQueue)
     {
@@ -168,6 +166,10 @@ void GfxQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &command
         object->render(imageIndex, this->_commandBuffers);
         /*  // 渲染透明物体 */
     }
+
+
+
+
 
     /*  // 渲染结束 */
     vkCmdEndRenderPass(this->_commandBuffers[imageIndex]);
@@ -195,19 +197,10 @@ void GfxQueue::_beginBindRenderPass(uint32_t imageIndex)
     renderPassInfo.renderArea.extent = this->_context->getSwapChainExtent();
 
     std::array<VkClearValue, 2> clearValues = {};      /*  // 至少4个，因为最高索引是3 */
-                                                       /*  // 设置颜色附件的清除值（索引0） */
-    clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}}; // 黑色
-                                                       /*  // 设置其他颜色附件的清除值（如果有，索引1、2等） */
-    // clearValues[1].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
-    /* // 设置深度模板附件的清除值（索引3） */
+    clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
     clearValues[1].depthStencil = {1.0f, 0}; /* // 深度=1.0f，模板=0 */
     renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
     renderPassInfo.pClearValues = clearValues.data();
-    /* // renderPassInfo.clearValueCount = 1;
-    // VkClearValue clearColor{};
-    // clearColor.color = {1.0f, 1.0f, 1.0f, 0.0f};
-    // renderPassInfo.pClearValues = &clearColor; */
-
     vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 

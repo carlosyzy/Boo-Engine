@@ -9,13 +9,24 @@ class GfxPipeline;
 class GfxTexture;
 class GfxContext;
 class GfxPass;
+enum class GfxObjectType;
+/**
+ * 渲染对象包含
+ * UI 对象
+ *   UI_MASK
+ *   UI_DEFAULT
+ * 3D对象
+ */
 
 class GfxObject
 {
 private:
+    /**
+     * @brief 渲染对象类型
+     */
+    GfxObjectType _type;
     GfxContext *_context;
     GfxPipeline *_pipeline;
-    GfxPipeline *_pipelineMask;
     GfxPass *_pass;
     GfxTexture *_texture;
 
@@ -41,9 +52,6 @@ private:
      */
     std::vector<VkBuffer> _maskTempBuffers;
     std::vector<VkDeviceMemory> _maskTempMemories;
-   
-
-
 
     int _indexSize;
     VkBuffer _vertexBuffer = VK_NULL_HANDLE; /* // 顶点数据Buffer */
@@ -73,17 +81,15 @@ private:
     void _Log(std::string msg);
 
 public:
-    GfxObject(GfxContext *context);
+    GfxObject(GfxObjectType type, GfxContext *context);
+    void setVertexs(std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices);
     void setPass(GfxPass *pass);
-    void setVertexs(std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices);
     void setPipeline(GfxPipeline *pipeline);
-    void setUIMaskPipeline(GfxPipeline *pipelineMask);
     void setColor(float r, float g, float b, float a);
     void setTexture(GfxTexture *texture);
     void setModelMatrix(std::array<float, 16> &mat);
     void setViewMatrix(std::array<float, 16> &mat);
     void setProjMatrix(std::array<float, 16> &mat);
-    void addUIMask(std::string maskId, std::vector<float> mask);
 
     void render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
     /**

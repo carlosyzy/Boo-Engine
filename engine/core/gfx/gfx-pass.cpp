@@ -14,7 +14,7 @@ void GfxPass::create(GfxPassStruct gfxPassStruct)
 }
 void GfxPass::_createVkRenderPass()
 {
-    this->_Log("create render pass start...");
+    
     VkSubpassDescription subpass{};
     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
     subpass.colorAttachmentCount = 1;
@@ -94,14 +94,15 @@ void GfxPass::_createVkRenderPass()
     renderPassInfo.dependencyCount = 1;
     renderPassInfo.pDependencies = &dependency;
 
-    std::cout << "renderPassInfo.attachmentCount = " << renderPassInfo.attachmentCount << std::endl;
 
     /*  // 创建渲染流程 */
     if (vkCreateRenderPass(this->_context->getVkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
     {
-        throw std::runtime_error("failed to create render pass!");
+        // throw std::runtime_error("failed to create render pass!");
+        std::cout << "GfxPass :create render pass failed " << this->_name << std::endl;
+        return;
     }
-    this->_Log("create render pass success...");
+    std::cout << "GfxPass :create render pass success " << this->_name << std::endl;
 }
 VkFormat GfxPass::getAttachmentFormat(uint32_t attachment)
 {

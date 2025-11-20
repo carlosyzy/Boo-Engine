@@ -37,7 +37,6 @@ void GfxPipeline::create(GfxPass *pass, GfxShader *vertexShader, GfxShader *frag
 
 void GfxPipeline::_createPipeline()
 {
-	std::cout << "create graphics pipeline start..." << std::endl;
 	// 第一步：初始化着色器模块 */
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 	/**
@@ -64,7 +63,6 @@ void GfxPipeline::_createPipeline()
 	// geomShaderStageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
 	// geomShaderStageInfo.module = shader->getGeomShaderModule();
 	// geomShaderStageInfo.pName = "main";
-	// std::cout << "create graphics pipeline : shader ok..." << std::endl;
 	shaderStages = {vertShaderStageInfo, fragShaderStageInfo};
 
 	// 第二步：初始化顶点输入
@@ -210,7 +208,6 @@ void GfxPipeline::_createPipeline()
 		depthStencil.back.compareMask = 0xFF;
 		depthStencil.back.writeMask = 0xFF;
 		depthStencil.back.reference = 1;
-		std::cout << this->_name << " pipeline depthStencil" << std::endl;
 	}
 
 	/* // 第七步：颜色缓和，片段着色器返回的颜色需要和帧缓冲中对应像素的颜色进行混合 */
@@ -266,7 +263,8 @@ void GfxPipeline::_createPipeline()
 	if (vkCreatePipelineLayout(this->_context->getVkDevice(), &pipelineLayoutInfo, nullptr, &this->_vkPipelineLayout) != VK_SUCCESS)
 	{
 		// throw std::runtime_error("failed to create pipeline layout!");
-		std::cout << "failed to create pipeline layout!" << std::endl;
+		std::cout << "GfxPipeline :create pipeline layout failed " << this->_name << std::endl;
+		
 		return;
 	}
 
@@ -290,80 +288,14 @@ void GfxPipeline::_createPipeline()
 
 	if (vkCreateGraphicsPipelines(this->_context->getVkDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &this->_vkPipeline) != VK_SUCCESS)
 	{
-		// throw std::runtime_error("Failed to create graphics pipeline!");
-		std::cout << "failed to create graphics pipeline!" << std::endl;
+		std::cout << "GfxPipeline :create pipeline failed " << this->_name << std::endl;
 		return;
 	}
-	std::cout << "create graphics pipeline " << this->_name << " success!" << std::endl;
+	std::cout << "GfxPipeline :create pipeline success " << this->_name << std::endl;
 }
-// /**
-//  * 初始化着色器阶段
-//  */
-// void GfxPipeline::_initShaderStage(std::vector<VkPipelineShaderStageCreateInfo> &shaderStages)
-// {
-// }
-
-// /**
-//  * 初始化深度测试
-//  */
-// void GfxPipeline::_initPipelineDepth(VkPipelineDepthStencilStateCreateInfo &depthStencil)
-// {
-// 	/* // this->_Log("initPipelineDepth"); */
-
-// 	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-// 	if (this->_pipelineState.find("DepthTest") != this->_pipelineState.end() && this->_pipelineState["DepthTest"] == "1")
-// 	{
-// 		depthStencil.depthTestEnable = VK_TRUE; /* // 禁用深度测试 */
-// 	}
-// 	else
-// 	{
-// 		depthStencil.depthTestEnable = VK_FALSE; /* // 禁止写入深度 */
-// 	}
-// 	if (this->_pipelineState.find("DepthWrite") != this->_pipelineState.end() && this->_pipelineState["DepthWrite"] == "1")
-// 	{
-// 		depthStencil.depthWriteEnable = VK_TRUE; /* // 禁用深度测试 */
-// 	}
-// 	else
-// 	{
-// 		depthStencil.depthWriteEnable = VK_FALSE; /* // 禁止写入深度 */
-// 	}
-// }
-// /**
-//  * 初始化颜色混合
-//  */
-// void GfxPipeline::_initPipelineColorBlend(VkPipelineColorBlendAttachmentState &colorBlendAttachment)
-// {
-// 	this->_Log("initPipelineColorBlend");
-
-// 	if (this->_pipelineState.find("Blend") != this->_pipelineState.end())
-// 	{
-// 		if (this->_pipelineState["Blend"] == "0")
-// 		{
-// 			colorBlendAttachment.blendEnable = VK_FALSE;
-// 			colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
-// 			colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
-// 			colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
-// 			colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-// 			colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-// 			colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
-// 			colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-// 		}
-// 		else if (this->_pipelineState["Blend"] == "1")
-// 		{
-// 			colorBlendAttachment.blendEnable = VK_TRUE;
-// 			colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-// 			colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-// 			colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
-// 			colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-// 			colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-// 			colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
-// 			colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-// 		}
-// 	}
-// }
-
 void GfxPipeline::_createDescriptorSetLayout()
 {
+	// 动态 UBO 研究
 	std::vector<VkDescriptorSetLayoutBinding> bindings;
 	/* // ubo缓冲区绑定 */
 	VkDescriptorSetLayoutBinding uboLayoutBinding{};
@@ -389,11 +321,10 @@ void GfxPipeline::_createDescriptorSetLayout()
 	if (vkCreateDescriptorSetLayout(this->_context->getVkDevice(),
 									&layoutInfo, nullptr, &this->_descriptorSetLayout) != VK_SUCCESS)
 	{
-		// throw std::runtime_error("failed to create object descriptor set layout!");
-		std::cout << "failed to create object descriptor set layout!" << std::endl;
+		std::cout << "GfxPipeline :create descriptor set layout failed " << this->_name << std::endl;
 		return;
 	}
-	std::cout << "create graphics pipeline : descriptorSetLayout ok..." << std::endl;
+	std::cout << "GfxPipeline :create descriptor set layout success " << this->_name << std::endl;
 }
 VkPolygonMode GfxPipeline::getPolygonMode(GfxPipelinePolygonMode polygonMode)
 {

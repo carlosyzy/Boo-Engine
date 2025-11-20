@@ -15,7 +15,7 @@ UIRenderer::UIRenderer(Node *node, std::string uuid) : Component(node, uuid)
 	this->_flag = static_cast<uint32_t>(UIFlag::UI_ALL);
 	this->_layer = NodeLayer::Node2D;
 	// 创建渲染物体
-	GfxMgr::getInstance()->createObject(this->_uuid, "ui", this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
+	GfxMgr::getInstance()->createUIObject(this->_uuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
 	this->updateModelMatrix();
 }
 
@@ -46,6 +46,8 @@ void UIRenderer::setMaterial(Material *mtl)
 	// std::string frag = std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string();
 	// std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + vert + "|frag:" + frag;
 	// GfxMgr::getInstance()->createPipeline("ui", pipeline);
+	GfxMgr::getInstance()->setObjectPass(this->_uuid, "ui");
+	// GfxMgr::getInstance()->setObjectPipeline(this->_uuid, "ui-mask.mtl");
 	GfxMgr::getInstance()->setObjectPipeline(this->_uuid, "ui.mtl");
 }
 void UIRenderer::setTexture(Texture *texture)
@@ -106,6 +108,10 @@ void UIRenderer::render()
 	}
 	// 提交渲染对象
 	GfxMgr::getInstance()->submitObjectRender(this->_uuid);
+}
+void UIRenderer::lateRender()
+{
+	Component::lateRender();
 }
 void UIRenderer::destroy()
 {

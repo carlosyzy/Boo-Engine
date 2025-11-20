@@ -87,6 +87,10 @@ void UILayoutHorizontal::render()
 {
     Component::render();
 }
+void UILayoutHorizontal::lateRender()
+{
+    Component::lateRender();
+}
 void UILayoutHorizontal::_clear()
 {
    

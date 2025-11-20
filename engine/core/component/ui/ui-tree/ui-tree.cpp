@@ -556,6 +556,12 @@ void UITree::render()
 {
     Component::render();
 }
+void UITree::lateRender()
+{
+    Component::lateRender();
+}
+
+
 
 void UITree::destroy()
 {

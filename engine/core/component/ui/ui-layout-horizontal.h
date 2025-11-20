@@ -31,6 +31,7 @@ public:
     void update(float deltaTime) override;
     void lateUpdate(float deltaTime) override;
     void render() override;
+     void lateRender() override;
     void destroy() override;
     ~UILayoutHorizontal();
 };
