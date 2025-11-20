@@ -159,7 +159,7 @@ void GfxQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &command
     // {
     //     // std::cout << "render:opaque" << std::endl;
     //     object->render(imageIndex, this->_commandBuffers);
-    // }
+    // }s
     VkCommandBuffer &commandBuffer = this->_commandBuffers[imageIndex];
 
     for (auto *object : this->_transparentQueue)
@@ -174,7 +174,7 @@ void GfxQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &command
             {
                 this->_stencilRef--;
             }
-            vkCmdSetStencilReference(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, this->_stencilRef);
+            vkCmdSetStencilReference(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, this->_stencilRef);  //增加和减少每次都是固定值1
             vkCmdSetStencilCompareMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
             vkCmdSetStencilWriteMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);   // 写入所有位
         }
