@@ -374,7 +374,7 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     // 决定是否使用遮罩：检查遮罩管线和遮罩数据是否存在
     bool useMask = (this->_pipelineMask != nullptr && !this->_uiMasks.empty());
     uint32_t stencilRef = useMask ? 1 : 0; // 有遮罩：reference=1，无遮罩：reference=0
-
+    useMask=false;
     if (useMask)
     {
         // 绑定UI遮罩渲染管线（管线配置：compareOp=Always, passOp=Increment）
@@ -471,8 +471,32 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     // 参数5：用于定义着色器变量gl_InstanceIndex的值
     // std::cout << "this->_indexSize1: " << this->_indexSize << std::endl;
     // Render scene */
+
+    VkBuffer maskVertexBuffer = VK_NULL_HANDLE;
+    VkDeviceMemory maskVertexMemory = VK_NULL_HANDLE;
+
+    std::vector<float> testMaskRect = {
+        -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  /** @brief 左上 */
+        -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, /** @brief 坐下 */
+        0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,  /** @brief 右下 */
+        0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,   /** @brief 右上 */
+    };
+    GfxMgr::getInstance()->createBuffer(
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+        &maskVertexBuffer,
+        &maskVertexMemory,
+        testMaskRect.size() * sizeof(float),
+        testMaskRect.data());
+        // 顶点缓冲区
+  
+    // 保存到成员变量，下一帧渲染时清理
+    this->_maskTempBuffers.push_back(maskVertexBuffer);
+    this->_maskTempMemories.push_back(maskVertexMemory);
+
+
     VkDeviceSize offsets[1] = {0};
-    vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
+    vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &maskVertexBuffer, offsets);
     vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
     /*    //  std::cout << "render:1111 "<< std::endl;
        // 绑定描述符集
