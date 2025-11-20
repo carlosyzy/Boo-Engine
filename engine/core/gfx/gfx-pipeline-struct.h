@@ -62,6 +62,10 @@ enum class GfxPipelineStencilOp
      * 测试通过：值-1
      */
     Decrement_Subtract = 4,
+    /**
+     * 测试通过：替换为参考值
+     */
+    Replace = 5,
 
 };
 enum class GfxPipelineColorBlendFactor

@@ -474,6 +474,10 @@ VkStencilOp GfxPipeline::getStencilOp(GfxPipelineStencilOp stencilOp)
 	{
 		return VK_STENCIL_OP_DECREMENT_AND_WRAP;
 	}
+	else if (stencilOp == GfxPipelineStencilOp::Replace)
+	{
+		return VK_STENCIL_OP_REPLACE;
+	}
 	return VK_STENCIL_OP_INVERT;
 }
 

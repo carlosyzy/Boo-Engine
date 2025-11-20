@@ -194,13 +194,13 @@ void GfxQueue::_beginBindRenderPass(uint32_t imageIndex)
     renderPassInfo.renderArea.offset = {0, 0};
     renderPassInfo.renderArea.extent = this->_context->getSwapChainExtent();
 
-    std::array<VkClearValue, 4> clearValues = {};      /*  // 至少4个，因为最高索引是3 */
+    std::array<VkClearValue, 2> clearValues = {};      /*  // 至少4个，因为最高索引是3 */
                                                        /*  // 设置颜色附件的清除值（索引0） */
     clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}}; // 黑色
                                                        /*  // 设置其他颜色附件的清除值（如果有，索引1、2等） */
-    clearValues[1].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    // clearValues[1].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
     /* // 设置深度模板附件的清除值（索引3） */
-    clearValues[2].depthStencil = {1.0f, 0}; /* // 深度=1.0f，模板=0 */
+    clearValues[1].depthStencil = {1.0f, 0}; /* // 深度=1.0f，模板=0 */
     renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
     renderPassInfo.pClearValues = clearValues.data();
     /* // renderPassInfo.clearValueCount = 1;

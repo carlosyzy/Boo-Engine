@@ -411,7 +411,7 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
                                 &this->_descriptorSets[imageIndex], 0, nullptr);
 
         // 设置 Stencil 参数：写入模式
-        vkCmdSetStencilReference(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, stencilRef);
+        vkCmdSetStencilReference(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 1);
         vkCmdSetStencilCompareMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
         vkCmdSetStencilWriteMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);   // 写入所有位
 
@@ -480,12 +480,12 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
 
     // ===== 第二步：绘制 UI 内容 =====
     // 绑定 UI 渲染管线（管线配置：compareOp=Equal, passOp=Keep）
-    vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipeline());
 
     // 设置 Stencil 参数：
     // - 有遮罩：reference=1, 只在 Stencil=1 的遮罩区域绘制
     // - 无遮罩：reference=0, 在整个屏幕绘制（因为清除后 Stencil=0）
-    vkCmdSetStencilReference(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, stencilRef);
+    vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipeline());
+    vkCmdSetStencilReference(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 1);
     vkCmdSetStencilCompareMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
     vkCmdSetStencilWriteMask(commandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0x00);   // 不写入模板（保持遮罩）
 

@@ -61,11 +61,11 @@ Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid)
 	uiMaskPipelineStruct.stencilFrontCompareOp = GfxPipelineCompareOp::Always;
 	uiMaskPipelineStruct.stencilFrontFailOp = GfxPipelineStencilOp::Keep;
 	uiMaskPipelineStruct.stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep;
-	uiMaskPipelineStruct.stencilFrontPassOp = GfxPipelineStencilOp::Increment_Add;
+	uiMaskPipelineStruct.stencilFrontPassOp = GfxPipelineStencilOp::Replace;
 	uiMaskPipelineStruct.stencilBackCompareOp = GfxPipelineCompareOp::Always;
 	uiMaskPipelineStruct.stencilBackFailOp = GfxPipelineStencilOp::Keep;
 	uiMaskPipelineStruct.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
-	uiMaskPipelineStruct.stencilBackPassOp = GfxPipelineStencilOp::Increment_Add;// Decrement_Subtract;
+	uiMaskPipelineStruct.stencilBackPassOp = GfxPipelineStencilOp::Replace;
 
 	// 颜色混合 关闭（只写Stencil）
 	uiMaskPipelineStruct.colorBlend = 0;
