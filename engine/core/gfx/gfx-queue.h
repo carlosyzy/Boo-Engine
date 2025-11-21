@@ -30,14 +30,14 @@ private:
 
     // 渲染队列 ui统一在transparent队列
     // 不透明队列
-    std::vector<GfxObject *> _opaqueQueue;
+    std::vector<GfxObject *> _queueOpaqueQueue;
     // 透明队列
-    std::vector<GfxObject *> _transparentQueue;
+    std::vector<GfxObject *> _queueTransparentQueue;
 
     /*  //帧缓冲区:它连接了渲染通道（Render Pass） 和交换链图像（Swap Chain Images） */
-    std::vector<VkFramebuffer> _framebuffers;
+    std::vector<VkFramebuffer> _queueFramebuffers;
     /* //命令缓冲区是用于记录和执行 GPU 命令的内存块。在 Vulkan 中，几乎所有渲染操作都需要通过命令缓冲区来执行。 */
-    std::vector<VkCommandBuffer> _commandBuffers;
+    std::vector<VkCommandBuffer> _queueCommandBuffers;
 
     GfxTexture *_colorTexture;
     GfxTexture *_depthTexture;
@@ -53,7 +53,8 @@ private:
     void _cleanCommandBuffers();
 
     void _beginBindRenderPass(uint32_t imageIndex);
-    void _Log(std::string msg);
+    void _renderObject(uint32_t imageIndex,GfxObject *object);
+    
 
 public:
     GfxQueue(std::string name, GfxContext *context);

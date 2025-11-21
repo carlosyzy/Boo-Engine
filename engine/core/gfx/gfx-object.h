@@ -120,11 +120,15 @@ public:
     void clear();
     void reset();
 
-    GfxPipeline *pipeline()
+    GfxPipeline *getPipeline()
     {
         return this->_pipeline;
     }
-    GfxPass *pass()
+    GfxTexture *getTexture()
+    {
+        return this->_texture;
+    }
+    GfxPass *getPass()
     {
         return this->_pass;
     }

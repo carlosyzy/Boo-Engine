@@ -521,7 +521,7 @@ void GfxRenderer::submitObjectRender(std::string id)
         return;
     }
     GfxObject *object = this->_objects[id];
-    GfxPass *pass = object->pass();
+    GfxPass *pass = object->getPass();
     if (pass == nullptr || this->_queues.find(pass->name()) == this->_queues.end())
     {
         std::cerr << "GfxRenderer submitObjectRender:pass not found" << std::endl;

@@ -17,6 +17,9 @@
 #include "component/component.h"
 #include "renderer/ui/ui-sprite.h"
 #include "renderer/ui/ui-text.h"
+#include "renderer/ui/ui-mask.h"
+
+
 
 #include "component/ui/ui-widget.h"
 #include "component/ui/ui-layout-horizontal.h"
@@ -76,6 +79,7 @@ void Game::_initComponents()
 	this->registerComponentClass<UIWidget>("UIWidget");
 	this->registerComponentClass<NodeTree>("NodeTree");
 	this->registerComponentClass<UILayoutHorizontal>("UILayoutHorizontal");
+	this->registerComponentClass<UIMask>("UIMask");
 	/*
 	  this->_componentFactory->registerClass<Text>("Text");
 

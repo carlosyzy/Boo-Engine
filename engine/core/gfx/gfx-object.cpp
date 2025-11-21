@@ -356,6 +356,8 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     //                         this->_pipelineMask->getVKPipelineLayout(), 0, 1,
     //                         &this->_descriptorSets[imageIndex], 0, nullptr);
     vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipeline());
+
+    // 绑定描述符集
     vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipelineLayout(), 0, 1, &this->_descriptorSets[imageIndex], 0, nullptr);
     if (this->_type == GfxObjectType::UI)
     {

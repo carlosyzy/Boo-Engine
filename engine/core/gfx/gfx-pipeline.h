@@ -56,7 +56,7 @@ public:
     void clear();
     void reset();
 
-    std::string name()
+    std::string getName()
     {
         return this->_name;
     }

@@ -73,9 +73,9 @@ void GfxQueue::_createTextures()
 
 void GfxQueue::_createFramebuffers()
 {
-    this->_framebuffers.clear();
+    this->_queueFramebuffers.clear();
     std::vector<VkImageView> &swapChainImageViews = this->_context->getSwapChainImageViews();
-    this->_framebuffers.resize(swapChainImageViews.size());
+    this->_queueFramebuffers.resize(swapChainImageViews.size());
     GfxPassStruct &passStruct = this->_pass->getGfxPassStruct();
 
     for (size_t i = 0; i < swapChainImageViews.size(); i++)
@@ -99,7 +99,7 @@ void GfxQueue::_createFramebuffers()
         framebufferInfo.width = this->_context->getSwapChainExtent().width;   /*  // width和height用于指定帧缓冲的大小 */
         framebufferInfo.height = this->_context->getSwapChainExtent().height; /* // 交换链图像都是单层，layers设置为1 */
         framebufferInfo.layers = 1;
-        if (vkCreateFramebuffer(this->_context->getVkDevice(), &framebufferInfo, nullptr, &this->_framebuffers[i]) != VK_SUCCESS)
+        if (vkCreateFramebuffer(this->_context->getVkDevice(), &framebufferInfo, nullptr, &this->_queueFramebuffers[i]) != VK_SUCCESS)
         {
             throw std::runtime_error("Failed to create framebuffer!");
         }
@@ -108,14 +108,14 @@ void GfxQueue::_createFramebuffers()
 
 void GfxQueue::_createCommandBuffers()
 {
-    this->_commandBuffers.resize(this->_framebuffers.size());
+    this->_queueCommandBuffers.resize(this->_queueFramebuffers.size());
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.commandPool = this->_context->getCommandPool();
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandBufferCount = (uint32_t)this->_commandBuffers.size();
+    allocInfo.commandBufferCount = (uint32_t)this->_queueCommandBuffers.size();
 
-    if (vkAllocateCommandBuffers(this->_context->getVkDevice(), &allocInfo, this->_commandBuffers.data()) != VK_SUCCESS)
+    if (vkAllocateCommandBuffers(this->_context->getVkDevice(), &allocInfo, this->_queueCommandBuffers.data()) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to allocate command buffers!");
     }
@@ -123,31 +123,31 @@ void GfxQueue::_createCommandBuffers()
 
 void GfxQueue::submit(GfxObject *object)
 {
-    GfxPipeline *pipeline = object->pipeline();
+    GfxPipeline *pipeline = object->getPipeline();
     if (pipeline == nullptr)
         return;
     if (pipeline->isTransparent())
     {
-        this->_transparentQueue.push_back(object);
+        this->_queueTransparentQueue.push_back(object);
     }
     else
     {
-        this->_opaqueQueue.push_back(object);
+        this->_queueOpaqueQueue.push_back(object);
     }
 }
 void GfxQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
     // std::cout << "render:queue" << std::endl;
-    if (this->_commandBuffers.empty())
+    if (this->_queueCommandBuffers.empty())
     {
         return;
     }
-    if (imageIndex >= this->_commandBuffers.size())
+    if (imageIndex >= this->_queueCommandBuffers.size())
         return;
 
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    if (vkBeginCommandBuffer(this->_commandBuffers[imageIndex], &beginInfo) != VK_SUCCESS)
+    if (vkBeginCommandBuffer(this->_queueCommandBuffers[imageIndex], &beginInfo) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to begin recording command buffer!");
     }
@@ -160,44 +160,51 @@ void GfxQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &command
     //     // std::cout << "render:opaque" << std::endl;
     //     object->render(imageIndex, this->_commandBuffers);
     // }s
-    VkCommandBuffer &commandBuffer = this->_commandBuffers[imageIndex];
-
-    for (auto *object : this->_transparentQueue)
+    // VkCommandBuffer &commandBuffer = this->_commandBuffers[imageIndex];
+    for (auto *object : this->_queueTransparentQueue)
     {
-        if (object->getType() == GfxObjectType::UI_MASK)
-        {
-            if (object->getUIMaskBehavior() == 1)
-            {
-                this->_stencilRef++;
-            }
-            else
-            {
-                this->_stencilRef--;
-            }
-            vkCmdSetStencilReference(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, this->_stencilRef);  //增加和减少每次都是固定值1
-            vkCmdSetStencilCompareMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
-            vkCmdSetStencilWriteMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);   // 写入所有位
-        }
-        else
-        {
-            vkCmdSetStencilReference(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, this->_stencilRef);
-            vkCmdSetStencilCompareMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
-            vkCmdSetStencilWriteMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0x00);   // 不写入模板（保持遮罩）
-        }
-        object->render(imageIndex, this->_commandBuffers);
+        this->_renderObject(imageIndex, object);
     }
+    // for (auto *object : this->_transparentQueue)
+    // {
+    //     if (object->getType() == GfxObjectType::UI_MASK)
+    //     {
+    //         if (object->getUIMaskBehavior() == 1)
+    //         {
+    //             this->_stencilRef++;
+    //         }
+    //         else
+    //         {
+    //             this->_stencilRef--;
+    //         }
+    //         vkCmdSetStencilReference(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, this->_stencilRef);  //增加和减少每次都是固定值1
+    //         vkCmdSetStencilCompareMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
+    //         vkCmdSetStencilWriteMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);   // 写入所有位
+    //     }
+    //     else
+    //     {
+    //         vkCmdSetStencilReference(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, this->_stencilRef);
+    //         vkCmdSetStencilCompareMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
+    //         vkCmdSetStencilWriteMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0x00);   // 不写入模板（保持遮罩）
+    //     }
+    //     object->render(imageIndex, this->_commandBuffers);
+    // }
 
     /*  // 渲染结束 */
-    vkCmdEndRenderPass(this->_commandBuffers[imageIndex]);
+    vkCmdEndRenderPass(this->_queueCommandBuffers[imageIndex]);
     /*  // 结束渲染pass */
-    if (vkEndCommandBuffer(this->_commandBuffers[imageIndex]) != VK_SUCCESS)
+    if (vkEndCommandBuffer(this->_queueCommandBuffers[imageIndex]) == VK_SUCCESS)
     {
-        throw std::runtime_error("Failed to record command buffer!");
+        commandBuffers.push_back(this->_queueCommandBuffers[imageIndex]);
     }
-    commandBuffers.push_back(this->_commandBuffers[imageIndex]);
+    else
+    {
+        // throw std::runtime_error("Failed to end recording command buffer!");
+        std::cout << "GfxQueue render:Failed to end recording command buffer!" << std::endl;
+    }
 
-    this->_opaqueQueue.clear();
-    this->_transparentQueue.clear();
+    this->_queueOpaqueQueue.clear();
+    this->_queueTransparentQueue.clear();
 }
 /**
  * 绑定render pass
@@ -208,7 +215,7 @@ void GfxQueue::_beginBindRenderPass(uint32_t imageIndex)
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassInfo.renderPass = this->_pass->getVkRenderPass();
-    renderPassInfo.framebuffer = this->_framebuffers[imageIndex];
+    renderPassInfo.framebuffer = this->_queueFramebuffers[imageIndex];
     renderPassInfo.renderArea.offset = {0, 0};
     renderPassInfo.renderArea.extent = this->_context->getSwapChainExtent();
 
@@ -217,7 +224,67 @@ void GfxQueue::_beginBindRenderPass(uint32_t imageIndex)
     clearValues[1].depthStencil = {1.0f, 0}; /* // 深度=1.0f，模板=0 */
     renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
     renderPassInfo.pClearValues = clearValues.data();
-    vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBeginRenderPass(this->_queueCommandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+}
+void GfxQueue::_renderObject(uint32_t imageIndex, GfxObject *object)
+{
+    // 检测渲染管线是否发生了变换
+    GfxPipeline *pipeline = object->getPipeline();
+    GfxTexture *texture = object->getTexture();
+    if (texture == nullptr || pipeline == nullptr)
+    {
+        return;
+    }
+    // 更新新的渲染管线
+    if (this->_rendererStatus.pipelineName != pipeline->getName())
+    {
+        this->_rendererStatus.pipelineName = pipeline->getName();
+        vkCmdBindPipeline(this->_queueCommandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipeline());
+    }
+    if (object->getType() == GfxObjectType::UI_MASK)
+    {
+        if (object->getUIMaskBehavior() == 1)
+        {
+            this->_stencilRef++;
+        }
+        else
+        {
+            this->_stencilRef--;
+        }
+        vkCmdSetStencilReference(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, this->_stencilRef); // 增加和减少每次都是固定值1
+        vkCmdSetStencilCompareMask(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);            // 比较所有位
+        vkCmdSetStencilWriteMask(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);              // 写入所有位
+    }
+    else
+    {
+        vkCmdSetStencilReference(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, this->_stencilRef);
+        vkCmdSetStencilCompareMask(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
+        vkCmdSetStencilWriteMask(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0x00);   // 不写入模板（保持遮罩）
+    }
+    object->render(imageIndex, this->_queueCommandBuffers);
+
+    // object->render(imageIndex, this->_queueCommandBuffers);
+    //     if (object->getType() == GfxObjectType::UI_MASK)
+    //     {
+    //         if (object->getUIMaskBehavior() == 1)
+    //         {
+    //             this->_stencilRef++;
+    //         }
+    //         else
+    //         {
+    //             this->_stencilRef--;
+    //         }
+    //         vkCmdSetStencilReference(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, this->_stencilRef);  //增加和减少每次都是固定值1
+    //         vkCmdSetStencilCompareMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
+    //         vkCmdSetStencilWriteMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);   // 写入所有位
+    //     }
+    //     else
+    //     {
+    //         vkCmdSetStencilReference(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, this->_stencilRef);
+    //         vkCmdSetStencilCompareMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
+    //         vkCmdSetStencilWriteMask(commandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0x00);   // 不写入模板（保持遮罩）
+    //     }
+    //     object->render(imageIndex, this->_commandBuffers);
 }
 
 void GfxQueue::clear()
@@ -237,31 +304,25 @@ void GfxQueue::_clearTextures()
 void GfxQueue::_cleanFramebuffers()
 {
     /*  // 销毁帧缓冲（Framebuffers） */
-    for (auto framebuffer : this->_framebuffers)
+    for (auto framebuffer : this->_queueFramebuffers)
     {
         vkDestroyFramebuffer(this->_context->getVkDevice(), framebuffer, nullptr);
     }
-    this->_framebuffers.clear();
+    this->_queueFramebuffers.clear();
 }
 void GfxQueue::_cleanCommandBuffers()
 {
     /* // 销毁命令缓冲（Command Buffers） */
-    if (!this->_commandBuffers.empty())
+    if (!this->_queueCommandBuffers.empty())
 
     {
-        vkFreeCommandBuffers(this->_context->getVkDevice(), this->_context->getCommandPool(), static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
-        this->_commandBuffers.clear();
+        vkFreeCommandBuffers(this->_context->getVkDevice(), this->_context->getCommandPool(), static_cast<uint32_t>(_queueCommandBuffers.size()), _queueCommandBuffers.data());
+        this->_queueCommandBuffers.clear();
     }
 }
 void GfxQueue::reset()
 {
     this->_createBuffers();
-}
-
-void GfxQueue::_Log(std::string msg)
-{
-    return;
-    std::cout << "GfxQueue: " << msg << std::endl;
 }
 
 GfxQueue::~GfxQueue()
