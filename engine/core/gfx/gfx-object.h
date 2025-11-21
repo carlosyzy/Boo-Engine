@@ -22,6 +22,10 @@ class GfxObject
 {
 private:
     /**
+     * @brief 渲染对象唯一标识
+     */
+    std::string _uuid;
+    /**
      * @brief 渲染对象类型
      */
     GfxObjectType _type;
@@ -77,7 +81,14 @@ private:
     void _Log(std::string msg);
 
 public:
-    GfxObject(GfxObjectType type, GfxContext *context);
+    /**
+     * @brief 渲染对象构造函数
+     *
+     * @param uuid 渲染对象唯一标识
+     * @param type 渲染对象类型
+     * @param context 渲染上下文
+     */
+    GfxObject(std::string uuid, GfxObjectType type, GfxContext *context);
     void setVertexs(std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices);
     void setPass(GfxPass *pass);
     void setPipeline(GfxPipeline *pipeline);
@@ -120,6 +131,15 @@ public:
     void clear();
     void reset();
 
+    /**
+     * @brief 获取渲染对象唯一标识
+     *
+     * @return std::string 渲染对象唯一标识
+     */
+    std::string getUuid()
+    {
+        return this->_uuid;
+    }
     GfxPipeline *getPipeline()
     {
         return this->_pipeline;

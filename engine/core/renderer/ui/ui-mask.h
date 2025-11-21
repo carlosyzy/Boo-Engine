@@ -33,9 +33,13 @@ private:
 
     std::string _addUuid;
     std::string _subUuid;
+    Texture* _texture;
 
 public:
     UIMask(Node *node, std::string uuid = "");
+    void setTexture(std::string text);
+    void setTexture(Texture *texture);
+    void updateModelMatrix();
     void update(float deltaTime) override;
     void lateUpdate(float deltaTime) override;
     void render() override;

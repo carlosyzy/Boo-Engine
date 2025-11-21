@@ -5,6 +5,7 @@
 #include "../../engine/core/scene/node-2d.h"
 #include "../../engine/core/scene/scene.h"
 #include "../../engine/core/renderer/ui/ui-sprite.h"
+#include "../../engine/core/renderer/ui/ui-mask.h"
 #include "../../engine/core/component/ui/ui-widget.h"
 #include "../../engine/core/component/ui/ui-tree/node-tree.h"
 
@@ -208,6 +209,9 @@ void EditorHierarchyLayout::_initNodeTree()
     sprite->setColor(EditorConfig::content);
     sprite->setTexture(EditorConfig::txDefault);
     sprite->setMaterial(nullptr);
+    //Mask
+    UIMask *uiMask = static_cast<UIMask *>(ndNodeTree->addComponent("UIMask"));
+
     // 添加节点树
     this->_nodeTree = static_cast<NodeTree *>(ndNodeTree->addComponent("NodeTree"));
     this->_nodeTree->onSelectEvent([this](std::string uuid)

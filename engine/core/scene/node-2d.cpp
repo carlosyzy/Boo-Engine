@@ -3,6 +3,7 @@
 #include "../input/input.h"
 #include "../component/component.h"
 #include "../renderer/ui/ui-renderer.h"
+#include "../renderer/ui/ui-mask.h"
 
 Node2D::Node2D(const std::string name, const std::string uuid)
 {
@@ -127,6 +128,13 @@ void Node2D::_updateRendererModelMatrix()
 		if (uiRenderer != nullptr)
 		{
 			uiRenderer->updateModelMatrix();
+			continue;
+		}
+		UIMask *uiMask = dynamic_cast<UIMask *>(component);
+		if (uiMask != nullptr)
+		{
+			uiMask->updateModelMatrix();
+			continue;
 		}
 	}
 }

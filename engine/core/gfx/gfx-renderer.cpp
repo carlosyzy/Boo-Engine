@@ -391,7 +391,7 @@ void GfxRenderer::createUIObject(std::string id, std::vector<float> &points, std
         std::cerr << "GfxRenderer: createUIObject:id already exists" << std::endl;
         return;
     }
-    GfxObject *object = new GfxObject(GfxObjectType::UI, this->_context);
+    GfxObject *object = new GfxObject(id, GfxObjectType::UI, this->_context);
     object->setVertexs(points, colors, normals, uvs, indices);
     this->_objects[id] = object;
     // object->setUIMaskPipeline(this->_pipelines["ui-mask.mtl"]);
@@ -404,7 +404,7 @@ void GfxRenderer::createUIMaskObject(std::string id, std::vector<float> &points,
         std::cerr << "GfxRenderer: createUIMaskObject:id already exists" << std::endl;
         return;
     }
-    GfxObject *object = new GfxObject(GfxObjectType::UI_MASK, this->_context);
+    GfxObject *object = new GfxObject(id, GfxObjectType::UI_MASK, this->_context);
     object->setVertexs(points, colors, normals, uvs, indices);
     this->_objects[id] = object;
     // object->setUIMaskPipeline(this->_pipelines["ui-mask.mtl"]);
