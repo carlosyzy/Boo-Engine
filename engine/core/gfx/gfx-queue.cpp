@@ -256,21 +256,21 @@ void GfxQueue::_renderObject(uint32_t imageIndex, GfxObject *object)
         {
             this->_stencilRef--;
         }
-        std::cout << "GfxQueue : _renderObject UIMask " << object->getUuid() << " _stencilRef1  " << this->_stencilRef << std::endl;
+        // std::cout << "GfxQueue : _renderObject UIMask " << object->getUuid() << " _stencilRef1  " << this->_stencilRef << std::endl;
         vkCmdSetStencilReference(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, this->_stencilRef); // 增加和减少每次都是固定值1
         vkCmdSetStencilCompareMask(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);            // 比较所有位
         vkCmdSetStencilWriteMask(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);              // 写入所有位
-        std::cout << "GfxQueue : _renderObject UIMask " << object->getUuid() << " _stencilRef2   " << this->_stencilRef << std::endl;
+        // std::cout << "GfxQueue : _renderObject UIMask " << object->getUuid() << " _stencilRef2   " << this->_stencilRef << std::endl;
     }
     else
     {
-        std::cout << "GfxQueue : _renderObject UI  _stencilRef" << this->_stencilRef << std::endl;
+        // std::cout << "GfxQueue : _renderObject UI  _stencilRef" << this->_stencilRef << std::endl;
         vkCmdSetStencilReference(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, this->_stencilRef);
         vkCmdSetStencilCompareMask(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
         vkCmdSetStencilWriteMask(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0x00);   // 不写入模板（保持遮罩）
     }
     object->render(imageIndex, this->_queueCommandBuffers);
-    std::cout << "GfxQueue : _renderObject object end " << object->getUuid() << std::endl;
+    // std::cout << "GfxQueue : _renderObject object end " << object->getUuid() << std::endl;
 
     // object->render(imageIndex, this->_queueCommandBuffers);
     //     if (object->getType() == GfxObjectType::UI_MASK)
