@@ -20,7 +20,7 @@ UIMask::UIMask(Node *node, std::string uuid) : Component(node, uuid)
     GfxMgr::getInstance()->setObjectPipeline(this->_addUuid, "built-ui-mask-add");
     GfxMgr::getInstance()->setObjectPipeline(this->_subUuid, "built-ui-mask-sub");
     GfxMgr::getInstance()->setObjectUIMaskBehavior(this->_addUuid, 1);
-    GfxMgr::getInstance()->setObjectUIMaskBehavior(this->_subUuid, 0);
+    GfxMgr::getInstance()->setObjectUIMaskBehavior(this->_subUuid, 1);
     this->setTexture("resources/texture/ic-default.png");
 }
 void UIMask::updateModelMatrix()
@@ -65,16 +65,12 @@ void UIMask::render()
     }
     Component::render();
     // 提交遮罩状态到渲染器
-    // std::cout << "UIMask::render " << this->_addUuid << std::endl;
-    // GfxMgr::getInstance()->setObjectUIMaskBehavior(this->_addUuid, 1);
     GfxMgr::getInstance()->submitObjectRender(this->_addUuid);
 }
 void UIMask::lateRender()
 {
     Component::lateRender();
     // 提交遮罩状态到渲染器
-    // std::cout << "UIMask::lateRender" << std::endl;
-    // GfxMgr::getInstance()->setObjectUIMaskBehavior(this->_subUuid, 0);
     GfxMgr::getInstance()->submitObjectRender(this->_subUuid);
 }
 void UIMask::destroy()

@@ -45,6 +45,12 @@ private:
 	float tool_width;
 	float tool_height;
 
+	//底部布局
+	float bottom_x;
+	float bottom_y;
+	float bottom_width;
+	float bottom_height;
+
 	Scene *_scene;
 	Node2D *_ndLoad;
 	UISprite *_spriteLoad;
@@ -81,12 +87,15 @@ private:
 	UISprite *_spriteTool;
 	Node2D *_ndProperty;
 	UISprite *_spriteProperty;
+	Node2D *_ndBottom;
+	UISprite *_spriteBottom;
 
 	void _initHierarchyUI();
 	void _initAssetsUI();
 	void _initSceneUI();
 	void _initToolUI();
 	void _initPropertyUI();
+	void _initBottomUI();
 	/**
 	 *更新各个模块尺寸
 	 */
@@ -116,6 +125,10 @@ public:
 	Node2D *getProperty()
 	{
 		return this->_ndProperty;
+	}
+	Node2D *getBottom()
+	{
+		return this->_ndBottom;
 	}
 
 	void update(float dt);

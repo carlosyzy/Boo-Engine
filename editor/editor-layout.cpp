@@ -8,6 +8,7 @@
 #include "../engine/core/scene/scene.h"
 #include "../engine/core/scene/node-2d.h"
 #include "../engine/core/renderer/ui/ui-sprite.h"
+#include "../engine/core/renderer/ui/ui-mask.h"
 #include "../engine/core/assets/assets-manager.h"
 #include "../engine/core/component/ui/ui-widget.h"
 
@@ -20,8 +21,9 @@ EditorLayout::EditorLayout()
 
 	// 初始化2D节点
 	Node2D *root2D = this->_scene->getRoot2D();
-	for (int i = 0; i < 20; i++) {
-		Node2D* node2D = new Node2D("Editor-Node2D-" + std::to_string(i));
+	for (int i = 0; i < 20; i++)
+	{
+		Node2D *node2D = new Node2D("Editor-Node2D-" + std::to_string(i));
 		root2D->addChild(node2D);
 	}
 	Boo::game->input()->setRoot(root2D);
@@ -73,6 +75,7 @@ void EditorLayout::launch()
 	this->_initPropertyUI();
 	this->_initSceneUI();
 	this->_initToolUI();
+	this->_initBottomUI();
 }
 
 void EditorLayout::_initMainUI()
@@ -98,15 +101,15 @@ void EditorLayout::_initMenuUI()
 	this->_ndMenu->setSize(this->menu_width, this->menu_height);
 	this->_ndMenu->setPosition(this->menu_x, this->menu_y, 0.0f);
 	this->_ndMain->addChild(this->_ndMenu);
-	// // 渲染组件-后期不需要
-	// this->_spriteMenu = dynamic_cast<UISprite *>(this->_ndMenu->addComponent("UISprite"));
-	// if (this->_spriteMenu != nullptr)
-	// {
-	// 	std::cout << "EditorLayout::_initMenuUI1" << std::endl;
-	// 	this->_spriteMenu->setTexture("resources/texture/ic-default.png");
-	// 	this->_spriteMenu->setColor(EditorConfig::theme);
-	// 	this->_spriteMenu->setMaterial(nullptr);
-	// }
+	// 渲染组件-后期不需要
+	this->_spriteMenu = dynamic_cast<UISprite *>(this->_ndMenu->addComponent("UISprite"));
+	if (this->_spriteMenu != nullptr)
+	{
+		std::cout << "EditorLayout::_initMenuUI1" << std::endl;
+		this->_spriteMenu->setTexture("resources/texture/ic-default.png");
+		this->_spriteMenu->setColor(EditorConfig::theme);
+		this->_spriteMenu->setMaterial(nullptr);
+	}
 }
 void EditorLayout::_initHierarchyUI()
 {
@@ -114,13 +117,14 @@ void EditorLayout::_initHierarchyUI()
 	this->_ndMain->addChild(this->_ndHierarchy);
 	this->_ndHierarchy->setSize(this->hierarchy_width, this->hierarchy_height);
 	this->_ndHierarchy->setPosition(this->hierarchy_x, this->hierarchy_y, 0.0f);
-	// this->_spriteHierarchy = dynamic_cast<UISprite *>(this->_ndHierarchy->addComponent("UISprite"));
-	// if (this->_spriteHierarchy != nullptr)
-	// {
-	// 	this->_spriteHierarchy->setColor(EditorConfig::theme);
-	// 	this->_spriteHierarchy->setTexture("resources/texture/ic-default.png");
-	// 	this->_spriteHierarchy->setMaterial(nullptr);
-	// }
+	this->_spriteHierarchy = dynamic_cast<UISprite *>(this->_ndHierarchy->addComponent("UISprite"));
+	if (this->_spriteHierarchy != nullptr)
+	{
+		this->_spriteHierarchy->setColor(EditorConfig::theme);
+		this->_spriteHierarchy->setTexture("resources/texture/ic-default.png");
+		this->_spriteHierarchy->setMaterial(nullptr);
+	}
+	
 }
 void EditorLayout::_initAssetsUI()
 {
@@ -131,7 +135,7 @@ void EditorLayout::_initAssetsUI()
 	this->_spriteAsset = dynamic_cast<UISprite *>(this->_ndAsset->addComponent("UISprite"));
 	if (this->_spriteAsset != nullptr)
 	{
-		this->_spriteAsset->setColor(EditorConfig::theme);
+		this->_spriteAsset->setColor("#0A2F36");
 		this->_spriteAsset->setTexture("resources/texture/ic-default.png");
 		this->_spriteAsset->setMaterial(nullptr);
 	}
@@ -149,6 +153,7 @@ void EditorLayout::_initPropertyUI()
 		this->_spriteProperty->setTexture("resources/texture/ic-default.png");
 		this->_spriteProperty->setMaterial(nullptr);
 	}
+	UIMask *uiMask = static_cast<UIMask *>(this->_ndProperty->addComponent("UIMask"));
 }
 void EditorLayout::_initSceneUI()
 {
@@ -177,6 +182,21 @@ void EditorLayout::_initToolUI()
 		this->_spriteTool->setTexture("resources/texture/ic-default.png");
 		this->_spriteTool->setMaterial(nullptr);
 	}
+}
+void EditorLayout::_initBottomUI()
+{
+	this->_ndBottom = new Node2D("Editor-Bottom");
+	this->_ndMain->addChild(this->_ndBottom);
+	this->_ndBottom->setSize(this->bottom_width, this->bottom_height);
+	this->_ndBottom->setPosition(this->bottom_x, this->bottom_y, 0.0f);
+	this->_spriteBottom = dynamic_cast<UISprite *>(this->_ndBottom->addComponent("UISprite"));
+	if (this->_spriteBottom != nullptr)
+	{
+		this->_spriteBottom->setColor(EditorConfig::theme);
+		this->_spriteBottom->setTexture("resources/texture/ic-default.png");
+		this->_spriteBottom->setMaterial(nullptr);
+	}
+	
 }
 
 void EditorLayout::update(float dt)
@@ -207,20 +227,27 @@ void EditorLayout::_updateModuleSize()
 	this->menu_height = 25;
 	this->menu_x = 0.0f;
 	this->menu_y = this->_height / 2.0 - this->menu_height / 2.0;
+
+	// 底部
+	this->bottom_width = this->_width;
+	this->bottom_height = 25;
+	this->bottom_x = 0.0f;
+	this->bottom_y = -this->_height / 2.0 + this->bottom_height / 2.0;
+
 	// 层级
 	this->hierarchy_width = std::ceil(this->_width * 0.25);
-	this->hierarchy_height = std::ceil((this->_height - this->menu_height) * 0.55);
+	this->hierarchy_height = std::ceil((this->_height - this->menu_height - this->bottom_height) * 0.55);
 	this->hierarchy_x = -this->_width / 2.0 + this->hierarchy_width / 2.0;
 	this->hierarchy_y = std::ceil(this->_height / 2.0 - this->menu_height - this->_border - this->hierarchy_height / 2.0);
 	// 资产
 	this->asset_width = this->hierarchy_width;
-	this->asset_height = this->_height - this->menu_height - this->_border - this->hierarchy_height - this->_border;
+	this->asset_height = this->_height - this->menu_height - this->_border - this->hierarchy_height - this->_border - this->bottom_height - this->_border;
 	this->asset_x = -this->_width / 2.0 + this->asset_width / 2.0;
 	this->asset_y = std::ceil(this->_height / 2.0 - this->menu_height - this->_border - this->hierarchy_height - this->_border - this->asset_height / 2.0);
 
 	// 属性
 	this->property_width = std::ceil(this->_width * 0.25);
-	this->property_height = this->_height - this->menu_height - this->_border;
+	this->property_height = this->_height - this->menu_height - this->_border - this->bottom_height - this->_border;
 	this->property_x = std::round(this->_width / 2.0 - this->property_width / 2.0);
 	this->property_y = std::ceil(this->_height / 2.0 - this->menu_height - this->_border - this->property_height / 2.0);
 
@@ -282,6 +309,11 @@ void EditorLayout::_updateModuleSize()
 	{
 		this->_ndTool->setSize(this->tool_width, this->tool_height);
 		this->_ndTool->setPosition(this->tool_x, this->tool_y, 0.0f);
+	}
+	if (this->_ndBottom != nullptr)
+	{
+		this->_ndBottom->setSize(this->bottom_width, this->bottom_height);
+		this->_ndBottom->setPosition(this->bottom_x, this->bottom_y, 0.0f);
 	}
 }
 EditorLayout::~EditorLayout()
