@@ -369,7 +369,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     itemWidth += (uiTreeData.layer * offset);
     // 折叠图标
     ndFold->setSize(16.0f, 16.0f);
-    std::cout << "UITree UITree::name: " << uiTreeData.name << " fold: " << uiTreeData.isFold << std::endl;
+    // std::cout << "UITree UITree::name: " << uiTreeData.name << " fold: " << uiTreeData.isFold << std::endl;
     if (uiTreeData.isFold)
     {
         spFold->setTexture("resources/texture/ic-arrow-right.png");
@@ -425,7 +425,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     this->_nodeIndex++;
     if (!uiTreeData.isFold)
     {
-        std::cout << "UITree UITree::name: " << uiTreeData.name << " children size: " << uiTreeData.children.size() << std::endl;
+        // std::cout << "UITree UITree::name: " << uiTreeData.name << " children size: " << uiTreeData.children.size() << std::endl;
         for (int i = 0; i < uiTreeData.children.size(); i++)
         {
             this->_updateTreesItems(uiTreeData.children[i]);

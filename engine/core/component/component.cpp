@@ -29,7 +29,7 @@ void Component::setNodeActiveInHierarchy(bool isActiveInHierarchy)
         return; // 状态未改变
     }
     this->_isEnabledInHierarchy = isEnableInHierarchy;
-    std::cout << "Component::setNodeActiveInHierarchy: " << this->_name << " isEnabledInHierarchy: " << this->_isEnabledInHierarchy << std::endl;
+    // std::cout << "Component::setNodeActiveInHierarchy: " << this->_name << " isEnabledInHierarchy: " << this->_isEnabledInHierarchy << std::endl;
     if (this->_isEnabledInHierarchy)
     {
         if (!this->_isAwaked)
@@ -50,7 +50,7 @@ void Component::setNodeActiveInHierarchy(bool isActiveInHierarchy)
  */
 void Component::Awake()
 {
-    std::cout << "Component::Awake" << std::endl;
+    // std::cout << "Component::Awake" << std::endl;
 }
 /**
  * @brief 组件启用函数
@@ -58,7 +58,7 @@ void Component::Awake()
  */
 void Component::Enable()
 {
-    std::cout << "Component::Enable" << std::endl;
+    // std::cout << "Component::Enable" << std::endl;
 }
 
 void Component::Update(float deltaTime)
@@ -87,19 +87,19 @@ void Component::LateRender()
  */
 void Component::Disable()
 {
-    std::cout << "Component::Disable" << std::endl;
+    // std::cout << "Component::Disable" << std::endl;
 }
 
 void Component::destroy()
 {
-    std::cout << "Component::destroy" << std::endl;
+    // std::cout << "Component::destroy" << std::endl;
     Boo::game->addCompClearCaches(this);
 }
 void Component::clearGfxObject()
 {
-    std::cout << "Component::clearGfxObject" << std::endl;
+    // std::cout << "Component::clearGfxObject" << std::endl;
 }
 Component::~Component()
 {
-    std::cout << "Component::~destructor" << std::endl;
+    // std::cout << "Component::~destructor" << std::endl;
 }

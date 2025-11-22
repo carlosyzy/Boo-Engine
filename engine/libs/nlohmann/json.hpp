@@ -1282,8 +1282,8 @@ inline bool operator<(const value_t lhs, const value_t rhs) noexcept
         }
     };
 
-    const auto l_index = dynamic_cast<std::size_t>(lhs);
-    const auto r_index = dynamic_cast<std::size_t>(rhs);
+    const auto l_index = static_cast<std::size_t>(lhs);
+    const auto r_index = static_cast<std::size_t>(rhs);
     return l_index < order.size() and r_index < order.size() and order[l_index] < order[r_index];
 }
 }  // namespace detail
@@ -1311,21 +1311,21 @@ template<typename BasicJsonType, typename ArithmeticType,
                      int> = 0>
 void get_arithmetic_value(const BasicJsonType& j, ArithmeticType& val)
 {
-    switch (dynamic_cast<value_t>(j))
+    switch (static_cast<value_t>(j))
     {
         case value_t::number_unsigned:
         {
-            val = dynamic_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_unsigned_t*>());
+            val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_unsigned_t*>());
             break;
         }
         case value_t::number_integer:
         {
-            val = dynamic_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_integer_t*>());
+            val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_integer_t*>());
             break;
         }
         case value_t::number_float:
         {
-            val = dynamic_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_float_t*>());
+            val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_float_t*>());
             break;
         }
 
@@ -1395,7 +1395,7 @@ void from_json(const BasicJsonType& j, EnumType& e)
 {
     typename std::underlying_type<EnumType>::type val;
     get_arithmetic_value(j, val);
-    e = dynamic_cast<EnumType>(val);
+    e = static_cast<EnumType>(val);
 }
 
 // forward_list doesn't have an insert method
@@ -1535,26 +1535,26 @@ template<typename BasicJsonType, typename ArithmeticType,
              int> = 0>
 void from_json(const BasicJsonType& j, ArithmeticType& val)
 {
-    switch (dynamic_cast<value_t>(j))
+    switch (static_cast<value_t>(j))
     {
         case value_t::number_unsigned:
         {
-            val = dynamic_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_unsigned_t*>());
+            val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_unsigned_t*>());
             break;
         }
         case value_t::number_integer:
         {
-            val = dynamic_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_integer_t*>());
+            val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_integer_t*>());
             break;
         }
         case value_t::number_float:
         {
-            val = dynamic_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_float_t*>());
+            val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::number_float_t*>());
             break;
         }
         case value_t::boolean:
         {
-            val = dynamic_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::boolean_t*>());
+            val = static_cast<ArithmeticType>(*j.template get_ptr<const typename BasicJsonType::boolean_t*>());
             break;
         }
 
@@ -2038,21 +2038,21 @@ template<typename BasicJsonType, typename FloatType,
          enable_if_t<std::is_floating_point<FloatType>::value, int> = 0>
 void to_json(BasicJsonType& j, FloatType val) noexcept
 {
-    external_constructor<value_t::number_float>::construct(j, dynamic_cast<typename BasicJsonType::number_float_t>(val));
+    external_constructor<value_t::number_float>::construct(j, static_cast<typename BasicJsonType::number_float_t>(val));
 }
 
 template<typename BasicJsonType, typename CompatibleNumberUnsignedType,
          enable_if_t<is_compatible_integer_type<typename BasicJsonType::number_unsigned_t, CompatibleNumberUnsignedType>::value, int> = 0>
 void to_json(BasicJsonType& j, CompatibleNumberUnsignedType val) noexcept
 {
-    external_constructor<value_t::number_unsigned>::construct(j, dynamic_cast<typename BasicJsonType::number_unsigned_t>(val));
+    external_constructor<value_t::number_unsigned>::construct(j, static_cast<typename BasicJsonType::number_unsigned_t>(val));
 }
 
 template<typename BasicJsonType, typename CompatibleNumberIntegerType,
          enable_if_t<is_compatible_integer_type<typename BasicJsonType::number_integer_t, CompatibleNumberIntegerType>::value, int> = 0>
 void to_json(BasicJsonType& j, CompatibleNumberIntegerType val) noexcept
 {
-    external_constructor<value_t::number_integer>::construct(j, dynamic_cast<typename BasicJsonType::number_integer_t>(val));
+    external_constructor<value_t::number_integer>::construct(j, static_cast<typename BasicJsonType::number_integer_t>(val));
 }
 
 template<typename BasicJsonType, typename EnumType,
@@ -2060,7 +2060,7 @@ template<typename BasicJsonType, typename EnumType,
 void to_json(BasicJsonType& j, EnumType e) noexcept
 {
     using underlying_type = typename std::underlying_type<EnumType>::type;
-    external_constructor<value_t::number_integer>::construct(j, dynamic_cast<underlying_type>(e));
+    external_constructor<value_t::number_integer>::construct(j, static_cast<underlying_type>(e));
 }
 
 template<typename BasicJsonType>
@@ -2413,39 +2413,39 @@ struct wide_string_input_helper
         else
         {
             // get the current character
-            const auto wc = dynamic_cast<unsigned int>(str[current_wchar++]);
+            const auto wc = static_cast<unsigned int>(str[current_wchar++]);
 
             // UTF-32 to UTF-8 encoding
             if (wc < 0x80)
             {
-                utf8_bytes[0] = dynamic_cast<std::char_traits<char>::int_type>(wc);
+                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(wc);
                 utf8_bytes_filled = 1;
             }
             else if (wc <= 0x7FF)
             {
-                utf8_bytes[0] = dynamic_cast<std::char_traits<char>::int_type>(0xC0u | ((wc >> 6u) & 0x1Fu));
-                utf8_bytes[1] = dynamic_cast<std::char_traits<char>::int_type>(0x80u | (wc & 0x3Fu));
+                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(0xC0u | ((wc >> 6u) & 0x1Fu));
+                utf8_bytes[1] = static_cast<std::char_traits<char>::int_type>(0x80u | (wc & 0x3Fu));
                 utf8_bytes_filled = 2;
             }
             else if (wc <= 0xFFFF)
             {
-                utf8_bytes[0] = dynamic_cast<std::char_traits<char>::int_type>(0xE0u | ((wc >> 12u) & 0x0Fu));
-                utf8_bytes[1] = dynamic_cast<std::char_traits<char>::int_type>(0x80u | ((wc >> 6u) & 0x3Fu));
-                utf8_bytes[2] = dynamic_cast<std::char_traits<char>::int_type>(0x80u | (wc & 0x3Fu));
+                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(0xE0u | ((wc >> 12u) & 0x0Fu));
+                utf8_bytes[1] = static_cast<std::char_traits<char>::int_type>(0x80u | ((wc >> 6u) & 0x3Fu));
+                utf8_bytes[2] = static_cast<std::char_traits<char>::int_type>(0x80u | (wc & 0x3Fu));
                 utf8_bytes_filled = 3;
             }
             else if (wc <= 0x10FFFF)
             {
-                utf8_bytes[0] = dynamic_cast<std::char_traits<char>::int_type>(0xF0u | ((wc >> 18u) & 0x07u));
-                utf8_bytes[1] = dynamic_cast<std::char_traits<char>::int_type>(0x80u | ((wc >> 12u) & 0x3Fu));
-                utf8_bytes[2] = dynamic_cast<std::char_traits<char>::int_type>(0x80u | ((wc >> 6u) & 0x3Fu));
-                utf8_bytes[3] = dynamic_cast<std::char_traits<char>::int_type>(0x80u | (wc & 0x3Fu));
+                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(0xF0u | ((wc >> 18u) & 0x07u));
+                utf8_bytes[1] = static_cast<std::char_traits<char>::int_type>(0x80u | ((wc >> 12u) & 0x3Fu));
+                utf8_bytes[2] = static_cast<std::char_traits<char>::int_type>(0x80u | ((wc >> 6u) & 0x3Fu));
+                utf8_bytes[3] = static_cast<std::char_traits<char>::int_type>(0x80u | (wc & 0x3Fu));
                 utf8_bytes_filled = 4;
             }
             else
             {
                 // unknown character
-                utf8_bytes[0] = dynamic_cast<std::char_traits<char>::int_type>(wc);
+                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(wc);
                 utf8_bytes_filled = 1;
             }
         }
@@ -2472,44 +2472,44 @@ struct wide_string_input_helper<WideStringType, 2>
         else
         {
             // get the current character
-            const auto wc = dynamic_cast<unsigned int>(str[current_wchar++]);
+            const auto wc = static_cast<unsigned int>(str[current_wchar++]);
 
             // UTF-16 to UTF-8 encoding
             if (wc < 0x80)
             {
-                utf8_bytes[0] = dynamic_cast<std::char_traits<char>::int_type>(wc);
+                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(wc);
                 utf8_bytes_filled = 1;
             }
             else if (wc <= 0x7FF)
             {
-                utf8_bytes[0] = dynamic_cast<std::char_traits<char>::int_type>(0xC0u | ((wc >> 6u)));
-                utf8_bytes[1] = dynamic_cast<std::char_traits<char>::int_type>(0x80u | (wc & 0x3Fu));
+                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(0xC0u | ((wc >> 6u)));
+                utf8_bytes[1] = static_cast<std::char_traits<char>::int_type>(0x80u | (wc & 0x3Fu));
                 utf8_bytes_filled = 2;
             }
             else if (0xD800 > wc or wc >= 0xE000)
             {
-                utf8_bytes[0] = dynamic_cast<std::char_traits<char>::int_type>(0xE0u | ((wc >> 12u)));
-                utf8_bytes[1] = dynamic_cast<std::char_traits<char>::int_type>(0x80u | ((wc >> 6u) & 0x3Fu));
-                utf8_bytes[2] = dynamic_cast<std::char_traits<char>::int_type>(0x80u | (wc & 0x3Fu));
+                utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(0xE0u | ((wc >> 12u)));
+                utf8_bytes[1] = static_cast<std::char_traits<char>::int_type>(0x80u | ((wc >> 6u) & 0x3Fu));
+                utf8_bytes[2] = static_cast<std::char_traits<char>::int_type>(0x80u | (wc & 0x3Fu));
                 utf8_bytes_filled = 3;
             }
             else
             {
                 if (current_wchar < str.size())
                 {
-                    const auto wc2 = dynamic_cast<unsigned int>(str[current_wchar++]);
+                    const auto wc2 = static_cast<unsigned int>(str[current_wchar++]);
                     const auto charcode = 0x10000u + (((wc & 0x3FFu) << 10u) | (wc2 & 0x3FFu));
-                    utf8_bytes[0] = dynamic_cast<std::char_traits<char>::int_type>(0xF0u | (charcode >> 18u));
-                    utf8_bytes[1] = dynamic_cast<std::char_traits<char>::int_type>(0x80u | ((charcode >> 12u) & 0x3Fu));
-                    utf8_bytes[2] = dynamic_cast<std::char_traits<char>::int_type>(0x80u | ((charcode >> 6u) & 0x3Fu));
-                    utf8_bytes[3] = dynamic_cast<std::char_traits<char>::int_type>(0x80u | (charcode & 0x3Fu));
+                    utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(0xF0u | (charcode >> 18u));
+                    utf8_bytes[1] = static_cast<std::char_traits<char>::int_type>(0x80u | ((charcode >> 12u) & 0x3Fu));
+                    utf8_bytes[2] = static_cast<std::char_traits<char>::int_type>(0x80u | ((charcode >> 6u) & 0x3Fu));
+                    utf8_bytes[3] = static_cast<std::char_traits<char>::int_type>(0x80u | (charcode & 0x3Fu));
                     utf8_bytes_filled = 4;
                 }
                 else
                 {
                     // unknown character
                     ++current_wchar;
-                    utf8_bytes[0] = dynamic_cast<std::char_traits<char>::int_type>(wc);
+                    utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(wc);
                     utf8_bytes_filled = 1;
                 }
             }
@@ -2635,7 +2635,7 @@ class input_adapter
             sizeof(typename iterator_traits<IteratorType>::value_type) == 1,
             "each element in the iterator range must have the size of 1 byte");
 
-        const auto len = dynamic_cast<size_t>(std::distance(first, last));
+        const auto len = static_cast<size_t>(std::distance(first, last));
         if (JSON_LIKELY(len > 0))
         {
             // there is at least one element: use the address of first
@@ -2811,7 +2811,7 @@ namespace detail
 
 This class implements the @ref json_sax interface and processes the SAX events
 to create a JSON value which makes it basically a DOM parser. The structure or
-editor-hierarchy of the JSON value is managed by the stack `ref_stack` which contains
+hierarchy of the JSON value is managed by the stack `ref_stack` which contains
 a pointer to the respective array or object for each recursion depth.
 
 After successful parsing, the value that is passed by reference to the
@@ -2935,16 +2935,16 @@ class json_sax_dom_parser
             switch ((ex.id / 100) % 100)
             {
                 case 1:
-                    JSON_THROW(*dynamic_cast<const detail::parse_error*>(&ex));
+                    JSON_THROW(*static_cast<const detail::parse_error*>(&ex));
                 case 4:
-                    JSON_THROW(*dynamic_cast<const detail::out_of_range*>(&ex));
+                    JSON_THROW(*static_cast<const detail::out_of_range*>(&ex));
                 // LCOV_EXCL_START
                 case 2:
-                    JSON_THROW(*dynamic_cast<const detail::invalid_iterator*>(&ex));
+                    JSON_THROW(*static_cast<const detail::invalid_iterator*>(&ex));
                 case 3:
-                    JSON_THROW(*dynamic_cast<const detail::type_error*>(&ex));
+                    JSON_THROW(*static_cast<const detail::type_error*>(&ex));
                 case 5:
-                    JSON_THROW(*dynamic_cast<const detail::other_error*>(&ex));
+                    JSON_THROW(*static_cast<const detail::other_error*>(&ex));
                 default:
                     assert(false);
                     // LCOV_EXCL_STOP
@@ -2990,7 +2990,7 @@ class json_sax_dom_parser
 
     /// the parsed JSON value
     BasicJsonType& root;
-    /// stack to model editor-hierarchy of values
+    /// stack to model hierarchy of values
     std::vector<BasicJsonType*> ref_stack {};
     /// helper to hold the reference for the next object element
     BasicJsonType* object_element = nullptr;
@@ -3065,7 +3065,7 @@ class json_sax_dom_callback_parser
     bool start_object(std::size_t len)
     {
         // check callback for object start
-        const bool keep = callback(dynamic_cast<int>(ref_stack.size()), parse_event_t::object_start, discarded);
+        const bool keep = callback(static_cast<int>(ref_stack.size()), parse_event_t::object_start, discarded);
         keep_stack.push_back(keep);
 
         auto val = handle_value(BasicJsonType::value_t::object, true);
@@ -3085,7 +3085,7 @@ class json_sax_dom_callback_parser
         BasicJsonType k = BasicJsonType(val);
 
         // check callback for key
-        const bool keep = callback(dynamic_cast<int>(ref_stack.size()), parse_event_t::key, k);
+        const bool keep = callback(static_cast<int>(ref_stack.size()), parse_event_t::key, k);
         key_keep_stack.push_back(keep);
 
         // add discarded value at given key and store the reference for later
@@ -3099,7 +3099,7 @@ class json_sax_dom_callback_parser
 
     bool end_object()
     {
-        if (ref_stack.back() and not callback(dynamic_cast<int>(ref_stack.size()) - 1, parse_event_t::object_end, *ref_stack.back()))
+        if (ref_stack.back() and not callback(static_cast<int>(ref_stack.size()) - 1, parse_event_t::object_end, *ref_stack.back()))
         {
             // discard object
             *ref_stack.back() = discarded;
@@ -3128,7 +3128,7 @@ class json_sax_dom_callback_parser
 
     bool start_array(std::size_t len)
     {
-        const bool keep = callback(dynamic_cast<int>(ref_stack.size()), parse_event_t::array_start, discarded);
+        const bool keep = callback(static_cast<int>(ref_stack.size()), parse_event_t::array_start, discarded);
         keep_stack.push_back(keep);
 
         auto val = handle_value(BasicJsonType::value_t::array, true);
@@ -3149,7 +3149,7 @@ class json_sax_dom_callback_parser
 
         if (ref_stack.back())
         {
-            keep = callback(dynamic_cast<int>(ref_stack.size()) - 1, parse_event_t::array_end, *ref_stack.back());
+            keep = callback(static_cast<int>(ref_stack.size()) - 1, parse_event_t::array_end, *ref_stack.back());
             if (not keep)
             {
                 // discard array
@@ -3181,16 +3181,16 @@ class json_sax_dom_callback_parser
             switch ((ex.id / 100) % 100)
             {
                 case 1:
-                    JSON_THROW(*dynamic_cast<const detail::parse_error*>(&ex));
+                    JSON_THROW(*static_cast<const detail::parse_error*>(&ex));
                 case 4:
-                    JSON_THROW(*dynamic_cast<const detail::out_of_range*>(&ex));
+                    JSON_THROW(*static_cast<const detail::out_of_range*>(&ex));
                 // LCOV_EXCL_START
                 case 2:
-                    JSON_THROW(*dynamic_cast<const detail::invalid_iterator*>(&ex));
+                    JSON_THROW(*static_cast<const detail::invalid_iterator*>(&ex));
                 case 3:
-                    JSON_THROW(*dynamic_cast<const detail::type_error*>(&ex));
+                    JSON_THROW(*static_cast<const detail::type_error*>(&ex));
                 case 5:
-                    JSON_THROW(*dynamic_cast<const detail::other_error*>(&ex));
+                    JSON_THROW(*static_cast<const detail::other_error*>(&ex));
                 default:
                     assert(false);
                     // LCOV_EXCL_STOP
@@ -3218,7 +3218,7 @@ class json_sax_dom_callback_parser
                object to which we can add elements
 
     @return pair of boolean (whether value should be kept) and pointer (to the
-            passed value in the ref_stack editor-hierarchy; nullptr if not kept)
+            passed value in the ref_stack hierarchy; nullptr if not kept)
     */
     template<typename Value>
     std::pair<bool, BasicJsonType*> handle_value(Value&& v, const bool skip_callback = false)
@@ -3236,7 +3236,7 @@ class json_sax_dom_callback_parser
         auto value = BasicJsonType(std::forward<Value>(v));
 
         // check callback
-        const bool keep = skip_callback or callback(dynamic_cast<int>(ref_stack.size()), parse_event_t::value, value);
+        const bool keep = skip_callback or callback(static_cast<int>(ref_stack.size()), parse_event_t::value, value);
 
         // do not handle this value if we just learnt it shall be discarded
         if (not keep)
@@ -3286,7 +3286,7 @@ class json_sax_dom_callback_parser
 
     /// the parsed JSON value
     BasicJsonType& root;
-    /// stack to model editor-hierarchy of values
+    /// stack to model hierarchy of values
     std::vector<BasicJsonType*> ref_stack {};
     /// stack to manage which values to keep
     std::vector<bool> keep_stack {};
@@ -3685,7 +3685,7 @@ class binary_reader
             {
                 return true;
             }
-            *out++ = dynamic_cast<char>(current);
+            *out++ = static_cast<char>(current);
         }
 
         return true;
@@ -3711,7 +3711,7 @@ class binary_reader
             return sax->parse_error(chars_read, last_token, parse_error::create(112, chars_read, exception_message(input_format_t::bson, "string length must be at least 1, is " + std::to_string(len), "string")));
         }
 
-        return get_string(input_format_t::bson, len - dynamic_cast<NumberType>(1), result) and get() != std::char_traits<char>::eof();
+        return get_string(input_format_t::bson, len - static_cast<NumberType>(1), result) and get() != std::char_traits<char>::eof();
     }
 
     /*!
@@ -3732,7 +3732,7 @@ class binary_reader
             case 0x01: // double
             {
                 double number;
-                return get_number<double, true>(input_format_t::bson, number) and sax->number_float(dynamic_cast<number_float_t>(number), "");
+                return get_number<double, true>(input_format_t::bson, number) and sax->number_float(static_cast<number_float_t>(number), "");
             }
 
             case 0x02: // string
@@ -3777,7 +3777,7 @@ class binary_reader
             default: // anything else not supported (yet)
             {
                 std::array<char, 3> cr{{}};
-                (std::snprintf)(cr.data(), cr.size(), "%.2hhX", dynamic_cast<unsigned char>(element_type));
+                (std::snprintf)(cr.data(), cr.size(), "%.2hhX", static_cast<unsigned char>(element_type));
                 return sax->parse_error(element_type_parse_position, std::string(cr.data()), parse_error::create(114, element_type_parse_position, "Unsupported BSON record type 0x" + std::string(cr.data())));
             }
         }
@@ -3894,7 +3894,7 @@ class binary_reader
             case 0x15:
             case 0x16:
             case 0x17:
-                return sax->number_unsigned(dynamic_cast<number_unsigned_t>(current));
+                return sax->number_unsigned(static_cast<number_unsigned_t>(current));
 
             case 0x18: // Unsigned integer (one-byte uint8_t follows)
             {
@@ -3945,31 +3945,31 @@ class binary_reader
             case 0x35:
             case 0x36:
             case 0x37:
-                return sax->number_integer(dynamic_cast<std::int8_t>(0x20 - 1 - current));
+                return sax->number_integer(static_cast<std::int8_t>(0x20 - 1 - current));
 
             case 0x38: // Negative integer (one-byte uint8_t follows)
             {
                 std::uint8_t number;
-                return get_number(input_format_t::cbor, number) and sax->number_integer(dynamic_cast<number_integer_t>(-1) - number);
+                return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1) - number);
             }
 
             case 0x39: // Negative integer -1-n (two-byte uint16_t follows)
             {
                 std::uint16_t number;
-                return get_number(input_format_t::cbor, number) and sax->number_integer(dynamic_cast<number_integer_t>(-1) - number);
+                return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1) - number);
             }
 
             case 0x3A: // Negative integer -1-n (four-byte uint32_t follows)
             {
                 std::uint32_t number;
-                return get_number(input_format_t::cbor, number) and sax->number_integer(dynamic_cast<number_integer_t>(-1) - number);
+                return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1) - number);
             }
 
             case 0x3B: // Negative integer -1-n (eight-byte uint64_t follows)
             {
                 std::uint64_t number;
-                return get_number(input_format_t::cbor, number) and sax->number_integer(dynamic_cast<number_integer_t>(-1)
-                        - dynamic_cast<number_integer_t>(number));
+                return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1)
+                        - static_cast<number_integer_t>(number));
             }
 
             // UTF-8 string (0x00..0x17 bytes follow)
@@ -4032,30 +4032,30 @@ class binary_reader
             case 0x95:
             case 0x96:
             case 0x97:
-                return get_cbor_array(dynamic_cast<std::size_t>(dynamic_cast<unsigned int>(current) & 0x1Fu));
+                return get_cbor_array(static_cast<std::size_t>(static_cast<unsigned int>(current) & 0x1Fu));
 
             case 0x98: // array (one-byte uint8_t for n follows)
             {
                 std::uint8_t len;
-                return get_number(input_format_t::cbor, len) and get_cbor_array(dynamic_cast<std::size_t>(len));
+                return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
             }
 
             case 0x99: // array (two-byte uint16_t for n follow)
             {
                 std::uint16_t len;
-                return get_number(input_format_t::cbor, len) and get_cbor_array(dynamic_cast<std::size_t>(len));
+                return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
             }
 
             case 0x9A: // array (four-byte uint32_t for n follow)
             {
                 std::uint32_t len;
-                return get_number(input_format_t::cbor, len) and get_cbor_array(dynamic_cast<std::size_t>(len));
+                return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
             }
 
             case 0x9B: // array (eight-byte uint64_t for n follow)
             {
                 std::uint64_t len;
-                return get_number(input_format_t::cbor, len) and get_cbor_array(dynamic_cast<std::size_t>(len));
+                return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
             }
 
             case 0x9F: // array (indefinite length)
@@ -4086,30 +4086,30 @@ class binary_reader
             case 0xB5:
             case 0xB6:
             case 0xB7:
-                return get_cbor_object(dynamic_cast<std::size_t>(dynamic_cast<unsigned int>(current) & 0x1Fu));
+                return get_cbor_object(static_cast<std::size_t>(static_cast<unsigned int>(current) & 0x1Fu));
 
             case 0xB8: // map (one-byte uint8_t for n follows)
             {
                 std::uint8_t len;
-                return get_number(input_format_t::cbor, len) and get_cbor_object(dynamic_cast<std::size_t>(len));
+                return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
             }
 
             case 0xB9: // map (two-byte uint16_t for n follow)
             {
                 std::uint16_t len;
-                return get_number(input_format_t::cbor, len) and get_cbor_object(dynamic_cast<std::size_t>(len));
+                return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
             }
 
             case 0xBA: // map (four-byte uint32_t for n follow)
             {
                 std::uint32_t len;
-                return get_number(input_format_t::cbor, len) and get_cbor_object(dynamic_cast<std::size_t>(len));
+                return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
             }
 
             case 0xBB: // map (eight-byte uint64_t for n follow)
             {
                 std::uint64_t len;
-                return get_number(input_format_t::cbor, len) and get_cbor_object(dynamic_cast<std::size_t>(len));
+                return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
             }
 
             case 0xBF: // map (indefinite length)
@@ -4137,8 +4137,8 @@ class binary_reader
                     return false;
                 }
 
-                const auto byte1 = dynamic_cast<unsigned char>(byte1_raw);
-                const auto byte2 = dynamic_cast<unsigned char>(byte2_raw);
+                const auto byte1 = static_cast<unsigned char>(byte1_raw);
+                const auto byte2 = static_cast<unsigned char>(byte2_raw);
 
                 // code from RFC 7049, Appendix D, Figure 3:
                 // As half-precision floating-point numbers were only added
@@ -4148,7 +4148,7 @@ class binary_reader
                 // without such support. An example of a small decoder for
                 // half-precision floating-point numbers in the C language
                 // is shown in Fig. 3.
-                const auto half = dynamic_cast<unsigned int>((byte1 << 8u) + byte2);
+                const auto half = static_cast<unsigned int>((byte1 << 8u) + byte2);
                 const double val = [&half]
                 {
                     const int exp = (half >> 10u) & 0x1Fu;
@@ -4168,20 +4168,20 @@ class binary_reader
                     }
                 }();
                 return sax->number_float((half & 0x8000u) != 0
-                                         ? dynamic_cast<number_float_t>(-val)
-                                         : dynamic_cast<number_float_t>(val), "");
+                                         ? static_cast<number_float_t>(-val)
+                                         : static_cast<number_float_t>(val), "");
             }
 
             case 0xFA: // Single-Precision Float (four-byte IEEE 754)
             {
                 float number;
-                return get_number(input_format_t::cbor, number) and sax->number_float(dynamic_cast<number_float_t>(number), "");
+                return get_number(input_format_t::cbor, number) and sax->number_float(static_cast<number_float_t>(number), "");
             }
 
             case 0xFB: // Double-Precision Float (eight-byte IEEE 754)
             {
                 double number;
-                return get_number(input_format_t::cbor, number) and sax->number_float(dynamic_cast<number_float_t>(number), "");
+                return get_number(input_format_t::cbor, number) and sax->number_float(static_cast<number_float_t>(number), "");
             }
 
             default: // anything else (0xFF is handled inside the other types)
@@ -4238,7 +4238,7 @@ class binary_reader
             case 0x76:
             case 0x77:
             {
-                return get_string(input_format_t::cbor, dynamic_cast<unsigned int>(current) & 0x1Fu, result);
+                return get_string(input_format_t::cbor, static_cast<unsigned int>(current) & 0x1Fu, result);
             }
 
             case 0x78: // UTF-8 string (one-byte uint8_t for n follows)
@@ -4517,7 +4517,7 @@ class binary_reader
             case 0x7D:
             case 0x7E:
             case 0x7F:
-                return sax->number_unsigned(dynamic_cast<number_unsigned_t>(current));
+                return sax->number_unsigned(static_cast<number_unsigned_t>(current));
 
             // fixmap
             case 0x80:
@@ -4536,7 +4536,7 @@ class binary_reader
             case 0x8D:
             case 0x8E:
             case 0x8F:
-                return get_msgpack_object(dynamic_cast<std::size_t>(dynamic_cast<unsigned int>(current) & 0x0Fu));
+                return get_msgpack_object(static_cast<std::size_t>(static_cast<unsigned int>(current) & 0x0Fu));
 
             // fixarray
             case 0x90:
@@ -4555,7 +4555,7 @@ class binary_reader
             case 0x9D:
             case 0x9E:
             case 0x9F:
-                return get_msgpack_array(dynamic_cast<std::size_t>(dynamic_cast<unsigned int>(current) & 0x0Fu));
+                return get_msgpack_array(static_cast<std::size_t>(static_cast<unsigned int>(current) & 0x0Fu));
 
             // fixstr
             case 0xA0:
@@ -4607,13 +4607,13 @@ class binary_reader
             case 0xCA: // float 32
             {
                 float number;
-                return get_number(input_format_t::msgpack, number) and sax->number_float(dynamic_cast<number_float_t>(number), "");
+                return get_number(input_format_t::msgpack, number) and sax->number_float(static_cast<number_float_t>(number), "");
             }
 
             case 0xCB: // float 64
             {
                 double number;
-                return get_number(input_format_t::msgpack, number) and sax->number_float(dynamic_cast<number_float_t>(number), "");
+                return get_number(input_format_t::msgpack, number) and sax->number_float(static_cast<number_float_t>(number), "");
             }
 
             case 0xCC: // uint 8
@@ -4675,25 +4675,25 @@ class binary_reader
             case 0xDC: // array 16
             {
                 std::uint16_t len;
-                return get_number(input_format_t::msgpack, len) and get_msgpack_array(dynamic_cast<std::size_t>(len));
+                return get_number(input_format_t::msgpack, len) and get_msgpack_array(static_cast<std::size_t>(len));
             }
 
             case 0xDD: // array 32
             {
                 std::uint32_t len;
-                return get_number(input_format_t::msgpack, len) and get_msgpack_array(dynamic_cast<std::size_t>(len));
+                return get_number(input_format_t::msgpack, len) and get_msgpack_array(static_cast<std::size_t>(len));
             }
 
             case 0xDE: // map 16
             {
                 std::uint16_t len;
-                return get_number(input_format_t::msgpack, len) and get_msgpack_object(dynamic_cast<std::size_t>(len));
+                return get_number(input_format_t::msgpack, len) and get_msgpack_object(static_cast<std::size_t>(len));
             }
 
             case 0xDF: // map 32
             {
                 std::uint32_t len;
-                return get_number(input_format_t::msgpack, len) and get_msgpack_object(dynamic_cast<std::size_t>(len));
+                return get_number(input_format_t::msgpack, len) and get_msgpack_object(static_cast<std::size_t>(len));
             }
 
             // negative fixint
@@ -4729,7 +4729,7 @@ class binary_reader
             case 0xFD:
             case 0xFE:
             case 0xFF:
-                return sax->number_integer(dynamic_cast<std::int8_t>(current));
+                return sax->number_integer(static_cast<std::int8_t>(current));
 
             default: // anything else
             {
@@ -4792,7 +4792,7 @@ class binary_reader
             case 0xBE:
             case 0xBF:
             {
-                return get_string(input_format_t::msgpack, dynamic_cast<unsigned int>(current) & 0x1Fu, result);
+                return get_string(input_format_t::msgpack, static_cast<unsigned int>(current) & 0x1Fu, result);
             }
 
             case 0xD9: // str 8
@@ -4968,7 +4968,7 @@ class binary_reader
                 {
                     return false;
                 }
-                result = dynamic_cast<std::size_t>(number);
+                result = static_cast<std::size_t>(number);
                 return true;
             }
 
@@ -4979,7 +4979,7 @@ class binary_reader
                 {
                     return false;
                 }
-                result = dynamic_cast<std::size_t>(number);
+                result = static_cast<std::size_t>(number);
                 return true;
             }
 
@@ -4990,7 +4990,7 @@ class binary_reader
                 {
                     return false;
                 }
-                result = dynamic_cast<std::size_t>(number);
+                result = static_cast<std::size_t>(number);
                 return true;
             }
 
@@ -5001,7 +5001,7 @@ class binary_reader
                 {
                     return false;
                 }
-                result = dynamic_cast<std::size_t>(number);
+                result = static_cast<std::size_t>(number);
                 return true;
             }
 
@@ -5012,7 +5012,7 @@ class binary_reader
                 {
                     return false;
                 }
-                result = dynamic_cast<std::size_t>(number);
+                result = static_cast<std::size_t>(number);
                 return true;
             }
 
@@ -5123,13 +5123,13 @@ class binary_reader
             case 'd':
             {
                 float number;
-                return get_number(input_format_t::ubjson, number) and sax->number_float(dynamic_cast<number_float_t>(number), "");
+                return get_number(input_format_t::ubjson, number) and sax->number_float(static_cast<number_float_t>(number), "");
             }
 
             case 'D':
             {
                 double number;
-                return get_number(input_format_t::ubjson, number) and sax->number_float(dynamic_cast<number_float_t>(number), "");
+                return get_number(input_format_t::ubjson, number) and sax->number_float(static_cast<number_float_t>(number), "");
             }
 
             case 'C':  // char
@@ -5144,7 +5144,7 @@ class binary_reader
                     auto last_token = get_token_string();
                     return sax->parse_error(chars_read, last_token, parse_error::create(113, chars_read, exception_message(input_format_t::ubjson, "byte after 'C' must be in range 0x00..0x7F; last byte: 0x" + last_token, "char")));
                 }
-                string_t s(1, dynamic_cast<char>(current));
+                string_t s(1, static_cast<char>(current));
                 return sax->string(s);
             }
 
@@ -5367,11 +5367,11 @@ class binary_reader
             // reverse byte order prior to conversion if necessary
             if (is_little_endian != InputIsLittleEndian)
             {
-                vec[sizeof(NumberType) - i - 1] = dynamic_cast<std::uint8_t>(current);
+                vec[sizeof(NumberType) - i - 1] = static_cast<std::uint8_t>(current);
             }
             else
             {
-                vec[i] = dynamic_cast<std::uint8_t>(current); // LCOV_EXCL_LINE
+                vec[i] = static_cast<std::uint8_t>(current); // LCOV_EXCL_LINE
             }
         }
 
@@ -5407,7 +5407,7 @@ class binary_reader
             {
                 success = false;
             }
-            return dynamic_cast<char>(current);
+            return static_cast<char>(current);
         });
         return success;
     }
@@ -5433,7 +5433,7 @@ class binary_reader
     std::string get_token_string() const
     {
         std::array<char, 3> cr{{}};
-        (std::snprintf)(cr.data(), cr.size(), "%.2hhX", dynamic_cast<unsigned char>(current));
+        (std::snprintf)(cr.data(), cr.size(), "%.2hhX", static_cast<unsigned char>(current));
         return std::string{cr.data()};
     }
 
@@ -5658,15 +5658,15 @@ class lexer
 
             if (current >= '0' and current <= '9')
             {
-                codepoint += dynamic_cast<int>((dynamic_cast<unsigned int>(current) - 0x30u) << factor);
+                codepoint += static_cast<int>((static_cast<unsigned int>(current) - 0x30u) << factor);
             }
             else if (current >= 'A' and current <= 'F')
             {
-                codepoint += dynamic_cast<int>((dynamic_cast<unsigned int>(current) - 0x37u) << factor);
+                codepoint += static_cast<int>((static_cast<unsigned int>(current) - 0x37u) << factor);
             }
             else if (current >= 'a' and current <= 'f')
             {
-                codepoint += dynamic_cast<int>((dynamic_cast<unsigned int>(current) - 0x57u) << factor);
+                codepoint += static_cast<int>((static_cast<unsigned int>(current) - 0x57u) << factor);
             }
             else
             {
@@ -5824,11 +5824,11 @@ class lexer
                                     if (JSON_LIKELY(0xDC00 <= codepoint2 and codepoint2 <= 0xDFFF))
                                     {
                                         // overwrite codepoint
-                                        codepoint = dynamic_cast<int>(
+                                        codepoint = static_cast<int>(
                                                         // high surrogate occupies the most significant 22 bits
-                                                        (dynamic_cast<unsigned int>(codepoint1) << 10u)
+                                                        (static_cast<unsigned int>(codepoint1) << 10u)
                                                         // low surrogate occupies the least significant 15 bits
-                                                        + dynamic_cast<unsigned int>(codepoint2)
+                                                        + static_cast<unsigned int>(codepoint2)
                                                         // there is still the 0xD800, 0xDC00 and 0x10000 noise
                                                         // in the result so we have to subtract with:
                                                         // (0xD800 << 10) + DC00 - 0x10000 = 0x35FDC00
@@ -5867,23 +5867,23 @@ class lexer
                             else if (codepoint <= 0x7FF)
                             {
                                 // 2-byte characters: 110xxxxx 10xxxxxx
-                                add(dynamic_cast<int>(0xC0u | (dynamic_cast<unsigned int>(codepoint) >> 6u)));
-                                add(dynamic_cast<int>(0x80u | (dynamic_cast<unsigned int>(codepoint) & 0x3Fu)));
+                                add(static_cast<int>(0xC0u | (static_cast<unsigned int>(codepoint) >> 6u)));
+                                add(static_cast<int>(0x80u | (static_cast<unsigned int>(codepoint) & 0x3Fu)));
                             }
                             else if (codepoint <= 0xFFFF)
                             {
                                 // 3-byte characters: 1110xxxx 10xxxxxx 10xxxxxx
-                                add(dynamic_cast<int>(0xE0u | (dynamic_cast<unsigned int>(codepoint) >> 12u)));
-                                add(dynamic_cast<int>(0x80u | ((dynamic_cast<unsigned int>(codepoint) >> 6u) & 0x3Fu)));
-                                add(dynamic_cast<int>(0x80u | (dynamic_cast<unsigned int>(codepoint) & 0x3Fu)));
+                                add(static_cast<int>(0xE0u | (static_cast<unsigned int>(codepoint) >> 12u)));
+                                add(static_cast<int>(0x80u | ((static_cast<unsigned int>(codepoint) >> 6u) & 0x3Fu)));
+                                add(static_cast<int>(0x80u | (static_cast<unsigned int>(codepoint) & 0x3Fu)));
                             }
                             else
                             {
                                 // 4-byte characters: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-                                add(dynamic_cast<int>(0xF0u | (dynamic_cast<unsigned int>(codepoint) >> 18u)));
-                                add(dynamic_cast<int>(0x80u | ((dynamic_cast<unsigned int>(codepoint) >> 12u) & 0x3Fu)));
-                                add(dynamic_cast<int>(0x80u | ((dynamic_cast<unsigned int>(codepoint) >> 6u) & 0x3Fu)));
-                                add(dynamic_cast<int>(0x80u | (dynamic_cast<unsigned int>(codepoint) & 0x3Fu)));
+                                add(static_cast<int>(0xF0u | (static_cast<unsigned int>(codepoint) >> 18u)));
+                                add(static_cast<int>(0x80u | ((static_cast<unsigned int>(codepoint) >> 12u) & 0x3Fu)));
+                                add(static_cast<int>(0x80u | ((static_cast<unsigned int>(codepoint) >> 6u) & 0x3Fu)));
+                                add(static_cast<int>(0x80u | (static_cast<unsigned int>(codepoint) & 0x3Fu)));
                             }
 
                             break;
@@ -6662,7 +6662,7 @@ scan_number_done:
 
             if (errno == 0)
             {
-                value_unsigned = dynamic_cast<number_unsigned_t>(x);
+                value_unsigned = static_cast<number_unsigned_t>(x);
                 if (value_unsigned == x)
                 {
                     return token_type::value_unsigned;
@@ -6678,7 +6678,7 @@ scan_number_done:
 
             if (errno == 0)
             {
-                value_integer = dynamic_cast<number_integer_t>(x);
+                value_integer = static_cast<number_integer_t>(x);
                 if (value_integer == x)
                 {
                     return token_type::value_integer;
@@ -6859,7 +6859,7 @@ scan_number_done:
             {
                 // escape control characters
                 std::array<char, 9> cs{{}};
-                (std::snprintf)(cs.data(), cs.size(), "<U+%.4X>", dynamic_cast<unsigned char>(c));
+                (std::snprintf)(cs.data(), cs.size(), "<U+%.4X>", static_cast<unsigned char>(c));
                 result += cs.data();
             }
             else
@@ -7182,7 +7182,7 @@ class parser
     template <typename SAX>
     bool sax_parse_internal(SAX* sax)
     {
-        // stack to remember the editor-hierarchy of structured values we are parsing
+        // stack to remember the hierarchy of structured values we are parsing
         // true = array; false = object
         std::vector<bool> states;
         // value to avoid a goto (see comment where set to true)
@@ -7365,7 +7365,7 @@ class parser
             // we reached this line after we successfully parsed a value
             if (states.empty())
             {
-                // empty stack: we reached the end of the editor-hierarchy: done
+                // empty stack: we reached the end of the hierarchy: done
                 return true;
             }
 
@@ -8334,43 +8334,43 @@ class json_reverse_iterator : public std::reverse_iterator<Base>
     /// post-increment (it++)
     json_reverse_iterator const operator++(int)
     {
-        return dynamic_cast<json_reverse_iterator>(base_iterator::operator++(1));
+        return static_cast<json_reverse_iterator>(base_iterator::operator++(1));
     }
 
     /// pre-increment (++it)
     json_reverse_iterator& operator++()
     {
-        return dynamic_cast<json_reverse_iterator&>(base_iterator::operator++());
+        return static_cast<json_reverse_iterator&>(base_iterator::operator++());
     }
 
     /// post-decrement (it--)
     json_reverse_iterator const operator--(int)
     {
-        return dynamic_cast<json_reverse_iterator>(base_iterator::operator--(1));
+        return static_cast<json_reverse_iterator>(base_iterator::operator--(1));
     }
 
     /// pre-decrement (--it)
     json_reverse_iterator& operator--()
     {
-        return dynamic_cast<json_reverse_iterator&>(base_iterator::operator--());
+        return static_cast<json_reverse_iterator&>(base_iterator::operator--());
     }
 
     /// add to iterator
     json_reverse_iterator& operator+=(difference_type i)
     {
-        return dynamic_cast<json_reverse_iterator&>(base_iterator::operator+=(i));
+        return static_cast<json_reverse_iterator&>(base_iterator::operator+=(i));
     }
 
     /// add to iterator
     json_reverse_iterator operator+(difference_type i) const
     {
-        return dynamic_cast<json_reverse_iterator>(base_iterator::operator+(i));
+        return static_cast<json_reverse_iterator>(base_iterator::operator+(i));
     }
 
     /// subtract from iterator
     json_reverse_iterator operator-(difference_type i) const
     {
-        return dynamic_cast<json_reverse_iterator>(base_iterator::operator-(i));
+        return static_cast<json_reverse_iterator>(base_iterator::operator-(i));
     }
 
     /// return difference
@@ -8808,7 +8808,7 @@ class json_pointer
                     // create an entry in the array
                     JSON_TRY
                     {
-                        result = &result->operator[](dynamic_cast<size_type>(array_index(reference_token)));
+                        result = &result->operator[](static_cast<size_type>(array_index(reference_token)));
                     }
                     JSON_CATCH(std::invalid_argument&)
                     {
@@ -8902,7 +8902,7 @@ class json_pointer
                         JSON_TRY
                         {
                             ptr = &ptr->operator[](
-                                dynamic_cast<size_type>(array_index(reference_token)));
+                                static_cast<size_type>(array_index(reference_token)));
                         }
                         JSON_CATCH(std::invalid_argument&)
                         {
@@ -8961,7 +8961,7 @@ class json_pointer
                     // note: at performs range check
                     JSON_TRY
                     {
-                        ptr = &ptr->at(dynamic_cast<size_type>(array_index(reference_token)));
+                        ptr = &ptr->at(static_cast<size_type>(array_index(reference_token)));
                     }
                     JSON_CATCH(std::invalid_argument&)
                     {
@@ -9027,7 +9027,7 @@ class json_pointer
                     JSON_TRY
                     {
                         ptr = &ptr->operator[](
-                            dynamic_cast<size_type>(array_index(reference_token)));
+                            static_cast<size_type>(array_index(reference_token)));
                     }
                     JSON_CATCH(std::invalid_argument&)
                     {
@@ -9085,7 +9085,7 @@ class json_pointer
                     // note: at performs range check
                     JSON_TRY
                     {
-                        ptr = &ptr->at(dynamic_cast<size_type>(array_index(reference_token)));
+                        ptr = &ptr->at(static_cast<size_type>(array_index(reference_token)));
                     }
                     JSON_CATCH(std::invalid_argument&)
                     {
@@ -9404,12 +9404,12 @@ class json_ref
 
     value_type const& operator*() const
     {
-        return *dynamic_cast<value_type const*>(value_ref);
+        return *static_cast<value_type const*>(value_ref);
     }
 
     value_type const* operator->() const
     {
-        return dynamic_cast<value_type const*>(value_ref);
+        return static_cast<value_type const*>(value_ref);
     }
 
   private:
@@ -9505,7 +9505,7 @@ class output_stream_adapter : public output_adapter_protocol<CharType>
 
     void write_characters(const CharType* s, std::size_t length) override
     {
-        stream.write(s, dynamic_cast<std::streamsize>(length));
+        stream.write(s, static_cast<std::streamsize>(length));
     }
 
   private:
@@ -9638,27 +9638,27 @@ class binary_writer
                     // code from the value_t::number_unsigned case here.
                     if (j.m_value.number_integer <= 0x17)
                     {
-                        write_number(dynamic_cast<std::uint8_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
                     }
                     else if (j.m_value.number_integer <= (std::numeric_limits<std::uint8_t>::max)())
                     {
                         oa->write_character(to_char_type(0x18));
-                        write_number(dynamic_cast<std::uint8_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
                     }
                     else if (j.m_value.number_integer <= (std::numeric_limits<std::uint16_t>::max)())
                     {
                         oa->write_character(to_char_type(0x19));
-                        write_number(dynamic_cast<std::uint16_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::uint16_t>(j.m_value.number_integer));
                     }
                     else if (j.m_value.number_integer <= (std::numeric_limits<std::uint32_t>::max)())
                     {
                         oa->write_character(to_char_type(0x1A));
-                        write_number(dynamic_cast<std::uint32_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::uint32_t>(j.m_value.number_integer));
                     }
                     else
                     {
                         oa->write_character(to_char_type(0x1B));
-                        write_number(dynamic_cast<std::uint64_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::uint64_t>(j.m_value.number_integer));
                     }
                 }
                 else
@@ -9668,27 +9668,27 @@ class binary_writer
                     const auto positive_number = -1 - j.m_value.number_integer;
                     if (j.m_value.number_integer >= -24)
                     {
-                        write_number(dynamic_cast<std::uint8_t>(0x20 + positive_number));
+                        write_number(static_cast<std::uint8_t>(0x20 + positive_number));
                     }
                     else if (positive_number <= (std::numeric_limits<std::uint8_t>::max)())
                     {
                         oa->write_character(to_char_type(0x38));
-                        write_number(dynamic_cast<std::uint8_t>(positive_number));
+                        write_number(static_cast<std::uint8_t>(positive_number));
                     }
                     else if (positive_number <= (std::numeric_limits<std::uint16_t>::max)())
                     {
                         oa->write_character(to_char_type(0x39));
-                        write_number(dynamic_cast<std::uint16_t>(positive_number));
+                        write_number(static_cast<std::uint16_t>(positive_number));
                     }
                     else if (positive_number <= (std::numeric_limits<std::uint32_t>::max)())
                     {
                         oa->write_character(to_char_type(0x3A));
-                        write_number(dynamic_cast<std::uint32_t>(positive_number));
+                        write_number(static_cast<std::uint32_t>(positive_number));
                     }
                     else
                     {
                         oa->write_character(to_char_type(0x3B));
-                        write_number(dynamic_cast<std::uint64_t>(positive_number));
+                        write_number(static_cast<std::uint64_t>(positive_number));
                     }
                 }
                 break;
@@ -9698,27 +9698,27 @@ class binary_writer
             {
                 if (j.m_value.number_unsigned <= 0x17)
                 {
-                    write_number(dynamic_cast<std::uint8_t>(j.m_value.number_unsigned));
+                    write_number(static_cast<std::uint8_t>(j.m_value.number_unsigned));
                 }
                 else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint8_t>::max)())
                 {
                     oa->write_character(to_char_type(0x18));
-                    write_number(dynamic_cast<std::uint8_t>(j.m_value.number_unsigned));
+                    write_number(static_cast<std::uint8_t>(j.m_value.number_unsigned));
                 }
                 else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint16_t>::max)())
                 {
                     oa->write_character(to_char_type(0x19));
-                    write_number(dynamic_cast<std::uint16_t>(j.m_value.number_unsigned));
+                    write_number(static_cast<std::uint16_t>(j.m_value.number_unsigned));
                 }
                 else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint32_t>::max)())
                 {
                     oa->write_character(to_char_type(0x1A));
-                    write_number(dynamic_cast<std::uint32_t>(j.m_value.number_unsigned));
+                    write_number(static_cast<std::uint32_t>(j.m_value.number_unsigned));
                 }
                 else
                 {
                     oa->write_character(to_char_type(0x1B));
-                    write_number(dynamic_cast<std::uint64_t>(j.m_value.number_unsigned));
+                    write_number(static_cast<std::uint64_t>(j.m_value.number_unsigned));
                 }
                 break;
             }
@@ -9736,28 +9736,28 @@ class binary_writer
                 const auto N = j.m_value.string->size();
                 if (N <= 0x17)
                 {
-                    write_number(dynamic_cast<std::uint8_t>(0x60 + N));
+                    write_number(static_cast<std::uint8_t>(0x60 + N));
                 }
                 else if (N <= (std::numeric_limits<std::uint8_t>::max)())
                 {
                     oa->write_character(to_char_type(0x78));
-                    write_number(dynamic_cast<std::uint8_t>(N));
+                    write_number(static_cast<std::uint8_t>(N));
                 }
                 else if (N <= (std::numeric_limits<std::uint16_t>::max)())
                 {
                     oa->write_character(to_char_type(0x79));
-                    write_number(dynamic_cast<std::uint16_t>(N));
+                    write_number(static_cast<std::uint16_t>(N));
                 }
                 else if (N <= (std::numeric_limits<std::uint32_t>::max)())
                 {
                     oa->write_character(to_char_type(0x7A));
-                    write_number(dynamic_cast<std::uint32_t>(N));
+                    write_number(static_cast<std::uint32_t>(N));
                 }
                 // LCOV_EXCL_START
                 else if (N <= (std::numeric_limits<std::uint64_t>::max)())
                 {
                     oa->write_character(to_char_type(0x7B));
-                    write_number(dynamic_cast<std::uint64_t>(N));
+                    write_number(static_cast<std::uint64_t>(N));
                 }
                 // LCOV_EXCL_STOP
 
@@ -9774,28 +9774,28 @@ class binary_writer
                 const auto N = j.m_value.array->size();
                 if (N <= 0x17)
                 {
-                    write_number(dynamic_cast<std::uint8_t>(0x80 + N));
+                    write_number(static_cast<std::uint8_t>(0x80 + N));
                 }
                 else if (N <= (std::numeric_limits<std::uint8_t>::max)())
                 {
                     oa->write_character(to_char_type(0x98));
-                    write_number(dynamic_cast<std::uint8_t>(N));
+                    write_number(static_cast<std::uint8_t>(N));
                 }
                 else if (N <= (std::numeric_limits<std::uint16_t>::max)())
                 {
                     oa->write_character(to_char_type(0x99));
-                    write_number(dynamic_cast<std::uint16_t>(N));
+                    write_number(static_cast<std::uint16_t>(N));
                 }
                 else if (N <= (std::numeric_limits<std::uint32_t>::max)())
                 {
                     oa->write_character(to_char_type(0x9A));
-                    write_number(dynamic_cast<std::uint32_t>(N));
+                    write_number(static_cast<std::uint32_t>(N));
                 }
                 // LCOV_EXCL_START
                 else if (N <= (std::numeric_limits<std::uint64_t>::max)())
                 {
                     oa->write_character(to_char_type(0x9B));
-                    write_number(dynamic_cast<std::uint64_t>(N));
+                    write_number(static_cast<std::uint64_t>(N));
                 }
                 // LCOV_EXCL_STOP
 
@@ -9813,28 +9813,28 @@ class binary_writer
                 const auto N = j.m_value.object->size();
                 if (N <= 0x17)
                 {
-                    write_number(dynamic_cast<std::uint8_t>(0xA0 + N));
+                    write_number(static_cast<std::uint8_t>(0xA0 + N));
                 }
                 else if (N <= (std::numeric_limits<std::uint8_t>::max)())
                 {
                     oa->write_character(to_char_type(0xB8));
-                    write_number(dynamic_cast<std::uint8_t>(N));
+                    write_number(static_cast<std::uint8_t>(N));
                 }
                 else if (N <= (std::numeric_limits<std::uint16_t>::max)())
                 {
                     oa->write_character(to_char_type(0xB9));
-                    write_number(dynamic_cast<std::uint16_t>(N));
+                    write_number(static_cast<std::uint16_t>(N));
                 }
                 else if (N <= (std::numeric_limits<std::uint32_t>::max)())
                 {
                     oa->write_character(to_char_type(0xBA));
-                    write_number(dynamic_cast<std::uint32_t>(N));
+                    write_number(static_cast<std::uint32_t>(N));
                 }
                 // LCOV_EXCL_START
                 else if (N <= (std::numeric_limits<std::uint64_t>::max)())
                 {
                     oa->write_character(to_char_type(0xBB));
-                    write_number(dynamic_cast<std::uint64_t>(N));
+                    write_number(static_cast<std::uint64_t>(N));
                 }
                 // LCOV_EXCL_STOP
 
@@ -9883,31 +9883,31 @@ class binary_writer
                     if (j.m_value.number_unsigned < 128)
                     {
                         // positive fixnum
-                        write_number(dynamic_cast<std::uint8_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
                     }
                     else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint8_t>::max)())
                     {
                         // uint 8
                         oa->write_character(to_char_type(0xCC));
-                        write_number(dynamic_cast<std::uint8_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
                     }
                     else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint16_t>::max)())
                     {
                         // uint 16
                         oa->write_character(to_char_type(0xCD));
-                        write_number(dynamic_cast<std::uint16_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::uint16_t>(j.m_value.number_integer));
                     }
                     else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint32_t>::max)())
                     {
                         // uint 32
                         oa->write_character(to_char_type(0xCE));
-                        write_number(dynamic_cast<std::uint32_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::uint32_t>(j.m_value.number_integer));
                     }
                     else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint64_t>::max)())
                     {
                         // uint 64
                         oa->write_character(to_char_type(0xCF));
-                        write_number(dynamic_cast<std::uint64_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::uint64_t>(j.m_value.number_integer));
                     }
                 }
                 else
@@ -9915,35 +9915,35 @@ class binary_writer
                     if (j.m_value.number_integer >= -32)
                     {
                         // negative fixnum
-                        write_number(dynamic_cast<std::int8_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::int8_t>(j.m_value.number_integer));
                     }
                     else if (j.m_value.number_integer >= (std::numeric_limits<std::int8_t>::min)() and
                              j.m_value.number_integer <= (std::numeric_limits<std::int8_t>::max)())
                     {
                         // int 8
                         oa->write_character(to_char_type(0xD0));
-                        write_number(dynamic_cast<std::int8_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::int8_t>(j.m_value.number_integer));
                     }
                     else if (j.m_value.number_integer >= (std::numeric_limits<std::int16_t>::min)() and
                              j.m_value.number_integer <= (std::numeric_limits<std::int16_t>::max)())
                     {
                         // int 16
                         oa->write_character(to_char_type(0xD1));
-                        write_number(dynamic_cast<std::int16_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::int16_t>(j.m_value.number_integer));
                     }
                     else if (j.m_value.number_integer >= (std::numeric_limits<std::int32_t>::min)() and
                              j.m_value.number_integer <= (std::numeric_limits<std::int32_t>::max)())
                     {
                         // int 32
                         oa->write_character(to_char_type(0xD2));
-                        write_number(dynamic_cast<std::int32_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::int32_t>(j.m_value.number_integer));
                     }
                     else if (j.m_value.number_integer >= (std::numeric_limits<std::int64_t>::min)() and
                              j.m_value.number_integer <= (std::numeric_limits<std::int64_t>::max)())
                     {
                         // int 64
                         oa->write_character(to_char_type(0xD3));
-                        write_number(dynamic_cast<std::int64_t>(j.m_value.number_integer));
+                        write_number(static_cast<std::int64_t>(j.m_value.number_integer));
                     }
                 }
                 break;
@@ -9954,31 +9954,31 @@ class binary_writer
                 if (j.m_value.number_unsigned < 128)
                 {
                     // positive fixnum
-                    write_number(dynamic_cast<std::uint8_t>(j.m_value.number_integer));
+                    write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
                 }
                 else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint8_t>::max)())
                 {
                     // uint 8
                     oa->write_character(to_char_type(0xCC));
-                    write_number(dynamic_cast<std::uint8_t>(j.m_value.number_integer));
+                    write_number(static_cast<std::uint8_t>(j.m_value.number_integer));
                 }
                 else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint16_t>::max)())
                 {
                     // uint 16
                     oa->write_character(to_char_type(0xCD));
-                    write_number(dynamic_cast<std::uint16_t>(j.m_value.number_integer));
+                    write_number(static_cast<std::uint16_t>(j.m_value.number_integer));
                 }
                 else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint32_t>::max)())
                 {
                     // uint 32
                     oa->write_character(to_char_type(0xCE));
-                    write_number(dynamic_cast<std::uint32_t>(j.m_value.number_integer));
+                    write_number(static_cast<std::uint32_t>(j.m_value.number_integer));
                 }
                 else if (j.m_value.number_unsigned <= (std::numeric_limits<std::uint64_t>::max)())
                 {
                     // uint 64
                     oa->write_character(to_char_type(0xCF));
-                    write_number(dynamic_cast<std::uint64_t>(j.m_value.number_integer));
+                    write_number(static_cast<std::uint64_t>(j.m_value.number_integer));
                 }
                 break;
             }
@@ -9997,25 +9997,25 @@ class binary_writer
                 if (N <= 31)
                 {
                     // fixstr
-                    write_number(dynamic_cast<std::uint8_t>(0xA0 | N));
+                    write_number(static_cast<std::uint8_t>(0xA0 | N));
                 }
                 else if (N <= (std::numeric_limits<std::uint8_t>::max)())
                 {
                     // str 8
                     oa->write_character(to_char_type(0xD9));
-                    write_number(dynamic_cast<std::uint8_t>(N));
+                    write_number(static_cast<std::uint8_t>(N));
                 }
                 else if (N <= (std::numeric_limits<std::uint16_t>::max)())
                 {
                     // str 16
                     oa->write_character(to_char_type(0xDA));
-                    write_number(dynamic_cast<std::uint16_t>(N));
+                    write_number(static_cast<std::uint16_t>(N));
                 }
                 else if (N <= (std::numeric_limits<std::uint32_t>::max)())
                 {
                     // str 32
                     oa->write_character(to_char_type(0xDB));
-                    write_number(dynamic_cast<std::uint32_t>(N));
+                    write_number(static_cast<std::uint32_t>(N));
                 }
 
                 // step 2: write the string
@@ -10032,19 +10032,19 @@ class binary_writer
                 if (N <= 15)
                 {
                     // fixarray
-                    write_number(dynamic_cast<std::uint8_t>(0x90 | N));
+                    write_number(static_cast<std::uint8_t>(0x90 | N));
                 }
                 else if (N <= (std::numeric_limits<std::uint16_t>::max)())
                 {
                     // array 16
                     oa->write_character(to_char_type(0xDC));
-                    write_number(dynamic_cast<std::uint16_t>(N));
+                    write_number(static_cast<std::uint16_t>(N));
                 }
                 else if (N <= (std::numeric_limits<std::uint32_t>::max)())
                 {
                     // array 32
                     oa->write_character(to_char_type(0xDD));
-                    write_number(dynamic_cast<std::uint32_t>(N));
+                    write_number(static_cast<std::uint32_t>(N));
                 }
 
                 // step 2: write each element
@@ -10062,19 +10062,19 @@ class binary_writer
                 if (N <= 15)
                 {
                     // fixmap
-                    write_number(dynamic_cast<std::uint8_t>(0x80 | (N & 0xF)));
+                    write_number(static_cast<std::uint8_t>(0x80 | (N & 0xF)));
                 }
                 else if (N <= (std::numeric_limits<std::uint16_t>::max)())
                 {
                     // map 16
                     oa->write_character(to_char_type(0xDE));
-                    write_number(dynamic_cast<std::uint16_t>(N));
+                    write_number(static_cast<std::uint16_t>(N));
                 }
                 else if (N <= (std::numeric_limits<std::uint32_t>::max)())
                 {
                     // map 32
                     oa->write_character(to_char_type(0xDF));
-                    write_number(dynamic_cast<std::uint32_t>(N));
+                    write_number(static_cast<std::uint32_t>(N));
                 }
 
                 // step 2: write each element
@@ -10263,7 +10263,7 @@ class binary_writer
     */
     static std::size_t calc_bson_entry_header_size(const string_t& name)
     {
-        const auto it = name.find(dynamic_cast<typename string_t::value_type>(0));
+        const auto it = name.find(static_cast<typename string_t::value_type>(0));
         if (JSON_UNLIKELY(it != BasicJsonType::string_t::npos))
         {
             JSON_THROW(out_of_range::create(409,
@@ -10321,7 +10321,7 @@ class binary_writer
     {
         write_bson_entry_header(name, 0x02);
 
-        write_number<std::int32_t, true>(dynamic_cast<std::int32_t>(value.size() + 1ul));
+        write_number<std::int32_t, true>(static_cast<std::int32_t>(value.size() + 1ul));
         oa->write_characters(
             reinterpret_cast<const CharType*>(value.c_str()),
             value.size() + 1);
@@ -10354,12 +10354,12 @@ class binary_writer
         if ((std::numeric_limits<std::int32_t>::min)() <= value and value <= (std::numeric_limits<std::int32_t>::max)())
         {
             write_bson_entry_header(name, 0x10); // int32
-            write_number<std::int32_t, true>(dynamic_cast<std::int32_t>(value));
+            write_number<std::int32_t, true>(static_cast<std::int32_t>(value));
         }
         else
         {
             write_bson_entry_header(name, 0x12); // int64
-            write_number<std::int64_t, true>(dynamic_cast<std::int64_t>(value));
+            write_number<std::int64_t, true>(static_cast<std::int64_t>(value));
         }
     }
 
@@ -10368,7 +10368,7 @@ class binary_writer
     */
     static constexpr std::size_t calc_bson_unsigned_size(const std::uint64_t value) noexcept
     {
-        return (value <= dynamic_cast<std::uint64_t>((std::numeric_limits<std::int32_t>::max)()))
+        return (value <= static_cast<std::uint64_t>((std::numeric_limits<std::int32_t>::max)()))
                ? sizeof(std::int32_t)
                : sizeof(std::int64_t);
     }
@@ -10379,15 +10379,15 @@ class binary_writer
     void write_bson_unsigned(const string_t& name,
                              const std::uint64_t value)
     {
-        if (value <= dynamic_cast<std::uint64_t>((std::numeric_limits<std::int32_t>::max)()))
+        if (value <= static_cast<std::uint64_t>((std::numeric_limits<std::int32_t>::max)()))
         {
             write_bson_entry_header(name, 0x10 /* int32 */);
-            write_number<std::int32_t, true>(dynamic_cast<std::int32_t>(value));
+            write_number<std::int32_t, true>(static_cast<std::int32_t>(value));
         }
-        else if (value <= dynamic_cast<std::uint64_t>((std::numeric_limits<std::int64_t>::max)()))
+        else if (value <= static_cast<std::uint64_t>((std::numeric_limits<std::int64_t>::max)()))
         {
             write_bson_entry_header(name, 0x12 /* int64 */);
-            write_number<std::int64_t, true>(dynamic_cast<std::int64_t>(value));
+            write_number<std::int64_t, true>(static_cast<std::int64_t>(value));
         }
         else
         {
@@ -10428,7 +10428,7 @@ class binary_writer
                           const typename BasicJsonType::array_t& value)
     {
         write_bson_entry_header(name, 0x04); // array
-        write_number<std::int32_t, true>(dynamic_cast<std::int32_t>(calc_bson_array_size(value)));
+        write_number<std::int32_t, true>(static_cast<std::int32_t>(calc_bson_array_size(value)));
 
         std::size_t array_index = 0ul;
 
@@ -10549,7 +10549,7 @@ class binary_writer
     */
     void write_bson_object(const typename BasicJsonType::object_t& value)
     {
-        write_number<std::int32_t, true>(dynamic_cast<std::int32_t>(calc_bson_object_size(value)));
+        write_number<std::int32_t, true>(static_cast<std::int32_t>(calc_bson_object_size(value)));
 
         for (const auto& el : value)
         {
@@ -10610,13 +10610,13 @@ class binary_writer
     void write_number_with_ubjson_prefix(const NumberType n,
                                          const bool add_prefix)
     {
-        if (n <= dynamic_cast<std::uint64_t>((std::numeric_limits<std::int8_t>::max)()))
+        if (n <= static_cast<std::uint64_t>((std::numeric_limits<std::int8_t>::max)()))
         {
             if (add_prefix)
             {
                 oa->write_character(to_char_type('i'));  // int8
             }
-            write_number(dynamic_cast<std::uint8_t>(n));
+            write_number(static_cast<std::uint8_t>(n));
         }
         else if (n <= (std::numeric_limits<std::uint8_t>::max)())
         {
@@ -10624,31 +10624,31 @@ class binary_writer
             {
                 oa->write_character(to_char_type('U'));  // uint8
             }
-            write_number(dynamic_cast<std::uint8_t>(n));
+            write_number(static_cast<std::uint8_t>(n));
         }
-        else if (n <= dynamic_cast<std::uint64_t>((std::numeric_limits<std::int16_t>::max)()))
+        else if (n <= static_cast<std::uint64_t>((std::numeric_limits<std::int16_t>::max)()))
         {
             if (add_prefix)
             {
                 oa->write_character(to_char_type('I'));  // int16
             }
-            write_number(dynamic_cast<std::int16_t>(n));
+            write_number(static_cast<std::int16_t>(n));
         }
-        else if (n <= dynamic_cast<std::uint64_t>((std::numeric_limits<std::int32_t>::max)()))
+        else if (n <= static_cast<std::uint64_t>((std::numeric_limits<std::int32_t>::max)()))
         {
             if (add_prefix)
             {
                 oa->write_character(to_char_type('l'));  // int32
             }
-            write_number(dynamic_cast<std::int32_t>(n));
+            write_number(static_cast<std::int32_t>(n));
         }
-        else if (n <= dynamic_cast<std::uint64_t>((std::numeric_limits<std::int64_t>::max)()))
+        else if (n <= static_cast<std::uint64_t>((std::numeric_limits<std::int64_t>::max)()))
         {
             if (add_prefix)
             {
                 oa->write_character(to_char_type('L'));  // int64
             }
-            write_number(dynamic_cast<std::int64_t>(n));
+            write_number(static_cast<std::int64_t>(n));
         }
         else
         {
@@ -10669,15 +10669,15 @@ class binary_writer
             {
                 oa->write_character(to_char_type('i'));  // int8
             }
-            write_number(dynamic_cast<std::int8_t>(n));
+            write_number(static_cast<std::int8_t>(n));
         }
-        else if (dynamic_cast<std::int64_t>((std::numeric_limits<std::uint8_t>::min)()) <= n and n <= dynamic_cast<std::int64_t>((std::numeric_limits<std::uint8_t>::max)()))
+        else if (static_cast<std::int64_t>((std::numeric_limits<std::uint8_t>::min)()) <= n and n <= static_cast<std::int64_t>((std::numeric_limits<std::uint8_t>::max)()))
         {
             if (add_prefix)
             {
                 oa->write_character(to_char_type('U'));  // uint8
             }
-            write_number(dynamic_cast<std::uint8_t>(n));
+            write_number(static_cast<std::uint8_t>(n));
         }
         else if ((std::numeric_limits<std::int16_t>::min)() <= n and n <= (std::numeric_limits<std::int16_t>::max)())
         {
@@ -10685,7 +10685,7 @@ class binary_writer
             {
                 oa->write_character(to_char_type('I'));  // int16
             }
-            write_number(dynamic_cast<std::int16_t>(n));
+            write_number(static_cast<std::int16_t>(n));
         }
         else if ((std::numeric_limits<std::int32_t>::min)() <= n and n <= (std::numeric_limits<std::int32_t>::max)())
         {
@@ -10693,7 +10693,7 @@ class binary_writer
             {
                 oa->write_character(to_char_type('l'));  // int32
             }
-            write_number(dynamic_cast<std::int32_t>(n));
+            write_number(static_cast<std::int32_t>(n));
         }
         else if ((std::numeric_limits<std::int64_t>::min)() <= n and n <= (std::numeric_limits<std::int64_t>::max)())
         {
@@ -10701,7 +10701,7 @@ class binary_writer
             {
                 oa->write_character(to_char_type('L'));  // int64
             }
-            write_number(dynamic_cast<std::int64_t>(n));
+            write_number(static_cast<std::int64_t>(n));
         }
         // LCOV_EXCL_START
         else
@@ -11113,7 +11113,7 @@ boundaries compute_boundaries(FloatType value)
     const bool is_denormal = E == 0;
     const diyfp v = is_denormal
                     ? diyfp(F, kMinExp)
-                    : diyfp(F + kHiddenBit, dynamic_cast<int>(E) - kBias);
+                    : diyfp(F + kHiddenBit, static_cast<int>(E) - kBias);
 
     // Compute the boundaries m- and m+ of the floating-point value
     // v = f * 2^e.
@@ -11370,13 +11370,13 @@ inline cached_power get_cached_power_for_binary_exponent(int e)
     assert(e >= -1500);
     assert(e <=  1500);
     const int f = kAlpha - e - 1;
-    const int k = (f * 78913) / (1 << 18) + dynamic_cast<int>(f > 0);
+    const int k = (f * 78913) / (1 << 18) + static_cast<int>(f > 0);
 
     const int index = (-kCachedPowersMinDecExp + k + (kCachedPowersDecStep - 1)) / kCachedPowersDecStep;
     assert(index >= 0);
-    assert(dynamic_cast<std::size_t>(index) < kCachedPowers.size());
+    assert(static_cast<std::size_t>(index) < kCachedPowers.size());
 
-    const cached_power cached = kCachedPowers[dynamic_cast<std::size_t>(index)];
+    const cached_power cached = kCachedPowers[static_cast<std::size_t>(index)];
     assert(kAlpha <= cached.e + e + 64);
     assert(kGamma >= cached.e + e + 64);
 
@@ -11517,7 +11517,7 @@ inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
 
     const diyfp one(std::uint64_t{1} << -M_plus.e, M_plus.e);
 
-    auto p1 = dynamic_cast<std::uint32_t>(M_plus.f >> -one.e); // p1 = f div 2^-e (Since -e >= 32, p1 fits into a 32-bit int.)
+    auto p1 = static_cast<std::uint32_t>(M_plus.f >> -one.e); // p1 = f div 2^-e (Since -e >= 32, p1 fits into a 32-bit int.)
     std::uint64_t p2 = M_plus.f & (one.f - 1);                    // p2 = f mod 2^-e
 
     // 1)
@@ -11561,7 +11561,7 @@ inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
         //         = (buffer * 10 + d) * 10^(n-1) + (r + p2 * 2^e)
         //
         assert(d <= 9);
-        buffer[length++] = dynamic_cast<char>('0' + d); // buffer := buffer * 10 + d
+        buffer[length++] = static_cast<char>('0' + d); // buffer := buffer * 10 + d
         //
         //      M+ = buffer * 10^(n-1) + (r + p2 * 2^e)
         //
@@ -11668,7 +11668,7 @@ inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
         //         = (buffer * 10 + d) * 10^(-m-1) + 10^(-m-1) * r * 2^e
         //
         assert(d <= 9);
-        buffer[length++] = dynamic_cast<char>('0' + d); // buffer := buffer * 10 + d
+        buffer[length++] = static_cast<char>('0' + d); // buffer := buffer * 10 + d
         //
         //      M+ = buffer * 10^(-m-1) + 10^(-m-1) * r * 2^e
         //
@@ -11808,7 +11808,7 @@ void grisu2(char* buf, int& len, int& decimal_exponent, FloatType value)
     //     (7.0385307e-26f) which can't be recovered using strtod. The resulting double precision
     //     value is off by 1 ulp.
 #if 0
-    const boundaries w = compute_boundaries(dynamic_cast<double>(value));
+    const boundaries w = compute_boundaries(static_cast<double>(value));
 #else
     const boundaries w = compute_boundaries(value);
 #endif
@@ -11836,27 +11836,27 @@ inline char* append_exponent(char* buf, int e)
         *buf++ = '+';
     }
 
-    auto k = dynamic_cast<std::uint32_t>(e);
+    auto k = static_cast<std::uint32_t>(e);
     if (k < 10)
     {
         // Always print at least two digits in the exponent.
         // This is for compatibility with printf("%g").
         *buf++ = '0';
-        *buf++ = dynamic_cast<char>('0' + k);
+        *buf++ = static_cast<char>('0' + k);
     }
     else if (k < 100)
     {
-        *buf++ = dynamic_cast<char>('0' + k / 10);
+        *buf++ = static_cast<char>('0' + k / 10);
         k %= 10;
-        *buf++ = dynamic_cast<char>('0' + k);
+        *buf++ = static_cast<char>('0' + k);
     }
     else
     {
-        *buf++ = dynamic_cast<char>('0' + k / 100);
+        *buf++ = static_cast<char>('0' + k / 100);
         k %= 100;
-        *buf++ = dynamic_cast<char>('0' + k / 10);
+        *buf++ = static_cast<char>('0' + k / 10);
         k %= 10;
-        *buf++ = dynamic_cast<char>('0' + k);
+        *buf++ = static_cast<char>('0' + k);
     }
 
     return buf;
@@ -11889,7 +11889,7 @@ inline char* format_buffer(char* buf, int len, int decimal_exponent,
         // digits[000]
         // len <= max_exp + 2
 
-        std::memset(buf + k, '0', dynamic_cast<size_t>(n - k));
+        std::memset(buf + k, '0', static_cast<size_t>(n - k));
         // Make it look like a floating-point number (#362, #378)
         buf[n + 0] = '.';
         buf[n + 1] = '0';
@@ -11903,7 +11903,7 @@ inline char* format_buffer(char* buf, int len, int decimal_exponent,
 
         assert(k > n);
 
-        std::memmove(buf + (n + 1), buf + n, dynamic_cast<size_t>(k - n));
+        std::memmove(buf + (n + 1), buf + n, static_cast<size_t>(k - n));
         buf[n] = '.';
         return buf + (k + 1);
     }
@@ -11913,10 +11913,10 @@ inline char* format_buffer(char* buf, int len, int decimal_exponent,
         // 0.[000]digits
         // len <= 2 + (-min_exp - 1) + max_digits10
 
-        std::memmove(buf + (2 + -n), buf, dynamic_cast<size_t>(k));
+        std::memmove(buf + (2 + -n), buf, static_cast<size_t>(k));
         buf[0] = '0';
         buf[1] = '.';
-        std::memset(buf + 2, '0', dynamic_cast<size_t>(-n));
+        std::memset(buf + 2, '0', static_cast<size_t>(-n));
         return buf + (2 + (-n) + k);
     }
 
@@ -11932,7 +11932,7 @@ inline char* format_buffer(char* buf, int len, int decimal_exponent,
         // d.igitsE+123
         // len <= max_digits10 + 1 + 5
 
-        std::memmove(buf + 2, buf + 1, dynamic_cast<size_t>(k - 1));
+        std::memmove(buf + 2, buf + 1, static_cast<size_t>(k - 1));
         buf[1] = '.';
         buf += 1 + k;
     }
@@ -11956,7 +11956,7 @@ format. Returns an iterator pointing past-the-end of the decimal representation.
 template <typename FloatType>
 char* to_chars(char* first, const char* last, FloatType value)
 {
-    dynamic_cast<void>(last); // maybe unused - fix warning
+    static_cast<void>(last); // maybe unused - fix warning
     assert(std::isfinite(value));
 
     // Use signbit(value) instead of (value < 0) since signbit works for -0.
@@ -12304,7 +12304,7 @@ class serializer
 
         for (std::size_t i = 0; i < s.size(); ++i)
         {
-            const auto byte = dynamic_cast<uint8_t>(s[i]);
+            const auto byte = static_cast<uint8_t>(s[i]);
 
             switch (decode(state, codepoint, byte))
             {
@@ -12370,14 +12370,14 @@ class serializer
                                 if (codepoint <= 0xFFFF)
                                 {
                                     (std::snprintf)(string_buffer.data() + bytes, 7, "\\u%04x",
-                                                    dynamic_cast<std::uint16_t>(codepoint));
+                                                    static_cast<std::uint16_t>(codepoint));
                                     bytes += 6;
                                 }
                                 else
                                 {
                                     (std::snprintf)(string_buffer.data() + bytes, 13, "\\u%04x\\u%04x",
-                                                    dynamic_cast<std::uint16_t>(0xD7C0u + (codepoint >> 10u)),
-                                                    dynamic_cast<std::uint16_t>(0xDC00u + (codepoint & 0x3FFu)));
+                                                    static_cast<std::uint16_t>(0xD7C0u + (codepoint >> 10u)),
+                                                    static_cast<std::uint16_t>(0xDC00u + (codepoint & 0x3FFu)));
                                     bytes += 12;
                                 }
                             }
@@ -12507,7 +12507,7 @@ class serializer
                 case error_handler_t::strict:
                 {
                     std::string sn(3, '\0');
-                    (std::snprintf)(&sn[0], sn.size(), "%.2X", dynamic_cast<std::uint8_t>(s.back()));
+                    (std::snprintf)(&sn[0], sn.size(), "%.2X", static_cast<std::uint8_t>(s.back()));
                     JSON_THROW(type_error::create(316, "incomplete UTF-8 string; last byte: 0x" + sn));
                 }
 
@@ -12623,14 +12623,14 @@ class serializer
         if (is_negative)
         {
             *buffer_ptr = '-';
-            abs_value = dynamic_cast<number_unsigned_t>(std::abs(dynamic_cast<std::intmax_t>(x)));
+            abs_value = static_cast<number_unsigned_t>(std::abs(static_cast<std::intmax_t>(x)));
 
             // account one more byte for the minus sign
             n_chars = 1 + count_digits(abs_value);
         }
         else
         {
-            abs_value = dynamic_cast<number_unsigned_t>(x);
+            abs_value = static_cast<number_unsigned_t>(x);
             n_chars = count_digits(abs_value);
         }
 
@@ -12645,7 +12645,7 @@ class serializer
         // See: https://www.youtube.com/watch?v=o4-CwDo2zpg
         while (abs_value >= 100)
         {
-            const auto digits_index = dynamic_cast<unsigned>((abs_value % 100));
+            const auto digits_index = static_cast<unsigned>((abs_value % 100));
             abs_value /= 100;
             *(--buffer_ptr) = digits_to_99[digits_index][1];
             *(--buffer_ptr) = digits_to_99[digits_index][0];
@@ -12653,13 +12653,13 @@ class serializer
 
         if (abs_value >= 10)
         {
-            const auto digits_index = dynamic_cast<unsigned>(abs_value);
+            const auto digits_index = static_cast<unsigned>(abs_value);
             *(--buffer_ptr) = digits_to_99[digits_index][1];
             *(--buffer_ptr) = digits_to_99[digits_index][0];
         }
         else
         {
-            *(--buffer_ptr) = dynamic_cast<char>('0' + abs_value);
+            *(--buffer_ptr) = static_cast<char>('0' + abs_value);
         }
 
         o->write_characters(number_buffer.data(), n_chars);
@@ -12699,7 +12699,7 @@ class serializer
         char* begin = number_buffer.data();
         char* end = ::nlohmann::detail::to_chars(begin, begin + number_buffer.size(), x);
 
-        o->write_characters(begin, dynamic_cast<size_t>(end - begin));
+        o->write_characters(begin, static_cast<size_t>(end - begin));
     }
 
     void dump_float(number_float_t x, std::false_type /*is_ieee_single_or_double*/)
@@ -12713,7 +12713,7 @@ class serializer
         // negative value indicates an error
         assert(len > 0);
         // check if buffer was large enough
-        assert(dynamic_cast<std::size_t>(len) < number_buffer.size());
+        assert(static_cast<std::size_t>(len) < number_buffer.size());
 
         // erase thousands separator
         if (thousands_sep != '\0')
@@ -12735,7 +12735,7 @@ class serializer
             }
         }
 
-        o->write_characters(number_buffer.data(), dynamic_cast<std::size_t>(len));
+        o->write_characters(number_buffer.data(), static_cast<std::size_t>(len));
 
         // determine if need to append ".0"
         const bool value_is_int_like =
@@ -14741,7 +14741,7 @@ class basic_json
 
         if (indent >= 0)
         {
-            s.dump(*this, true, ensure_ascii, dynamic_cast<unsigned int>(indent));
+            s.dump(*this, true, ensure_ascii, static_cast<unsigned int>(indent));
         }
         else
         {
@@ -15481,7 +15481,7 @@ class basic_json
     auto get_ptr() noexcept -> decltype(std::declval<basic_json_t&>().get_impl_ptr(std::declval<PointerType>()))
     {
         // delegate the call to get_impl_ptr<>()
-        return get_impl_ptr(dynamic_cast<PointerType>(nullptr));
+        return get_impl_ptr(static_cast<PointerType>(nullptr));
     }
 
     /*!
@@ -15494,7 +15494,7 @@ class basic_json
     constexpr auto get_ptr() const noexcept -> decltype(std::declval<const basic_json_t&>().get_impl_ptr(std::declval<PointerType>()))
     {
         // delegate the call to get_impl_ptr<>() const
-        return get_impl_ptr(dynamic_cast<PointerType>(nullptr));
+        return get_impl_ptr(static_cast<PointerType>(nullptr));
     }
 
     /*!
@@ -16628,7 +16628,7 @@ class basic_json
                 JSON_THROW(out_of_range::create(401, "array index " + std::to_string(idx) + " is out of range"));
             }
 
-            m_value.array->erase(m_value.array->begin() + dynamic_cast<difference_type>(idx));
+            m_value.array->erase(m_value.array->begin() + static_cast<difference_type>(idx));
         }
         else
         {
@@ -18364,27 +18364,27 @@ class basic_json
         }
         else if (lhs_type == value_t::number_integer and rhs_type == value_t::number_float)
         {
-            return dynamic_cast<number_float_t>(lhs.m_value.number_integer) == rhs.m_value.number_float;
+            return static_cast<number_float_t>(lhs.m_value.number_integer) == rhs.m_value.number_float;
         }
         else if (lhs_type == value_t::number_float and rhs_type == value_t::number_integer)
         {
-            return lhs.m_value.number_float == dynamic_cast<number_float_t>(rhs.m_value.number_integer);
+            return lhs.m_value.number_float == static_cast<number_float_t>(rhs.m_value.number_integer);
         }
         else if (lhs_type == value_t::number_unsigned and rhs_type == value_t::number_float)
         {
-            return dynamic_cast<number_float_t>(lhs.m_value.number_unsigned) == rhs.m_value.number_float;
+            return static_cast<number_float_t>(lhs.m_value.number_unsigned) == rhs.m_value.number_float;
         }
         else if (lhs_type == value_t::number_float and rhs_type == value_t::number_unsigned)
         {
-            return lhs.m_value.number_float == dynamic_cast<number_float_t>(rhs.m_value.number_unsigned);
+            return lhs.m_value.number_float == static_cast<number_float_t>(rhs.m_value.number_unsigned);
         }
         else if (lhs_type == value_t::number_unsigned and rhs_type == value_t::number_integer)
         {
-            return dynamic_cast<number_integer_t>(lhs.m_value.number_unsigned) == rhs.m_value.number_integer;
+            return static_cast<number_integer_t>(lhs.m_value.number_unsigned) == rhs.m_value.number_integer;
         }
         else if (lhs_type == value_t::number_integer and rhs_type == value_t::number_unsigned)
         {
-            return lhs.m_value.number_integer == dynamic_cast<number_integer_t>(rhs.m_value.number_unsigned);
+            return lhs.m_value.number_integer == static_cast<number_integer_t>(rhs.m_value.number_unsigned);
         }
 
         return false;
@@ -18524,27 +18524,27 @@ class basic_json
         }
         else if (lhs_type == value_t::number_integer and rhs_type == value_t::number_float)
         {
-            return dynamic_cast<number_float_t>(lhs.m_value.number_integer) < rhs.m_value.number_float;
+            return static_cast<number_float_t>(lhs.m_value.number_integer) < rhs.m_value.number_float;
         }
         else if (lhs_type == value_t::number_float and rhs_type == value_t::number_integer)
         {
-            return lhs.m_value.number_float < dynamic_cast<number_float_t>(rhs.m_value.number_integer);
+            return lhs.m_value.number_float < static_cast<number_float_t>(rhs.m_value.number_integer);
         }
         else if (lhs_type == value_t::number_unsigned and rhs_type == value_t::number_float)
         {
-            return dynamic_cast<number_float_t>(lhs.m_value.number_unsigned) < rhs.m_value.number_float;
+            return static_cast<number_float_t>(lhs.m_value.number_unsigned) < rhs.m_value.number_float;
         }
         else if (lhs_type == value_t::number_float and rhs_type == value_t::number_unsigned)
         {
-            return lhs.m_value.number_float < dynamic_cast<number_float_t>(rhs.m_value.number_unsigned);
+            return lhs.m_value.number_float < static_cast<number_float_t>(rhs.m_value.number_unsigned);
         }
         else if (lhs_type == value_t::number_integer and rhs_type == value_t::number_unsigned)
         {
-            return lhs.m_value.number_integer < dynamic_cast<number_integer_t>(rhs.m_value.number_unsigned);
+            return lhs.m_value.number_integer < static_cast<number_integer_t>(rhs.m_value.number_unsigned);
         }
         else if (lhs_type == value_t::number_unsigned and rhs_type == value_t::number_integer)
         {
-            return dynamic_cast<number_integer_t>(lhs.m_value.number_unsigned) < rhs.m_value.number_integer;
+            return static_cast<number_integer_t>(lhs.m_value.number_unsigned) < rhs.m_value.number_integer;
         }
 
         // We only reach this line if we cannot compare values. In that case,
@@ -18764,7 +18764,7 @@ class basic_json
 
         // do the actual serialization
         serializer s(detail::output_adapter<char>(o), o.fill());
-        s.dump(j, pretty_print, false, dynamic_cast<unsigned int>(indentation));
+        s.dump(j, pretty_print, false, static_cast<unsigned int>(indentation));
         return o;
     }
 
@@ -20298,14 +20298,14 @@ class basic_json
                     else
                     {
                         const auto idx = json_pointer::array_index(last_path);
-                        if (JSON_UNLIKELY(dynamic_cast<size_type>(idx) > parent.size()))
+                        if (JSON_UNLIKELY(static_cast<size_type>(idx) > parent.size()))
                         {
                             // avoid undefined behavior
                             JSON_THROW(out_of_range::create(401, "array index " + std::to_string(idx) + " is out of range"));
                         }
 
                         // default case: insert add offset
-                        parent.insert(parent.begin() + dynamic_cast<difference_type>(idx), val);
+                        parent.insert(parent.begin() + static_cast<difference_type>(idx), val);
                     }
                     break;
                 }
@@ -20341,7 +20341,7 @@ class basic_json
             else if (parent.is_array())
             {
                 // note erase performs range check
-                parent.erase(dynamic_cast<size_type>(json_pointer::array_index(last_path)));
+                parent.erase(static_cast<size_type>(json_pointer::array_index(last_path)));
             }
         };
 
@@ -20554,7 +20554,7 @@ class basic_json
                 // in a second pass, traverse the remaining elements
 
                 // remove my remaining elements
-                const auto end_index = dynamic_cast<difference_type>(result.size());
+                const auto end_index = static_cast<difference_type>(result.size());
                 while (i < source.size())
                 {
                     // add operations in reverse order to avoid invalid

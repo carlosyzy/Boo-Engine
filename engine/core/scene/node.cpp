@@ -160,7 +160,7 @@ void Node::_updateNodesActiveInHierarchyState(bool isActiveInHierarch)
 	if (this->_isActiveInHierarchy == isActiveInHierarch)
 		return;
 	this->_isActiveInHierarchy = isActiveInHierarch;
-	std::cout << "Node::_updateNodesActiveInHierarchyState: " << this->_name << " isActiveInHierarch: " << isActiveInHierarch << std::endl;
+	// std::cout << "Node::_updateNodesActiveInHierarchyState: " << this->_name << " isActiveInHierarch: " << isActiveInHierarch << std::endl;
 	// 更新组件生命周期
 	for (auto &component : this->_components)
 	{

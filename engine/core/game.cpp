@@ -19,11 +19,12 @@
 #include "renderer/ui/ui-text.h"
 #include "renderer/ui/ui-mask.h"
 
-
-
 #include "component/ui/ui-widget.h"
 #include "component/ui/ui-layout-horizontal.h"
 #include "component/ui/ui-tree/node-tree.h"
+
+#include "utils/json-util.h"
+#include "utils/file-util.h"
 
 Game::Game() : _assetsManager(nullptr),
 			   _curScene(nullptr)
@@ -41,9 +42,16 @@ void Game::init()
 	this->_initAssets();
 	this->_initAlpha();
 
-	// 
-	// GfxMgr::getInstance()->createPipeline("ui", "Blend:1|DepthTest:0|DepthWrite:0|vert:" + std::filesystem::path("resources/shader/ui/ui.vert.spv").generic_string() + "|frag:" + std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string());
-	// GfxMgr::getInstance()->createPipeline("ui-mask", "Blend:1|DepthTest:0|DepthWrite:0|vert:" + std::filesystem::path("resources/shader/ui/ui-mask.vert.spv").generic_string() + "|frag:" + std::filesystem::path("resources/shader/ui/ui-mask.frag.spv").generic_string());
+	// json scene;
+
+	// scene["data"] = {
+	// 	{"type", "Scene"},
+	// 	{"children", json::array()}};
+	// scene["data"]["children"].push_back({{{{"type", "Node"},
+	// 									   {"name", "3D"}}},
+	// 									 {{{"type", "Node"},
+	// 									   {"name", "2D"}}}});
+	// FileUtil::saveJsonToBinary(scene, "resources/scene.json");
 }
 void Game::_initGFX()
 {
@@ -104,7 +112,8 @@ void Game::_initAlpha()
 void Game::setView(const int width, const int height)
 {
 	std::cout << "setView: width:" << width << " height:" << height << std::endl;
-	if(this->_view->width == width && this->_view->height == height){
+	if (this->_view->width == width && this->_view->height == height)
+	{
 		return;
 	}
 	this->_view->isFlag = true;
@@ -243,7 +252,7 @@ void Game::_updateClearCaches()
 {
 	for (auto &comp : this->_compClearCaches)
 	{
-		std::cout << "Game::_updateClearCaches: clear comp: " << comp->getNode()->getName() << std::endl;
+		// std::cout << "Game::_updateClearCaches: clear comp: " << comp->getNode()->getName() << std::endl;
 		comp->clearGfxObject();
 		delete comp;
 		comp = nullptr;
@@ -251,7 +260,7 @@ void Game::_updateClearCaches()
 	this->_compClearCaches.clear();
 	for (auto &node : this->_nodeClearCaches)
 	{
-		std::cout << "Game::_updateClearCaches: clear node: " << node->getName() << std::endl;
+		// std::cout << "Game::_updateClearCaches: clear node: " << node->getName() << std::endl;
 		delete node;
 		node = nullptr;
 	}
