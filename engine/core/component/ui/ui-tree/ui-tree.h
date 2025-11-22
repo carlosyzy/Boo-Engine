@@ -49,9 +49,7 @@ struct UITreeStructure
 class UITree : public Component
 {
 private:
-    int _nodeTransform_ID = 0;
-    void _onNodeTransformChange(int nodeTransform);
-
+   
     float _topLen;
     float _leftLen;
     Node2D *_ndContent;

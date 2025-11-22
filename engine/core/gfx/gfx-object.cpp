@@ -169,7 +169,7 @@ void GfxObject::setColor(float r, float g, float b, float a)
 }
 void GfxObject::setTexture(GfxTexture *texture)
 {
-    // std::cout << "setTexture:id:" << " texture:" << std::endl;
+    //  std::cout << "setTexture:id:" << texture << std::endl;
     this->_texture = texture;
     this->_updateDescriptorSet();
 }

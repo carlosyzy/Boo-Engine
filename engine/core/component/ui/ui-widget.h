@@ -54,6 +54,7 @@ public:
     void setHorizontal(WidgetHorizontal horizontal, WidgetHorizontalParam param);
     void setVertical(WidgetVertical vertical, WidgetVerticalParam param);
     virtual void Enable() override;
+    void updateWidget();
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
     void Render() override;
@@ -61,6 +62,5 @@ public:
     void Disable() override;
     void destroy() override;
     void clearGfxObject() override;
-
     ~UIWidget();
 };

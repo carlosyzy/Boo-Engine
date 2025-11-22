@@ -30,32 +30,33 @@ void UIMask::Awake()
 void UIMask::Enable()
 {
     Component::Enable();
+    this->updateModelMatrix();
 }
 void UIMask::updateModelMatrix()
 {
-	Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
-	GfxMgr::getInstance()->setObjectModelMatrix(this->_addUuid, node2D->uiWorldMatrix().data());
+    Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
+    GfxMgr::getInstance()->setObjectModelMatrix(this->_addUuid, node2D->uiWorldMatrix().data());
     GfxMgr::getInstance()->setObjectModelMatrix(this->_subUuid, node2D->uiWorldMatrix().data());
 }
 void UIMask::setTexture(Texture *texture)
 {
-	if (texture == nullptr)
-	{
-		std::cout << "UIRenderer::setTexture: texture is nullptr" << std::endl;
-		return;
-	}
-	if (this->_texture == texture)
-	{
-		return;
-	}
-	this->_texture = texture;
-	GfxMgr::getInstance()->setObjectTexture(this->_addUuid, this->_texture->getUuid());
+    if (texture == nullptr)
+    {
+        std::cout << "UIRenderer::setTexture: texture is nullptr" << std::endl;
+        return;
+    }
+    if (this->_texture == texture)
+    {
+        return;
+    }
+    this->_texture = texture;
+    GfxMgr::getInstance()->setObjectTexture(this->_addUuid, this->_texture->getUuid());
     GfxMgr::getInstance()->setObjectTexture(this->_subUuid, this->_texture->getUuid());
 }
 void UIMask::setTexture(std::string texture)
 {
-	Asset *tex = Boo::game->assetsManager()->get(texture);
-	this->setTexture(dynamic_cast<Texture *>(tex));
+    Asset *tex = Boo::game->assetsManager()->get(texture);
+    this->setTexture(dynamic_cast<Texture *>(tex));
 }
 void UIMask::Update(float deltaTime)
 {
@@ -67,11 +68,11 @@ void UIMask::LateUpdate(float deltaTime)
 }
 void UIMask::Render()
 {
+    Component::Render();
     if (this->_node->hasFrameTransformFlag())
     {
         this->updateModelMatrix();
     }
-    Component::Render();
     // 提交遮罩状态到渲染器
     GfxMgr::getInstance()->submitObjectRender(this->_addUuid);
 }

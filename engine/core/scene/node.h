@@ -139,10 +139,11 @@ protected:
 	 */
 	void _emitTransformChanged(uint32_t flag)
 	{
+		/*std::cout << "Node::_emitTransformChanged: flag:" << this->_transformListeners.size() << std::endl;
 		for (auto &listener : this->_transformListeners)
 		{
 			listener.callback(flag);
-		}
+		}*/
 	}
 	virtual void _updateWorldTransform();
 

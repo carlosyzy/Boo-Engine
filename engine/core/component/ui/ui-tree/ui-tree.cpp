@@ -17,7 +17,6 @@ UITree::UITree(Node *node, std::string uuid) : Component(node, uuid)
 
     // 事件系统
     Node2D *node2d = dynamic_cast<Node2D *>(this->_node);
-    this->_nodeTransform_ID = node2d->onTransformChange(&UITree::_onNodeTransformChange, this);
     node2d->onNodeInputEvent(NodeInput::TOUCH_END, &UITree::_onTreeContentTouchEvent, this);
     node2d->onNodeInputEvent(NodeInput::CURSOR_HOVER, &UITree::_onTreeContentHoverEvent, this);
 }
@@ -28,6 +27,7 @@ void UITree::Awake()
 void UITree::Enable()
 {
     Component::Enable();
+    this->_isDirty;
 }
 void UITree::_initContent()
 {
@@ -181,11 +181,20 @@ void UITree::_onTreeContentHoverEvent(NodeInputResult &result)
 
 void UITree::updateTree()
 {
-    this->_updateTreeContent();
+    this->_isDirty = true;
 }
-void UITree::_onNodeTransformChange(int nodeTransform)
+void UITree::Update(float deltaTime)
 {
-    this->_updateTreeContent();
+    Component::Update(deltaTime);
+}
+void UITree::LateUpdate(float deltaTime)
+{
+    Component::LateUpdate(deltaTime);
+    if (this->_isDirty || this->_node->hasFrameTransformFlag())
+    {
+        this->_updateTreeContent();
+        this->_isDirty = false;
+    }
 }
 
 void UITree::_updateTreeContent()
@@ -193,7 +202,7 @@ void UITree::_updateTreeContent()
     // std::cout << "UITree UITree::update  1" << std::endl;
     Node2D *node = dynamic_cast<Node2D *>(this->_node);
     const Size &size = node->getSize();
-    std::cout << "UITree UITree::node width: " << size.getWidth() << " height: " << size.getHeight() << std::endl;
+    // std::cout << "UITree UITree::node width: " << size.getWidth() << " height: " << size.getHeight() << std::endl;
 
     this->_nodeIndex = 0;
     this->_treeUIMap.clear();
@@ -228,7 +237,7 @@ void UITree::_updateTreeContent()
     this->_contentY = size.getHeight() / 2.0f + this->_topLen;
     this->_ndContent->setPosition(this->_contentX, this->_contentY, 0.0f);
     this->_ndContent->setSize(this->_contentWidth, this->_contentHeight);
-    std::cout << "UITree UITree::update  width: " << this->_contentWidth << " height: " << this->_contentHeight << std::endl;
+    // std::cout << "UITree UITree::update  width: " << this->_contentWidth << " height: " << this->_contentHeight << std::endl;
     // 刷新content的大小,位置===============================================end
 
     //     // 选择框 =============================================================start
@@ -308,11 +317,11 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         // 选择框
         ndSelect = new Node2D("NodeTreeItemSelect");
         node->addChild(ndSelect);
-        ndSelect->setSize(1000.0f, itemHeight-4);
+        ndSelect->setSize(1000.0f, itemHeight - 4);
         spSelect = dynamic_cast<UISprite *>(ndSelect->addComponent("UISprite"));
         spSelect->setTexture("resources/texture/ic-default.png");
         spSelect->setMaterial(nullptr);
-        spSelect->setColor(9.0f / 250.0f, 74.0f / 255.0f, 93.0f / 255.0f, 1.0f);
+        spSelect->setColor(9.0f / 250.0f, 74.0f / 255.0f, 93.0f / 255.0f, 0.0f);
         // 折叠符号
         ndFold = new Node2D("NodeTreeItemFold");
         node->addChild(ndFold);
@@ -369,9 +378,8 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     uiTreeData.index = this->_nodeIndex;
     this->_treeUIMap.emplace(node->getUuid(), uiTreeData);
     // std::cout << "当前索引：" << this->_nodeIndex << "layer：" << uiTreeData.layer << std::endl;
-
     node->setActive(true);
-    ndSelect->setActive(false);
+
     itemWidth += (uiTreeData.layer * offset);
 
     // this->_treeSelectMap.emplace(node->uuid(), &uiTreeData);
@@ -425,7 +433,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
 
     node->setSize(itemWidth, itemHeight);
     node->setPosition(itemWidth / 2.0f, -itemHeight / 2.0f - this->_nodeIndex * itemHeight, 0.0f);
-    std::cout << "UITree UITree::item width: " << itemWidth << " height: " << itemHeight << std::endl;
+    // std::cout << "UITree UITree::item width: " << itemWidth << " height: " << itemHeight << std::endl;
     if (itemWidth > this->_contentWidth)
     {
         this->_contentWidth = itemWidth;
@@ -517,7 +525,6 @@ void UITree::_refreshTreeItemUI(Node2D *ndItem, int state)
     Node *ndSelect = ndItem->getChildByName("NodeTreeItemSelect");
     if (ndSelect != nullptr)
     {
-        ndSelect->setActive(true);
         Node2D *ndSelect2d = dynamic_cast<Node2D *>(ndSelect);
         UISprite *spSelect = dynamic_cast<UISprite *>(ndSelect2d->getComponent("UISprite"));
         if (spSelect != nullptr)
@@ -553,14 +560,7 @@ void UITree::hoverSelect()
         this->_isSelectHover = true;
     }
 }
-void UITree::Update(float deltaTime)
-{
-    Component::Update(deltaTime);
-}
-void UITree::LateUpdate(float deltaTime)
-{
-    Component::LateUpdate(deltaTime);
-}
+
 void UITree::Render()
 {
     Component::Render();
@@ -575,12 +575,9 @@ void UITree::Disable()
     Component::Disable();
 }
 
-
-
 void UITree::destroy()
 {
     this->_selectCallback = nullptr;
-    this->_node->offTransformChange(this->_nodeTransform_ID);
     Component::destroy();
 }
 void UITree::clearGfxObject()

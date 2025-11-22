@@ -20,11 +20,12 @@ UIRenderer::UIRenderer(Node *node, std::string uuid) : Component(node, uuid)
 }
 void UIRenderer::Awake()
 {
-    Component::Awake();
+	Component::Awake();
 }
 void UIRenderer::Enable()
 {
-    Component::Enable();
+	Component::Enable();
+	this->updateModelMatrix();
 }
 void UIRenderer::setColor(float r, float g, float b, float a)
 {
@@ -92,10 +93,9 @@ void UIRenderer::LateUpdate(float deltaTime)
 void UIRenderer::Render()
 {
 	Component::Render();
-
-	if (!this->isEnabled())
+	if (this->_node->hasFrameTransformFlag())
 	{
-		return; // 组件未激活
+		this->updateModelMatrix();
 	}
 
 	if (this->_texture == nullptr)
@@ -113,6 +113,7 @@ void UIRenderer::Render()
 		// std::cout << "UIRenderer::render: modelMatrix scale to 0" << std::endl;
 		return;
 	}
+
 	// 提交渲染对象
 	GfxMgr::getInstance()->submitObjectRender(this->_uuid);
 }
@@ -122,7 +123,7 @@ void UIRenderer::LateRender()
 }
 void UIRenderer::Disable()
 {
-    Component::Disable();
+	Component::Disable();
 }
 void UIRenderer::destroy()
 {

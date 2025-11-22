@@ -129,22 +129,22 @@ void Node2D::render()
  */
 void Node2D::_updateRendererModelMatrix()
 {
-	Node::_updateRendererModelMatrix();
-	for (auto &component : this->_components)
-	{
-		UIRenderer *uiRenderer = dynamic_cast<UIRenderer *>(component);
-		if (uiRenderer != nullptr)
-		{
-			uiRenderer->updateModelMatrix();
-			continue;
-		}
-		UIMask *uiMask = dynamic_cast<UIMask *>(component);
-		if (uiMask != nullptr)
-		{
-			uiMask->updateModelMatrix();
-			continue;
-		}
-	}
+	// Node::_updateRendererModelMatrix();
+	// for (auto &component : this->_components)
+	// {
+	// 	UIRenderer *uiRenderer = dynamic_cast<UIRenderer *>(component);
+	// 	if (uiRenderer != nullptr)
+	// 	{
+	// 		uiRenderer->updateModelMatrix();
+	// 		continue;
+	// 	}
+	// 	UIMask *uiMask = dynamic_cast<UIMask *>(component);
+	// 	if (uiMask != nullptr)
+	// 	{
+	// 		uiMask->updateModelMatrix();
+	// 		continue;
+	// 	}
+	// }
 }
 
 void Node2D::clearNodeFrameFlag()

@@ -9,8 +9,6 @@ UIWidget::UIWidget(Node *node, std::string uuid) : Component(node, uuid)
 {
     this->_layer = NodeLayer::Node2D;
     this->_flag = 1;
-
-    // this->_nodeTransform_ID = this->_node->onTransformChange(&UIWidget::_onNodeTransformChange, this);
 }
 void UIWidget::Awake()
 {
@@ -45,6 +43,10 @@ void UIWidget::Update(float deltaTime)
 void UIWidget::LateUpdate(float deltaTime)
 {
     Component::LateUpdate(deltaTime);
+}
+
+void UIWidget::updateWidget()
+{
     if (this->_node->hasFrameTransformFlag() || (this->_node->getParent() != nullptr && this->_node->getParent()->hasFrameTransformFlag()) || this->_flag > 0)
     {
         Node2D *node = dynamic_cast<Node2D *>(this->_node);
@@ -109,6 +111,8 @@ void UIWidget::LateUpdate(float deltaTime)
         this->_flag = 0;
     }
 }
+
+
 void UIWidget::Render()
 {
     Component::Render();

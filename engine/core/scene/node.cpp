@@ -1,6 +1,7 @@
 #include "node.h"
 #include "../utils/uuid-util.h"
 #include "../component/component.h"
+#include "../component/ui/ui-widget.h"
 #include "../../boo.h"
 #include "../renderer/ui/ui-renderer.h"
 
@@ -190,11 +191,6 @@ void Node::_updateWorldTransform()
 
 void Node::update(float dt)
 {
-	if (!this->_isActiveInHierarchy)
-	{
-		return;
-	}
-
 	// 更新组件
 	for (auto &component : this->_components)
 	{
@@ -208,10 +204,16 @@ void Node::update(float dt)
 }
 void Node::lateUpdate(float dt)
 {
-	if (!this->_isActiveInHierarchy)
+	// ui-widget 组件 比较特殊，特出处理
+	for (auto &component : this->_components)
 	{
-		return;
+		UIWidget *uiWidget = dynamic_cast<UIWidget *>(component);
+		if (uiWidget != nullptr)
+		{
+			uiWidget->updateWidget();
+		}
 	}
+
 	// 更新组件
 	for (auto &component : this->_components)
 	{
@@ -224,22 +226,22 @@ void Node::lateUpdate(float dt)
 }
 void Node::render()
 {
-	if (this->hasFrameTransformFlag())
+	// if (this->hasFrameTransformFlag())
+	// {
+	// 	this->_updateRendererModelMatrix();
+	// }
+	// if (this->_isActiveInHierarchy)
+	// {
+	// 渲染组件
+	for (auto &component : this->_components)
 	{
-		this->_updateRendererModelMatrix();
+		component->Render();
 	}
-	if (this->_isActiveInHierarchy)
+	for (auto &child : this->_children)
 	{
-		// 渲染组件
-		for (auto &component : this->_components)
-		{
-			component->Render();
-		}
-		for (auto &child : this->_children)
-		{
-			child->render();
-		}
+		child->render();
 	}
+	// }
 	for (auto &component : this->_components)
 	{
 		component->LateRender();
