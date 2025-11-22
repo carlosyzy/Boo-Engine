@@ -35,15 +35,18 @@ void Input::onMouseButton(int button, int action, int mods)
         Node2D *node2d = dynamic_cast<Node2D *>(node);
         if (node2d != nullptr && node2d->isActive())
         {
-            // 点击的时候进行范围检测.
-            _nodes.push_back(node2d);
-            for (auto &child : node2d->getChildren())
+            if ((action == 1 && node2d->inHitMask(this->_cursorX, this->_cursorY)) || action == 0)
             {
-                collectNodes(child);
+                _nodes.push_back(node2d);
+                for (auto &child : node2d->getChildren())
+                {
+                    collectNodes(child);
+                }
             }
         }
     };
     collectNodes(this->_root);
+    std::cout << "Input::_propagateEvent: x: " << this->_cursorX << " y: " << this->_cursorY << " is pressed" << std::endl;
     // 反向遍历，处理事件
     for (int i = _nodes.size() - 1; i >= 0; i--)
     {
@@ -113,6 +116,7 @@ bool Input::_propagateEvent(Node *node, int button, int action)
     }
     if (action == 1) // 按下
     {
+
         bool isIn = node2d->inHitOnNode(this->_cursorX, this->_cursorY);
         if (isIn)
         {
@@ -187,7 +191,6 @@ bool Input::_propagateEvent(Node *node, int button, int action)
         }
         else if (nodeInput.status == 0) // 不在节点范围内，触发touch cancel事件
         {
-           
             bool isIn = node2d->inHitOnNode(this->_cursorX, this->_cursorY);
             if (!isIn)
             {

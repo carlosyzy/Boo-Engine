@@ -62,6 +62,7 @@ public:
     void offNodeInputEvent(int inputID);
     void offAllNodeInputEvent();
 
+    bool inHitMask(float x, float y);
     bool inHitOnNode(float x, float y);
 
     void destroy() override;

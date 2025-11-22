@@ -64,11 +64,15 @@ void Node2D::_updateWorldTransform()
 	Node::_updateWorldTransform();
 	// 尺寸
 	this->_uiWorldMatrix.set(this->_worldMatrix);
-	this->_uiWorldMatrix.setM00(this->_uiWorldMatrix.getM00() * this->_size.getWidth()); // 宽高和缩放进行相乘
-	this->_uiWorldMatrix.setM11(this->_uiWorldMatrix.getM11() * this->_size.getHeight());
+	float _x = this->_uiWorldMatrix.getM30() + (0.5 - this->_anchor.getX()) * this->_size.getWidth();
+	float _y = this->_uiWorldMatrix.getM31() + (0.5 - this->_anchor.getY()) * this->_size.getHeight();
+	float _width = this->_uiWorldMatrix.getM00() * this->_size.getWidth();
+	float _height = this->_uiWorldMatrix.getM11() * this->_size.getHeight();
 	// 锚点
-	this->_uiWorldMatrix.setM30(this->_uiWorldMatrix.getM30() + (0.5 - this->_anchor.getX()) * this->_size.getWidth());
-	this->_uiWorldMatrix.setM31(this->_uiWorldMatrix.getM31() + (0.5 - this->_anchor.getY()) * this->_size.getHeight());
+	this->_uiWorldMatrix.setM30(_x);
+	this->_uiWorldMatrix.setM31(_y);
+	this->_uiWorldMatrix.setM00(_width); // 宽高和缩放进行相乘
+	this->_uiWorldMatrix.setM11(_height);
 }
 
 Component *Node2D::addComponent(std::string name, std::string uuid)
@@ -156,6 +160,19 @@ void Node2D::offAllNodeInputEvent()
 {
 	Boo::game->input()->offAllNodeInputEvent(this);
 }
+bool Node2D::inHitMask(float x, float y)
+{
+	const Mat4 &uiMat = this->uiWorldMatrix();
+	float _x = uiMat.getM30();
+	float _y = uiMat.getM31();
+	float _width = uiMat.getM00();
+	float _height = uiMat.getM11();
+	if (x >= _x - _width / 2.0 && x <= _x + _width / 2.0 && y >= _y - _height / 2.0 && y <= _y + _height / 2.0)
+	{
+		return true;
+	}
+	return false;
+}
 /**
  * 2d 节点的点击事件
  * @param x
@@ -165,18 +182,23 @@ void Node2D::offAllNodeInputEvent()
  */
 bool Node2D::inHitOnNode(float x, float y)
 {
+	// UI Mask属于特殊情况，必须在ui-node里边，并且同时在ui-mask里边
 	const Mat4 &uiMat = this->uiWorldMatrix();
 	float _x = uiMat.getM30();
 	float _y = uiMat.getM31();
 	float _width = uiMat.getM00();
 	float _height = uiMat.getM11();
-	if (
-		x >= _x - _width / 2.0 && x <= _x + _width / 2.0 &&
-		y >= _y - _height / 2.0 && y <= _y + _height / 2.0)
+
+	float _left = _x - _width / 2.0;
+	float _right = _x + _width / 2.0;
+	float _top = _y - _height / 2.0;
+	float _bottom = _y + _height / 2.0;
+	// std::cout << "Node2D::inHitOnNode: " << this->_name << " left: " << _left << " right: " << _right << " top: " << _top << " bottom: " << _bottom  << "width: " << _width << " height: " << _height << std::endl;
+	if (x >= _left && x <= _right && y >= _top && y <= _bottom)
 	{
+		// std::cout << "Node2D::inHitOnNode: " << this->_name << " is hit" << std::endl;
 		return true;
 	}
-
 	return false;
 }
 

@@ -227,6 +227,7 @@ void UITree::_updateTreeContent()
     this->_contentY = size.getHeight() / 2.0f + this->_topLen;
     this->_ndContent->setPosition(this->_contentX, this->_contentY, 0.0f);
     this->_ndContent->setSize(this->_contentWidth, this->_contentHeight);
+    std::cout << "UITree UITree::update  width: " << this->_contentWidth << " height: " << this->_contentHeight << std::endl;
     // 刷新content的大小,位置===============================================end
 
     //     // 选择框 =============================================================start
@@ -301,14 +302,12 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         // sp->setColor(340.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
         // sp->setTexture("resources/texture/ic-default.png");
         // sp->setMaterial(nullptr);
-        // node->onNodeInputEvent(NodeInput::TOUCH_START, [this](NodeInputResult &result)
-        //                        { this->_onTreeItemTouchEvent(result); }, true);
         node->onNodeInputEvent(NodeInput::TOUCH_END, &UITree::_onTreeItemTouchEvent, this);
         node->onNodeInputEvent(NodeInput::CURSOR_HOVER, &UITree::_onTreeItemCursorHoverEvent, this);
         // 选择框
         ndSelect = new Node2D("NodeTreeItemSelect");
         node->addChild(ndSelect);
-        ndSelect->setSize(1000.0f, itemHeight);
+        ndSelect->setSize(1000.0f, itemHeight-4);
         spSelect = dynamic_cast<UISprite *>(ndSelect->addComponent("UISprite"));
         spSelect->setTexture("resources/texture/ic-default.png");
         spSelect->setMaterial(nullptr);
@@ -402,6 +401,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     itemWidth += ndIcon->getSize().getWidth();
     // 创建名字
     txtName->setText(uiTreeData.name);
+    node->setName(uiTreeData.name);
     float itemNameWidth = ndName->getSize().getWidth();
     float itemNameHight = ndName->getSize().getHeight();
     itemWidth += itemNameWidth;

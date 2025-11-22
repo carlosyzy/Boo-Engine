@@ -8,6 +8,7 @@
 #include "hierarchy/editor-hierarchy.h"
 #include "assets/editor-assets.h"
 #include "property/editor-property.h"
+#include "../engine/core/scene/scene.h"
 
 Editor::Editor() : _editorLayout(nullptr)
 {
@@ -98,6 +99,7 @@ void Editor::_initHierarchy()
 	Node2D *layout = this->_editorLayout->getHierarchy();
 	this->_hierarchy = new EditorHierarchy(layout);
 	this->_hierarchy->setScene(this->_editorLayout->getScene());
+	// this->_hierarchy->setScene(new Scene("Edtitor-Text"));
 }
 // void Editor::_initAssets()
 // {
