@@ -173,7 +173,7 @@ void Node::_updateNodesActiveInHierarchyState(bool isActiveInHierarch)
 }
 void Node::_updateWorldTransform()
 {
-	if (!this->_active)
+	if (!this->_isActiveInHierarchy)
 		return;
 	if (this->_worldTransformFlag == NodeTransformFlag::NONE_FLAG)
 		return;

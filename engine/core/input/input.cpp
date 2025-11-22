@@ -46,7 +46,10 @@ void Input::onMouseButton(int button, int action, int mods)
         }
     };
     collectNodes(this->_root);
-    std::cout << "Input::_propagateEvent: x: " << this->_cursorX << " y: " << this->_cursorY << " is pressed" << std::endl;
+    //  View *view = Boo::game->view();
+    // std::cout << "Input::_propagateEvent: x: " << this->_cursorX << " y: " << this->_cursorY << " is pressed" << std::endl;
+    // std::cout << "Input::View: width: " << view->width << " height: " << view->height << " is pressed" << std::endl;
+    // std::cout << "Input::_propagateEvent: x: " << this->_cursorX << " y: " << this->_cursorY << " is pressed" << std::endl;
     // 反向遍历，处理事件
     for (int i = _nodes.size() - 1; i >= 0; i--)
     {
@@ -74,6 +77,10 @@ void Input::onCursorPos(double xpos, double ypos)
         return;
     }
     // std::cout << "Input::onCursorPos  cursorX: " << this->_cursorX << " cursorY: " << this->_cursorY << std::endl;
+
+    // this->_cursorX = xpos;
+    // this->_cursorY = ypos;
+
     // 触发所有节点的touchMove事件
     // 正向遍历，拿到所有的节点
     std::vector<Node *> _nodes;
@@ -116,7 +123,7 @@ bool Input::_propagateEvent(Node *node, int button, int action)
     }
     if (action == 1) // 按下
     {
-
+        View *view = Boo::game->view();
         bool isIn = node2d->inHitOnNode(this->_cursorX, this->_cursorY);
         if (isIn)
         {

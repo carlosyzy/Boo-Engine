@@ -17,6 +17,7 @@ class Input;
 
 struct View
 {
+    bool isFlag;
     int width = 1280;
     int height = 720;
 };
@@ -132,10 +133,7 @@ public:
      * @brief 初始化游戏
      */
     void init();
-
-
-
-    void setView(int width, int height);
+    void setView(const int width, const int height);
     View *view()
     {
         return this->_view;

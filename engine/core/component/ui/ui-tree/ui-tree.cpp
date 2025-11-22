@@ -348,7 +348,6 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     else
     {
         node = this->_nodePools[this->_nodeIndex];
-
         Node *select = node->getChildByName("NodeTreeItemSelect");
         Node *fold = node->getChildByName("NodeTreeItemFold");
         Node *icon = node->getChildByName("NodeTreeItemIcon");
@@ -379,12 +378,14 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     this->_treeUIMap.emplace(node->getUuid(), uiTreeData);
     // std::cout << "当前索引：" << this->_nodeIndex << "layer：" << uiTreeData.layer << std::endl;
     node->setActive(true);
+    ndSelect->setSize(1000.0f, itemHeight - 4);
+    ndSelect->setPosition(0.0f, 0.0f, 0.0f);
 
     itemWidth += (uiTreeData.layer * offset);
-
     // this->_treeSelectMap.emplace(node->uuid(), &uiTreeData);
     // this->_treeFoldMap.emplace(ndFold->uuid(), &uiTreeData);
     // 折叠图标
+    ndFold->setSize(16.0f, 16.0f);
     if (uiTreeData.isFold)
     {
         spFold->setTexture("resources/texture/ic-arrow-right.png");
@@ -405,21 +406,22 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     }
     itemWidth += ndFold->getSize().getWidth();
     // 图标
+    ndIcon->setSize(16.0f, 16.0f);
     spIcon->setTexture(uiTreeData.iconKey);
     // spIcon->setTexture("resources/texture/ic-default.png");
     itemWidth += ndIcon->getSize().getWidth();
     // 创建名字
     txtName->setText(uiTreeData.name);
-    node->setName(uiTreeData.name);
     float itemNameWidth = ndName->getSize().getWidth();
     float itemNameHight = ndName->getSize().getHeight();
+    ndName->setSize(itemNameWidth, itemNameHight);
     itemWidth += itemNameWidth;
     itemWidth += 5.0f * 3;
 
     // 设置总宽度
-    if (itemWidth < size.getWidth() - 10)
+    if (itemWidth < size.getWidth() - 3)
     {
-        itemWidth = size.getWidth() - 10;
+        itemWidth = size.getWidth() - 3;
     }
     // 折叠按钮
     float startX = -itemWidth / 2.0 + (uiTreeData.layer * offset);
@@ -510,6 +512,14 @@ void UITree::_onTreeItemTouchEvent(NodeInputResult &result)
         this->_selectTreeItem = uiTreeData;
         this->_refreshTreeItemUI(this->_selectTreeItem.ndBind, 1); // 重新选中选中
         this->_isSelectHover = false;
+
+        // Node *select = uiTreeData.ndBind->getChildByName("NodeTreeItemSelect");
+        // Node *fold = uiTreeData.ndBind->getChildByName("NodeTreeItemFold");
+        // Node *icon = uiTreeData.ndBind->getChildByName("NodeTreeItemIcon");
+        // Node *name = uiTreeData.ndBind->getChildByName("NodeTreeItemName");
+        // Node2D *icon2d = dynamic_cast<Node2D *>(icon);
+        // std::cout << "node size: " << uiTreeData.ndBind->getSize().getWidth() << " " << uiTreeData.ndBind->getSize().getHeight() << std::endl;
+        // std::cout << "node icon size: " << icon2d->getSize().getWidth() << " " << icon2d->getSize().getHeight() << std::endl;
     }
     if (this->_selectCallback != nullptr)
     {

@@ -43,6 +43,7 @@ struct UITreeStructure
     int index;
     /** 节点-节点树时使用 */
     Node2D *ndBind;
+
     std::vector<UITreeStructure> children;
 };
 

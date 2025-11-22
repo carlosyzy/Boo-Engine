@@ -101,9 +101,13 @@ void Game::_initAlpha()
 	// 启动场景
 }
 
-void Game::setView(int width, int height)
+void Game::setView(const int width, const int height)
 {
 	std::cout << "setView: width:" << width << " height:" << height << std::endl;
+	if(this->_view->width == width && this->_view->height == height){
+		return;
+	}
+	this->_view->isFlag = true;
 	this->_view->width = width;
 	this->_view->height = height;
 }
@@ -189,6 +193,7 @@ void Game::_clear()
 		this->_curScene->clearNodeFrameFlag();
 	}
 	this->_updateClearCaches();
+	this->_view->isFlag = false;
 }
 
 void Game::_updateSchedules(float dt)
