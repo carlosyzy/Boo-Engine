@@ -80,12 +80,6 @@ void Game::_initComponents()
 	this->registerComponentClass<NodeTree>("NodeTree");
 	this->registerComponentClass<UILayoutHorizontal>("UILayoutHorizontal");
 	this->registerComponentClass<UIMask>("UIMask");
-	/*
-	  this->_componentFactory->registerClass<Text>("Text");
-
-	  this->_componentFactory->registerClass<NodeTree>("NodeTree");
-	  this->_componentFactory->registerClass<FileTree>("FileTree");
-	  this->_componentFactory->registerClass<UIMask>("UIMask");*/
 }
 void Game::_initAssets()
 {
@@ -151,7 +145,7 @@ void Game::addNodeClearCaches(Node *node)
 	this->_nodeClearCaches.push_back(node);
 }
 
-void Game::update(float dt)
+void Game::tick(float dt)
 {
 	long long start = TimeUtil::nowTime();
 	this->_update(dt);

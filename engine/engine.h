@@ -34,8 +34,8 @@ public:
     /**
      * 主循环
      */
-    void tick();
-    void update(float dt);
+    void run();
+    void tick(float dt);
     void updateViewSize(float width, float height);
     /**
      * @brief 更新鼠标状态

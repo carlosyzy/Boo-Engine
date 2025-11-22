@@ -153,7 +153,7 @@ void EditorLayout::_initPropertyUI()
 		this->_spriteProperty->setTexture("resources/texture/ic-default.png");
 		this->_spriteProperty->setMaterial(nullptr);
 	}
-	UIMask *uiMask = static_cast<UIMask *>(this->_ndProperty->addComponent("UIMask"));
+
 }
 void EditorLayout::_initSceneUI()
 {
@@ -214,7 +214,6 @@ void EditorLayout::update(float dt)
 		this->_scene->update(dt);
 		this->_scene->lateUpdate(dt);
 		this->_scene->render();
-		this->_scene->lateRender();
 		this->_scene->clearNodeFrameFlag();
 	}
 };

@@ -41,7 +41,7 @@ void Engine::_initEditor()
 /**
  * @brief 主循环
  */
-void Engine::tick()
+void Engine::run()
 {
 	while (Boo::window->isRunning())
 	{
@@ -50,7 +50,7 @@ void Engine::tick()
 		long t = deltaTime - this->_deltaTime;
 		if (t > 1000.0f / this->_frameRate)
 		{
-			this->update(t / 1000.0f);
+			this->tick(t / 1000.0f);
 			this->_deltaTime = deltaTime;
 		}
 	}
@@ -58,12 +58,12 @@ void Engine::tick()
 /**
  * @brief 引擎更新
  */
-void Engine::update(float dt)
+void Engine::tick(float dt)
 {
 	Editor::getInstance()->update(dt);
 	if (Boo::game != nullptr)
 	{
-		Boo::game->update(dt);
+		Boo::game->tick(dt);
 	}
 }
 

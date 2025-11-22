@@ -72,7 +72,7 @@ void Alpha::_updateLogoAlpha(float deltaTime)
 	{
 		return;
 	}
-	return;
+	//return;
 	this->_logoAlphaNum += deltaTime;
 	this->_spriteLogo->setAlpha(this->_logoAlphaNum / this->_alphaDuration);
 }

@@ -222,6 +222,5 @@ public:
      * @param ypos 鼠标Y坐标
      */
     void updateMousePos(double xpos, double ypos);
-
-    void update(float dt);
+    void tick(float dt);
 };

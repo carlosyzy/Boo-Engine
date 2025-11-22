@@ -235,22 +235,26 @@ void Node::render()
 			child->render();
 		}
 	}
-}
-void Node::lateRender()
-{
-	if (this->_isActiveInHierarchy)
+	for (auto &component : this->_components)
 	{
-		// 渲染组件
-		for (auto &component : this->_components)
-		{
-			component->lateRender();
-		}
-		for (auto &child : this->_children)
-		{
-			child->lateRender();
-		}
+		component->lateRender();
 	}
 }
+// void Node::lateRender()
+// {
+// 	if (this->_isActiveInHierarchy)
+// 	{
+// 		// 渲染组件
+// 		for (auto &component : this->_components)
+// 		{
+// 			component->lateRender();
+// 		}
+// 		for (auto &child : this->_children)
+// 		{
+// 			child->lateRender();
+// 		}
+// 	}
+// }
 void Node::clearNodeFrameFlag()
 {
 	this->_frameTransformFlag = NodeTransformFlag::NONE_FLAG;

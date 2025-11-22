@@ -302,7 +302,6 @@ public:
 	virtual void update(float deltaTime);
 	virtual void lateUpdate(float deltaTime);
 	virtual void render();
-	virtual void lateRender();
 	virtual void clearNodeFrameFlag();
 	virtual void destroy();
 };

@@ -20,7 +20,7 @@ UIMask::UIMask(Node *node, std::string uuid) : Component(node, uuid)
     GfxMgr::getInstance()->setObjectPipeline(this->_addUuid, "built-ui-mask-add");
     GfxMgr::getInstance()->setObjectPipeline(this->_subUuid, "built-ui-mask-sub");
     GfxMgr::getInstance()->setObjectUIMaskBehavior(this->_addUuid, 1);
-    GfxMgr::getInstance()->setObjectUIMaskBehavior(this->_subUuid, 1);
+    GfxMgr::getInstance()->setObjectUIMaskBehavior(this->_subUuid, 0);
     this->setTexture("resources/texture/ic-default.png");
 }
 void UIMask::updateModelMatrix()
