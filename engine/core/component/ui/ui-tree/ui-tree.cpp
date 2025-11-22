@@ -171,11 +171,21 @@ void UITree::_onTreeContentTouchEvent(NodeInputResult &result)
 }
 void UITree::_onTreeContentHoverEvent(NodeInputResult &result)
 {
-    if (this->_hoverTreeItem.uuid != this->_selectTreeItem.uuid)
+    if (this->_hoverTreeItem != nullptr)
     {
-        this->_refreshTreeItemUI(this->_hoverTreeItem.ndBind, 0);
-        this->_hoverTreeItem.uuid = "";
-        this->_hoverTreeItem.ndBind = nullptr;
+        if (this->_selectTreeItem == nullptr)
+        {
+            this->_refreshTreeItemUI(this->_hoverTreeItem->ndBind, 0);
+            this->_hoverTreeItem = nullptr;
+        }
+        else if (this->_hoverTreeItem->uuid == this->_selectTreeItem->uuid)
+        {
+            this->_refreshTreeItemUI(this->_hoverTreeItem->ndBind, 2);
+            this->_hoverTreeItem = nullptr;
+        }else{
+            this->_refreshTreeItemUI(this->_hoverTreeItem->ndBind, 0);
+            this->_hoverTreeItem = nullptr;
+        }
     }
 }
 
@@ -199,16 +209,13 @@ void UITree::LateUpdate(float deltaTime)
 
 void UITree::_updateTreeContent()
 {
-    // std::cout << "UITree UITree::update  1" << std::endl;
-    Node2D *node = dynamic_cast<Node2D *>(this->_node);
-    const Size &size = node->getSize();
-    // std::cout << "UITree UITree::node width: " << size.getWidth() << " height: " << size.getHeight() << std::endl;
-
+    std::cout << "UITree UITree::update  1" << std::endl;
     this->_nodeIndex = 0;
     this->_treeUIMap.clear();
-    //     this->_treeFoldMap.clear();
-    //     this->_ndSelect->setActive(false);
-    // std::cout << "UITree UITree::update  2" << std::endl;
+    this->_foldUIMap.clear();
+
+    Node2D *node = dynamic_cast<Node2D *>(this->_node);
+    const Size &size = node->getSize();
     if (this->_uiTreeData.layer >= 0)
     {
         this->_updateTreesItems(this->_uiTreeData);
@@ -330,6 +337,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         spFold->setMaterial(nullptr);
         // ndFold->onNodeInputEvent(NodeInput::TOUCH_START, [this](NodeInputResult &result)
         //                          { this->_onTreeItemFoldTouchEvent(result); }, true);
+        ndFold->onNodeInputEvent(NodeInput::TOUCH_END, &UITree::_onTreeItemFoldTouchEvent, this);
         // 图标
         ndIcon = new Node2D("NodeTreeItemIcon");
         node->addChild(ndIcon);
@@ -375,26 +383,22 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     }
     uiTreeData.ndBind = node;
     uiTreeData.index = this->_nodeIndex;
-    this->_treeUIMap.emplace(node->getUuid(), uiTreeData);
-    // std::cout << "当前索引：" << this->_nodeIndex << "layer：" << uiTreeData.layer << std::endl;
+    this->_treeUIMap.emplace(node->getUuid(), &uiTreeData);
+    this->_foldUIMap.emplace(ndFold->getUuid(), &uiTreeData);
     node->setActive(true);
     ndSelect->setSize(1000.0f, itemHeight - 4);
     ndSelect->setPosition(0.0f, 0.0f, 0.0f);
-
     itemWidth += (uiTreeData.layer * offset);
-    // this->_treeSelectMap.emplace(node->uuid(), &uiTreeData);
-    // this->_treeFoldMap.emplace(ndFold->uuid(), &uiTreeData);
     // 折叠图标
     ndFold->setSize(16.0f, 16.0f);
+    std::cout << "UITree UITree::name: " << uiTreeData.name << " fold: " << uiTreeData.isFold << std::endl;
     if (uiTreeData.isFold)
     {
-        spFold->setTexture("resources/texture/ic-arrow-right.png");
-        // spFold->setTexture("resources/texture/ic-default.png");
+        // spFold->setTexture("resources/texture/ic-arrow-right.png");
     }
     else
     {
-        spFold->setTexture("resources/texture/ic-arrow-bottom.png");
-        // spFold->setTexture("resources/texture/ic-default.png");
+        // spFold->setTexture("resources/texture/ic-arrow-bottom.png");
     }
     if (uiTreeData.children.size() > 0)
     {
@@ -402,8 +406,9 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     }
     else
     {
-        // ndFold->setActive(false);
+        ndFold->setActive(false);
     }
+
     itemWidth += ndFold->getSize().getWidth();
     // 图标
     ndIcon->setSize(16.0f, 16.0f);
@@ -444,6 +449,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     this->_nodeIndex++;
     if (!uiTreeData.isFold)
     {
+        std::cout << "UITree UITree::name: " << uiTreeData.name << " children size: " << uiTreeData.children.size() << std::endl;
         for (int i = 0; i < uiTreeData.children.size(); i++)
         {
             this->_updateTreesItems(uiTreeData.children[i]);
@@ -457,34 +463,42 @@ void UITree::_onTreeItemCursorHoverEvent(NodeInputResult &result)
     {
         return;
     }
-    UITreeStructure &uiTreeData = this->_treeUIMap[result.node->getUuid()];
-    if (this->_hoverTreeItem.uuid == uiTreeData.uuid)
+    UITreeStructure *uiTreeData = this->_treeUIMap[result.node->getUuid()];
+    // 悬停在了同一个节点上
+    if (this->_hoverTreeItem && this->_hoverTreeItem->uuid == uiTreeData->uuid)
     {
         // 重复悬停在同一个节点上
-        return;
-    }
-    if (this->_hoverTreeItem.uuid == "" || this->_hoverTreeItem.ndBind == nullptr) // 之前没有悬停节点
-    {
         this->_hoverTreeItem = uiTreeData;
-        this->_refreshTreeItemUI(this->_hoverTreeItem.ndBind, 2); // 悬停在节点上
         return;
     }
-    else
+    // 悬停在了选中节点上
+    if (this->_selectTreeItem && this->_selectTreeItem->uuid == uiTreeData->uuid)
     {
-        // 将上一个悬停节点的状态重置为普通状态
-        if (this->_hoverTreeItem.uuid != this->_selectTreeItem.uuid) // 选中节点不重置为普通状态
+        if (this->_hoverTreeItem)
         {
-            this->_refreshTreeItemUI(this->_hoverTreeItem.ndBind, 0); // 取消悬停
+            this->_refreshTreeItemUI(this->_hoverTreeItem->ndBind, 0); // 取消悬停
         }
-    }
-    if (this->_selectTreeItem.uuid == uiTreeData.uuid)
-    {
-        // 悬停在了选择的节点上，只更新悬停状态，不更新ui
         this->_hoverTreeItem = uiTreeData;
         return;
     }
+
+    if (this->_hoverTreeItem == nullptr)
+    {
+        // 之前没有悬停的节点 直接悬停在节点上
+        this->_hoverTreeItem = uiTreeData;
+        this->_refreshTreeItemUI(this->_hoverTreeItem->ndBind, 2);
+        return;
+    }
+    // 切换前 悬停在选中节点上，不取消选中
+    if (this->_selectTreeItem && this->_hoverTreeItem->uuid == this->_selectTreeItem->uuid)
+    {
+        this->_hoverTreeItem = uiTreeData;
+        this->_refreshTreeItemUI(this->_hoverTreeItem->ndBind, 2); // 悬停在节点上
+        return;
+    }
+    this->_refreshTreeItemUI(this->_hoverTreeItem->ndBind, 0); // 取消悬停
     this->_hoverTreeItem = uiTreeData;
-    this->_refreshTreeItemUI(this->_hoverTreeItem.ndBind, 2); // 悬停在节点上
+    this->_refreshTreeItemUI(this->_hoverTreeItem->ndBind, 2); // 悬停在节点上
 }
 void UITree::_onTreeItemTouchEvent(NodeInputResult &result)
 {
@@ -492,38 +506,34 @@ void UITree::_onTreeItemTouchEvent(NodeInputResult &result)
     {
         return;
     }
-    UITreeStructure &uiTreeData = this->_treeUIMap[result.node->getUuid()];
-    if (this->_selectTreeItem.uuid == uiTreeData.uuid)
+    UITreeStructure *uiTreeData = this->_treeUIMap[result.node->getUuid()];
+
+    if (this->_selectTreeItem != nullptr && this->_selectTreeItem->uuid == uiTreeData->uuid)
     {
+        // 点击了已经选中的
         if (this->_isSelectHover)
         {
             this->_refreshTreeItemUI(result.node, 1); // 取消悬停，重新选中
         }
         else
         {
-            this->_selectTreeItem.uuid = "";
-            this->_selectTreeItem.ndBind = nullptr;
+            this->_selectTreeItem = nullptr;
             this->_refreshTreeItemUI(result.node, 0); // 取消悬停，重新选中
         }
     }
     else
     {
-        this->_refreshTreeItemUI(this->_selectTreeItem.ndBind, 0); // 取消之前选中的节点
+        if (this->_selectTreeItem != nullptr)
+        {
+            this->_refreshTreeItemUI(this->_selectTreeItem->ndBind, 0); // 取消之前选中的节点
+        }
         this->_selectTreeItem = uiTreeData;
-        this->_refreshTreeItemUI(this->_selectTreeItem.ndBind, 1); // 重新选中选中
+        this->_refreshTreeItemUI(this->_selectTreeItem->ndBind, 1); // 重新选中选中
         this->_isSelectHover = false;
-
-        // Node *select = uiTreeData.ndBind->getChildByName("NodeTreeItemSelect");
-        // Node *fold = uiTreeData.ndBind->getChildByName("NodeTreeItemFold");
-        // Node *icon = uiTreeData.ndBind->getChildByName("NodeTreeItemIcon");
-        // Node *name = uiTreeData.ndBind->getChildByName("NodeTreeItemName");
-        // Node2D *icon2d = dynamic_cast<Node2D *>(icon);
-        // std::cout << "node size: " << uiTreeData.ndBind->getSize().getWidth() << " " << uiTreeData.ndBind->getSize().getHeight() << std::endl;
-        // std::cout << "node icon size: " << icon2d->getSize().getWidth() << " " << icon2d->getSize().getHeight() << std::endl;
     }
     if (this->_selectCallback != nullptr)
     {
-        this->_selectCallback(this->_selectTreeItem.uuid);
+        this->_selectCallback(this->_selectTreeItem ? this->_selectTreeItem->uuid : "");
     }
 }
 void UITree::_refreshTreeItemUI(Node2D *ndItem, int state)
@@ -554,19 +564,32 @@ void UITree::_refreshTreeItemUI(Node2D *ndItem, int state)
         }
     }
 }
+void UITree::_onTreeItemFoldTouchEvent(NodeInputResult &result)
+{
+    if (this->_foldUIMap.find(result.node->getUuid()) == this->_foldUIMap.end())
+    {
+        return;
+    }
+    UITreeStructure *uiTreeData = this->_foldUIMap[result.node->getUuid()];
+    uiTreeData->isFold = uiTreeData->isFold ? false : true;
+    this->_isDirty = true;
+    std::cout << "fold touch event" << result.node->getName() << " is fold: " << uiTreeData->isFold << std::endl;
+}
+
 void UITree::clearSelect()
 {
-
-    this->_refreshTreeItemUI(this->_selectTreeItem.ndBind, 0); // 取消悬停，重新选中
-    this->_selectTreeItem.uuid = "";
-    this->_selectTreeItem.ndBind = nullptr;
+    if (this->_selectTreeItem != nullptr)
+    {
+        this->_refreshTreeItemUI(this->_selectTreeItem->ndBind, 0); // 取消悬停，重新选中
+    }
+    this->_selectTreeItem = nullptr;
     this->_isSelectHover = false;
 }
 void UITree::hoverSelect()
 {
-    if (this->_selectTreeItem.uuid != "" && this->_selectTreeItem.ndBind != nullptr)
+    if (this->_selectTreeItem != nullptr)
     {
-        this->_refreshTreeItemUI(this->_selectTreeItem.ndBind, 2); // 悬停在节点上
+        this->_refreshTreeItemUI(this->_selectTreeItem->ndBind, 2); // 悬停在节点上
         this->_isSelectHover = true;
     }
 }

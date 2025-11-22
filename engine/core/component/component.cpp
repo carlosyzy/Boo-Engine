@@ -29,7 +29,7 @@ void Component::setNodeActiveInHierarchy(bool isActiveInHierarchy)
         return; // 状态未改变
     }
     this->_isEnabledInHierarchy = isEnableInHierarchy;
-    if (isEnableInHierarchy)
+    if (this->_isEnabledInHierarchy)
     {
         if (!this->_isAwaked)
         {

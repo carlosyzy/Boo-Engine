@@ -79,6 +79,7 @@ public:
             float progress = (float)complete / (float)all;
             (instance->*callback)(complete, all, progress);
             delete result;
+            result = nullptr;
         }
         return taskID;
     }

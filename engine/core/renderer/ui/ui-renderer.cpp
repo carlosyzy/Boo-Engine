@@ -97,7 +97,6 @@ void UIRenderer::Render()
 	{
 		this->updateModelMatrix();
 	}
-
 	if (this->_texture == nullptr)
 	{
 		return;
@@ -113,7 +112,6 @@ void UIRenderer::Render()
 		// std::cout << "UIRenderer::render: modelMatrix scale to 0" << std::endl;
 		return;
 	}
-
 	// 提交渲染对象
 	GfxMgr::getInstance()->submitObjectRender(this->_uuid);
 }

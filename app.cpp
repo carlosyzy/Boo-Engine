@@ -7,6 +7,7 @@ int main()
     engine->init();
     engine->run();
     delete engine;
+    engine = nullptr;
     std::cout << "close" << std::endl;
     return 0;
 }

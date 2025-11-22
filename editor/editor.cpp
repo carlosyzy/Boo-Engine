@@ -98,8 +98,8 @@ void Editor::_initHierarchy()
 {
 	Node2D *layout = this->_editorLayout->getHierarchy();
 	this->_hierarchy = new EditorHierarchy(layout);
-	this->_hierarchy->setScene(this->_editorLayout->getScene());
-	// this->_hierarchy->setScene(new Scene("Edtitor-Text"));
+	// this->_hierarchy->setScene(this->_editorLayout->getScene());
+	this->_hierarchy->setScene(new Scene("Edtitor-Text"));
 }
 // void Editor::_initAssets()
 // {

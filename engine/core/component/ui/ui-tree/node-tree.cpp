@@ -21,7 +21,7 @@ void NodeTree::setScene(Scene *scene)
     this->_uiTreeData.name = scene->getName();
     this->_uiTreeData.uuid = scene->getUuid();
     this->_uiTreeData.isFold = false;
-    // this->_uiTreeData.ndBind = nullptr;  res/ic-scene.png
+    this->_uiTreeData.ndBind = nullptr;
     this->_uiTreeData.layer = 0;
     this->_uiTreeData.iconKey = this->_iconMaps.iconScene;
     this->_uiTreeData.children.resize(scene->getChildren().size());
@@ -46,8 +46,8 @@ void NodeTree::_setTrees(Node *root, UITreeStructure &uiTreeData, int layer)
 {
     uiTreeData.name = root->getName();
     uiTreeData.uuid = root->getUuid();
-    uiTreeData.isFold = false;
-    // uiTreeData.ndBind = root;
+    uiTreeData.isFold = true;
+    uiTreeData.ndBind = nullptr;
     uiTreeData.layer = layer;
     if (root->getLayer() == NodeLayer::Node2D)
     {

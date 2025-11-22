@@ -50,7 +50,6 @@ struct UITreeStructure
 class UITree : public Component
 {
 private:
-   
     float _topLen;
     float _leftLen;
     Node2D *_ndContent;
@@ -65,25 +64,26 @@ private:
 
     int _nodeIndex;
     std::vector<Node2D *> _nodePools;
-    UITreeStructure _hoverTreeItem;
+    UITreeStructure* _hoverTreeItem;
     void _updateTreeContent();
     void _updateTreesItems(UITreeStructure &uiTreeData);
     void _onTreeItemTouchEvent(NodeInputResult &result);
     void _onTreeItemCursorHoverEvent(NodeInputResult &result);
 
     // 当前选中的节点树item
-    UITreeStructure _selectTreeItem;
+    UITreeStructure* _selectTreeItem;
     bool _isSelectHover = false;
     // 当前显示的节点树映射
-    std::map<std::string, UITreeStructure> _treeUIMap;
+    std::map<std::string, UITreeStructure*> _treeUIMap;
     // 选择事件回调
     std::function<void(std::string)> _selectCallback;
     void _refreshTreeItemUI(Node2D *ndItem, int state);
+    // item 折叠按钮的touch 事件
+    std::map<std::string, UITreeStructure*> _foldUIMap;  // 折叠按钮-节点树item 映射
+    void _onTreeItemFoldTouchEvent(NodeInputResult &result);
 
     // item 的touch 事件
 
-    // // item 折叠按钮的touch 事件
-    // void _onTreeItemFoldTouchEvent(NodeInputResult &result);
     // // 滑动条touch 事件
     // bool _isScrollBarTouching = false;
     // void _onScrollBarTouchStartEvent(NodeInputResult &result);
@@ -100,9 +100,6 @@ protected:
     UITreeIconMap _iconMaps;
     // 节点树数据
     UITreeStructure _uiTreeData;
-
-    // 折叠按钮-节点树item 映射
-    std::map<std::string, UITreeStructure *> _treeFoldMap;
 
 public:
     UITree(Node *node, std::string uuid = "");
