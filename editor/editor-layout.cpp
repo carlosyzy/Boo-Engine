@@ -67,6 +67,9 @@ void EditorLayout::launch()
 	if (this->_ndLoad != nullptr)
 	{
 		this->_ndLoad->destroy();
+		this->_ndLoad = nullptr;
+		this->_ndLoadBar = nullptr;
+		this->_spriteLoadBar = nullptr;
 	}
 	this->_initMainUI();
 	this->_initMenuUI();
