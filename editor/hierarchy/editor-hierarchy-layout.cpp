@@ -209,13 +209,15 @@ void EditorHierarchyLayout::_initNodeTree()
     sprite->setColor(EditorConfig::content);
     sprite->setTexture(EditorConfig::txDefault);
     sprite->setMaterial(nullptr);
-    //Mask
+    // Mask
     UIMask *uiMask = static_cast<UIMask *>(ndNodeTree->addComponent("UIMask"));
 
     // 添加节点树
     this->_nodeTree = static_cast<NodeTree *>(ndNodeTree->addComponent("NodeTree"));
     this->_nodeTree->onSelectEvent([this](std::string uuid)
                                    { this->_onNodeTreeSelectEvent(uuid); });
+    this->_nodeTree->onMenuEvent([this](std::string uuid, int x, int y)
+                                 { this->_onNodeTreeMenuEvent(uuid, x, y); });
 }
 void EditorHierarchyLayout::setScene(Scene *scene)
 {
@@ -228,6 +230,12 @@ void EditorHierarchyLayout::_onNodeTreeSelectEvent(std::string uuid)
 {
     std::cout << "EditorHierarchyLayout _onNodeTreeSelectEvent:" << uuid << std::endl;
 }
+
+void EditorHierarchyLayout::_onNodeTreeMenuEvent(std::string uuid, int x, int y)
+{
+    std::cout << "EditorHierarchyLayout _onNodeTreeMenuEvent:" << x << ", " << y << ", " << uuid << std::endl;
+}
+
 void EditorHierarchyLayout::loseFocus()
 {
     if (this->_nodeTree != nullptr)

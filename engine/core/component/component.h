@@ -10,7 +10,6 @@ class Component
 
 private:
     bool _isAwaked = true;
-    bool _isEnabledInHierarchy = false;
 
 protected:
     std::string _uuid;
@@ -18,6 +17,7 @@ protected:
     NodeLayer _layer;
     Node *_node;
     bool _isEnabled = true;
+    bool _isEnabledInHierarchy = false;
 
 public:
     Component(Node *node, std::string uuid = "");

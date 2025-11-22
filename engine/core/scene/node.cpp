@@ -160,6 +160,7 @@ void Node::_updateNodesActiveInHierarchyState(bool isActiveInHierarch)
 	if (this->_isActiveInHierarchy == isActiveInHierarch)
 		return;
 	this->_isActiveInHierarchy = isActiveInHierarch;
+	std::cout << "Node::_updateNodesActiveInHierarchyState: " << this->_name << " isActiveInHierarch: " << isActiveInHierarch << std::endl;
 	// 更新组件生命周期
 	for (auto &component : this->_components)
 	{
@@ -213,7 +214,6 @@ void Node::lateUpdate(float dt)
 			uiWidget->updateWidget();
 		}
 	}
-
 	// 更新组件
 	for (auto &component : this->_components)
 	{
@@ -226,12 +226,6 @@ void Node::lateUpdate(float dt)
 }
 void Node::render()
 {
-	// if (this->hasFrameTransformFlag())
-	// {
-	// 	this->_updateRendererModelMatrix();
-	// }
-	// if (this->_isActiveInHierarchy)
-	// {
 	// 渲染组件
 	for (auto &component : this->_components)
 	{
@@ -241,7 +235,6 @@ void Node::render()
 	{
 		child->render();
 	}
-	// }
 	for (auto &component : this->_components)
 	{
 		component->LateRender();

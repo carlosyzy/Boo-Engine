@@ -11,9 +11,9 @@ Component::Component(Node *node, std::string uuid) : _layer(NodeLayer::Node)
         this->_uuid = UuidUtil::generateUUID();
     }
     this->_node = node;
-    this->_isEnabled=true;
-    this->_isEnabledInHierarchy=false;
-    this->_isAwaked=false;
+    this->_isEnabled = true;
+    this->_isEnabledInHierarchy = false;
+    this->_isAwaked = false;
 }
 void Component::setEnabled(bool enabled)
 {
@@ -29,6 +29,7 @@ void Component::setNodeActiveInHierarchy(bool isActiveInHierarchy)
         return; // 状态未改变
     }
     this->_isEnabledInHierarchy = isEnableInHierarchy;
+    std::cout << "Component::setNodeActiveInHierarchy: " << this->_name << " isEnabledInHierarchy: " << this->_isEnabledInHierarchy << std::endl;
     if (this->_isEnabledInHierarchy)
     {
         if (!this->_isAwaked)

@@ -28,25 +28,30 @@ void UIWidget::setVertical(WidgetVertical vertical, WidgetVerticalParam param)
 }
 void UIWidget::_onNodeTransformChange(int nodeTransform)
 {
-   
 }
 void UIWidget::Enable()
 {
     Component::Enable();
 }
 
-
 void UIWidget::Update(float deltaTime)
 {
     Component::Update(deltaTime);
+    if (!this->_isEnabledInHierarchy)
+        return; // 组件未激活
 }
 void UIWidget::LateUpdate(float deltaTime)
 {
     Component::LateUpdate(deltaTime);
+    if (!this->_isEnabledInHierarchy)
+        return; // 组件未激活
 }
 
 void UIWidget::updateWidget()
 {
+    if (!this->_isEnabledInHierarchy)
+        return; // 组件未激活
+
     if (this->_node->hasFrameTransformFlag() || (this->_node->getParent() != nullptr && this->_node->getParent()->hasFrameTransformFlag()) || this->_flag > 0)
     {
         Node2D *node = dynamic_cast<Node2D *>(this->_node);
@@ -112,22 +117,23 @@ void UIWidget::updateWidget()
     }
 }
 
-
 void UIWidget::Render()
 {
     Component::Render();
+    if (!this->_isEnabledInHierarchy)
+		return; // 组件未激活
 }
 void UIWidget::LateRender()
 {
     Component::LateRender();
+    if (!this->_isEnabledInHierarchy)
+		return; // 组件未激活
 }
 
 void UIWidget::Disable()
 {
     Component::Disable();
 }
-
-
 
 void UIWidget::destroy()
 {

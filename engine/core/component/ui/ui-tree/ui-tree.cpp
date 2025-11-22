@@ -164,28 +164,44 @@ void UITree::onSelectEvent(std::function<void(std::string)> callback)
 {
     this->_selectCallback = callback;
 }
+/**
+ * 上下文菜单事件
+ */
+void UITree::onMenuEvent(std::function<void(std::string, int x, int y)> callback)
+{
+    this->_menuCallback = callback;
+}
 
 void UITree::_onTreeContentTouchEvent(NodeInputResult &result)
 {
+    if (result.button == 1)
+    {
+        // 右键
+        if (this->_menuCallback != nullptr)
+        {
+            this->_menuCallback(this->_selectTreeItem ? this->_selectTreeItem->uuid : "", result.worldX, result.worldY);
+        }
+        return;
+    }
+    else if (result.button == 2)
+    {
+        // 中键
+        return;
+    }
+
     this->clearSelect();
 }
 void UITree::_onTreeContentHoverEvent(NodeInputResult &result)
 {
+    if (this->_hoverTreeItem != nullptr && this->_selectTreeItem != nullptr && this->_hoverTreeItem->uuid == this->_selectTreeItem->uuid)
+    {
+        this->_hoverTreeItem = nullptr;
+        return;
+    }
     if (this->_hoverTreeItem != nullptr)
     {
-        if (this->_selectTreeItem == nullptr)
-        {
-            this->_refreshTreeItemUI(this->_hoverTreeItem->ndBind, 0);
-            this->_hoverTreeItem = nullptr;
-        }
-        else if (this->_hoverTreeItem->uuid == this->_selectTreeItem->uuid)
-        {
-            this->_refreshTreeItemUI(this->_hoverTreeItem->ndBind, 2);
-            this->_hoverTreeItem = nullptr;
-        }else{
-            this->_refreshTreeItemUI(this->_hoverTreeItem->ndBind, 0);
-            this->_hoverTreeItem = nullptr;
-        }
+        this->_refreshTreeItemUI(this->_hoverTreeItem->ndBind, 0);
+        this->_hoverTreeItem = nullptr;
     }
 }
 
@@ -196,10 +212,14 @@ void UITree::updateTree()
 void UITree::Update(float deltaTime)
 {
     Component::Update(deltaTime);
+    if (!this->_isEnabledInHierarchy)
+        return; // 组件未激活
 }
 void UITree::LateUpdate(float deltaTime)
 {
     Component::LateUpdate(deltaTime);
+    if (!this->_isEnabledInHierarchy)
+        return; // 组件未激活
     if (this->_isDirty || this->_node->hasFrameTransformFlag())
     {
         this->_updateTreeContent();
@@ -223,10 +243,9 @@ void UITree::_updateTreeContent()
     // 刷新节点池状态
     for (int i = this->_nodeIndex; i < this->_nodePools.size(); i++)
     {
+        std::cout << "UITree UITree::update  2:" << this->_nodePools.size() << "  " << i << std::endl;
         this->_nodePools[i]->setActive(false);
     }
-
-    //     // 刷新content的大小,位置===============================================start
     this->_contentWidth = size.getWidth() - 10.0f;
     this->_contentHeight = this->_nodeIndex * 25.0f;
     // 重新计算_topLen
@@ -244,45 +263,6 @@ void UITree::_updateTreeContent()
     this->_contentY = size.getHeight() / 2.0f + this->_topLen;
     this->_ndContent->setPosition(this->_contentX, this->_contentY, 0.0f);
     this->_ndContent->setSize(this->_contentWidth, this->_contentHeight);
-    // std::cout << "UITree UITree::update  width: " << this->_contentWidth << " height: " << this->_contentHeight << std::endl;
-    // 刷新content的大小,位置===============================================end
-
-    //     // 选择框 =============================================================start
-    //     this->_selectWidth = this->_contentWidth;
-    //     this->_selectHeight = 22.0f;
-    //     this->_ndSelect->setSize(this->_selectWidth, this->_selectHeight);
-    //     // 选择框 =============================================================end
-    //     // 滑动条==========================================================start
-    //     float offsetY = this->_contentHeight - size.height();
-    //     if (offsetY > 0)
-    //     {
-    //         // 内容高度大于容器高度,需要滑动条  更新背景
-    //         this->_scrollBarBgHeight = size.height() - 10.0f;
-    //         this->_scrollBarBgX = size.width() / 2 - this->_scrollBarBgWidth;
-    //         this->_scrollBarBgY = 0.0f;
-    //         this->_ndScrollBarBg->setPosition(size.width() / 2 - this->_scrollBarBgWidth, this->_scrollBarBgY, 0.0f);
-    //         this->_ndScrollBarBg->setSize(this->_scrollBarBgWidth, this->_scrollBarBgHeight);
-    //         this->_ndScrollBarBg->setActive(true);
-    //         this->_scrollBarHeight = this->_scrollBarBgHeight - offsetY;
-    //         if (this->_scrollBarHeight <= 20)
-    //         {
-    //             this->_scrollBarHeight = 20.f;
-    //         }
-    //         this->_scrollBarRate = offsetY / (this->_scrollBarBgHeight - this->_scrollBarHeight);
-    //         this->_ndScrollBar->setSize(this->_scrollBarWidth, this->_scrollBarHeight);
-    //         this->_scrollBarY = this->_scrollBarBgHeight / 2.0f - this->_scrollBarHeight / 2.0f - this->_topLen / this->_scrollBarRate;
-    //         this->_ndScrollBar->setPosition(this->_scrollBarX, this->_scrollBarY, 0);
-    //     }
-    //     else
-    //     {
-    //         this->_scrollBarRate = 1.0f;
-    //         this->_ndScrollBarBg->setActive(false);
-    //     }
-    //     if (this->_updateCallback != nullptr)
-    //     {
-    //         this->_updateCallback();
-    //     }
-    // }
 }
 
 void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
@@ -335,8 +315,6 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         ndFold->setSize(16.0f, 16.0f);
         spFold = dynamic_cast<UISprite *>(ndFold->addComponent("UISprite"));
         spFold->setMaterial(nullptr);
-        // ndFold->onNodeInputEvent(NodeInput::TOUCH_START, [this](NodeInputResult &result)
-        //                          { this->_onTreeItemFoldTouchEvent(result); }, true);
         ndFold->onNodeInputEvent(NodeInput::TOUCH_END, &UITree::_onTreeItemFoldTouchEvent, this);
         // 图标
         ndIcon = new Node2D("NodeTreeItemIcon");
@@ -394,11 +372,11 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     std::cout << "UITree UITree::name: " << uiTreeData.name << " fold: " << uiTreeData.isFold << std::endl;
     if (uiTreeData.isFold)
     {
-        // spFold->setTexture("resources/texture/ic-arrow-right.png");
+        spFold->setTexture("resources/texture/ic-arrow-right.png");
     }
     else
     {
-        // spFold->setTexture("resources/texture/ic-arrow-bottom.png");
+        spFold->setTexture("resources/texture/ic-arrow-bottom.png");
     }
     if (uiTreeData.children.size() > 0)
     {
@@ -413,7 +391,6 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     // 图标
     ndIcon->setSize(16.0f, 16.0f);
     spIcon->setTexture(uiTreeData.iconKey);
-    // spIcon->setTexture("resources/texture/ic-default.png");
     itemWidth += ndIcon->getSize().getWidth();
     // 创建名字
     txtName->setText(uiTreeData.name);
@@ -440,7 +417,6 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
 
     node->setSize(itemWidth, itemHeight);
     node->setPosition(itemWidth / 2.0f, -itemHeight / 2.0f - this->_nodeIndex * itemHeight, 0.0f);
-    // std::cout << "UITree UITree::item width: " << itemWidth << " height: " << itemHeight << std::endl;
     if (itemWidth > this->_contentWidth)
     {
         this->_contentWidth = itemWidth;
@@ -502,6 +478,21 @@ void UITree::_onTreeItemCursorHoverEvent(NodeInputResult &result)
 }
 void UITree::_onTreeItemTouchEvent(NodeInputResult &result)
 {
+    if (result.button == 1)
+    {
+        // 右键
+        if (this->_menuCallback != nullptr)
+        {
+            this->_menuCallback(this->_selectTreeItem ? this->_selectTreeItem->uuid : "", result.worldX, result.worldY);
+        }
+        return;
+    }
+    else if (result.button == 2)
+    {
+        // 中键
+        return;
+    }
+
     if (this->_treeUIMap.find(result.node->getUuid()) == this->_treeUIMap.end())
     {
         return;
@@ -597,10 +588,14 @@ void UITree::hoverSelect()
 void UITree::Render()
 {
     Component::Render();
+    if (!this->_isEnabledInHierarchy)
+        return; // 组件未激活
 }
 void UITree::LateRender()
 {
     Component::LateRender();
+    if (!this->_isEnabledInHierarchy)
+        return; // 组件未激活
 }
 
 void UITree::Disable()

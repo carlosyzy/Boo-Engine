@@ -16,7 +16,7 @@ void Input::setRoot(Node2D *root)
 }
 /**
  * @brief 鼠标按钮事件
- * @param button 鼠标按钮
+ * @param button 鼠标按钮 0: 左键 1: 右键 2: 中键
  * @param action 事件动作
  * @param mods 按键修饰符
  */

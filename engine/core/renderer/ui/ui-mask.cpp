@@ -61,14 +61,20 @@ void UIMask::setTexture(std::string texture)
 void UIMask::Update(float deltaTime)
 {
     Component::Update(deltaTime);
+    if (!this->_isEnabledInHierarchy)
+        return; // 组件未激活
 }
 void UIMask::LateUpdate(float deltaTime)
 {
     Component::LateUpdate(deltaTime);
+    if (!this->_isEnabledInHierarchy)
+        return; // 组件未激活
 }
 void UIMask::Render()
 {
     Component::Render();
+    if (!this->_isEnabledInHierarchy)
+        return; // 组件未激活
     if (this->_node->hasFrameTransformFlag())
     {
         this->updateModelMatrix();
@@ -79,6 +85,8 @@ void UIMask::Render()
 void UIMask::LateRender()
 {
     Component::LateRender();
+    if (!this->_isEnabledInHierarchy)
+        return; // 组件未激活
     // 提交遮罩状态到渲染器
     GfxMgr::getInstance()->submitObjectRender(this->_subUuid);
 }

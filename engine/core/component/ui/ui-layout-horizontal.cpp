@@ -88,18 +88,26 @@ void UILayoutHorizontal::_onNodeTransformEvent(uint32_t eventId)
 void UILayoutHorizontal::Update(float deltaTime)
 {
     Component::Update(deltaTime);
+    if (!this->_isEnabledInHierarchy)
+		return; // 组件未激活
 }
 void UILayoutHorizontal::LateUpdate(float deltaTime)
 {
     Component::LateUpdate(deltaTime);
+    if (!this->_isEnabledInHierarchy)
+		return; // 组件未激活
 }
 void UILayoutHorizontal::Render()
 {
     Component::Render();
+    if (!this->_isEnabledInHierarchy)
+		return; // 组件未激活
 }
 void UILayoutHorizontal::LateRender()
 {
     Component::LateRender();
+    if (!this->_isEnabledInHierarchy)
+		return; // 组件未激活
 }
 void UILayoutHorizontal::_clear()
 {
