@@ -37,13 +37,16 @@ private:
 
 public:
     UIMask(Node *node, std::string uuid = "");
+    void Awake() override;
     void setTexture(std::string text);
     void setTexture(Texture *texture);
     void updateModelMatrix();
-    void update(float deltaTime) override;
-    void lateUpdate(float deltaTime) override;
-    void render() override;
-    void lateRender() override;
+    void Enable() override;
+    void Update(float deltaTime) override;
+    void LateUpdate(float deltaTime) override;
+    void Render() override;
+    void LateRender() override;
+    void Disable() override;
     void destroy() override;
     ~UIMask() override;
 };

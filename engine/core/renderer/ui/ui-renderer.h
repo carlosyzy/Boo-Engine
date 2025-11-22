@@ -72,7 +72,7 @@ protected:
 
 public:
     UIRenderer(Node *node, std::string uuid = "");
-
+    void Awake() override;
     const Color& color() { return this->_color; };
     /**
      * @brief 设置渲染器的颜色
@@ -86,10 +86,12 @@ public:
     void setTexture(Texture *texture);
     void setTexture(std::string text);
     void updateModelMatrix();
-    void update(float deltaTime) override;
-    void lateUpdate(float deltaTime) override;
-    void render() override;
-    void lateRender() override;
+    void Enable() override;
+    void Update(float deltaTime) override;
+    void LateUpdate(float deltaTime) override;
+    void Render() override;
+    void LateRender() override;
+    void Disable() override;
     virtual void destroy() override;
     
 

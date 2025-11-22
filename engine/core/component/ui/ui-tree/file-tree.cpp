@@ -99,9 +99,9 @@
 //     }
 // }
 
-// void FileTree::update(float deltaTime)
+// void FileTree::Update(float deltaTime)
 // {
-//     UITree::update(deltaTime);
+//     UITree::Update(deltaTime);
 // }
 // void FileTree::onDisable()
 // {

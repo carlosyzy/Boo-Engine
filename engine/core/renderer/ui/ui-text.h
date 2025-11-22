@@ -19,9 +19,9 @@ public:
     void setText(std::string text);
     void setSize(int fontSize);
     void setLineHeight(int lineHeight);
-    void update(float deltaTime) override;
-    void lateUpdate(float deltaTime) override;
-    void render() override;
+    void Update(float deltaTime) override;
+    void LateUpdate(float deltaTime) override;
+    void Render() override;
     void destroy() override;
      ~UIText() override;
 };

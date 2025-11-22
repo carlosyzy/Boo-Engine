@@ -50,13 +50,15 @@ private:
     void _onNodeTransformChange(int nodeTransform);
 public:
     UIWidget(Node *node, std::string uuid = "");
+    void Awake() override;
     void setHorizontal(WidgetHorizontal horizontal, WidgetHorizontalParam param);
     void setVertical(WidgetVertical vertical, WidgetVerticalParam param);
-    void update(float deltaTime) override;
-    void lateUpdate(float deltaTime) override;
-    void render() override;
-    void lateRender() override;
-
+    virtual void Enable() override;
+    void Update(float deltaTime) override;
+    void LateUpdate(float deltaTime) override;
+    void Render() override;
+    void LateRender() override;
+    void Disable() override;
     void destroy() override;
 
     ~UIWidget();

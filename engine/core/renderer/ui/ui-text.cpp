@@ -26,17 +26,17 @@ void UIText::setLineHeight(int lineHeight)
 {
     this->_lineHeight = lineHeight;
 }
-void UIText::update(float deltaTime)
+void UIText::Update(float deltaTime)
 {
-    UIRenderer::update(deltaTime);
+    UIRenderer::Update(deltaTime);
 }
-void UIText::lateUpdate(float deltaTime)
+void UIText::LateUpdate(float deltaTime)
 {
-    UIRenderer::lateUpdate(deltaTime);
+    UIRenderer::LateUpdate(deltaTime);
 }
-void UIText::render()
+void UIText::Render()
 {
-    UIRenderer::render();
+    UIRenderer::Render();
 }
 void UIText::_updateNodeSize()
 {

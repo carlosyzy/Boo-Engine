@@ -193,7 +193,7 @@ void Node::update(float dt)
 	// 更新组件
 	for (auto &component : this->_components)
 	{
-		component->update(dt);
+		component->Update(dt);
 	}
 	// 更新子节点
 	for (auto &child : this->_children)
@@ -210,7 +210,7 @@ void Node::lateUpdate(float dt)
 	// 更新组件
 	for (auto &component : this->_components)
 	{
-		component->lateUpdate(dt);
+		component->LateUpdate(dt);
 	}
 	for (auto &child : this->_children)
 	{
@@ -228,7 +228,7 @@ void Node::render()
 		// 渲染组件
 		for (auto &component : this->_components)
 		{
-			component->render();
+			component->Render();
 		}
 		for (auto &child : this->_children)
 		{
@@ -237,10 +237,10 @@ void Node::render()
 	}
 	for (auto &component : this->_components)
 	{
-		component->lateRender();
+		component->LateRender();
 	}
 }
-// void Node::lateRender()
+// void Node::LateRender()
 // {
 // 	if (this->_isActiveInHierarchy)
 // 	{

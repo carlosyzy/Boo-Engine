@@ -12,6 +12,10 @@ UIWidget::UIWidget(Node *node, std::string uuid) : Component(node, uuid)
 
     // this->_nodeTransform_ID = this->_node->onTransformChange(&UIWidget::_onNodeTransformChange, this);
 }
+void UIWidget::Awake()
+{
+    Component::Awake();
+}
 void UIWidget::setHorizontal(WidgetHorizontal horizontal, WidgetHorizontalParam param)
 {
     this->_horizontal = horizontal;
@@ -28,15 +32,19 @@ void UIWidget::_onNodeTransformChange(int nodeTransform)
 {
    
 }
-
-
-void UIWidget::update(float deltaTime)
+void UIWidget::Enable()
 {
-    Component::update(deltaTime);
+    Component::Enable();
 }
-void UIWidget::lateUpdate(float deltaTime)
+
+
+void UIWidget::Update(float deltaTime)
 {
-    Component::lateUpdate(deltaTime);
+    Component::Update(deltaTime);
+}
+void UIWidget::LateUpdate(float deltaTime)
+{
+    Component::LateUpdate(deltaTime);
     if (this->_node->hasFrameTransformFlag() || (this->_node->getParent() != nullptr && this->_node->getParent()->hasFrameTransformFlag()) || this->_flag > 0)
     {
         Node2D *node = dynamic_cast<Node2D *>(this->_node);
@@ -101,13 +109,18 @@ void UIWidget::lateUpdate(float deltaTime)
         this->_flag = 0;
     }
 }
-void UIWidget::render()
+void UIWidget::Render()
 {
-    Component::render();
+    Component::Render();
 }
-void UIWidget::lateRender()
+void UIWidget::LateRender()
 {
-    Component::lateRender();
+    Component::LateRender();
+}
+
+void UIWidget::Disable()
+{
+    Component::Disable();
 }
 
 

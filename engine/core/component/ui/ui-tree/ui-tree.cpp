@@ -21,6 +21,14 @@ UITree::UITree(Node *node, std::string uuid) : Component(node, uuid)
     node2d->onNodeInputEvent(NodeInput::TOUCH_END, &UITree::_onTreeContentTouchEvent, this);
     node2d->onNodeInputEvent(NodeInput::CURSOR_HOVER, &UITree::_onTreeContentHoverEvent, this);
 }
+void UITree::Awake()
+{
+    Component::Awake();
+}
+void UITree::Enable()
+{
+    Component::Enable();
+}
 void UITree::_initContent()
 {
     // 在当前组件的子节点中获取第一个名字为Content的节点
@@ -544,21 +552,26 @@ void UITree::hoverSelect()
         this->_isSelectHover = true;
     }
 }
-void UITree::update(float deltaTime)
+void UITree::Update(float deltaTime)
 {
-    Component::update(deltaTime);
+    Component::Update(deltaTime);
 }
-void UITree::lateUpdate(float deltaTime)
+void UITree::LateUpdate(float deltaTime)
 {
-    Component::lateUpdate(deltaTime);
+    Component::LateUpdate(deltaTime);
 }
-void UITree::render()
+void UITree::Render()
 {
-    Component::render();
+    Component::Render();
 }
-void UITree::lateRender()
+void UITree::LateRender()
 {
-    Component::lateRender();
+    Component::LateRender();
+}
+
+void UITree::Disable()
+{
+    Component::Disable();
 }
 
 

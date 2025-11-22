@@ -18,7 +18,14 @@ UIRenderer::UIRenderer(Node *node, std::string uuid) : Component(node, uuid)
 	GfxMgr::getInstance()->createUIObject(this->_uuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
 	this->updateModelMatrix();
 }
-
+void UIRenderer::Awake()
+{
+    Component::Awake();
+}
+void UIRenderer::Enable()
+{
+    Component::Enable();
+}
 void UIRenderer::setColor(float r, float g, float b, float a)
 {
 	this->_color.set(r, g, b, a);
@@ -74,17 +81,17 @@ void UIRenderer::updateModelMatrix()
 	Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
 	GfxMgr::getInstance()->setObjectModelMatrix(this->_uuid, node2D->uiWorldMatrix().data());
 }
-void UIRenderer::update(float deltaTime)
+void UIRenderer::Update(float deltaTime)
 {
-	Component::update(deltaTime);
+	Component::Update(deltaTime);
 }
-void UIRenderer::lateUpdate(float deltaTime)
+void UIRenderer::LateUpdate(float deltaTime)
 {
-	Component::lateUpdate(deltaTime);
+	Component::LateUpdate(deltaTime);
 }
-void UIRenderer::render()
+void UIRenderer::Render()
 {
-	Component::render();
+	Component::Render();
 
 	if (!this->isEnabled())
 	{
@@ -109,9 +116,13 @@ void UIRenderer::render()
 	// 提交渲染对象
 	GfxMgr::getInstance()->submitObjectRender(this->_uuid);
 }
-void UIRenderer::lateRender()
+void UIRenderer::LateRender()
 {
-	Component::lateRender();
+	Component::LateRender();
+}
+void UIRenderer::Disable()
+{
+    Component::Disable();
 }
 void UIRenderer::destroy()
 {

@@ -6,15 +6,15 @@ UISprite::UISprite(Node *node, std::string uuid) : UIRenderer(node, uuid)
 {
     this->_name = "UISprite";
 }
-void UISprite::update(float deltaTime)
+void UISprite::Update(float deltaTime)
 {
-    UIRenderer::update(deltaTime);
+    UIRenderer::Update(deltaTime);
 }
-void UISprite::lateUpdate(float deltaTime) {
-    UIRenderer::lateUpdate(deltaTime);
+void UISprite::LateUpdate(float deltaTime) {
+    UIRenderer::LateUpdate(deltaTime);
 }
-void UISprite::render() {
-    UIRenderer::render();
+void UISprite::Render() {
+    UIRenderer::Render();
 }
 void UISprite::destroy() {
     UIRenderer::destroy();

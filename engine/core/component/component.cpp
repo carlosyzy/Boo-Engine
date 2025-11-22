@@ -12,27 +12,50 @@ Component::Component(Node *node, std::string uuid) : _layer(NodeLayer::Node)
     }
     this->_node = node;
 }
+/**
+ * @brief 组件唤醒函数
+ * 组件被添加到节点后,第一次激活会调用Awake函数
+ */
+void Component::Awake(){
 
-void Component::update(float deltaTime)
+}
+/**
+ * @brief 组件启用函数
+ * 组件被激活后,会调用Enable函数
+ */
+void Component::Enable(){
+
+}
+
+void Component::Update(float deltaTime)
 {
     if (!this->isEnabled())
         return; // 组件未激活
 }
-void Component::lateUpdate(float deltaTime)
+void Component::LateUpdate(float deltaTime)
 {
     if (!this->isEnabled())
         return; // 组件未激活
 }
-void Component::render()
+void Component::Render()
 {
     if (!this->isEnabled())
         return; // 组件未激活
 }
-void Component::lateRender()
+void Component::LateRender()
 {
     if (!this->isEnabled())
         return; // 组件未激活
 }
+/**
+ * @brief 组件禁用函数
+ * 组件被禁用后,会调用Disable函数
+ */
+void Component::Disable(){
+
+}
+
+
 
 void Component::destroy()
 {

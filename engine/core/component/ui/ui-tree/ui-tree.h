@@ -107,7 +107,7 @@ protected:
 
 public:
     UITree(Node *node, std::string uuid = "");
-
+    void Awake() override;
     void setIcon(std::string iconKey, std::string iconPath);
 
     void onSelectEvent(std::function<void(std::string)> callback);
@@ -117,12 +117,13 @@ public:
      * 悬停选中节点树item
      */
     void hoverSelect();
-
     virtual void updateTree() = 0;
-    void update(float deltaTime) override;
-    void lateUpdate(float deltaTime) override;
-    void render() override;
-     void lateRender() override;
+    void Enable() override;
+    void Update(float deltaTime) override;
+    void LateUpdate(float deltaTime) override;
+    void Render() override;
+    void LateRender() override;
+    void Disable() override;
     void destroy() override;
     ~UITree();
 };

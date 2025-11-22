@@ -63,17 +63,17 @@ void NodeTree::_setTrees(Node *root, UITreeStructure &uiTreeData, int layer)
         this->_setTrees(root->getChildren()[i], uiTreeData.children[i], layer + 1);
     }
 }
-void NodeTree::update(float deltaTime)
+void NodeTree::Update(float deltaTime)
 {
-    UITree::update(deltaTime);
+    UITree::Update(deltaTime);
 }
-void NodeTree::lateUpdate(float deltaTime)
+void NodeTree::LateUpdate(float deltaTime)
 {
-    UITree::lateUpdate(deltaTime);
+    UITree::LateUpdate(deltaTime);
 }
-void NodeTree::render()
+void NodeTree::Render()
 {
-    UITree::render();
+    UITree::Render();
 }
 void NodeTree::destroy()
 {

@@ -5,7 +5,7 @@ class Node2D;
 
 struct UILayoutHorizontalConfig
 {
-    float width; //比例,宽度占比
+    float width; // 比例,宽度占比
     Node2D *node;
 };
 
@@ -18,7 +18,7 @@ private:
      */
     int _size;
     // // FILL 目前只使用单一模式:填充
-   /* std::vector<UILayoutHorizontalConfig> _configs;*/
+    /* std::vector<UILayoutHorizontalConfig> _configs;*/
 
     int _nodeTransformEventId = 0;
     void _onNodeTransformEvent(uint32_t eventId);
@@ -27,11 +27,14 @@ private:
 
 public:
     UILayoutHorizontal(Node *node, std::string uuid = "");
+    void Awake() override;
     void setSize(int size);
-    void update(float deltaTime) override;
-    void lateUpdate(float deltaTime) override;
-    void render() override;
-     void lateRender() override;
+    void Enable() override;
+    void Update(float deltaTime) override;
+    void LateUpdate(float deltaTime) override;
+    void Render() override;
+    void LateRender() override;
+    void Disable() override;
     void destroy() override;
     ~UILayoutHorizontal();
 };

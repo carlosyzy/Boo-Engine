@@ -7,7 +7,7 @@ public:
     // 重写基类方法
     void update(float deltaTime) override;
     void lateUpdate(float deltaTime) override;
-    void render();
+    void render() override;
 
     /**
     * 添加组件

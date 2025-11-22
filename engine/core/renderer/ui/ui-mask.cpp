@@ -23,6 +23,14 @@ UIMask::UIMask(Node *node, std::string uuid) : Component(node, uuid)
     GfxMgr::getInstance()->setObjectUIMaskBehavior(this->_subUuid, 0);
     this->setTexture("resources/texture/ic-default.png");
 }
+void UIMask::Awake()
+{
+    Component::Awake();
+}
+void UIMask::Enable()
+{
+    Component::Enable();
+}
 void UIMask::updateModelMatrix()
 {
 	Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
@@ -49,29 +57,33 @@ void UIMask::setTexture(std::string texture)
 	Asset *tex = Boo::game->assetsManager()->get(texture);
 	this->setTexture(dynamic_cast<Texture *>(tex));
 }
-void UIMask::update(float deltaTime)
+void UIMask::Update(float deltaTime)
 {
-    Component::update(deltaTime);
+    Component::Update(deltaTime);
 }
-void UIMask::lateUpdate(float deltaTime)
+void UIMask::LateUpdate(float deltaTime)
 {
-    Component::lateUpdate(deltaTime);
+    Component::LateUpdate(deltaTime);
 }
-void UIMask::render()
+void UIMask::Render()
 {
     if (this->_node->hasFrameTransformFlag())
     {
         this->updateModelMatrix();
     }
-    Component::render();
+    Component::Render();
     // 提交遮罩状态到渲染器
     GfxMgr::getInstance()->submitObjectRender(this->_addUuid);
 }
-void UIMask::lateRender()
+void UIMask::LateRender()
 {
-    Component::lateRender();
+    Component::LateRender();
     // 提交遮罩状态到渲染器
     GfxMgr::getInstance()->submitObjectRender(this->_subUuid);
+}
+void UIMask::Disable()
+{
+    Component::Disable();
 }
 void UIMask::destroy()
 {

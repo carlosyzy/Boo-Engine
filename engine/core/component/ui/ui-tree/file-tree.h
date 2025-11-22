@@ -20,9 +20,9 @@ public:
     FileTree(Node *node, std::string uuid = "");
     void setRoot(std::string root);
     void updateTree() override;
-    void update(float deltaTime) override;
-    void lateUpdate(float deltaTime) override;
-    void render() override;
+    void Update(float deltaTime) override;
+    void LateUpdate(float deltaTime) override;
+    void Render() override;
     void destroy() override;
     ~FileTree();
 };

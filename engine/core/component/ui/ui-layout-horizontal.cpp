@@ -35,6 +35,16 @@ UILayoutHorizontal::UILayoutHorizontal(Node *node, std::string uuid) : Component
     // }
     //this->_nodeTransformEventId = this->_node->onTransformChange(&UILayoutHorizontal::_onNodeTransformEvent, this);
 }
+
+void UILayoutHorizontal::Awake()
+{
+    Component::Awake();
+}
+void UILayoutHorizontal::Enable()
+{
+    Component::Enable();
+}
+
 void UILayoutHorizontal::setSize(int size)
 {
     //this->_clear();
@@ -75,27 +85,34 @@ void UILayoutHorizontal::_onNodeTransformEvent(uint32_t eventId)
     }
 
 }
-void UILayoutHorizontal::update(float deltaTime)
+void UILayoutHorizontal::Update(float deltaTime)
 {
-    Component::update(deltaTime);
+    Component::Update(deltaTime);
 }
-void UILayoutHorizontal::lateUpdate(float deltaTime)
+void UILayoutHorizontal::LateUpdate(float deltaTime)
 {
-    Component::lateUpdate(deltaTime);
+    Component::LateUpdate(deltaTime);
 }
-void UILayoutHorizontal::render()
+void UILayoutHorizontal::Render()
 {
-    Component::render();
+    Component::Render();
 }
-void UILayoutHorizontal::lateRender()
+void UILayoutHorizontal::LateRender()
 {
-    Component::lateRender();
+    Component::LateRender();
 }
 void UILayoutHorizontal::_clear()
 {
    
    /* this->_configs.clear();*/
 }
+void UILayoutHorizontal::Disable()
+{
+    Component::Disable();
+}
+
+
+
 void UILayoutHorizontal::destroy()
 {
     Component::destroy();
