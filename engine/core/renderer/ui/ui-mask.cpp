@@ -89,6 +89,11 @@ void UIMask::destroy()
 {
     Component::destroy();
 }
+void UIMask::clearGfxObject()
+{
+    GfxMgr::getInstance()->destroyObject(this->_addUuid);
+    GfxMgr::getInstance()->destroyObject(this->_subUuid);
+}
 UIMask::~UIMask()
 {
 }

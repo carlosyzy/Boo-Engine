@@ -130,6 +130,10 @@ void UIWidget::destroy()
     Component::destroy();
     std::cout << "UIWidget::destroy" << std::endl;
 }
+void UIWidget::clearGfxObject()
+{
+    Component::clearGfxObject();
+}
 UIWidget::~UIWidget()
 {
 }

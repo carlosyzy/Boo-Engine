@@ -96,9 +96,6 @@ void Game::_initAssets()
 }
 void Game::_initAlpha()
 {
-
-
-	
 	Alpha *alpha = new Alpha("Editor-Alpha");
 	this->_curScene = static_cast<Scene *>(alpha);
 	// 启动场景
@@ -242,6 +239,7 @@ void Game::_updateClearCaches()
 	for (auto &comp : this->_compClearCaches)
 	{
 		std::cout << "Game::_updateClearCaches: clear comp: " << comp->getNode()->getName() << std::endl;
+		comp->clearGfxObject();
 		delete comp;
 		comp = nullptr;
 	}

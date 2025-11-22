@@ -13,7 +13,7 @@ Node2D::Node2D(const std::string name, const std::string uuid)
 	this->_anchor.set(0.5, 0.5);
 	this->_size.set(200, 200);
 	this->_active = true;
-	this->_isActiveInHierarchy = true;
+	this->_isActiveInHierarchy = false;
 	this->_position.set(0.0f, 0.0f, 0.0f);
 	this->_scale.set(1.0f, 1.0f, 1.0f);
 	this->_eulerAngles.set(0.0f, 0.0f, 0.0f);
@@ -91,6 +91,10 @@ Component *Node2D::addComponent(std::string name, std::string uuid)
 		return nullptr;
 	}
 	this->_components.push_back(component);
+	if (this->_parent != nullptr)
+	{
+		component->setNodeActiveInHierarchy(this->_isActiveInHierarchy);
+	}
 	return component;
 }
 /*
@@ -202,9 +206,14 @@ bool Node2D::inHitOnNode(float x, float y)
 	return false;
 }
 
+void Node2D::clearAllEvent()
+{
+	Node::clearAllEvent();
+	this->offAllNodeInputEvent();
+}
+
 void Node2D::destroy()
 {
-	this->offAllNodeInputEvent();
 	Node::destroy();
 }
 Node2D::~Node2D()

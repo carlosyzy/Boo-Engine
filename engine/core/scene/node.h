@@ -9,7 +9,6 @@
 #include "../math/vec3.h"
 #include "../math/mat4.h"
 
-
 namespace NodeEvent
 {
 	const std::string ON_TRANSFORM_CHANGED = "node_transform_changed";
@@ -70,11 +69,11 @@ protected:
 	/**
 	 * 当前节点是否激活
 	 */
-	bool _active;
+	bool _active = false;
 	/**
 	 * 当前节点在整个世界节点结构中是否激活
 	 */
-	bool _isActiveInHierarchy = true;
+	bool _isActiveInHierarchy = false;
 	/*
 	 * 当前节点本地位置
 	 */
@@ -147,12 +146,15 @@ protected:
 	}
 	virtual void _updateWorldTransform();
 
+	// void _enableComponent(Component *component);
+	// void _disableComponent(Component *component);
+
 public:
 	// 基础属性
 	void setName(const std::string &name);
 	std::string getName() const;
 
-	void setActive(bool active, bool force = false);
+	void setActive(bool active);
 	bool isActive() const;
 
 	const NodeLayer getLayer() const;
@@ -224,6 +226,7 @@ public:
 
 	const bool hasWorldTransformFlag() { return (this->_worldTransformFlag != NodeTransformFlag::NONE_FLAG); }
 	const bool hasFrameTransformFlag() { return (this->_frameTransformFlag != NodeTransformFlag::NONE_FLAG); }
+	const bool isActiveInHierarchy() { return this -> _isActiveInHierarchy; }
 
 	template <typename T, typename Func>
 	uint64_t onTransformChange(Func func, T *instance)
@@ -250,11 +253,8 @@ public:
 			}
 		}
 	}
-	void offAll()
-	{
-		this->_transformListeners.clear();
-	}
-
+	
+	
 	Node *getParent() { return this->_parent; }
 
 	void setParent(Node *node);
@@ -271,6 +271,7 @@ public:
 	 * 删除子节点
 	 */
 	void removeChild(Node *node);
+	void removeFromParent();
 	/*
 	 *删除所有子节点
 	 */
@@ -297,11 +298,15 @@ public:
 	 * 获取组件
 	 */
 	virtual Component *getComponent(std::string name);
+	void destroyAllComponents();
 
 	// 虚函数，子类可以重写
 	virtual void update(float deltaTime);
 	virtual void lateUpdate(float deltaTime);
 	virtual void render();
 	virtual void clearNodeFrameFlag();
+
+	virtual void clearAllEvent();
+	
 	virtual void destroy();
 };

@@ -8,13 +8,17 @@ enum class NodeLayer;
 class Component
 {
 
+private:
+    bool _isAwaked = true;
+    bool _isEnabledInHierarchy = false;
+
 protected:
     std::string _uuid;
     std::string _name;
     NodeLayer _layer;
     Node *_node;
     bool _isEnabled = true;
-    int _priority;
+
 public:
     Component(Node *node, std::string uuid = "");
     virtual void Awake() = 0;
@@ -23,6 +27,11 @@ public:
     void setEnabled(bool enabled);
     Node *getNode() { return this->_node; }
     NodeLayer layer() { return this->_layer; }
+    /**
+     * @brief 设置节点是否激活在层级中
+     * @param isActiveInHierarchy 是否激活在层级中
+     */
+    void setNodeActiveInHierarchy(bool isActiveInHierarchy);
 
     virtual void Enable() = 0;
     /**
@@ -43,8 +52,8 @@ public:
      */
     virtual void Render() = 0;
     /**
-     * @brief 组件晚渲染函数 
-     * 当前节点组件以及子节点组件的render执行结束,lateRender渲染函数开始 
+     * @brief 组件晚渲染函数
+     * 当前节点组件以及子节点组件的render执行结束,lateRender渲染函数开始
      */
     virtual void LateRender() = 0;
 
@@ -53,5 +62,6 @@ public:
      * @brief 组件销毁函数
      */
     virtual void destroy();
+    virtual void clearGfxObject() = 0;
     virtual ~Component();
 };

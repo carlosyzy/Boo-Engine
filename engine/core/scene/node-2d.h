@@ -65,6 +65,7 @@ public:
     bool inHitMask(float x, float y);
     bool inHitOnNode(float x, float y);
 
+    void clearAllEvent() override;
     void destroy() override;
     ~Node2D();
 };

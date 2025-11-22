@@ -128,6 +128,9 @@ void UIRenderer::destroy()
 {
 	Component::destroy();
 	std::cout << "UIRenderer::destroy" << std::endl;
+}
+void UIRenderer::clearGfxObject()
+{
 	GfxMgr::getInstance()->destroyObject(this->_uuid);
 }
 

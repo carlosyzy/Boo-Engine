@@ -8,7 +8,7 @@ Node3D::Node3D(const std::string name, const std::string uuid)
 	this->_layer = NodeLayer::Node3D;
 	this->_uuid = uuid.empty() ? UuidUtil::generateUUID() : uuid;
 	this->_active = true;
-	this->_isActiveInHierarchy = true;
+	this->_isActiveInHierarchy = false;
 	this->_position.set(0.0f, 0.0f, 0.0f);
 	this->_scale.set(1.0f, 1.0f, 1.0f);
 	this->_eulerAngles.set(0.0f, 0.0f, 0.0f);
@@ -26,9 +26,7 @@ Component *Node3D::addComponent(std::string name, std::string uuid)
 {
 	return nullptr;
 }
-/*
- * ��ȡ���
- */
+
 Component *Node3D::getComponent(std::string name)
 {
 	return nullptr;

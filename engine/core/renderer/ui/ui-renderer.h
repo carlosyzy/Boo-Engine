@@ -93,7 +93,7 @@ public:
     void LateRender() override;
     void Disable() override;
     virtual void destroy() override;
-    
+    virtual void clearGfxObject() override;
 
     virtual ~UIRenderer() override;
 };

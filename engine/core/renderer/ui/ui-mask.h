@@ -3,6 +3,13 @@
 #include "../../component/component.h"
 #include "../../scene/node.h"
 class Texture;
+
+/**
+ * mask 组件继承与ui-renderer组件
+ * 后续优化
+ */
+
+
 class UIMask : public Component
 {
 private:
@@ -48,5 +55,7 @@ public:
     void LateRender() override;
     void Disable() override;
     void destroy() override;
+    void clearGfxObject() override;
+
     ~UIMask() override;
 };

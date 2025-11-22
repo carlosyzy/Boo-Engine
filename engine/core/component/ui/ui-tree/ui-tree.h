@@ -125,5 +125,6 @@ public:
     void LateRender() override;
     void Disable() override;
     void destroy() override;
+    void clearGfxObject() override;
     ~UITree();
 };

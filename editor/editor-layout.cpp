@@ -64,10 +64,10 @@ void EditorLayout::setLoadProgress(float progress)
 }
 void EditorLayout::launch()
 {
-	// if (this->_ndLoad != nullptr)
-	// {
-	// 	this->_ndLoad->destroy();
-	// }
+	if (this->_ndLoad != nullptr)
+	{
+		this->_ndLoad->destroy();
+	}
 	this->_initMainUI();
 	this->_initMenuUI();
 	this->_initHierarchyUI();

@@ -193,6 +193,7 @@ void UITree::_updateTreeContent()
     // std::cout << "UITree UITree::update  1" << std::endl;
     Node2D *node = dynamic_cast<Node2D *>(this->_node);
     const Size &size = node->getSize();
+    std::cout << "UITree UITree::node width: " << size.getWidth() << " height: " << size.getHeight() << std::endl;
 
     this->_nodeIndex = 0;
     this->_treeUIMap.clear();
@@ -424,7 +425,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
 
     node->setSize(itemWidth, itemHeight);
     node->setPosition(itemWidth / 2.0f, -itemHeight / 2.0f - this->_nodeIndex * itemHeight, 0.0f);
-
+    std::cout << "UITree UITree::item width: " << itemWidth << " height: " << itemHeight << std::endl;
     if (itemWidth > this->_contentWidth)
     {
         this->_contentWidth = itemWidth;
@@ -581,6 +582,10 @@ void UITree::destroy()
     this->_selectCallback = nullptr;
     this->_node->offTransformChange(this->_nodeTransform_ID);
     Component::destroy();
+}
+void UITree::clearGfxObject()
+{
+    Component::clearGfxObject();
 }
 UITree::~UITree()
 {

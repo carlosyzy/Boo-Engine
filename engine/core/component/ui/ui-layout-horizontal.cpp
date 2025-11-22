@@ -119,6 +119,10 @@ void UILayoutHorizontal::destroy()
     this->_clear();
     this->_node->offTransformChange(this->_nodeTransformEventId);
 }
+void UILayoutHorizontal::clearGfxObject()
+{
+    Component::clearGfxObject();
+}
 
 UILayoutHorizontal::~UILayoutHorizontal()
 {

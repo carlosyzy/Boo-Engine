@@ -87,7 +87,7 @@ void Editor::_launchEditor()
 
 
 	this->_editorLayout->launch();
-	this->_initHierarchy();
+	// this->_initHierarchy();
 	// this->_initAssets();
 	// this->_initProperty();
 

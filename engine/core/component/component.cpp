@@ -11,56 +11,92 @@ Component::Component(Node *node, std::string uuid) : _layer(NodeLayer::Node)
         this->_uuid = UuidUtil::generateUUID();
     }
     this->_node = node;
+    this->_isEnabled=true;
+    this->_isEnabledInHierarchy=false;
+    this->_isAwaked=false;
+}
+void Component::setEnabled(bool enabled)
+{
+    this->_isEnabled = enabled;
+    this->setNodeActiveInHierarchy(this->_node->isActiveInHierarchy());
+}
+
+void Component::setNodeActiveInHierarchy(bool isActiveInHierarchy)
+{
+    bool isEnableInHierarchy = isActiveInHierarchy && this->_isEnabled;
+    if (this->_isEnabledInHierarchy == isEnableInHierarchy)
+    {
+        return; // 状态未改变
+    }
+    this->_isEnabledInHierarchy = isEnableInHierarchy;
+    if (isEnableInHierarchy)
+    {
+        if (!this->_isAwaked)
+        {
+            this->_isAwaked = true;
+            this->Awake();
+        }
+        this->Enable();
+    }
+    else
+    {
+        this->Disable();
+    }
 }
 /**
  * @brief 组件唤醒函数
  * 组件被添加到节点后,第一次激活会调用Awake函数
  */
-void Component::Awake(){
-
+void Component::Awake()
+{
+    std::cout << "Component::Awake" << std::endl;
 }
 /**
  * @brief 组件启用函数
  * 组件被激活后,会调用Enable函数
  */
-void Component::Enable(){
-
+void Component::Enable()
+{
+    std::cout << "Component::Enable" << std::endl;
 }
 
 void Component::Update(float deltaTime)
 {
-    if (!this->isEnabled())
+    if (!this->_isEnabledInHierarchy)
         return; // 组件未激活
 }
 void Component::LateUpdate(float deltaTime)
 {
-    if (!this->isEnabled())
+    if (!this->_isEnabledInHierarchy)
         return; // 组件未激活
 }
 void Component::Render()
 {
-    if (!this->isEnabled())
+    if (!this->_isEnabledInHierarchy)
         return; // 组件未激活
 }
 void Component::LateRender()
 {
-    if (!this->isEnabled())
+    if (!this->_isEnabledInHierarchy)
         return; // 组件未激活
 }
 /**
  * @brief 组件禁用函数
  * 组件被禁用后,会调用Disable函数
  */
-void Component::Disable(){
-
+void Component::Disable()
+{
+    std::cout << "Component::Disable" << std::endl;
 }
-
-
 
 void Component::destroy()
 {
     std::cout << "Component::destroy" << std::endl;
     Boo::game->addCompClearCaches(this);
+}
+void Component::clearGfxObject()
+{
+    std::cout << "Component::clearGfxObject" << std::endl;
 }
 Component::~Component()
 {

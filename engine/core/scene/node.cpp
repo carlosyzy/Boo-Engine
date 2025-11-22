@@ -14,15 +14,17 @@ std::string Node::getName() const
 	return this->_name;
 }
 
-void Node::setActive(bool active, bool force)
+void Node::setActive(bool active)
 {
-	if (this->_active == active && !force)
+	this->_active = active;
+	if (this->_parent == nullptr)
 	{
+		// 不存在父节点，只存储状态
 		return;
 	}
-	this->_active = active;
-	this->_isActiveInHierarchy = ((this->_parent == nullptr) ? true : this->_parent->_isActiveInHierarchy) && this->_active;
-	this->_updateNodesActiveInHierarchyState(this->_isActiveInHierarchy);
+	// 子节点是否激活 = 父节点是否激活 && 子节点是否激活
+	bool _isActiveInHierarchy = this->_parent->_isActiveInHierarchy && this->_active;
+	this->_updateNodesActiveInHierarchyState(_isActiveInHierarchy);
 }
 
 bool Node::isActive() const
@@ -111,32 +113,30 @@ void Node::setEulerAngles(float x, float y, float z)
 	this->_eulerAngles.set(x, y, z);
 	this->_updateWorldTransformFlag(NodeTransformFlag::ROTATION_FLAG);
 }
-void Node::addChild(Node *node)
+void Node::addChild(Node *child)
 {
-	this->_children.push_back(node);
-	node->setParent(this);
-	// this->_frameChildFlag++;
+	child->removeFromParent();
+	child->setParent(this);
 }
-void Node::setParent(Node *node)
+void Node::setParent(Node *parent)
 {
-	this->_parent = node;
-	// 更新节点结构激活状态
-	this->setActive(this->_active, true);
-}
-
-void Node::removeChild(Node *node)
-{
-	for (auto it = this->_children.begin(); it != this->_children.end();)
+	if (nullptr == parent)
 	{
-		if (*it == node)
+		return;
+	}
+	// 检测是否已经在父节点中
+	for (auto &child : parent->_children)
+	{
+		if (child == this)
 		{
-			it = this->_children.erase(it);
-		}
-		else
-		{
-			++it;
+			std::cout << "Node::setParent: " << this->_name << " already in parent " << this->_parent->_name << std::endl;
+			return;
 		}
 	}
+	this->_parent = parent;
+	this->_parent->_children.push_back(this);
+	// 更新节点结构激活状态
+	this->setActive(this->_active);
 }
 
 void Node::_updateWorldTransformFlag(NodeTransformFlag flag)
@@ -156,10 +156,15 @@ void Node::_updateRendererModelMatrix()
 }
 void Node::_updateNodesActiveInHierarchyState(bool isActiveInHierarch)
 {
-	if (isActiveInHierarch)
+	if (this->_isActiveInHierarchy == isActiveInHierarch)
+		return;
+	this->_isActiveInHierarchy = isActiveInHierarch;
+	// 更新组件生命周期
+	for (auto &component : this->_components)
 	{
-		this->_updateRendererModelMatrix();
+		component->setNodeActiveInHierarchy(isActiveInHierarch);
 	}
+
 	for (auto &child : this->_children)
 	{
 		child->_updateNodesActiveInHierarchyState(isActiveInHierarch);
@@ -240,21 +245,6 @@ void Node::render()
 		component->LateRender();
 	}
 }
-// void Node::LateRender()
-// {
-// 	if (this->_isActiveInHierarchy)
-// 	{
-// 		// 渲染组件
-// 		for (auto &component : this->_components)
-// 		{
-// 			component->lateRender();
-// 		}
-// 		for (auto &child : this->_children)
-// 		{
-// 			child->lateRender();
-// 		}
-// 	}
-// }
 void Node::clearNodeFrameFlag()
 {
 	this->_frameTransformFlag = NodeTransformFlag::NONE_FLAG;
@@ -275,6 +265,37 @@ Component *Node::getComponent(std::string name)
 {
 	return nullptr;
 }
+/**
+ * 从父节点中移除子节点
+ */
+void Node::removeFromParent()
+{
+	if (this->_parent)
+	{
+		this->_parent->removeChild(this);
+	}
+	this->_parent = nullptr;
+}
+void Node::removeChild(Node *node)
+{
+	node->_updateNodesActiveInHierarchyState(false);
+	for (auto it = this->_children.begin(); it != this->_children.end();)
+	{
+		if (*it == node)
+		{
+			it = this->_children.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+void Node::clearAllEvent()
+{
+	this->_transformListeners.clear();
+}
+
 void Node::destroyAllChildren()
 {
 	// 递归销毁所有子节点
@@ -284,21 +305,25 @@ void Node::destroyAllChildren()
 	}
 	this->_children.clear();
 }
-void Node::destroy()
+void Node::destroyAllComponents()
 {
-	this->offAll();
-	// 销毁组件
 	for (auto &component : this->_components)
 	{
 		component->destroy();
 	}
 	this->_components.clear();
+}
+
+void Node::destroy()
+{
+	// 从父节点中移除-此时所有组件，包括子节点都置为未激活状态
+	this->removeFromParent();
+
 	// 递归销毁所有子节点
 	this->destroyAllChildren();
-	// 从父节点中移除
-	if (this->_parent != nullptr)
-	{
-		this->_parent->removeChild(this);
-	}
+	// 销毁当前节点所有组件
+	this->destroyAllComponents();
+	// 清楚当前节点所有事件
+	this->clearAllEvent();
 	Boo::game->addNodeClearCaches(this);
 }
