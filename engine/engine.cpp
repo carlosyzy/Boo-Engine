@@ -31,6 +31,7 @@ void Engine::_initGame()
 	std::cout << "INIT Game MGR" << std::endl;
 	Boo::game = new Game();
 	Boo::game->init();
+	Boo::game->setView(Boo::window->getWidth(), Boo::window->getHeight());
 }
 void Engine::_initEditor()
 {

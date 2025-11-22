@@ -15,6 +15,14 @@ private:
 public:
 	Window(Engine *engine);
 	void init();
+	const int getWidth()
+	{
+		return this->_width;
+	}
+	const int getHeight()
+	{
+		return this->_height;
+	}
 	GLFWwindow* getWindow();
 	static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 	static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
@@ -22,7 +30,6 @@ public:
 	void onCursorPos(double xpos, double ypos);
 	void onMouseButton(int button, int action, int mods);
 	void onWindowSize();
-	
 	bool isRunning();
 	void tick();
 	void destroy();
