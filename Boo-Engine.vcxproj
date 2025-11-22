@@ -198,6 +198,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\math\size.cpp" />
     <ClCompile Include="engine\core\math\vec2.cpp" />
     <ClCompile Include="engine\core\math\vec3.cpp" />
+    <ClCompile Include="engine\core\renderer\ui\ui-mask.cpp" />
     <ClCompile Include="engine\core\renderer\ui\ui-sprite.cpp" />
     <ClCompile Include="engine\core\renderer\ui\ui-renderer.cpp" />
     <ClCompile Include="engine\core\renderer\ui\ui-text.cpp" />
@@ -245,14 +246,17 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\game.h" />
     <ClInclude Include="engine\core\gfx\gfx-context.h" />
     <ClInclude Include="engine\core\gfx\gfx-mgr.h" />
+    <ClInclude Include="engine\core\gfx\gfx-object-struct.h" />
     <ClInclude Include="engine\core\gfx\gfx-object.h" />
     <ClInclude Include="engine\core\gfx\gfx-pass-struct.h" />
     <ClInclude Include="engine\core\gfx\gfx-pass.h" />
     <ClInclude Include="engine\core\gfx\gfx-pipeline-struct.h" />
     <ClInclude Include="engine\core\gfx\gfx-pipeline.h" />
+    <ClInclude Include="engine\core\gfx\gfx-queue-struct.h" />
     <ClInclude Include="engine\core\gfx\gfx-queue.h" />
     <ClInclude Include="engine\core\gfx\gfx-renderer.h" />
     <ClInclude Include="engine\core\gfx\gfx-shader-compile.h" />
+    <ClInclude Include="engine\core\gfx\gfx-shader-struct.h" />
     <ClInclude Include="engine\core\gfx\gfx-shader.h" />
     <ClInclude Include="engine\core\gfx\gfx-struct.h" />
     <ClInclude Include="engine\core\gfx\gfx-texture.h" />
@@ -266,6 +270,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\math\size.h" />
     <ClInclude Include="engine\core\math\vec2.h" />
     <ClInclude Include="engine\core\math\vec3.h" />
+    <ClInclude Include="engine\core\renderer\ui\ui-mask.h" />
     <ClInclude Include="engine\core\renderer\ui\ui-sprite.h" />
     <ClInclude Include="engine\core\renderer\ui\ui-renderer.h" />
     <ClInclude Include="engine\core\renderer\ui\ui-text.h" />
