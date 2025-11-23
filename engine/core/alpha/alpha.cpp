@@ -75,8 +75,6 @@ void Alpha::_updateLogoAlpha(float deltaTime)
 	}
 	this->_logoAlphaNum += deltaTime;
 	float alpha = this->_logoAlphaNum / this->_alphaDuration;
-	std::cout << "Alpha::_updateLogoAlpha: alpha: " << alpha << std::endl;
-	
 	this->_spriteLogo->setAlpha(alpha);
 }
 void Alpha::_updateLogoSize()

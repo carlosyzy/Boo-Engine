@@ -1,8 +1,14 @@
 #include "editor.h"
-
 #include "../engine/boo.h"
 #include "../engine/engine.h"
 #include "editor-main.h"
+#ifdef _WIN32
+#include <windows.h>
+#elif defined(__APPLE__)
+#include <unistd.h>
+#include <limits.h>
+#include <mach-o/dyld.h> // 必需的头文件
+#endif
 
 Editor::Editor()
 {
