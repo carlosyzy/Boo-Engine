@@ -64,6 +64,7 @@ void Alpha::update(float deltaTime)
 
 void Alpha::_updateLogoAlpha(float deltaTime)
 {
+
 	if (this->_spriteLogo == nullptr)
 	{
 		return;
@@ -72,8 +73,8 @@ void Alpha::_updateLogoAlpha(float deltaTime)
 	{
 		return;
 	}
-	//return;
 	this->_logoAlphaNum += deltaTime;
+	
 	this->_spriteLogo->setAlpha(this->_logoAlphaNum / this->_alphaDuration);
 }
 void Alpha::_updateLogoSize()

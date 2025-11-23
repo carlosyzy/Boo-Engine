@@ -1,13 +1,12 @@
 #include <iostream>
-#include "engine/engine.h"
+#include "editor/editor.h"
 
 int main()
 {
-    Engine *engine = new Engine();
-    engine->init();
-    engine->run();
-    delete engine;
-    engine = nullptr;
-    std::cout << "close" << std::endl;
+    Editor *editor = new Editor();
+    editor->init();
+    editor->run();
+    delete editor;
+    editor = nullptr;
     return 0;
 }

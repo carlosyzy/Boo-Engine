@@ -41,7 +41,6 @@ void Game::init()
 	this->_initComponents();
 	this->_initAssets();
 	this->_initAlpha();
-
 	// json scene;
 
 	// scene["data"] = {
@@ -105,8 +104,8 @@ void Game::_initAssets()
 void Game::_initAlpha()
 {
 	Alpha *alpha = new Alpha("Editor-Alpha");
-	this->_curScene = static_cast<Scene *>(alpha);
-	// 启动场景
+	// this->_curScene = static_cast<Scene *>(alpha);
+	this->openScene(alpha);
 }
 
 void Game::setView(const int width, const int height)
@@ -121,10 +120,6 @@ void Game::setView(const int width, const int height)
 	this->_view->height = height;
 }
 
-void Game::unschedule(int scheduleID)
-{
-	this->_schedules.erase(scheduleID);
-}
 /**
  * @brief 创建组件
  *
@@ -144,6 +139,22 @@ Component *Game::createComponent(const std::string &className, Node *node, std::
 	std::cout << "Component class not found: " << className << std::endl;
 	return nullptr;
 }
+void Game::unschedule(int scheduleID)
+{
+	this->_schedules.erase(scheduleID);
+}
+
+void Game::openScene(Scene *scene)
+{
+	// 销毁之前的场景
+	if (this->_curScene)
+	{
+		this->_curScene->destroy();
+		this->_curScene = nullptr;
+	}
+	this->_curScene = scene;
+}
+
 void Game::addCompClearCaches(Component *comp)
 {
 	std::cout << "Game::addCompClearCaches: comp: " << comp->getNode()->getName() << std::endl;
@@ -157,6 +168,7 @@ void Game::addNodeClearCaches(Node *node)
 
 void Game::tick(float dt)
 {
+
 	long long start = TimeUtil::nowTime();
 	this->_update(dt);
 	this->_lateUpdate(dt);
@@ -165,7 +177,6 @@ void Game::tick(float dt)
 	this->_render(dt);
 	this->_renderTime = TimeUtil::nowTime() - start;
 	this->_clear();
-	// std::cout << "Game::update: logicTime: " << this->_logicTime << " renderTime: " << this->_renderTime << std::endl;
 }
 void Game::_update(float dt)
 {

@@ -4,16 +4,14 @@
 #include <functional>
 #include <mutex>
 #include <atomic>
-class Engine;
 class Window
 {
 private:
-	Engine *_engine;
 	GLFWwindow* _window;
 	int _width;
 	int _height;
 public:
-	Window(Engine *engine);
+	Window();
 	void init();
 	const int getWidth()
 	{

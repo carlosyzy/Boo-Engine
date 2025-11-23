@@ -159,6 +159,9 @@ public:
     {
         return this->_curScene;
     }
+    void openScene(Scene *scene);
+
+
     // 注册组件类
     template <typename T = Component>
     void registerComponentClass(const std::string &className)

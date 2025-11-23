@@ -1,92 +1,39 @@
 #include "engine.h"
 #include <iostream>
-#include "../editor/editor.h"
+
+#include "boo.h"
 #include "window/window.h"
 #include "core/utils/time-util.h"
-#include "boo.h"
+
 
 Engine::Engine()
 {
+	this->_deltaTime = TimeUtil::nowTime();
 	this->_frameRate = 30;
 }
-void Engine::init()
+void Engine::init(Window *window, Platform platform)
 {
-	this->_deltaTime = TimeUtil::nowTime();
-	// 初始化窗口
-	this->_initWindow();
-	// 初始化Game
-	this->_initGame();
-	// 初始化编辑器
-	this->_initEditor();
-}
-void Engine::_initWindow()
-{
-	std::cout << "INIT WINDOW" << std::endl;
-	Boo::window = new Window(this);
-	Boo::window->init();
-}
-
-void Engine::_initGame()
-{
-	std::cout << "INIT Game MGR" << std::endl;
+	Boo::platform = platform;
+	Boo::window = window;
 	Boo::game = new Game();
 	Boo::game->init();
-	Boo::game->setView(Boo::window->getWidth(), Boo::window->getHeight());
-}
-void Engine::_initEditor()
-{
-	std::cout << "INIT EDITOR" << std::endl;
-	Editor::getInstance()->init();
-}
-
-/**
- * @brief 主循环
- */
-void Engine::run()
-{
-	while (Boo::window->isRunning())
-	{
-		Boo::window->tick();
-		long long deltaTime = TimeUtil::nowTime();
-		long t = deltaTime - this->_deltaTime;
-		if (t > 1000.0f / this->_frameRate)
-		{
-			this->tick(t / 1000.0f);
-			this->_deltaTime = deltaTime;
-		}
-	}
+	Boo::game->setView(window->getWidth(), window->getHeight());
 }
 /**
  * @brief 引擎更新
  */
-void Engine::tick(float dt)
+void Engine::tick()
 {
-	Editor::getInstance()->update(dt);
-	if (Boo::game != nullptr)
+	if (Boo::game == nullptr)
+		return;
+	
+	long long deltaTime = TimeUtil::nowTime();
+	long long t = deltaTime - this->_deltaTime;
+	if (t > (1000.0f / this->_frameRate))
 	{
-		Boo::game->tick(dt);
-	}
-}
-
-void Engine::updateViewSize(float width, float height)
-{
-	if (Boo::game != nullptr)
-	{
-		Boo::game->setView(width, height);
-	}
-}
-void Engine::updateMouseState(int button, int action, int mods)
-{
-	if (Boo::game != nullptr)
-	{
-		Boo::game->updateMouseState(button, action, mods);
-	}
-}
-void Engine::updateMousePos(double xpos, double ypos)
-{
-	if (Boo::game != nullptr)
-	{
-		Boo::game->updateMousePos(xpos, ypos);
+		
+		Boo::game->tick(t / 1000.0f);
+		this->_deltaTime = deltaTime;
 	}
 }
 

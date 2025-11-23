@@ -1,13 +1,12 @@
 
 #include "window.h"
-#include "../engine.h"
+#include "../boo.h"
 
 const int MIN_WIDTH = 640;
 const int MIN_HEIGHT = 360;
 
-Window::Window(Engine *engine) : _engine(engine), _width(0), _height(0), _window(nullptr)
+Window::Window() : _width(0), _height(0), _window(nullptr)
 {
-	this->_engine = engine;
 }
 
 void Window::init()
@@ -90,18 +89,24 @@ void Window::windowSizeCallback(GLFWwindow *window, int width, int height)
 
 void Window::onCursorPos(double xpos, double ypos)
 {
+	if (Boo::game == nullptr)
+		return;
 	// 通知引擎更新鼠标位置
-	this->_engine->updateMousePos(xpos, ypos);
+	Boo::game->updateMousePos(xpos, ypos);
 };
 void Window::onMouseButton(int button, int action, int mods)
 {
+	if (Boo::game == nullptr)
+		return;
 	// 通知引擎更新鼠标状态
-	this->_engine->updateMouseState(button, action, mods);
+	Boo::game->updateMouseState(button, action, mods);
 };
 void Window::onWindowSize()
 {
 	glfwGetWindowSize(this->_window, &this->_width, &this->_height);
-	this->_engine->updateViewSize(this->_width, this->_height);
+	if (Boo::game == nullptr)
+		return;
+	Boo::game->setView(this->_width, this->_height);
 };
 bool Window::isRunning()
 {
