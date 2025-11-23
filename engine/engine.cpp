@@ -18,7 +18,6 @@ void Engine::init(Window *window, Platform platform)
 	Boo::game = new Game();
 	Boo::game->init();
 	Boo::game->setView(window->getWidth(), window->getHeight());
-	this->_deltaTime = TimeUtil::nowTime();
 }
 /**
  * @brief 引擎更新
