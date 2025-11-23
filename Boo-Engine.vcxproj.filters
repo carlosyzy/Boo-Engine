@@ -102,9 +102,6 @@
     <ClCompile Include="editor\editor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\editor-config.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="editor\editor-layout.cpp">
       <Filter>源文件</Filter>
     </ClCompile>

@@ -154,12 +154,9 @@ if exist "$(ProjectDir)editor\res" (
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
-    <ClCompile Include="editor\editor-config.cpp" />
-    <ClCompile Include="editor\editor-layout.cpp" />
+    <ClCompile Include="editor\boo-editor.cpp" />
+    <ClCompile Include="editor\editor-main.cpp" />
     <ClCompile Include="editor\editor.cpp" />
-    <ClCompile Include="editor\hierarchy\editor-hierarchy-layout.cpp" />
-    <ClCompile Include="editor\hierarchy\editor-hierarchy.cpp" />
-    <ClCompile Include="editor\ipc\editor-ipc.cpp" />
     <ClCompile Include="engine\boo.cpp" />
     <ClCompile Include="engine\core\alpha\alpha.cpp" />
     <ClCompile Include="engine\core\assets\asset-cache.cpp" />
@@ -216,12 +213,9 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="editor\editor-config.h" />
-    <ClInclude Include="editor\editor-layout.h" />
+    <ClInclude Include="editor\boo-editor.h" />
+    <ClInclude Include="editor\editor-main.h" />
     <ClInclude Include="editor\editor.h" />
-    <ClInclude Include="editor\hierarchy\editor-hierarchy-layout.h" />
-    <ClInclude Include="editor\hierarchy\editor-hierarchy.h" />
-    <ClInclude Include="editor\ipc\editor-ipc.h" />
     <ClInclude Include="engine\boo.h" />
     <ClInclude Include="engine\core\alpha\alpha.h" />
     <ClInclude Include="engine\core\assets\asset-cache.h" />
