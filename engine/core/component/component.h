@@ -53,11 +53,9 @@ public:
      */
     virtual void Render() = 0;
     /**
-     * @brief 组件晚渲染函数
-     * 当前节点组件以及子节点组件的render执行结束,lateRender渲染函数开始
+     * @brief 组件禁用函数
+     * 当前节点组件以及子节点组件的disable禁用函数开始
      */
-    virtual void LateRender() = 0;
-
     virtual void Disable() = 0;
     /**
      * @brief 组件销毁函数

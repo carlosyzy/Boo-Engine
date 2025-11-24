@@ -12,7 +12,11 @@
 #include "../../engine/core/assets/assets-manager.h"
 #include "../../engine/core/component/ui/ui-widget.h"
 
-EditorLayout::EditorLayout(const std::string name, const std::string uuid) : Scene(name, uuid)
+EditorLayout::EditorLayout(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
+{
+    
+}
+void EditorLayout::Awake()
 {
     this->_initMainUI();
     this->_initMenuUI();
@@ -23,13 +27,17 @@ EditorLayout::EditorLayout(const std::string name, const std::string uuid) : Sce
     this->_initToolUI();
     this->_initBottomUI();
 }
+void EditorLayout::Enable()
+{
+    Component::Enable();
+}
 
 void EditorLayout::_initMainUI()
 {
     std::cout << "EditorLayout::_initMainUI" << std::endl;
     this->_ndMain = new Node2D("Editor-Main");
     this->_ndMain->setSize(this->_width, this->_height);
-    this->_root2D->addChild(this->_ndMain);
+    this->_node->addChild(this->_ndMain);
     this->_spriteMain = dynamic_cast<UISprite *>(this->_ndMain->addComponent("UISprite"));
     if (this->_spriteMain != nullptr)
     {
@@ -141,9 +149,9 @@ void EditorLayout::_initBottomUI()
     }
 }
 
-void EditorLayout::update(float dt)
+void EditorLayout::Update(float dt)
 {
-    Scene::update(dt);
+    Component::Update(dt);
     View *view = Boo::game->view();
     if (this->_width != view->width || this->_height != view->height)
     {
@@ -153,6 +161,15 @@ void EditorLayout::update(float dt)
         this->_updateModuleSize();
     }
 };
+void EditorLayout::LateUpdate(float dt)
+{
+    Component::LateUpdate(dt);
+}
+void EditorLayout::Render()
+{
+    Component::Render();
+}
+
 
 void EditorLayout::_updateModuleSize()
 {
@@ -239,6 +256,16 @@ void EditorLayout::_updateModuleSize()
         this->_ndBottom->setPosition(this->bottom_x, this->bottom_y, 0.0f);
     }
 }
+void EditorLayout::Disable()
+{
+    Component::Disable();
+}
+void EditorLayout::destroy()
+{
+    Component::destroy();
+}
+
+
 EditorLayout::~EditorLayout()
 {
     std::cout << "EditorLayout::~EditorLayout()" << std::endl;

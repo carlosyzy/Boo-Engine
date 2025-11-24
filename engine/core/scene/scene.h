@@ -19,7 +19,7 @@ public:
 
     Node3D *getRoot3D() { return this->_root3D; }
     Node2D *getRoot2D() { return this->_root2D; }
-
+    void setActive(bool active) override;
     void update(float deltaTime) override;
     void lateUpdate(float deltaTime) override;
     void render() override;

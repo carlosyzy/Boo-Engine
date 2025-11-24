@@ -163,7 +163,7 @@ void Game::destroyScene()
 
 void Game::addCompClearCaches(Component *comp)
 {
-	std::cout << "Game::addCompClearCaches: comp: " << comp->getNode()->getName() << std::endl;
+	// std::cout << "Game::addCompClearCaches: comp: " << comp->getNode()->getName() << std::endl;
 	this->_compClearCaches.push_back(comp);
 }
 void Game::addNodeClearCaches(Node *node)
@@ -269,15 +269,21 @@ void Game::_updateClearCaches()
 {
 	for (auto &comp : this->_compClearCaches)
 	{
-		// std::cout << "Game::_updateClearCaches: clear comp: " << comp->getNode()->getName() << std::endl;
-		delete comp;
+		std::cout << "Game::_updateClearCaches: clear comp: " << comp->getNode()->getName() << std::endl;
+		if (comp != nullptr)
+		{
+			delete comp;
+		}
 		comp = nullptr;
 	}
 	this->_compClearCaches.clear();
 	for (auto &node : this->_nodeClearCaches)
 	{
-		// std::cout << "Game::_updateClearCaches: clear node: " << node->getName() << std::endl;
-		delete node;
+		std::cout << "Game::_updateClearCaches: clear node: " <<node<<"   "<< node->getName() << std::endl;
+		if (node != nullptr)
+		{
+			delete node;
+		}
 		node = nullptr;
 	}
 	this->_nodeClearCaches.clear();

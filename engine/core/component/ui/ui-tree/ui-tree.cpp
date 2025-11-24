@@ -591,12 +591,6 @@ void UITree::Render()
     if (!this->_isEnabledInHierarchy)
         return; // 组件未激活
 }
-void UITree::LateRender()
-{
-    Component::LateRender();
-    if (!this->_isEnabledInHierarchy)
-        return; // 组件未激活
-}
 
 void UITree::Disable()
 {

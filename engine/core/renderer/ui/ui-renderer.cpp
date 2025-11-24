@@ -97,9 +97,6 @@ void UIRenderer::LateUpdate(float deltaTime)
 void UIRenderer::Render()
 {
 	Component::Render();
-	if (!this->_isEnabledInHierarchy)
-		return; // 组件未激活
-
 	if (this->_node->hasFrameTransformFlag())
 	{
 		this->updateModelMatrix();
@@ -122,12 +119,7 @@ void UIRenderer::Render()
 	// 提交渲染对象
 	GfxMgr::getInstance()->submitObjectRender(this->_uuid);
 }
-void UIRenderer::LateRender()
-{
-	Component::LateRender();
-	if (!this->_isEnabledInHierarchy)
-		return; // 组件未激活
-}
+
 void UIRenderer::Disable()
 {
 	Component::Disable();
@@ -141,5 +133,5 @@ void UIRenderer::destroy()
 
 UIRenderer::~UIRenderer()
 {
-	std::cout << "UIRenderer::~destructor" << std::endl;
+	std::cout << "UIRenderer::~destructor"<<this->_node->getName() << std::endl;
 }

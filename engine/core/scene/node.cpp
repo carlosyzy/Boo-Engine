@@ -146,14 +146,10 @@ void Node::_updateWorldTransformFlag(NodeTransformFlag flag)
 	this->_frameTransformFlag |= static_cast<uint32_t>(flag);
 	this->_emitTransformChanged(this->_worldTransformFlag);
 	// 更新渲染节点的模型矩阵
-	this->_updateRendererModelMatrix();
 	for (auto &child : this->_children)
 	{
 		child->_updateWorldTransformFlag(flag);
 	}
-}
-void Node::_updateRendererModelMatrix()
-{
 }
 void Node::_updateNodesActiveInHierarchyState(bool isActiveInHierarch)
 {
@@ -245,12 +241,7 @@ void Node::render()
 	{
 		child->render();
 	}
-	for (auto &component : this->_components)
-	{
-		if (!component->isEnabledInHierarchy())
-			continue;
-		component->LateRender();
-	}
+	
 }
 void Node::clearNodeFrameFlag()
 {
@@ -275,17 +266,12 @@ void Node::removeFromParent()
 void Node::removeChild(Node *node)
 {
 	node->_updateNodesActiveInHierarchyState(false);
-	for (auto it = this->_children.begin(); it != this->_children.end();)
-	{
-		if (*it == node)
-		{
-			it = this->_children.erase(it);
-		}
-		else
-		{
-			++it;
-		}
-	}
+	// 使用标准算法更安全
+    auto it = std::find(this->_children.begin(), this->_children.end(), node);
+    if (it != this->_children.end())
+    {
+        this->_children.erase(it);
+    }
 }
 void Node::clearAllEvent()
 {
@@ -294,12 +280,12 @@ void Node::clearAllEvent()
 
 void Node::destroyAllChildren()
 {
-	// 递归销毁所有子节点
-	for (auto &child : this->_children)
-	{
-		child->destroy();
-	}
-	this->_children.clear();
+	auto childrenCopy = this->_children;
+    this->_children.clear();  // 先清空，防止递归调用时的修改
+    for (auto &child : childrenCopy)
+    {
+        child->destroy();  // 安全销毁
+    }
 }
 void Node::destroyAllComponents()
 {
@@ -314,12 +300,12 @@ void Node::destroy()
 {
 	// 从父节点中移除-此时所有组件，包括子节点都置为未激活状态
 	this->removeFromParent();
-
-	// 递归销毁所有子节点
-	this->destroyAllChildren();
-	// 销毁当前节点所有组件
-	this->destroyAllComponents();
 	// 清楚当前节点所有事件
 	this->clearAllEvent();
+	// 销毁当前节点所有组件
+	this->destroyAllComponents();
+	// 递归销毁所有子节点
+	this->destroyAllChildren();
+
 	Boo::game->addNodeClearCaches(this);
 }

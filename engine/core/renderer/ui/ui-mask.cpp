@@ -72,9 +72,6 @@ void UIMask::LateUpdate(float deltaTime)
 }
 void UIMask::Render()
 {
-    Component::Render();
-    if (!this->_isEnabledInHierarchy)
-        return; // 组件未激活
     if (this->_node->hasFrameTransformFlag())
     {
         this->updateModelMatrix();
@@ -82,12 +79,8 @@ void UIMask::Render()
     // 提交遮罩状态到渲染器
     GfxMgr::getInstance()->submitObjectRender(this->_addUuid);
 }
-void UIMask::LateRender()
+void UIMask::lateRender()
 {
-    Component::LateRender();
-    if (!this->_isEnabledInHierarchy)
-        return; // 组件未激活
-    // 提交遮罩状态到渲染器
     GfxMgr::getInstance()->submitObjectRender(this->_subUuid);
 }
 void UIMask::Disable()

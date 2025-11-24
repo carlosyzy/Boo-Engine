@@ -2,7 +2,6 @@
 #include <iostream>
 #include "../utils/uuid-util.h"
 
-
 Scene::Scene(const std::string name, const std::string uuid)
 {
 	this->_name = name;
@@ -26,7 +25,12 @@ Scene::Scene(const std::string name, const std::string uuid)
 	this->addChild(this->_root3D);
 	this->addChild(this->_root2D);
 }
-
+void Scene::setActive(bool active)
+{
+	this->_active = active;
+	bool _isActiveInHierarchy = this->_active;
+	this->_updateNodesActiveInHierarchyState(_isActiveInHierarchy);
+}
 void Scene::update(float dt)
 {
 	Node::update(dt);

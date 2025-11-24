@@ -52,7 +52,7 @@ public:
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
     void Render() override;
-    void LateRender() override;
+    void lateRender();
     void Disable() override;
     void destroy() override;
 

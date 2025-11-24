@@ -7,6 +7,9 @@
 #include "../../engine/boo.h"
 #include "../../engine/core/renderer/ui/ui-sprite.h"
 #include "../../engine/core/assets/assets-manager.h"
+#include "../../engine/core/scene/scene.h"
+#include "../../engine/core/scene/node.h"
+#include "../../engine/core/scene/node-2d.h"
 
 EditorLoading::EditorLoading(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
 {
@@ -21,10 +24,18 @@ void EditorLoading::Awake()
 	this->_initLogo();
 	this->_initLoadUI();
 	this->_initLoadingResources();
+	for (auto &node : this->_node->getChildren())
+	{
+		std::cout << "EditorLoading::Awake: " << node->getName() << std::endl;
+	}
 }
 void EditorLoading::Enable()
 {
 	Component::Enable();
+}
+void EditorLoading::setOnLoadComplete(std::function<void()> onLoadComplete)
+{
+	this->_onLoadComplete = onLoadComplete;
 }
 
 void EditorLoading::_initBg()
@@ -149,10 +160,11 @@ void EditorLoading::_initEditorCache()
 	BooEditor::assets->init();
 	// 初始化project 项目配置
 	BooEditor::project->init();
-
 	this->_setLoadProgress(1.0f);
-	// Boo::game->openScene(new Scene("EditorLayout"));
-	// Boo::game->destroyScene();
+	if (this->_onLoadComplete != nullptr)
+	{
+		this->_onLoadComplete();
+	}
 }
 
 void EditorLoading::Update(float deltaTime)
@@ -178,10 +190,6 @@ void EditorLoading::LateUpdate(float deltaTime)
 void EditorLoading::Render()
 {
 	Component::Render();
-}
-void EditorLoading::LateRender()
-{
-	Component::LateRender();
 }
 
 
@@ -226,8 +234,10 @@ void EditorLoading::Disable()
 
 void EditorLoading::destroy()
 {
+	Component::destroy();
 	Boo::game->assetsManager()->clearLoadCall(this->_loadingResourcesTaskId);
 	this->_loadingResourcesTaskId = -1;
+	std::cout << "EditorLoading::destroy() loadingResourcesTaskId: " << this->_loadingResourcesTaskId << std::endl;
 }
 EditorLoading::~EditorLoading()
 {

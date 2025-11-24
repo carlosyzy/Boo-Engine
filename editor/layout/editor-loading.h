@@ -41,19 +41,27 @@ private:
 	void _initLoadingResources();
 	int _loadingResourcesTaskId = -1;
 	void _onLoadCallBack(int completedCount, int allCount, float progress);
-
 	/**
 	 * @brief 初始化编辑器缓存
 	 */
 	void _initEditorCache();
+
+	std::function<void()> _onLoadComplete;
+
 public:
 	EditorLoading(std::string name, Node *node, std::string uuid = "");
+	/**
+	 * @brief 设置加载完成回调
+	 * 
+	 * @param onLoadComplete 
+	 */
+	void setOnLoadComplete(std::function<void()> onLoadComplete);
+	
 	void Awake() override;
 	void Enable() override;
 	void Update(float deltaTime) override;
 	void LateUpdate(float deltaTime) override;
 	void Render() override;
-	void LateRender() override;
 	void Disable() override;
 	void destroy() override;
 	~EditorLoading();

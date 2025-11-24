@@ -103,12 +103,6 @@ void UILayoutHorizontal::Render()
     if (!this->_isEnabledInHierarchy)
 		return; // 组件未激活
 }
-void UILayoutHorizontal::LateRender()
-{
-    Component::LateRender();
-    if (!this->_isEnabledInHierarchy)
-		return; // 组件未激活
-}
 void UILayoutHorizontal::_clear()
 {
    

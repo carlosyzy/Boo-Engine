@@ -132,7 +132,6 @@ protected:
 	 */
 	void _updateWorldTransformFlag(NodeTransformFlag flag);
 	void _updateNodesActiveInHierarchyState(bool isActiveInHierarch);
-	virtual void _updateRendererModelMatrix();
 	/**
 	 * @brief 触发事件
 	 * @param eventName 事件名称
@@ -152,7 +151,7 @@ public:
 	void setName(const std::string &name);
 	std::string getName() const;
 
-	void setActive(bool active);
+	virtual void setActive(bool active);
 	bool isActive() const;
 
 	const NodeLayer getLayer() const;

@@ -18,7 +18,6 @@ private:
 
 protected:
     void _updateWorldTransform() override;
-    void _updateRendererModelMatrix() override;
 
 public:
     Node2D(const std::string name, const std::string uuid = "");

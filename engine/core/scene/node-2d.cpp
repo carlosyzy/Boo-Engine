@@ -117,7 +117,6 @@ void Node2D::addComponent(Component *component)
 	}
 }
 
-
 /*
  * 获取组件
  */
@@ -144,39 +143,21 @@ void Node2D::lateUpdate(float dt)
 void Node2D::render()
 {
 	Node::render();
+	for (auto &component : this->_components)
+	{
+		if (!component->isEnabledInHierarchy())
+			continue;
+		UIMask *uiMask = dynamic_cast<UIMask *>(component);
+		if (uiMask != nullptr)
+		{
+			uiMask->lateRender();
+		}
+	}
 }
-/**
- * 刷新渲染组件的模型矩阵
- */
-void Node2D::_updateRendererModelMatrix()
-{
-	// Node::_updateRendererModelMatrix();
-	// for (auto &component : this->_components)
-	// {
-	// 	UIRenderer *uiRenderer = dynamic_cast<UIRenderer *>(component);
-	// 	if (uiRenderer != nullptr)
-	// 	{
-	// 		uiRenderer->updateModelMatrix();
-	// 		continue;
-	// 	}
-	// 	UIMask *uiMask = dynamic_cast<UIMask *>(component);
-	// 	if (uiMask != nullptr)
-	// 	{
-	// 		uiMask->updateModelMatrix();
-	// 		continue;
-	// 	}
-	// }
-}
-
 void Node2D::clearNodeFrameFlag()
 {
 	Node::clearNodeFrameFlag();
 }
-// template <typename T, typename Func>
-// int Node2D::onNodeInputEvent(NodeInput input, Func func, T *instance, bool isIntercept)
-// {
-// 	return Boo::game->input()->onNodeInputEvent(this, input, func, instance, isIntercept);
-// }
 void Node2D::offNodeInputEvent(int inputID)
 {
 	Boo::game->input()->offNodeInputEvent(this, inputID);

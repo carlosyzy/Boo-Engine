@@ -121,12 +121,6 @@ void UIWidget::Render()
     if (!this->_isEnabledInHierarchy)
 		return; // 组件未激活
 }
-void UIWidget::LateRender()
-{
-    Component::LateRender();
-    if (!this->_isEnabledInHierarchy)
-		return; // 组件未激活
-}
 
 void UIWidget::Disable()
 {

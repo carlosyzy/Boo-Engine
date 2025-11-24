@@ -1,16 +1,14 @@
 #pragma once
 #include <iostream>
 #include <cmath>
-
-#include "../../engine/core/scene/scene.h"
+#include "../../engine/core/component/component.h"
 
 class Scene;
 class Node2D;
 class UISprite;
 class UIWidget;
 
-
-class EditorLayout: public Scene
+class EditorLayout : public Component
 {
 private:
 	float _border = 2.0f;
@@ -48,7 +46,7 @@ private:
 	float tool_width;
 	float tool_height;
 
-	//底部布局
+	// 底部布局
 	float bottom_x;
 	float bottom_y;
 	float bottom_width;
@@ -98,7 +96,7 @@ private:
 	void _updateModuleSize();
 
 public:
-	EditorLayout(const std::string name, const std::string uuid = "");
+	EditorLayout(std::string name, Node *node, std::string uuid = "");
 
 	Node2D *getHierarchy()
 	{
@@ -116,7 +114,12 @@ public:
 	{
 		return this->_ndBottom;
 	}
-
-	void update(float dt);
+	void Awake() override;
+	void Enable() override;
+	void Update(float deltaTime) override;
+	void LateUpdate(float deltaTime) override;
+	void Render() override;
+	void Disable() override;
+	void destroy() override;
 	~EditorLayout();
 };
