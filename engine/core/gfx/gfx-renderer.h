@@ -50,6 +50,8 @@ private:
 
 	std::map<std::string, GfxQueue*> _queues;
 
+	std::vector<std::string> _clearObjects;
+
 	void _Log(std::string msg);
 
 	/**
@@ -64,7 +66,7 @@ public:
 	GfxRenderer(GfxContext* context);
 	void init();
 
-
+	void clearDestroyObjects();
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer>& commandBuffers);
 	void cleanRendererState();
 	void resetRendererState();

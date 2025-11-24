@@ -10,7 +10,7 @@
 #include "../../assets/assets-manager.h"
 #include "../../assets/texture.h"
 
-UIRenderer::UIRenderer(Node *node, std::string uuid) : Component(node, uuid)
+UIRenderer::UIRenderer(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
 {
 	this->_flag = static_cast<uint32_t>(UIFlag::UI_ALL);
 	this->_layer = NodeLayer::Node2D;
@@ -135,11 +135,8 @@ void UIRenderer::Disable()
 void UIRenderer::destroy()
 {
 	Component::destroy();
-	std::cout << "UIRenderer::destroy" << std::endl;
-}
-void UIRenderer::clearGfxObject()
-{
 	GfxMgr::getInstance()->destroyObject(this->_uuid);
+	std::cout << "UIRenderer::destroy" << std::endl;
 }
 
 UIRenderer::~UIRenderer()

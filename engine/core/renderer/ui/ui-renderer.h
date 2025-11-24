@@ -18,7 +18,6 @@
 #include "../../math/size.h"
 #include "../../component/component.h"
 
-
 class Node;
 class Material;
 class Texture;
@@ -62,8 +61,8 @@ private:
         0, 2, 3};
 
 protected:
-    Material* _material;
-    Texture* _texture;
+    Material *_material;
+    Texture *_texture;
     Color _color;
     uint32_t _flag;
 
@@ -71,9 +70,9 @@ protected:
     Mat4 _projMatrix;
 
 public:
-    UIRenderer(Node *node, std::string uuid = "");
+    UIRenderer(std::string name, Node *node, std::string uuid = "");
     void Awake() override;
-    const Color& color() { return this->_color; };
+    const Color &color() { return this->_color; };
     /**
      * @brief 设置渲染器的颜色
      *
@@ -92,8 +91,7 @@ public:
     void Render() override;
     void LateRender() override;
     void Disable() override;
-    virtual void destroy() override;
-    virtual void clearGfxObject() override;
+    void destroy() override;
 
     virtual ~UIRenderer() override;
 };

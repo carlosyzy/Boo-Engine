@@ -15,7 +15,7 @@ private:
     void _updateNodeSize();
     void _clearTexture();
 public:
-    UIText(Node *node, std::string uuid = "");
+    UIText(std::string name, Node *node, std::string uuid = "");
     void setText(std::string text);
     void setSize(int fontSize);
     void setLineHeight(int lineHeight);

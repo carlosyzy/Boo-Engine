@@ -6,7 +6,7 @@
 #include "../../assets/texture.h"
 #include "../../assets/assets-manager.h"
 
-UIMask::UIMask(Node *node, std::string uuid) : Component(node, uuid)
+UIMask::UIMask(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
 {
     this->_name = "UIMask";
     this->_layer = NodeLayer::Node2D;
@@ -97,9 +97,6 @@ void UIMask::Disable()
 void UIMask::destroy()
 {
     Component::destroy();
-}
-void UIMask::clearGfxObject()
-{
     GfxMgr::getInstance()->destroyObject(this->_addUuid);
     GfxMgr::getInstance()->destroyObject(this->_subUuid);
 }

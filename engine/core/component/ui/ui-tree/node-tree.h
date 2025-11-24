@@ -16,7 +16,7 @@ private:
     void _setTrees(Node *root, UITreeStructure &uiTreeData, int layer);
 
 public:
-    NodeTree(Node *node, std::string uuid = "");
+    NodeTree(std::string name, Node *node, std::string uuid = "");
     void setNode(Node *node);
     void setScene(Scene *scene);
     void updateTree() override;

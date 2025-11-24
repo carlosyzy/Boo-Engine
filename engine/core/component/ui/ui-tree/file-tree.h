@@ -17,7 +17,7 @@ private:
 
     void _setTrees(std::filesystem::directory_entry entry, UITreeStructure &uiTreeData, int layer);
 public:
-    FileTree(Node *node, std::string uuid = "");
+    FileTree(std::string name, Node *node, std::string uuid = "");
     void setRoot(std::string root);
     void updateTree() override;
     void Update(float deltaTime) override;

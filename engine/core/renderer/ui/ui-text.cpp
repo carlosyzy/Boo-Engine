@@ -4,7 +4,7 @@
 #include "../../scene/node-2d.h"
 #include "../../assets/texture.h"
 
-UIText::UIText(Node *node, std::string uuid) : UIRenderer(node, uuid)
+UIText::UIText(std::string name, Node *node, std::string uuid) : UIRenderer(name, node, uuid)
 {
     this->_name = "UIText";
 }

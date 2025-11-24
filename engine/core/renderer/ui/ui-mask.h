@@ -43,7 +43,7 @@ private:
     Texture* _texture;
 
 public:
-    UIMask(Node *node, std::string uuid = "");
+    UIMask(std::string name, Node *node, std::string uuid = "");
     void Awake() override;
     void setTexture(std::string text);
     void setTexture(Texture *texture);
@@ -55,7 +55,6 @@ public:
     void LateRender() override;
     void Disable() override;
     void destroy() override;
-    void clearGfxObject() override;
 
     ~UIMask() override;
 };

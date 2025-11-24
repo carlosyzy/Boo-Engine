@@ -49,7 +49,7 @@ private:
     int _nodeTransform_ID = 0;
     void _onNodeTransformChange(int nodeTransform);
 public:
-    UIWidget(Node *node, std::string uuid = "");
+    UIWidget(std::string name, Node *node, std::string uuid = "");
     void Awake() override;
     void setHorizontal(WidgetHorizontal horizontal, WidgetHorizontalParam param);
     void setVertical(WidgetVertical vertical, WidgetVerticalParam param);
@@ -61,6 +61,5 @@ public:
     void LateRender() override;
     void Disable() override;
     void destroy() override;
-    void clearGfxObject() override;
     ~UIWidget();
 };

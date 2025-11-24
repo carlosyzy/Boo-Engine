@@ -20,11 +20,12 @@ protected:
     bool _isEnabledInHierarchy = false;
 
 public:
-    Component(Node *node, std::string uuid = "");
+    Component(std::string name, Node *node, std::string uuid = "");
     virtual void Awake() = 0;
-
+    
     bool isEnabled() { return this->_isEnabled; }
     void setEnabled(bool enabled);
+    std::string getName() { return this->_name; }
     Node *getNode() { return this->_node; }
     NodeLayer layer() { return this->_layer; }
     /**
@@ -32,7 +33,7 @@ public:
      * @param isActiveInHierarchy 是否激活在层级中
      */
     void setNodeActiveInHierarchy(bool isActiveInHierarchy);
-
+    const bool isEnabledInHierarchy(){return this->_isEnabledInHierarchy;}
     virtual void Enable() = 0;
     /**
      * @brief 组件更新函数
@@ -62,6 +63,5 @@ public:
      * @brief 组件销毁函数
      */
     virtual void destroy();
-    virtual void clearGfxObject() = 0;
     virtual ~Component();
 };

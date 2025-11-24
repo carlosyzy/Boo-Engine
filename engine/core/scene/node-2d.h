@@ -50,11 +50,13 @@ public:
     /**
      * 添加组件
      */
-    Component *addComponent(std::string name, std::string uuid = "") override;
+    Component *addComponent(std::string name, std::string uuid = "");
+    void addComponent(Component *component);
+
     /*
      * 获取组件
      */
-    Component *getComponent(std::string name) override;
+    Component *getComponent(std::string name);
     void clearNodeFrameFlag() override;
 
     template <typename T, typename Func>

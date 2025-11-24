@@ -6,7 +6,7 @@
 #include "../../scene/node-2d.h"
 #include "../../renderer/ui/ui-sprite.h"
 
-UILayoutHorizontal::UILayoutHorizontal(Node *node, std::string uuid) : Component(node, uuid)
+UILayoutHorizontal::UILayoutHorizontal(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
 {
     this->_layer = NodeLayer::Node2D;
     // Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
@@ -126,10 +126,6 @@ void UILayoutHorizontal::destroy()
     Component::destroy();
     this->_clear();
     this->_node->offTransformChange(this->_nodeTransformEventId);
-}
-void UILayoutHorizontal::clearGfxObject()
-{
-    Component::clearGfxObject();
 }
 
 UILayoutHorizontal::~UILayoutHorizontal()

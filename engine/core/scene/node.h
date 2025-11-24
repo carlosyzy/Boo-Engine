@@ -147,9 +147,6 @@ protected:
 	}
 	virtual void _updateWorldTransform();
 
-	// void _enableComponent(Component *component);
-	// void _disableComponent(Component *component);
-
 public:
 	// 基础属性
 	void setName(const std::string &name);
@@ -291,14 +288,6 @@ public:
 		}
 		return nullptr;
 	}
-	/**
-	 * 添加组件
-	 */
-	virtual Component *addComponent(std::string name, std::string uuid = "");
-	/*
-	 * 获取组件
-	 */
-	virtual Component *getComponent(std::string name);
 	void destroyAllComponents();
 
 	// 虚函数，子类可以重写

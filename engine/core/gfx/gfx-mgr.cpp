@@ -197,6 +197,7 @@ void GfxMgr::submitObjectRender(std::string id)
 
 void GfxMgr::update()
 {
+    this->_renderer->clearDestroyObjects();
     // std::cout << "renderer update" << std::endl;
     this->_context->frameFencesPrepare(this->_currentFrame);
     /* // 可用的图像的索引 */

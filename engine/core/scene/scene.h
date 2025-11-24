@@ -25,8 +25,6 @@ public:
     void render() override;
     void clearNodeFrameFlag() override;
 
-    Component *addComponent(std::string name, std::string uuid = "") override;
-    Component *getComponent(std::string name) override;
     void destroy() override;
     ~Scene();
 };

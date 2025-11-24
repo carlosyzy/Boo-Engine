@@ -64,6 +64,7 @@ void Alpha::_onAlphaAnimOK()
 
 void Alpha::update(float deltaTime)
 {
+	// std::cout << "Alpha::update()"<< deltaTime << std::endl;
 	Scene::update(deltaTime);
 	float _width = Boo::game->view()->width;
 	float _height = Boo::game->view()->height;

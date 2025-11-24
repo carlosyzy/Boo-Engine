@@ -128,15 +128,15 @@ void Game::setView(const int width, const int height)
  * @param uuid 组件UUID
  * @return Component* 组件指针
  */
-Component *Game::createComponent(const std::string &className, Node *node, std::string uuid)
+Component *Game::createComponent(const std::string &compName, Node *node, std::string uuid)
 {
-	auto it = this->_creatorComponentMap.find(className);
+	auto it = this->_creatorComponentMap.find(compName);
 	if (it != this->_creatorComponentMap.end())
 	{
-		return it->second(node, uuid);
+		return it->second(compName, node, uuid);
 	}
 
-	std::cout << "Component class not found: " << className << std::endl;
+	std::cout << "Component class not found: " << compName << std::endl;
 	return nullptr;
 }
 void Game::unschedule(int scheduleID)
@@ -150,6 +150,7 @@ void Game::openScene(Scene *scene)
 	this->destroyScene();
 	std::cout << "openScene: scene: " << scene->getName() << std::endl;
 	this->_curScene = scene;
+	this->_curScene->setActive(true);
 }
 void Game::destroyScene()
 {
@@ -269,7 +270,6 @@ void Game::_updateClearCaches()
 	for (auto &comp : this->_compClearCaches)
 	{
 		// std::cout << "Game::_updateClearCaches: clear comp: " << comp->getNode()->getName() << std::endl;
-		comp->clearGfxObject();
 		delete comp;
 		comp = nullptr;
 	}

@@ -8,8 +8,12 @@
 #include "../../engine/core/renderer/ui/ui-sprite.h"
 #include "../../engine/core/assets/assets-manager.h"
 
-EditorLoading::EditorLoading(const std::string name, const std::string uuid) : Scene(name, uuid)
+EditorLoading::EditorLoading(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
 {
+}
+void EditorLoading::Awake()
+{
+	std::cout << "EditorLoading::Awake" << std::endl;
 	this->_logoRatio = 0.35f;
 	this->_width = Boo::game->view()->width;
 	this->_height = Boo::game->view()->height;
@@ -18,10 +22,15 @@ EditorLoading::EditorLoading(const std::string name, const std::string uuid) : S
 	this->_initLoadUI();
 	this->_initLoadingResources();
 }
+void EditorLoading::Enable()
+{
+	Component::Enable();
+}
+
 void EditorLoading::_initBg()
 {
 	this->_ndAlpha = new Node2D("Editor-EditorLoading");
-	this->_root2D->addChild(this->_ndAlpha);
+	this->_node->addChild(this->_ndAlpha);
 	// 背景
 	Component *compAlpha = this->_ndAlpha->addComponent("UISprite");
 	if (compAlpha != nullptr)
@@ -37,7 +46,7 @@ void EditorLoading::_initLogo()
 {
 	// 添加logo
 	this->_ndLogo = new Node2D("Editor-EditorLoading-Logo");
-	this->_root2D->addChild(this->_ndLogo);
+	this->_node->addChild(this->_ndLogo);
 	this->_ndLogo->setPosition(0.0f, 100.0f, 0.0f);
 	Component *compLogo = this->_ndLogo->addComponent("UISprite");
 	if (compLogo != nullptr)
@@ -59,7 +68,7 @@ void EditorLoading::_initLogo()
 void EditorLoading::_initLoadUI()
 {
 	this->_ndLoad = new Node2D("Editor-Load");
-	this->_root2D->addChild(this->_ndLoad);
+	this->_node->addChild(this->_ndLoad);
 	this->_spriteLoad = dynamic_cast<UISprite *>(this->_ndLoad->addComponent("UISprite"));
 	if (this->_spriteLoad != nullptr)
 	{
@@ -143,12 +152,12 @@ void EditorLoading::_initEditorCache()
 
 	this->_setLoadProgress(1.0f);
 	// Boo::game->openScene(new Scene("EditorLayout"));
-	Boo::game->destroyScene();
+	// Boo::game->destroyScene();
 }
 
-void EditorLoading::update(float deltaTime)
+void EditorLoading::Update(float deltaTime)
 {
-	Scene::update(deltaTime);
+	Component::Update(deltaTime);
 	float width = Boo::game->view()->width;
 	float height = Boo::game->view()->height;
 	if (this->_width != width || this->_height != height)
@@ -162,6 +171,21 @@ void EditorLoading::update(float deltaTime)
 		this->_updateLoadBarSize(width, height);
 	}
 }
+void EditorLoading::LateUpdate(float deltaTime)
+{
+	Component::LateUpdate(deltaTime);
+}
+void EditorLoading::Render()
+{
+	Component::Render();
+}
+void EditorLoading::LateRender()
+{
+	Component::LateRender();
+}
+
+
+
 void EditorLoading::_updateBgSize(float width, float height)
 {
 	if (this->_ndAlpha)
@@ -195,12 +219,15 @@ void EditorLoading::_updateLoadBarSize(float width, float height)
 		this->_ndLoadBar->setPosition(-loadWidth / 2.0 + loadBarWidth / 2.0, 0.0f, 0.0f);
 	}
 }
+void EditorLoading::Disable()
+{
+	Component::Disable();
+}
 
 void EditorLoading::destroy()
 {
 	Boo::game->assetsManager()->clearLoadCall(this->_loadingResourcesTaskId);
 	this->_loadingResourcesTaskId = -1;
-	Scene::destroy();
 }
 EditorLoading::~EditorLoading()
 {

@@ -49,7 +49,7 @@ private:
     uint64_t _scheduleNextID_ = 0;
     std::unordered_map<int, ScheduleInfo> _schedules;
     // 组件创建相关
-    std::unordered_map<std::string, std::function<Component *(Node *, std::string)>> _creatorComponentMap;
+    std::unordered_map<std::string, std::function<Component *(std::string, Node *, std::string)>> _creatorComponentMap;
     // 组件清理相关
     std::vector<Component *> _compClearCaches;
     // 节点清理相关
@@ -169,9 +169,9 @@ public:
     {
         static_assert(std::is_base_of<Component, T>::value,
                       "T must be derived from Component");
-        this->_creatorComponentMap[className] = [](Node *node, std::string uuid) -> Component *
+        this->_creatorComponentMap[className] = [](std::string compName,Node *node, std::string uuid) -> Component *
         {
-            return new T(node, uuid);
+            return new T(compName, node, uuid);
         };
     }
     Component *createComponent(const std::string &className, Node *node, std::string uuid);

@@ -195,6 +195,8 @@ void Node::update(float dt)
 	// 更新组件
 	for (auto &component : this->_components)
 	{
+		if (!component->isEnabledInHierarchy())
+			continue;
 		component->Update(dt);
 	}
 	// 更新子节点
@@ -208,6 +210,10 @@ void Node::lateUpdate(float dt)
 	// ui-widget 组件 比较特殊，特出处理
 	for (auto &component : this->_components)
 	{
+		if (!component->isEnabledInHierarchy())
+		{
+			continue;
+		}
 		UIWidget *uiWidget = dynamic_cast<UIWidget *>(component);
 		if (uiWidget != nullptr)
 		{
@@ -217,6 +223,8 @@ void Node::lateUpdate(float dt)
 	// 更新组件
 	for (auto &component : this->_components)
 	{
+		if (!component->isEnabledInHierarchy())
+			continue;
 		component->LateUpdate(dt);
 	}
 	for (auto &child : this->_children)
@@ -229,6 +237,8 @@ void Node::render()
 	// 渲染组件
 	for (auto &component : this->_components)
 	{
+		if (!component->isEnabledInHierarchy())
+			continue;
 		component->Render();
 	}
 	for (auto &child : this->_children)
@@ -237,6 +247,8 @@ void Node::render()
 	}
 	for (auto &component : this->_components)
 	{
+		if (!component->isEnabledInHierarchy())
+			continue;
 		component->LateRender();
 	}
 }
@@ -249,17 +261,6 @@ void Node::clearNodeFrameFlag()
 	}
 }
 
-Component *Node::addComponent(std::string name, std::string uuid)
-{
-	return nullptr;
-}
-/*
- * 获取组件
- */
-Component *Node::getComponent(std::string name)
-{
-	return nullptr;
-}
 /**
  * 从父节点中移除子节点
  */

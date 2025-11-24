@@ -502,14 +502,22 @@ void GfxRenderer::setObjectProjMatrix(std::string id, std::array<float, 16> proj
 }
 void GfxRenderer::destroyObject(std::string id)
 {
-    if (this->_objects.find(id) != this->_objects.end())
+    this->_clearObjects.push_back(id);
+}
+void GfxRenderer::clearDestroyObjects()
+{
+    for (auto &id : this->_clearObjects)
     {
-        GfxObject *object = this->_objects[id];
-        object->destroy();
-        delete object;
-        object = nullptr;
-        this->_objects.erase(id);
+        if (this->_objects.find(id) != this->_objects.end())
+        {
+            GfxObject *object = this->_objects[id];
+            object->destroy();
+            delete object;
+            object = nullptr;
+            this->_objects.erase(id);
+        }
     }
+    this->_clearObjects.clear();
 }
 
 void GfxRenderer::submitObjectRender(std::string id)

@@ -74,18 +74,17 @@ void Node2D::_updateWorldTransform()
 	this->_uiWorldMatrix.setM00(_width); // 宽高和缩放进行相乘
 	this->_uiWorldMatrix.setM11(_height);
 }
-
 Component *Node2D::addComponent(std::string name, std::string uuid)
 {
 	Component *component = Boo::game->createComponent(name, this, uuid);
 	if (component == nullptr)
 	{
-		std::cout << name << ":Component Not  register" << std::endl;
+		std::cout << name << ":Component Not register" << std::endl;
 		return nullptr;
 	}
-	if (component->layer() != NodeLayer::Node2D)
+	if (component->layer() == NodeLayer::Node3D)
 	{
-		std::cout << name << ":Component add fail,node type not is Node2D" << std::endl;
+		std::cout << name << ":Component add fail,node type is Node3D" << std::endl;
 		delete component;
 		component = nullptr;
 		return nullptr;
@@ -97,6 +96,28 @@ Component *Node2D::addComponent(std::string name, std::string uuid)
 	}
 	return component;
 }
+void Node2D::addComponent(Component *component)
+{
+	if (component == nullptr)
+	{
+		std::cout << component->getName() << ":Component Not register" << std::endl;
+		return;
+	}
+	if (component->layer() == NodeLayer::Node3D)
+	{
+		std::cout << component->getName() << ":Component add fail,node type is Node3D" << std::endl;
+		delete component;
+		component = nullptr;
+		return;
+	}
+	this->_components.push_back(component);
+	if (this->_parent != nullptr)
+	{
+		component->setNodeActiveInHierarchy(this->_isActiveInHierarchy);
+	}
+}
+
+
 /*
  * 获取组件
  */

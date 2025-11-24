@@ -1,12 +1,13 @@
 #pragma once
 #include <vector>
-#include "../../engine/core/scene/scene.h"
+
+#include "../../engine/core/component/component.h"
 
 class Node2D;
 class UISprite;
 class Texture;
 
-class EditorLoading : public Scene
+class EditorLoading : public Component
 {
 private:
 	float _width;
@@ -46,8 +47,14 @@ private:
 	 */
 	void _initEditorCache();
 public:
-	EditorLoading(const std::string name, const std::string uuid = "");
-	void update(float deltaTime) override;
+	EditorLoading(std::string name, Node *node, std::string uuid = "");
+	void Awake() override;
+	void Enable() override;
+	void Update(float deltaTime) override;
+	void LateUpdate(float deltaTime) override;
+	void Render() override;
+	void LateRender() override;
+	void Disable() override;
 	void destroy() override;
 	~EditorLoading();
 };

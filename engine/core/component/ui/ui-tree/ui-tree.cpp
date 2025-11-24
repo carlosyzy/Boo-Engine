@@ -7,7 +7,7 @@
 #include "../../../renderer/ui/ui-sprite.h"
 #include "../../../renderer/ui/ui-text.h"
 
-UITree::UITree(Node *node, std::string uuid) : Component(node, uuid)
+UITree::UITree(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
 {
     this->_layer = NodeLayer::Node2D;
     this->_topLen = 0.0f;
@@ -607,10 +607,6 @@ void UITree::destroy()
 {
     this->_selectCallback = nullptr;
     Component::destroy();
-}
-void UITree::clearGfxObject()
-{
-    Component::clearGfxObject();
 }
 UITree::~UITree()
 {

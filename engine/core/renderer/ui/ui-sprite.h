@@ -9,7 +9,7 @@ private:
     std::string _texture;
 
 public:
-    UISprite(Node *node, std::string uuid="");
+    UISprite(std::string name, Node *node, std::string uuid="");
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
     void Render() override;

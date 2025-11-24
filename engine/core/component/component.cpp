@@ -3,13 +3,14 @@
 #include "../utils/uuid-util.h"
 #include "../../boo.h"
 
-Component::Component(Node *node, std::string uuid) : _layer(NodeLayer::Node)
+Component::Component(std::string name, Node *node, std::string uuid) : _layer(NodeLayer::Node)
 {
     this->_uuid = uuid;
     if (this->_uuid.size() <= 0)
     {
         this->_uuid = UuidUtil::generateUUID();
     }
+    this->_name = name;
     this->_node = node;
     this->_isEnabled = true;
     this->_isEnabledInHierarchy = false;
@@ -63,23 +64,19 @@ void Component::Enable()
 
 void Component::Update(float deltaTime)
 {
-    if (!this->_isEnabledInHierarchy)
-        return; // 组件未激活
+   
 }
 void Component::LateUpdate(float deltaTime)
 {
-    if (!this->_isEnabledInHierarchy)
-        return; // 组件未激活
+   
 }
 void Component::Render()
 {
-    if (!this->_isEnabledInHierarchy)
-        return; // 组件未激活
+   
 }
 void Component::LateRender()
 {
-    if (!this->_isEnabledInHierarchy)
-        return; // 组件未激活
+   
 }
 /**
  * @brief 组件禁用函数
@@ -95,10 +92,7 @@ void Component::destroy()
     // std::cout << "Component::destroy" << std::endl;
     Boo::game->addCompClearCaches(this);
 }
-void Component::clearGfxObject()
-{
-    // std::cout << "Component::clearGfxObject" << std::endl;
-}
+
 Component::~Component()
 {
     // std::cout << "Component::~destructor" << std::endl;

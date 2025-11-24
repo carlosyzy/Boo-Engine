@@ -8,8 +8,8 @@ Scene::Scene(const std::string name, const std::string uuid)
 	this->_name = name;
 	this->_layer = NodeLayer::Scene;
 	this->_uuid = uuid.empty() ? UuidUtil::generateUUID() : uuid;
-	this->_active = true;
-	this->_isActiveInHierarchy = true;
+	this->_active = false;
+	this->_isActiveInHierarchy = false;
 	this->_position.set(0.0f, 0.0f, 0.0f);
 	this->_scale.set(1.0f, 1.0f, 1.0f);
 	this->_eulerAngles.set(0.0f, 0.0f, 0.0f);
@@ -27,15 +27,6 @@ Scene::Scene(const std::string name, const std::string uuid)
 	this->addChild(this->_root2D);
 }
 
-Component *Scene::addComponent(std::string name, std::string uuid)
-{
-	return nullptr;
-}
-
-Component *Scene::getComponent(std::string name)
-{
-	return nullptr;
-}
 void Scene::update(float dt)
 {
 	Node::update(dt);

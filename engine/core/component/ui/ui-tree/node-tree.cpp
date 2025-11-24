@@ -3,7 +3,7 @@
 #include "../../../scene/node-2d.h"
 #include "../../../scene/scene.h"
 
-NodeTree::NodeTree(Node *node, std::string uuid) : UITree(node, uuid)
+NodeTree::NodeTree(std::string name, Node *node, std::string uuid) : UITree(name, node, uuid)
 {
 }
 
