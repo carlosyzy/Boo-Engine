@@ -160,6 +160,7 @@ public:
         return this->_curScene;
     }
     void openScene(Scene *scene);
+    void destroyScene();
 
 
     // 注册组件类

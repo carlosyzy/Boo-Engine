@@ -96,10 +96,10 @@ void Game::_initAssets()
 	// 加载必加资源
 	this->_assetsManager->load("resources/texture/logo.png");
 	this->_assetsManager->load("resources/texture/ic-default.png");
-	this->_assetsManager->load("resources/shader/ui/ui.vert.spv");
-	this->_assetsManager->load("resources/shader/ui/ui.frag.spv");
-	this->_assetsManager->load("resources/shader/ui/ui-mask.vert.spv");
-	this->_assetsManager->load("resources/shader/ui/ui-mask.frag.spv");
+	// this->_assetsManager->load("resources/shader/ui/ui.vert.spv");
+	// this->_assetsManager->load("resources/shader/ui/ui.frag.spv");
+	// this->_assetsManager->load("resources/shader/ui/ui-mask.vert.spv");
+	// this->_assetsManager->load("resources/shader/ui/ui-mask.frag.spv");
 }
 void Game::_initAlpha()
 {
@@ -153,6 +153,14 @@ void Game::openScene(Scene *scene)
 		this->_curScene = nullptr;
 	}
 	this->_curScene = scene;
+}
+void Game::destroyScene()
+{
+	if (this->_curScene)
+	{
+		this->_curScene->destroy();
+		this->_curScene = nullptr;
+	}
 }
 
 void Game::addCompClearCaches(Component *comp)

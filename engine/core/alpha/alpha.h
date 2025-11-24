@@ -6,36 +6,38 @@ class Node2D;
 class UISprite;
 class Texture;
 
-class Alpha :public Scene
+class Alpha : public Scene
 {
 private:
 	float _width;
 	float _height;
 
-    Node2D* _ndAlpha;
-	Node2D* _ndLogo;
-	UISprite* _spriteLogo;
+	Node2D *_ndAlpha;
+	UISprite *_spriteAlpha;
 
+	// logo
+	Node2D *_ndLogo;
+	UISprite *_spriteLogo;
 	float _logoTxWidth;
 	float _logoTxHeight;
-
 	float _alphaDuration;
 	float _logoAlphaNum;
 	float _logoRatio;
 
 	int _initDelayScheduleID;
 	void _onAlphaAnimOK();
-	
+
 	void _init();
 	void _initRes();
 	void _initAlpha();
 	void _updateLogoAlpha(float deltaTime);
-	void _updateLogoSize();
+	void _updateBgSize(float width, float height);
+	void _updateLogoSize(float width, float height);
+
 public:
-    Alpha(const std::string name, const std::string uuid="");
-	
+	Alpha(const std::string name, const std::string uuid = "");
+
 	void update(float deltaTime) override;
 	void destroy() override;
-    ~Alpha();
+	~Alpha();
 };
-

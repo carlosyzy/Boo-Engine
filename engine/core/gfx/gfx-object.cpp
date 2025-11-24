@@ -15,22 +15,6 @@ GfxObject::GfxObject(std::string uuid, GfxObjectType type, GfxContext *context) 
     this->_createUniformBuffers();
     this->_updateProjMatUniformBuffer();
     this->_updateViewMatUniformBuffer();
-    // // ===== 测试遮罩：添加一个矩形遮罩区域 =====
-    // // 坐标系统：屏幕中心为原点 (0, 0)，Y 轴向上
-    // // 暂时禁用测试遮罩，调试完成后再启用
-    // // 矩形：屏幕中心 200x200 像素矩形（-100 到 100）
-    // std::vector<float> testMaskRect = {
-    //     // 第一个三角形（左下、右下、左上）
-    //     -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // 左下角
-    //     0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  // 右下角
-    //     -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  // 左上角
-    //     // 第二个三角形（右下、右上、左上）
-    //     0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // 右下角
-    //     0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  // 右上角
-    //     -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // 左上角
-    // };
-    // // this->addUIMask("test_rect_mask", testMaskRect);
-    // std::cout << "GfxObject: Test mask - Center 200x200 rect (-100,-100) to (100,100)" << std::endl;
 }
 
 void GfxObject::_createUniformBuffers()
@@ -333,6 +317,10 @@ void GfxObject::_updateViewMatUniformBuffer()
  */
 void GfxObject::_updateProjMatUniformBuffer()
 {
+    if(this->_projMatrix[0] == 2.0f / Boo::game->view()->width&&this->_projMatrix[5] == 2.0f / Boo::game->view()->height){
+        return;
+    }
+
     this->_projMatrix[0] = this->_projMatrix[5] = this->_projMatrix[10] = this->_projMatrix[15] = 1.0f;
     this->_projMatrix[0] = 2.0f / Boo::game->view()->width;
     this->_projMatrix[5] = 2.0f / Boo::game->view()->height;
@@ -356,7 +344,7 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
     //                         this->_pipelineMask->getVKPipelineLayout(), 0, 1,
     //                         &this->_descriptorSets[imageIndex], 0, nullptr);
     // vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipeline());
-
+    this->_updateProjMatUniformBuffer();
     // 绑定描述符集
     vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipelineLayout(), 0, 1, &this->_descriptorSets[imageIndex], 0, nullptr);
     if (this->_type == GfxObjectType::UI)
