@@ -559,9 +559,10 @@ void GfxObject::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &comman
 void GfxObject::clear()
 {
     /* // 销毁描述符集（Descriptor Sets） */
-    for (auto descriptorSet : this->_descriptorSets)
+    for (auto &descriptorSet : this->_descriptorSets)
     {
-        vkFreeDescriptorSets(this->_context->getVkDevice(), this->_context->getDescriptorPool(), static_cast<uint32_t>(this->_descriptorSets.size()), &descriptorSet);
+        // vkFreeDescriptorSets(this->_context->getVkDevice(), this->_context->getDescriptorPool(), static_cast<uint32_t>(this->_descriptorSets.size()), &descriptorSet);
+        descriptorSet = VK_NULL_HANDLE;
     }
     this->_descriptorSets.clear();
 

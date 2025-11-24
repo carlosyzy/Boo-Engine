@@ -4,6 +4,7 @@
 class EditorConfigCache;
 class EditorAssetsCache;
 class EditorProjectCache;
+class EditorSceneCache;
 
 namespace BooEditor
 {
@@ -24,4 +25,8 @@ namespace BooEditor
      * @brief 项目缓存
      */
     extern EditorProjectCache *project;
+    /**
+     * @brief 场景缓存
+     */
+    extern EditorSceneCache *scene;
 }

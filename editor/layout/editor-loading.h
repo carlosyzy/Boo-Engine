@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "../../../engine/core/scene/scene.h"
+#include "../../engine/core/scene/scene.h"
 
 class Node2D;
 class UISprite;

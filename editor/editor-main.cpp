@@ -1,6 +1,6 @@
 #include "editor-main.h"
 #include "../engine/boo.h"
-#include "layout/loading/editor-loading.h"
+#include "layout/editor-loading.h"
 
 EditorMain::EditorMain()
 {

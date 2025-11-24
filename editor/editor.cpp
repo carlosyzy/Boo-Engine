@@ -3,6 +3,8 @@
 #include "cache/editor-assets-cache.h"
 #include "cache/editor-config-cache.h"
 #include "cache/editor-project-cache.h"
+#include "cache/editor-scene-cache.h"
+
 #include "../engine/boo.h"
 #include "../engine/engine.h"
 #include "editor-main.h"
@@ -25,6 +27,7 @@ void Editor::init()
 	BooEditor::assets = new EditorAssetsCache();
 	BooEditor::config = new EditorConfigCache();
 	BooEditor::project = new EditorProjectCache();
+	BooEditor::scene = new EditorSceneCache();
 	this->_initWindow();
 	this->_initEngine();
 	this->_initEditorMain();

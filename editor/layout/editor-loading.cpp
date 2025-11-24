@@ -1,11 +1,12 @@
 #include "editor-loading.h"
-#include "../../boo-editor.h"
-#include "../../cache/editor-assets-cache.h"
-#include "../../cache/editor-config-cache.h"
-#include "../../cache/editor-project-cache.h"
-#include "../../boo.h"
-#include "../../../engine/core/renderer/ui/ui-sprite.h"
-#include "../../../engine/core/assets/assets-manager.h"
+#include "../boo-editor.h"
+#include "../layout/editor-layout.h"
+#include "../cache/editor-assets-cache.h"
+#include "../cache/editor-config-cache.h"
+#include "../cache/editor-project-cache.h"
+#include "../../engine/boo.h"
+#include "../../engine/core/renderer/ui/ui-sprite.h"
+#include "../../engine/core/assets/assets-manager.h"
 
 EditorLoading::EditorLoading(const std::string name, const std::string uuid) : Scene(name, uuid)
 {
@@ -141,6 +142,8 @@ void EditorLoading::_initEditorCache()
 	BooEditor::project->init();
 
 	this->_setLoadProgress(1.0f);
+	// Boo::game->openScene(new Scene("EditorLayout"));
+	Boo::game->destroyScene();
 }
 
 void EditorLoading::update(float deltaTime)
@@ -195,9 +198,9 @@ void EditorLoading::_updateLoadBarSize(float width, float height)
 
 void EditorLoading::destroy()
 {
-	Scene::destroy();
 	Boo::game->assetsManager()->clearLoadCall(this->_loadingResourcesTaskId);
 	this->_loadingResourcesTaskId = -1;
+	Scene::destroy();
 }
 EditorLoading::~EditorLoading()
 {

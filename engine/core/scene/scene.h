@@ -9,6 +9,8 @@ class Scene : public Node
 {
 private:
 protected:
+  
+
     Node3D *_root3D;
     Node2D *_root2D;
 

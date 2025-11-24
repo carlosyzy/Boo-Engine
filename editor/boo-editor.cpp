@@ -21,4 +21,8 @@ namespace BooEditor
      * @brief 项目缓存
      */
     EditorProjectCache *project;
+    /**
+     * @brief 场景缓存
+     */
+    EditorSceneCache *scene;
 }

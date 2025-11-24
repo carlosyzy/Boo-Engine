@@ -504,7 +504,6 @@ void GfxRenderer::destroyObject(std::string id)
 {
     if (this->_objects.find(id) != this->_objects.end())
     {
-        std::cout << "destroyGfxObject:id:aaaaaaaaaa" << id << std::endl;
         GfxObject *object = this->_objects[id];
         object->destroy();
         delete object;

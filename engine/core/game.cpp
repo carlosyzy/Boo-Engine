@@ -147,11 +147,8 @@ void Game::unschedule(int scheduleID)
 void Game::openScene(Scene *scene)
 {
 	// 销毁之前的场景
-	if (this->_curScene)
-	{
-		this->_curScene->destroy();
-		this->_curScene = nullptr;
-	}
+	this->destroyScene();
+	std::cout << "openScene: scene: " << scene->getName() << std::endl;
 	this->_curScene = scene;
 }
 void Game::destroyScene()
