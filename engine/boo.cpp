@@ -9,4 +9,5 @@ namespace Boo
 	Game* game = nullptr;
 	Window* window = nullptr;
 	Platform platform = Platform::None;
+	bool Editor = false;
 }

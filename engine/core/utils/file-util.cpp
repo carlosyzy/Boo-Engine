@@ -46,7 +46,7 @@ void FileUtil::saveAtlasAsPNG(const std::string &filename,
         width * 4            // 每行的字节数 (宽度 * 4通道)
     );
 }
-void FileUtil::saveJsonToBinary(const json &data, const std::string &filename)
+void FileUtil::saveJsonToBinary(const std::string &filename, const json &data)
 {
     try
     {
@@ -76,6 +76,33 @@ void FileUtil::saveJsonToBinary(const json &data, const std::string &filename)
         return;
     }
 }
+// 从MessagePack加载
+json FileUtil::loadJsonFromBinary(const std::string &filename)
+{
+    try
+    {
+        std::ifstream file(filename, std::ios::binary | std::ios::ate);
+        if (!file.is_open())
+        {
+            return json::object(); // 返回空对象
+        }
+
+        // 读取文件内容
+        size_t file_size = file.tellg();
+        file.seekg(0);
+
+        std::vector<uint8_t> buffer(file_size);
+        file.read(reinterpret_cast<char *>(buffer.data()), file_size);
+
+        // 从MessagePack解析为JSON
+        return json::from_msgpack(buffer);
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "加载失败: " << e.what() << std::endl;
+        return json::object();
+    }
+}
 
 // static bool saveBinary(const json& data, const std::string& filename) {
 //         try {
@@ -92,30 +119,6 @@ void FileUtil::saveJsonToBinary(const json &data, const std::string &filename)
 //         } catch (const std::exception& e) {
 //             std::cerr << "保存失败: " << e.what() << std::endl;
 //             return false;
-//         }
-//     }
-
-//     // 从MessagePack加载
-//     static json loadBinary(const std::string& filename) {
-//         try {
-//             std::ifstream file(filename, std::ios::binary | std::ios::ate);
-//             if (!file.is_open()) {
-//                 return json::object(); // 返回空对象
-//             }
-
-//             // 读取文件内容
-//             size_t file_size = file.tellg();
-//             file.seekg(0);
-
-//             std::vector<uint8_t> buffer(file_size);
-//             file.read(reinterpret_cast<char*>(buffer.data()), file_size);
-
-//             // 从MessagePack解析为JSON
-//             return json::from_msgpack(buffer);
-
-//         } catch (const std::exception& e) {
-//             std::cerr << "加载失败: " << e.what() << std::endl;
-//             return json::object();
 //         }
 //     }
 

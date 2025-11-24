@@ -19,4 +19,5 @@ namespace Boo
 	extern Game* game;
 	extern Window* window;
 	extern Platform platform;
+	extern bool Editor;
 }

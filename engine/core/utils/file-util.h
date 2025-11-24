@@ -14,5 +14,6 @@ class FileUtil
 public:
     static void saveAtlasAsPGM(const std::string &filename, const std::vector<uint8_t> &atlasData, int width, int height);
     static void saveAtlasAsPNG(const std::string &filename, const std::vector<uint8_t> &atlasData, int width, int height);
-    static void saveJsonToBinary(const json &data, const std::string &filename);
+    static void saveJsonToBinary(const std::string &filename, const json &data);
+    static json loadJsonFromBinary(const std::string &filename);
 };

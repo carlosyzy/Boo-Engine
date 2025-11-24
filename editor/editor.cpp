@@ -1,4 +1,7 @@
 #include "editor.h"
+#include "boo-editor.h"
+#include "cache/editor-assets-cache.h"
+#include "cache/editor-config-cache.h"
 #include "../engine/boo.h"
 #include "../engine/engine.h"
 #include "editor-main.h"
@@ -12,9 +15,13 @@
 
 Editor::Editor()
 {
+	BooEditor::project = "/Users/yangzongyuan/personal/project/Boo-Engine/project";
 }
 void Editor::init()
 {
+	Boo::Editor = true;
+	BooEditor::assets = new EditorAssetsCache();
+	BooEditor::config = new EditorConfigCache();
 	this->_initWindow();
 	this->_initEngine();
 	this->_initEditorMain();
