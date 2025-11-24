@@ -2,13 +2,10 @@
 #include "../../boo-editor.h"
 #include "../../cache/editor-assets-cache.h"
 #include "../../cache/editor-config-cache.h"
-
+#include "../../cache/editor-project-cache.h"
 #include "../../boo.h"
 #include "../../../engine/core/renderer/ui/ui-sprite.h"
 #include "../../../engine/core/assets/assets-manager.h"
-// #include "../renderer/ui/ui-sprite.h"
-// #include "../gfx/gfx-mgr.h"
-// #include "../gfx/gfx-pipeline-struct.h"
 
 EditorLoading::EditorLoading(const std::string name, const std::string uuid) : Scene(name, uuid)
 {
@@ -109,7 +106,7 @@ void EditorLoading::_initLoadingResources()
 		}
 	}
 	// 记载工程assets文件
-	std::filesystem::path projectAssets = std::filesystem::path(BooEditor::project) / "assets";
+	std::filesystem::path projectAssets = std::filesystem::path(BooEditor::projectPath) / "assets";
 	for (const auto &entry : std::filesystem::recursive_directory_iterator(projectAssets))
 	{
 		if (std::filesystem::is_regular_file(entry.path()))
@@ -141,6 +138,7 @@ void EditorLoading::_initEditorCache()
 	// 初始化assets 资源缓存
 	BooEditor::assets->init();
 	// 初始化project 项目配置
+	BooEditor::project->init();
 
 	this->_setLoadProgress(1.0f);
 }

@@ -2,9 +2,11 @@
 #include "boo-editor.h"
 #include "cache/editor-assets-cache.h"
 #include "cache/editor-config-cache.h"
+#include "cache/editor-project-cache.h"
 #include "../engine/boo.h"
 #include "../engine/engine.h"
 #include "editor-main.h"
+
 #ifdef _WIN32
 #include <windows.h>
 #elif defined(__APPLE__)
@@ -15,13 +17,14 @@
 
 Editor::Editor()
 {
-	BooEditor::project = "/Users/yangzongyuan/personal/project/Boo-Engine/project";
+	BooEditor::projectPath = "/Users/yangzongyuan/personal/project/Boo-Engine/project";
 }
 void Editor::init()
 {
 	Boo::Editor = true;
 	BooEditor::assets = new EditorAssetsCache();
 	BooEditor::config = new EditorConfigCache();
+	BooEditor::project = new EditorProjectCache();
 	this->_initWindow();
 	this->_initEngine();
 	this->_initEditorMain();

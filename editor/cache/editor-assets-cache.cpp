@@ -6,7 +6,7 @@ EditorAssetsCache::EditorAssetsCache()
 }
 void EditorAssetsCache::init()
 {
-    std::filesystem::path assetsCachePath = std::filesystem::path(BooEditor::project) / "setting" / "assets.bin";
+    std::filesystem::path assetsCachePath = std::filesystem::path(BooEditor::projectPath) / "setting" / "assets.bin";
     if (std::filesystem::is_regular_file(assetsCachePath))
     {
         this->_assetsCache = FileUtil::loadJsonFromBinary(assetsCachePath.string());
@@ -25,7 +25,7 @@ void EditorAssetsCache::reset()
     this->_insertNewAsset(existAssets);
     this->_delNotExistAssets(existAssets);
 
-    std::filesystem::path assetsCachePath = std::filesystem::path(BooEditor::project) / "setting" / "assets.bin";
+    std::filesystem::path assetsCachePath = std::filesystem::path(BooEditor::projectPath) / "setting" / "assets.bin";
     std::cout << "Assets Cache: " << this->_assetsCache << std::endl;
     FileUtil::saveJsonToBinary(assetsCachePath.string(), this->_assetsCache);
 }
@@ -62,12 +62,12 @@ std::vector<std::string> EditorAssetsCache::_getAssetsList()
 {
    // 初始化资源列表,和assets下的所有资源进行关联
     std::vector<std::string> existAssets;
-    std::filesystem::path assetsPath = std::filesystem::path(BooEditor::project) / "assets";
+    std::filesystem::path assetsPath = std::filesystem::path(BooEditor::projectPath) / "assets";
     for (const auto &entry : std::filesystem::recursive_directory_iterator(assetsPath))
     {
         if (std::filesystem::is_regular_file(entry))
         {
-            std::string relativePath = std::filesystem::relative(entry.path(), assetsPath).string();
+            std::string relativePath = std::filesystem::relative(entry.path(), std::filesystem::path(BooEditor::projectPath)).string();
             existAssets.push_back(relativePath);
         }
     }

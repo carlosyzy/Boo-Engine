@@ -3,13 +3,14 @@
 
 class EditorConfigCache;
 class EditorAssetsCache;
+class EditorProjectCache;
 
 namespace BooEditor
 {
     /**
      * @brief 工程路径
      */
-	extern std::string project;
+	extern std::string projectPath;
 
     /**
      * @brief 资产缓存
@@ -19,4 +20,8 @@ namespace BooEditor
      * @brief 配置缓存
      */
 	extern EditorConfigCache *config;
+    /**
+     * @brief 项目缓存
+     */
+    extern EditorProjectCache *project;
 }
