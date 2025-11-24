@@ -5,6 +5,14 @@ class EditorConfigCache;
 class EditorAssetsCache;
 class EditorProjectCache;
 class EditorSceneCache;
+class Scene;
+
+struct BooEditorRunScene
+{
+    std::string sceneName;
+    std::string scenePath;
+    Scene *scene;
+};
 
 namespace BooEditor
 {
@@ -29,4 +37,9 @@ namespace BooEditor
      * @brief 场景缓存
      */
     extern EditorSceneCache *scene;
+
+    /**
+     * @brief 运行场景
+     */
+    extern BooEditorRunScene *runScene;
 }

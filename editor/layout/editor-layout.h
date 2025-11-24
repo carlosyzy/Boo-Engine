@@ -116,6 +116,7 @@ public:
 	}
 	void Awake() override;
 	void Enable() override;
+
 	void Update(float deltaTime) override;
 	void LateUpdate(float deltaTime) override;
 	void Render() override;

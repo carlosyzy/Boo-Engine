@@ -9,10 +9,14 @@ class EditorProjectCache
 {
     json _projectCache;
 
-    
 public:
     EditorProjectCache();
     void init();
     void update();
+    std::string getLaunchScene()
+    {
+        return _projectCache["launchScene"];
+    };
+
     ~EditorProjectCache();
 };

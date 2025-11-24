@@ -1,6 +1,7 @@
 #pragma once
 
 class EditorLayout;
+class EditorScene;
 
 class EditorMain
 {
@@ -11,6 +12,12 @@ private :
     EditorLayout *_editorLayout = nullptr;
     void _launchEditor();
 
+    EditorScene *_editorScene = nullptr;
+    // EditorHierarchy *_hierarchy;
+    // EditorAssets *_assets;
+    // EditorProperty *_property;
+    void _runEditorScene();
+    void _preRunEditorScene();
 public:
     EditorMain();
     void init();

@@ -1,0 +1,24 @@
+#pragma once
+#include "asset.h"
+#include "../utils/json-util.h"
+
+class Scene;
+class SceneAsset : public Asset
+{
+private:
+    json _sceneData;
+    Scene* _scene;
+protected:
+    void _load() override;
+
+public:
+    /**
+     * @brief 场景资产构造函数
+     * 
+     * @param uuid 资产UUID  相对工程的路径
+     * @param path 资产路径  基于运行环境的全路径
+     */
+    SceneAsset(const std::string key, const std::string path);
+    void createScene();
+    ~SceneAsset();
+};

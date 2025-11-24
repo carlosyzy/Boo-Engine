@@ -7,7 +7,7 @@
 
 Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid), _logoAlphaNum(0.0f)
 {
-	this->_alphaDuration = 2.0f;
+	this->_alphaDuration = 1.0f;
 	this->_logoAlphaNum = 0.0f;
 	this->_logoRatio = 0.35f;
 	this->_init();
@@ -17,7 +17,6 @@ void Alpha::_init()
 {
 	this->_initRes();
 	this->_initAlpha();
-	this->_initDelayScheduleID = Boo::game->scheduleOnce(&Alpha::_onAlphaAnimOK, this, this->_alphaDuration / 2.0);
 }
 void Alpha::_initRes()
 {
@@ -56,10 +55,6 @@ void Alpha::_initAlpha()
 		this->_spriteLogo->setMaterial(nullptr);
 		this->_spriteLogo->setColor(1.0f, 1.0f, 1.0f, 0.0f);
 	}
-}
-
-void Alpha::_onAlphaAnimOK()
-{
 }
 
 void Alpha::update(float deltaTime)
@@ -121,7 +116,6 @@ void Alpha::_updateLogoAlpha(float deltaTime)
 void Alpha::destroy()
 {
 	Scene::destroy();
-	Boo::game->unschedule(this->_initDelayScheduleID);
 }
 Alpha::~Alpha()
 {

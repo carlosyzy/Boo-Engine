@@ -3,6 +3,10 @@
 #include "cache/editor-assets-cache.h"
 #include "cache/editor-config-cache.h"
 
+#include "../engine/core/scene/scene.h"
+
+
+
 namespace BooEditor
 {
 	/**
@@ -25,4 +29,9 @@ namespace BooEditor
      * @brief 场景缓存
      */
     EditorSceneCache *scene;
+
+    /**
+     * @brief 运行场景
+     */
+    BooEditorRunScene *runScene;
 }
