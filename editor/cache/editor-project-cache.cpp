@@ -19,13 +19,14 @@ void EditorProjectCache::init()
         this->_projectCache["height"] = 720;
         this->_projectCache["launchScene"] = "";
     }
+    std::cout << "init:Project Cache: " << this->_projectCache << std::endl;
     this->update();
 }
 void EditorProjectCache::update()
 {
 
     std::filesystem::path projectCachePath = std::filesystem::path(BooEditor::projectPath) / "setting" / "project.bin";
-    std::cout << "Project Cache: " << this->_projectCache << std::endl;
+    std::cout << "update:Project Cache: " << this->_projectCache << std::endl;
     FileUtil::saveJsonToBinary(projectCachePath.string(), this->_projectCache);
 }
 

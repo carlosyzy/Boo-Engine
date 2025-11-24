@@ -15,6 +15,7 @@ void EditorAssetsCache::init()
     {
         this->_assetsCache = json::object();
     }
+    std::cout << "init:Assets Cache: " << this->_assetsCache << std::endl;
     this->reset();
     
 }
@@ -26,7 +27,7 @@ void EditorAssetsCache::reset()
     this->_delNotExistAssets(existAssets);
 
     std::filesystem::path assetsCachePath = std::filesystem::path(BooEditor::projectPath) / "setting" / "assets.bin";
-    std::cout << "Assets Cache: " << this->_assetsCache << std::endl;
+    std::cout << "update:Assets Cache: " << this->_assetsCache << std::endl;
     FileUtil::saveJsonToBinary(assetsCachePath.string(), this->_assetsCache);
 }
 
