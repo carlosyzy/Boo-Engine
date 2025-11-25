@@ -5,6 +5,9 @@
 #include <unordered_map>
 #include <filesystem>
 #include "../../engine/core/utils/json-util.h"
+
+class Scene;
+
 class EditorSceneCache
 {
 private:

@@ -165,11 +165,19 @@ void EditorLoading::_initEditorCache()
 	// 初始化scene 场景缓存
 	BooEditor::scene->init();
 	this->_setLoadProgress(1.0f);
+	this->_launchEditorTaskId = Boo::game->scheduleOnce(&EditorLoading::_launchEditor, this, 0.1f);
+}
+void EditorLoading::_launchEditor()
+{
+	Boo::game->unschedule(this->_launchEditorTaskId);
+	this->_launchEditorTaskId = -1;
+	
 	if (this->_onLoadComplete != nullptr)
 	{
 		this->_onLoadComplete();
 	}
 }
+
 
 void EditorLoading::Update(float deltaTime)
 {
@@ -241,6 +249,8 @@ void EditorLoading::destroy()
 	Component::destroy();
 	Boo::game->assetsManager()->clearLoadCall(this->_loadingResourcesTaskId);
 	this->_loadingResourcesTaskId = -1;
+	Boo::game->unschedule(this->_launchEditorTaskId);
+	this->_launchEditorTaskId = -1;
 	std::cout << "EditorLoading::destroy() loadingResourcesTaskId: " << this->_loadingResourcesTaskId << std::endl;
 }
 EditorLoading::~EditorLoading()

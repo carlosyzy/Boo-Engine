@@ -50,14 +50,26 @@ void EditorAssetsCache::_insertNewAsset(std::vector<std::string> &existAssets)
 }
 void EditorAssetsCache::_delNotExistAssets(std::vector<std::string> &existAssets)
 {
+
+    // 待修复
     // 删除不存在的资源
-    for (const auto &entry : this->_assetsCache.items())
+    // 新增临时存储，防止删除异常
+    std::vector<std::string> keysToRemove;
+    for (const auto& entry : this->_assetsCache.items()) {
+        if (std::find(existAssets.begin(), existAssets.end(), entry.key()) == existAssets.end()) {
+            keysToRemove.push_back(entry.key());
+        }
+    }
+    for (const auto& key : keysToRemove) {
+        this->_assetsCache.erase(key);
+    }
+    /*for (const auto &entry : this->_assetsCache.items())
     {
         if (std::find(existAssets.begin(), existAssets.end(), entry.key()) == existAssets.end())
         {
             this->_assetsCache.erase(entry.key());
         }
-    }
+    }*/
 }
 std::vector<std::string> EditorAssetsCache::_getAssetsList()
 {

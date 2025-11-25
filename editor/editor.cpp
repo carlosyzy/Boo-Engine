@@ -19,7 +19,7 @@
 
 Editor::Editor()
 {
-	BooEditor::projectPath = "/Users/yangzongyuan/personal/project/Boo-Engine/project";
+	
 }
 void Editor::init()
 {
@@ -41,9 +41,11 @@ void Editor::_initEngine()
 {
 	this->_engine = new Engine();
 #ifdef _WIN32
+	BooEditor::projectPath = "F:\\worksapces\\Boo-Engine\\project";
 	this->_engine->init(this->_window, Platform::Windows);
 #elif defined(__APPLE__) && defined(__MACH__)
 #if TARGET_OS_MAC
+	BooEditor::projectPath = "/Users/yangzongyuan/personal/project/Boo-Engine/project";
 	this->_engine->init(this->_window, Platform::MacOS);
 #elif TARGET_OS_IPHONE
 #if TARGET_IPHONE_SIMULATOR

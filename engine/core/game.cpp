@@ -224,6 +224,7 @@ void Game::_clear()
 
 void Game::_updateSchedules(float dt)
 {
+	// 待修复
 	for (auto it = this->_schedules.begin(); it != this->_schedules.end();)
 	{
 		ScheduleInfo &info = it->second;

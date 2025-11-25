@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <functional>
 
 #include "../../engine/core/component/component.h"
 
@@ -45,7 +46,8 @@ private:
 	 * @brief 初始化编辑器缓存
 	 */
 	void _initEditorCache();
-
+	int _launchEditorTaskId = -1;
+	void _launchEditor();
 	std::function<void()> _onLoadComplete;
 
 public:

@@ -53,12 +53,12 @@ std::string EditorSceneCache::_preSavePath()
         path = DialogUtil::saveFileDialog(BooEditor::projectPath, SceneFilterList);
         if (path.empty())
         {
-            return;
+            return "";
         }
     }
     else
     {
-        path = std::filesystem::path(BooEditor::projectPath, std::filesystem::path(this->_scenePath).generic_string()).string();
+        //path = std::filesystem::path(BooEditor::projectPath, std::filesystem::path(this->_scenePath).generic_string()).string();
     }
     std::cout << "EditorSceneCache::_saveScene: " << path << std::endl;
     return path;
