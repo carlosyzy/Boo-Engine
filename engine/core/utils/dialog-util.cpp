@@ -20,12 +20,12 @@ std::string DialogUtil::saveFileDialog(const std::string &defaultPath, const nfd
     else if (result == NFD_CANCEL)
     {
         std::cout << "DialogUtil::saveFileDialog: cancel" << std::endl;
-        return "err";
+        return "";
     }
     else
     {
         // printf("Error: %s\n", NFD_GetError());
         std::cout << "DialogUtil::saveFileDialog: error "<< NFD_GetError() << std::endl;
-        return "err";
+        return "";
     }
 }

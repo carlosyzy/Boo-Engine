@@ -224,5 +224,15 @@ public:
      * @param ypos 鼠标Y坐标
      */
     void updateMousePos(double xpos, double ypos);
+    /**
+     * @brief 更新键盘状态
+     * 
+     * @param key 键盘键值
+     * @param scancode 键盘扫描码
+     * @param action 键盘操作 0:抬起 1:按下
+     * @param mods 键盘修饰键 0:无 1:Shift 2:Ctrl 3:Alt
+     */
+    void updateKeyState(int key, int scancode, int action, int mods);
+    
     void tick(float dt);
 };

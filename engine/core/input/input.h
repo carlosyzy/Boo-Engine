@@ -60,7 +60,6 @@ private:
 	int _nodeInputCallId = 0;
 	std::unordered_map<std::string, NodeInputStruct> _nodeInputMap;
 	bool _propagateEvent(Node *node, int button, int action);
-	// void _emitNodeInput(Node2D *node, NodeInput input, NodeInputResult &result);
 
 public:
 	Input();
@@ -68,6 +67,7 @@ public:
 	void setRoot(Node2D *root);
 	void onMouseButton(int button, int action, int mods);
 	void onCursorPos(double xpos, double ypos);
+	void onKey(int key, int scancode, int action, int mods);
 
 	template <typename T, typename Func>
 	int onNodeInputEvent(Node2D *node, NodeInput input, Func func, T *instance, bool isIntercept=true);

@@ -7,6 +7,7 @@ class SceneAsset : public Asset
 {
 private:
     json _sceneData;
+    std::string _name;
     Scene* _scene;
 protected:
     void _load() override;
@@ -20,5 +21,7 @@ public:
      */
     SceneAsset(const std::string key, const std::string path);
     void createScene();
+    std::string getName() { return this->_name; }
+    Scene* getScene() { return this->_scene; }
     ~SceneAsset();
 };

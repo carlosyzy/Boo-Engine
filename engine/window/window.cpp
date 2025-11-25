@@ -37,6 +37,7 @@ void Window::init()
 	glfwSetWindowUserPointer(this->_window, this);
 	glfwSetCursorPosCallback(this->_window, Window::cursorPosCallback);
 	glfwSetMouseButtonCallback(this->_window, Window::mouseButtonCallback);
+	glfwSetKeyCallback(this->_window, Window::keyCallback);
 	glfwSetWindowSizeCallback(this->_window, Window::windowSizeCallback);
 	this->onWindowSize();
 }
@@ -86,6 +87,20 @@ void Window::windowSizeCallback(GLFWwindow *window, int width, int height)
 	}
 	manager->onWindowSize();
 };
+void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+	void *userPointer = glfwGetWindowUserPointer(window);
+	if (userPointer == nullptr)
+	{
+		return;
+	}
+	Window *manager = static_cast<Window *>(userPointer);
+	if (manager == nullptr) // 检查非空
+	{
+		return;
+	}
+	manager->onKey(key, scancode, action, mods);
+}
 
 void Window::onCursorPos(double xpos, double ypos)
 {
@@ -101,6 +116,13 @@ void Window::onMouseButton(int button, int action, int mods)
 	// 通知引擎更新鼠标状态
 	Boo::game->updateMouseState(button, action, mods);
 };
+void Window::onKey(int key, int scancode, int action, int mods)
+{
+	if (Boo::game == nullptr)
+		return;
+	// 通知引擎更新键盘状态
+	Boo::game->updateKeyState(key, scancode, action, mods);
+}
 void Window::onWindowSize()
 {
 	glfwGetWindowSize(this->_window, &this->_width, &this->_height);

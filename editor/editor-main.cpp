@@ -13,7 +13,6 @@
 #include "../engine/core/scene/scene.h"
 #include "../engine/core/utils/dialog-util.h"
 
-
 EditorMain::EditorMain()
 {
 }
@@ -40,44 +39,41 @@ void EditorMain::_launchEditor()
     this->_editorLayout = new EditorLayout("EditorLayout", node2d);
     node2d->addComponent(this->_editorLayout);
     Boo::game->openScene(scene);
-    this->_runEditorScene();
-    // std::string path=DialogUtil::saveFileDialog(BooEditor::projectPath, SceneFilterList);
-    // std::cout << "path: " << path << std::endl;
+    // 初始化编辑器模块
+    this->_initEditorModules();
+    // 初始化编辑器场景
+    this->_initEditorRunScene();
+    // 启动编辑器场景
+    this->_launchEditorScene();
 }
-void EditorMain::_runEditorScene()
+void EditorMain::_initEditorModules()
+{
+    this->_editorScene = new EditorScene();
+}
+void EditorMain::_initEditorRunScene()
 {
     // 初始化启动场景
-    this->_preRunEditorScene();
-    
-    this->_editorScene = new EditorScene();
-    
-}
-void EditorMain::_preRunEditorScene()
-{
-    BooEditor::runScene = new BooEditorRunScene();
-    BooEditor::runScene->sceneName = "";
-    BooEditor::runScene->scenePath = "";
-    BooEditor::runScene->scene = nullptr;
     std::string launchScene = BooEditor::project->getLaunchScene();
     if (launchScene.empty()) // 没有指定启动场景
     {
-        BooEditor::runScene->sceneName = "scene";
-        BooEditor::runScene->scenePath = "";
-        BooEditor::runScene->scene = new Scene("scene");
+        BooEditor::scene->newScene();
     }
     else
     {
-        SceneAsset *sceneAsset = static_cast<SceneAsset*>(Boo::game->assetsManager()->get(launchScene));
-        if(sceneAsset){
-            // BooEditor::runScene->scene = sceneAsset->_scene;
-            // BooEditor::runScene->sceneName = sceneAsset->getKey();
-            // BooEditor::runScene->scenePath = sceneAsset->getPath();
-        }else{
-            BooEditor::runScene->sceneName = "scene";
-            BooEditor::runScene->scenePath = BooEditor::projectPath + "/scene";
-            BooEditor::runScene->scene = new Scene("scene");
+        SceneAsset *sceneAsset = static_cast<SceneAsset *>(Boo::game->assetsManager()->get(launchScene));
+        if (sceneAsset)
+        {
+            BooEditor::scene->openScene(sceneAsset->getName(), launchScene, sceneAsset->getScene());
+        }
+        else
+        {
+            BooEditor::scene->newScene();
         }
     }
+}
+void EditorMain::_launchEditorScene()
+{
+   
 }
 
 EditorMain::~EditorMain()

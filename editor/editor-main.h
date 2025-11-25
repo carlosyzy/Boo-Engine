@@ -13,11 +13,12 @@ private :
     void _launchEditor();
 
     EditorScene *_editorScene = nullptr;
-    // EditorHierarchy *_hierarchy;
+     // EditorHierarchy *_hierarchy;
     // EditorAssets *_assets;
     // EditorProperty *_property;
-    void _runEditorScene();
-    void _preRunEditorScene();
+    void _initEditorModules();
+    void _initEditorRunScene();
+    void _launchEditorScene();
 public:
     EditorMain();
     void init();

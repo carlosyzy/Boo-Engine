@@ -297,6 +297,12 @@ void Game::updateMousePos(double xpos, double ypos)
 {
 	this->_input->onCursorPos(xpos, ypos);
 }
+void Game::updateKeyState(int key, int scancode, int action, int mods)
+{
+	this->_input->onKey(key, scancode, action, mods);
+}
+
+
 
 Game::~Game()
 {

@@ -30,8 +30,4 @@ namespace BooEditor
      */
     EditorSceneCache *scene;
 
-    /**
-     * @brief 运行场景
-     */
-    BooEditorRunScene *runScene;
 }
