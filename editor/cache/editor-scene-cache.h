@@ -9,5 +9,6 @@ public:
     EditorSceneCache();
     void init();
     void update();
+    void clear();
     ~EditorSceneCache();
 };

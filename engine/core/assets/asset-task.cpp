@@ -4,6 +4,7 @@
 #include <iostream>
 #include "texture.h"
 #include "shader.h"
+#include "scene-asset.h"
 #include "assets-manager.h"
 #include "asset-cache.h"
 #include "../utils/time-util.h"
@@ -56,6 +57,8 @@ void AssetTask::run()
 	else if (extension == ".spv")
 	{
 		this->_createSpirvShader(resKey, fullPath.generic_string());
+	}else if (extension == ".scene"){
+		this->_createScene(resKey, fullPath.generic_string());
 	}
 	else
 	{
@@ -84,6 +87,13 @@ void AssetTask::_createSpirvShader(const std::string resKey, const std::string f
 	this->_cache->addAsset(resKey, shader);
 	this->_loadComplete();
 }
+void AssetTask::_createScene(const std::string resKey, const std::string fullPath)
+{
+	SceneAsset *scene = new SceneAsset(resKey, fullPath);
+	this->_cache->addAsset(resKey, scene);
+	this->_loadComplete();
+}
+
 /**
  * @brief 清除资产任务回调
  */

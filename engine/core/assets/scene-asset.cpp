@@ -1,11 +1,17 @@
 #include "scene-asset.h"
+#include "../utils/file-util.h"
 
 
 
-SceneAsset::SceneAsset(/* args */)
+SceneAsset::SceneAsset(const std::string key, const std::string path) : Asset(key, path)
 {
+    this->_type = AssetType::Scene;
+    this->_load();
 }
-
+void SceneAsset::_load()
+{
+    this->_sceneData = FileUtil::loadJsonFromBinary(this->_path);
+}
 SceneAsset::~SceneAsset()
 {
 }

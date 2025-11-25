@@ -3,7 +3,9 @@
 #include "../gfx/gfx-mgr.h"
 Shader::Shader(const std::string uuid, const std::string path) : Asset(uuid, path)
 {
+    this->_type = AssetType::Shader;
     this->_shaderFormat = ShaderFormat::None;
+    this->_load();
 }
 void Shader::_load()
 {

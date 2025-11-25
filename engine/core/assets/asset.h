@@ -8,6 +8,7 @@ enum class AssetType
     Font,
     Shader,
     Material,
+    Scene,
 };
 class Asset
 {

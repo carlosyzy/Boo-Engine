@@ -4,6 +4,8 @@
 #include "../cache/editor-assets-cache.h"
 #include "../cache/editor-config-cache.h"
 #include "../cache/editor-project-cache.h"
+#include "../cache/editor-scene-cache.h"	
+
 #include "../../engine/boo.h"
 #include "../../engine/core/renderer/ui/ui-sprite.h"
 #include "../../engine/core/assets/assets-manager.h"
@@ -160,6 +162,8 @@ void EditorLoading::_initEditorCache()
 	BooEditor::assets->init();
 	// 初始化project 项目配置
 	BooEditor::project->init();
+	// 初始化scene 场景缓存
+	BooEditor::scene->init();
 	this->_setLoadProgress(1.0f);
 	if (this->_onLoadComplete != nullptr)
 	{

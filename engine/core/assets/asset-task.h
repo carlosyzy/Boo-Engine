@@ -7,6 +7,7 @@ class Asset;
 class Shader;
 class AssetsManager;
 class AssetCache;
+class SceneAsset;
 
 struct AssetLoadResult
 {
@@ -97,6 +98,16 @@ private:
      * @param fullPath 资产路径
      */
     void _createSpirvShader(const std::string resKey, const std::string fullPath);
+    /**
+     * @brief 创建场景
+     *
+     * @param resKey 资产键值
+     * @param fullPath 资产路径
+     */
+    void _createScene(const std::string resKey, const std::string fullPath);
+
+
+
 
     /**
      * @brief 加载完成
