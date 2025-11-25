@@ -102,12 +102,6 @@
     <ClCompile Include="editor\editor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\editor-layout.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\ipc\editor-ipc.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\assets\asset-load.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -165,12 +159,6 @@
     <ClCompile Include="engine\core\component\ui\ui-tree\ui-tree.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\hierarchy\editor-hierarchy.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\hierarchy\editor-hierarchy-layout.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\event\event.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -193,6 +181,45 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\renderer\ui\ui-mask.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\boo-editor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\editor-main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\layout\editor-layout.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\layout\editor-loading.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\layout\scene\editor-scene.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\layout\scene\editor-scene-layout.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\config\editor-config.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\cache\editor-assets-cache.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\cache\editor-config-cache.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\cache\editor-project-cache.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\cache\editor-scene-cache.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\assets\scene-asset.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\utils\dialog-util.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -294,15 +321,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\editor.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\editor-config.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\editor-layout.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\ipc\editor-ipc.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\assets\assets.h">
@@ -426,12 +444,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\component\ui\ui-tree\ui-tree.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\hierarchy\editor-hierarchy.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\hierarchy\editor-hierarchy-layout.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\event\event.h">
@@ -576,6 +588,51 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\renderer\ui\ui-mask.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\boo-editor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\editor-main.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\layout\editor-layout.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\layout\editor-loading.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\layout\scene\editor-scene.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\layout\scene\editor-scene-layout.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\config\editor-config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\cache\editor-assets-cache.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\cache\editor-config-cache.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\cache\editor-project-cache.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\cache\editor-scene-cache.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\assets\scene-asset.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\scene\node-3d-impl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\utils\dialog-util.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\utils\json-util.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
