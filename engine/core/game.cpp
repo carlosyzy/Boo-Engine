@@ -68,16 +68,6 @@ void Game::_initFont()
 	this->_fontMgr = new FreetypeMgr();
 	this->_fontMgr->init();
 }
-
-// void Game::_initComponents()
-// {
-// 	// this->registerComponentClass<UISprite>("UISprite");
-// 	// this->registerComponentClass<UIText>("UIText");
-// 	// this->registerComponentClass<UIWidget>("UIWidget");
-// 	// this->registerComponentClass<NodeTree>("NodeTree");
-// 	// this->registerComponentClass<UILayoutHorizontal>("UILayoutHorizontal");
-// 	// this->registerComponentClass<UIMask>("UIMask");
-// }
 void Game::_initAssets()
 {
 	std::cout << "INIT ASSETS MGR" << std::endl;
@@ -94,7 +84,6 @@ void Game::_initAssets()
 void Game::_initAlpha()
 {
 	Alpha *alpha = new Alpha("Editor-Alpha");
-	// this->_curScene = static_cast<Scene *>(alpha);
 	this->openScene(alpha);
 }
 
@@ -201,14 +190,14 @@ void Game::_clear()
 void Game::_updateSchedules(float dt)
 {
 	// 待修复
-	for (auto it = this->_schedules.begin(); it != this->_schedules.end();)
+	for (auto it = this->_schedules.begin(); it != this->_schedules.end();++it)
 	{
 		if (it->second.clearFlag)
 		{
 			// 已经标记清除，跳过
 			continue;
 		}
-		ScheduleInfo &info = it->second;
+		ScheduleInfo &info = it->second; 
 		if (info.instance == nullptr || info.func == nullptr)
 		{
 			// 实例或函数为空，标记清除
@@ -219,7 +208,7 @@ void Game::_updateSchedules(float dt)
 		info.time += dt;
 		if (info.time >= info.interval)
 		{
-			info.time = info.time - info.interval;
+			info.time = 0.0f;
 			info.func();
 			bool isOnce = info.isOnce;
 			if (isOnce)
