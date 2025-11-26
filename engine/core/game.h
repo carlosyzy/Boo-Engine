@@ -4,7 +4,6 @@
 #include <functional>
 #include <unordered_map>
 
-
 class Event;
 class Scene;
 class Node;
@@ -12,8 +11,6 @@ class Component;
 class AssetsManager;
 class FreetypeMgr;
 class Input;
-
-
 
 struct View
 {
@@ -33,13 +30,14 @@ struct ScheduleInfo
         : func(), instance(nullptr), interval(0.0f), time(0.0f), isOnce(false), clearFlag(false)
     {
     }
-    ScheduleInfo(std::function<void()> f, void *i, float in, float t, bool once)
+    ScheduleInfo(std::function<void()> f, void *i, float in, bool once)
     {
         this->func = f;
         this->instance = i;
         this->interval = in;
-        this->time = t;
         this->isOnce = once;
+        this->time = 0.0f;
+        this->clearFlag = false;
     }
 };
 
@@ -57,7 +55,6 @@ private:
     std::vector<Component *> _compClearCaches;
     // 节点清理相关
     std::vector<Node *> _nodeClearCaches;
-
 
     float _logicTime = 0.0f;
     float _renderTime = 0.0f;
@@ -82,7 +79,6 @@ private:
      * @brief 输入系统
      */
     Input *_input;
-    
 
     /**
      * @brief 当前场景
@@ -160,21 +156,6 @@ public:
     }
     void openScene(Scene *scene);
     void destroyScene();
-
-
-    // // 注册组件类
-    // template <typename T = Component>
-    // void registerComponentClass(const std::string &className)
-    // {
-    //     static_assert(std::is_base_of<Component, T>::value,
-    //                   "T must be derived from Component");
-    //     this->_creatorComponentMap[className] = [](std::string compName,Node *node, std::string uuid) -> Component *
-    //     {
-    //         return new T(compName, node, uuid);
-    //     };
-    // }
-    // Component *createComponent(const std::string &className, Node *node, std::string uuid);
-
     // typename T: 表示一个类型参数，通常指类的类型
     // typename Func: 表示另一个类型参数，通常指函数类型（函数指针、成员函数指针、函数对象等）
     template <typename T, typename Func>
@@ -185,7 +166,8 @@ public:
         {
             (instance->*func)();
         };
-        this->_schedules[id] = ScheduleInfo(callback, instance, interval, 0.0f, false);
+        this->_schedules[id] = ScheduleInfo(callback, instance, interval, false);
+
         return id;
     }
     template <typename T, typename Func>
@@ -196,21 +178,20 @@ public:
         {
             (instance->*func)();
         };
-        // this->_schedules[id] = ScheduleInfo(callback, instance, interval, 0.0f, true);
-        ScheduleInfo scheduleInfo(callback, instance, interval, 0.0f, true);
+        ScheduleInfo scheduleInfo(callback, instance, interval, true);
         this->_schedules[id] = scheduleInfo;
         return id;
     }
     void unschedule(int scheduleID);
 
-   /* Scene *openScene(std::string sceneName);*/
+    /* Scene *openScene(std::string sceneName);*/
 
     void addCompClearCaches(Component *comp);
     void addNodeClearCaches(Node *node);
 
     /**
      * @brief 更新鼠标状态
-     * 
+     *
      * @param button 鼠标按钮 0:左键 1:右键 2:中键
      * @param action 鼠标操作 0:抬起 1:按下
      * @param mods 键盘修饰键 0:无 1:Shift 2:Ctrl 3:Alt
@@ -218,20 +199,20 @@ public:
     void updateMouseState(int button, int action, int mods);
     /**
      * @brief 更新鼠标位置
-     * 
+     *
      * @param xpos 鼠标X坐标
      * @param ypos 鼠标Y坐标
      */
     void updateMousePos(double xpos, double ypos);
     /**
      * @brief 更新键盘状态
-     * 
+     *
      * @param key 键盘键值
      * @param scancode 键盘扫描码
      * @param action 键盘操作 0:抬起 1:按下
      * @param mods 键盘修饰键 0:无 1:Shift 2:Ctrl 3:Alt
      */
     void updateKeyState(int key, int scancode, int action, int mods);
-    
+
     void tick(float dt);
 };

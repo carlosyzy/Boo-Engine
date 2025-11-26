@@ -50,7 +50,6 @@ public:
      * 添加组件
      */
     Component *addComponent(std::string name, std::string uuid = "");
-    void addComponent(Component *component);
 
     /*
      * 获取组件

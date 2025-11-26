@@ -3,6 +3,7 @@
 #include <functional>
 
 #include "../../engine/core/component/component.h"
+#include "../../engine/core/component/component-register.h"
 
 class Node2D;
 class UISprite;
@@ -68,3 +69,4 @@ public:
 	void destroy() override;
 	~EditorLoading();
 };
+REGISTER_COMPONENT(EditorLoading, "EditorLoading", "自定义编辑器加载界面")

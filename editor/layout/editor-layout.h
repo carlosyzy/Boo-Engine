@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include "../../engine/core/component/component.h"
+#include "../../engine/core/component/component-register.h"
 
 class Scene;
 class Node2D;
@@ -124,3 +125,4 @@ public:
 	void destroy() override;
 	~EditorLayout();
 };
+REGISTER_COMPONENT(EditorLayout, "EditorLayout","自定义编辑器布局管理界面组件")
