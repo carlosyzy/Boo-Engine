@@ -4,10 +4,12 @@
 #include <string>
 #include <cstdint>
 #include "ui-tree.h"
+#include "../../component-register.h"
+
 class Node;
 class Scene;
 
-class NodeTree : public UITree
+class UINodeTree : public UITree
 {
 private:
     Node *_rootNode = nullptr;
@@ -16,7 +18,7 @@ private:
     void _setTrees(Node *root, UITreeStructure &uiTreeData, int layer);
 
 public:
-    NodeTree(std::string name, Node *node, std::string uuid = "");
+    UINodeTree(std::string name, Node *node, std::string uuid = "");
     void setNode(Node *node);
     void setScene(Scene *scene);
     void updateTree() override;
@@ -24,5 +26,6 @@ public:
     void LateUpdate(float deltaTime) override;
     void Render() override;
     void destroy() override;
-    ~NodeTree();
+    ~UINodeTree();
 };
+REGISTER_COMPONENT(UINodeTree, "UINodeTree", "节点树组件")

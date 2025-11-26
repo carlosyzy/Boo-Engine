@@ -22,29 +22,30 @@ void EditorMain::init()
 }
 void EditorMain::_startLoading()
 {
+    return;
     // 加载场景
-    Scene *scene = new Scene("Editor-Loading-Scene");
-    Node2D *node2d = scene->getRoot2D();
-    EditorLoading *editorLoading = new EditorLoading("EditorLoading", node2d);
-    node2d->addComponent(editorLoading);
-    Boo::game->openScene(scene);
-    editorLoading->setOnLoadComplete([this]()
-                                     { this->_launchEditor(); });
+    // Scene *scene = new Scene("Editor-Loading-Scene");
+    // Node2D *node2d = scene->getRoot2D();
+    // EditorLoading *editorLoading = new EditorLoading("EditorLoading", node2d);
+    // node2d->addComponent(editorLoading);
+    // Boo::game->openScene(scene);
+    // editorLoading->setOnLoadComplete([this]()
+    //                                  { this->_launchEditor(); });
 }
 void EditorMain::_launchEditor()
 {
-    BooEditor::scene->clear();
-    Scene *scene = new Scene("Editor-Scene");
-    Node2D *node2d = scene->getRoot2D();
-    this->_editorLayout = new EditorLayout("EditorLayout", node2d);
-    node2d->addComponent(this->_editorLayout);
-    Boo::game->openScene(scene);
-    // 初始化编辑器模块
-    this->_initEditorModules();
-    // 初始化编辑器场景
-    this->_initEditorRunScene();
-    // 启动编辑器场景
-    this->_launchEditorScene();
+    // BooEditor::scene->clear();
+    // Scene *scene = new Scene("Editor-Scene");
+    // Node2D *node2d = scene->getRoot2D();
+    // this->_editorLayout = new EditorLayout("EditorLayout", node2d);
+    // node2d->addComponent(this->_editorLayout);
+    // Boo::game->openScene(scene);
+    // // 初始化编辑器模块
+    // this->_initEditorModules();
+    // // 初始化编辑器场景
+    // this->_initEditorRunScene();
+    // // 启动编辑器场景
+    // this->_launchEditorScene();
 }
 void EditorMain::_initEditorModules()
 {

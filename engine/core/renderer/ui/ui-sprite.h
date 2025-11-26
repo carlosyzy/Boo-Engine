@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "ui-renderer.h"
+#include "../../component/component-register.h"
 class Node;
 
 class UISprite : public UIRenderer
@@ -16,3 +17,4 @@ public:
     void destroy() override;
     ~UISprite() override;
 };
+REGISTER_COMPONENT(UISprite, "UISprite", "UI精灵组件")

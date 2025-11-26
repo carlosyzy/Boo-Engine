@@ -14,14 +14,6 @@
 #include "input/input.h"
 #include "utils/time-util.h"
 
-#include "component/component.h"
-#include "renderer/ui/ui-sprite.h"
-#include "renderer/ui/ui-text.h"
-#include "renderer/ui/ui-mask.h"
-
-#include "component/ui/ui-widget.h"
-#include "component/ui/ui-layout-horizontal.h"
-#include "component/ui/ui-tree/node-tree.h"
 
 #include "utils/json-util.h"
 #include "utils/file-util.h"
@@ -38,7 +30,6 @@ void Game::init()
 	this->_initInput();
 	this->_initView();
 	this->_initFont();
-	this->_initComponents();
 	this->_initAssets();
 	this->_initAlpha();
 	// json scene;
@@ -79,15 +70,15 @@ void Game::_initFont()
 	this->_fontMgr->init();
 }
 
-void Game::_initComponents()
-{
-	this->registerComponentClass<UISprite>("UISprite");
-	this->registerComponentClass<UIText>("UIText");
-	this->registerComponentClass<UIWidget>("UIWidget");
-	this->registerComponentClass<NodeTree>("NodeTree");
-	this->registerComponentClass<UILayoutHorizontal>("UILayoutHorizontal");
-	this->registerComponentClass<UIMask>("UIMask");
-}
+// void Game::_initComponents()
+// {
+// 	// this->registerComponentClass<UISprite>("UISprite");
+// 	// this->registerComponentClass<UIText>("UIText");
+// 	// this->registerComponentClass<UIWidget>("UIWidget");
+// 	// this->registerComponentClass<NodeTree>("NodeTree");
+// 	// this->registerComponentClass<UILayoutHorizontal>("UILayoutHorizontal");
+// 	// this->registerComponentClass<UIMask>("UIMask");
+// }
 void Game::_initAssets()
 {
 	std::cout << "INIT ASSETS MGR" << std::endl;
@@ -120,25 +111,25 @@ void Game::setView(const int width, const int height)
 	this->_view->height = height;
 }
 
-/**
- * @brief 创建组件
- *
- * @param className 组件类名
- * @param node 节点
- * @param uuid 组件UUID
- * @return Component* 组件指针
- */
-Component *Game::createComponent(const std::string &compName, Node *node, std::string uuid)
-{
-	auto it = this->_creatorComponentMap.find(compName);
-	if (it != this->_creatorComponentMap.end())
-	{
-		return it->second(compName, node, uuid);
-	}
+// /**
+//  * @brief 创建组件
+//  *
+//  * @param className 组件类名
+//  * @param node 节点
+//  * @param uuid 组件UUID
+//  * @return Component* 组件指针
+//  */
+// Component *Game::createComponent(const std::string &compName, Node *node, std::string uuid)
+// {
+// 	auto it = this->_creatorComponentMap.find(compName);
+// 	if (it != this->_creatorComponentMap.end())
+// 	{
+// 		return it->second(compName, node, uuid);
+// 	}
 
-	std::cout << "Component class not found: " << compName << std::endl;
-	return nullptr;
-}
+// 	std::cout << "Component class not found: " << compName << std::endl;
+// 	return nullptr;
+// }
 void Game::unschedule(int scheduleID)
 {
 	this->_schedules.erase(scheduleID);

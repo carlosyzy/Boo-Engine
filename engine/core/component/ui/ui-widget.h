@@ -1,5 +1,6 @@
 #pragma once
 #include "../component.h"
+#include "../component-register.h"
 class Node;
 class Node2D;
 
@@ -62,3 +63,4 @@ public:
     void destroy() override;
     ~UIWidget();
 };
+REGISTER_COMPONENT(UIWidget, "UIWidget", "UI适配组件")

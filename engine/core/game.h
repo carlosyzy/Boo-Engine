@@ -48,8 +48,10 @@ private:
     // 调度器相关
     uint64_t _scheduleNextID_ = 0;
     std::unordered_map<int, ScheduleInfo> _schedules;
-    // 组件创建相关
-    std::unordered_map<std::string, std::function<Component *(std::string, Node *, std::string)>> _creatorComponentMap;
+    // // 组件创建相关
+    // std::unordered_map<std::string, std::function<Component *(std::string, Node *, std::string)>> _creatorComponentMap;
+
+    std::vector<int> _scheduleClearCaches;
     // 组件清理相关
     std::vector<Component *> _compClearCaches;
     // 节点清理相关
@@ -107,10 +109,6 @@ private:
      */
     void _initFont();
     /**
-     * @brief 初始化组件系统
-     */
-    void _initComponents();
-    /**
      * @brief 初始化资产系统
      */
     void _initAssets();
@@ -163,18 +161,18 @@ public:
     void destroyScene();
 
 
-    // 注册组件类
-    template <typename T = Component>
-    void registerComponentClass(const std::string &className)
-    {
-        static_assert(std::is_base_of<Component, T>::value,
-                      "T must be derived from Component");
-        this->_creatorComponentMap[className] = [](std::string compName,Node *node, std::string uuid) -> Component *
-        {
-            return new T(compName, node, uuid);
-        };
-    }
-    Component *createComponent(const std::string &className, Node *node, std::string uuid);
+    // // 注册组件类
+    // template <typename T = Component>
+    // void registerComponentClass(const std::string &className)
+    // {
+    //     static_assert(std::is_base_of<Component, T>::value,
+    //                   "T must be derived from Component");
+    //     this->_creatorComponentMap[className] = [](std::string compName,Node *node, std::string uuid) -> Component *
+    //     {
+    //         return new T(compName, node, uuid);
+    //     };
+    // }
+    // Component *createComponent(const std::string &className, Node *node, std::string uuid);
 
     // typename T: 表示一个类型参数，通常指类的类型
     // typename Func: 表示另一个类型参数，通常指函数类型（函数指针、成员函数指针、函数对象等）

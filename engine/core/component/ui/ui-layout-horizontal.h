@@ -1,5 +1,6 @@
 #pragma once
 #include "../component.h"
+#include "../component-register.h"
 class Node;
 class Node2D;
 
@@ -37,3 +38,4 @@ public:
     void destroy() override;
     ~UILayoutHorizontal();
 };
+REGISTER_COMPONENT(UILayoutHorizontal, "UILayoutHorizontal", "UI水平布局组件")

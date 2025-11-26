@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "../../component/component.h"
+#include "../../component/component-register.h"
 #include "../../scene/node.h"
 class Texture;
 
@@ -58,3 +59,4 @@ public:
 
     ~UIMask() override;
 };
+REGISTER_COMPONENT(UIMask, "UIMask", "UI遮罩组件")

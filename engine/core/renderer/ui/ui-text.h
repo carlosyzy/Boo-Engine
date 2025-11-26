@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
+#include <iostream>
 #include "ui-renderer.h"
+#include "../../component/component-register.h"
 #include "../../scene/node.h"
 #include "../../font/freetype-mgr.h"
 class Texture;
@@ -25,3 +27,5 @@ public:
     void destroy() override;
      ~UIText() override;
 };
+// 注册宏调用
+REGISTER_COMPONENT(UIText, "UIText", "UI文本组件")

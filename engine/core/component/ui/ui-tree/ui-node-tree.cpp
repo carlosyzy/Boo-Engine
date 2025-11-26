@@ -1,19 +1,19 @@
-#include "node-tree.h"
+#include "ui-node-tree.h"
 #include "../../../scene/node.h"
 #include "../../../scene/node-2d.h"
 #include "../../../scene/scene.h"
 
-NodeTree::NodeTree(std::string name, Node *node, std::string uuid) : UITree(name, node, uuid)
+UINodeTree::UINodeTree(std::string name, Node *node, std::string uuid) : UITree(name, node, uuid)
 {
 }
 
-void NodeTree::setNode(Node *node)
+void UINodeTree::setNode(Node *node)
 {
     this->_rootNode = node;
     this->_isDirty = true;
     this->_setTrees(node, this->_uiTreeData, 0);
 }
-void NodeTree::setScene(Scene *scene)
+void UINodeTree::setScene(Scene *scene)
 {
     this->_isDirty = true;
     this->_rootScene = scene;
@@ -30,7 +30,7 @@ void NodeTree::setScene(Scene *scene)
         this->_setTrees(scene->getChildren()[i], this->_uiTreeData.children[i], 1);
     }
 }
-void NodeTree::updateTree()
+void UINodeTree::updateTree()
 {
     if (this->_rootNode != nullptr)
     {
@@ -42,7 +42,7 @@ void NodeTree::updateTree()
     }
     UITree::updateTree();
 }
-void NodeTree::_setTrees(Node *root, UITreeStructure &uiTreeData, int layer)
+void UINodeTree::_setTrees(Node *root, UITreeStructure &uiTreeData, int layer)
 {
     uiTreeData.name = root->getName();
     uiTreeData.uuid = root->getUuid();
@@ -63,23 +63,23 @@ void NodeTree::_setTrees(Node *root, UITreeStructure &uiTreeData, int layer)
         this->_setTrees(root->getChildren()[i], uiTreeData.children[i], layer + 1);
     }
 }
-void NodeTree::Update(float deltaTime)
+void UINodeTree::Update(float deltaTime)
 {
     UITree::Update(deltaTime);
 }
-void NodeTree::LateUpdate(float deltaTime)
+void UINodeTree::LateUpdate(float deltaTime)
 {
     UITree::LateUpdate(deltaTime);
 }
-void NodeTree::Render()
+void UINodeTree::Render()
 {
     UITree::Render();
 }
-void NodeTree::destroy()
+void UINodeTree::destroy()
 {
     UITree::destroy();
 }
-NodeTree::~NodeTree()
+UINodeTree::~UINodeTree()
 {
 }
 
