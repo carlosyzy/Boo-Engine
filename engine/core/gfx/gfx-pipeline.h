@@ -29,8 +29,6 @@ private:
     GfxPipelineStruct _pipelineStruct;
 
 
-    // std::unordered_map<std::string, std::string> _pipelineState;
-
     VkPipelineLayout _vkPipelineLayout;
     VkPipeline _vkPipeline;
     /**

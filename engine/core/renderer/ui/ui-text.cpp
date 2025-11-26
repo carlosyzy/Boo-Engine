@@ -12,8 +12,8 @@ UIText::UIText(std::string name, Node *node, std::string uuid) : UIRenderer(name
 void UIText::setText(std::string text)
 {
     this->_clearTexture();
-    this->_text = text;
-    Boo::game->fontMgr()->crateFont(this->_fontTexture, this->_text, this->_fontSize, this->_lineHeight);
+    this->text = text;
+    Boo::game->fontMgr()->crateFont(this->_fontTexture, this->text, this->_fontSize, this->_lineHeight);
     this->_texture = new Texture(this->_fontTexture.uuid, this->_fontTexture.width, this->_fontTexture.height, this->_fontTexture.channels, this->_fontTexture.datas);
     this->setTexture(this->_texture);
     this->_updateNodeSize();

@@ -21,6 +21,8 @@ protected:
 
 public:
     Component(std::string name, Node *node, std::string uuid = "");
+    const std::string getUuid() { return this->_uuid; }
+
     virtual void Awake() = 0;
     
     bool isEnabled() { return this->_isEnabled; }

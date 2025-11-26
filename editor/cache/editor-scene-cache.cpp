@@ -58,14 +58,53 @@ std::string EditorSceneCache::_preSavePath()
     }
     else
     {
-        //path = std::filesystem::path(BooEditor::projectPath, std::filesystem::path(this->_scenePath).generic_string()).string();
+        // path = std::filesystem::path(BooEditor::projectPath, std::filesystem::path(this->_scenePath).generic_string()).string();
     }
     std::cout << "EditorSceneCache::_saveScene: " << path << std::endl;
     return path;
 }
 void EditorSceneCache::_serializeSceneData(Scene *scene, json &sceneData)
 {
-    // sceneData["sceneName"] = scene->getName();
+    std::function<void(Node *, json &)> _serializeNode = [&](Node *node, json &nodeData)
+    {
+        // 节点数据
+        nodeData["_name"] = node->getName();
+        nodeData["_layer"] = node->getLayer();
+        nodeData["_uuid"] = node->getUuid();
+        nodeData["_visible"] = 0;
+        nodeData["_active"] = node->isActive() ? 1 : 0;
+        nodeData["_position"] = {node->getPosition().getX(), node->getPosition().getY(), node->getPosition().getZ()};
+        nodeData["_rotation"] = {node->getEulerAngles().getX(), node->getEulerAngles().getY(), node->getEulerAngles().getZ()};
+        nodeData["_scale"] = {node->getScale().getX(), node->getScale().getY(), node->getScale().getZ()};
+        if (static_cast<Node2D *>(node) != nullptr)
+        {
+            nodeData["_size"] = {static_cast<Node2D *>(node)->getSize().getWidth(), static_cast<Node2D *>(node)->getSize().getHeight()};
+        }
+        // 组件数据
+        nodeData["_components"] = json::array();
+        for (Component *comp : node->getComponents())
+        {
+            json compData;
+            nodeData["_components"].push_back(compData);
+        }
+
+        //    for (Component *comp : node->getComponents())
+        //    {
+        //        json compData;
+        //        comp->serialize(compData);
+        //        nodeData["_components"].push_back(compData);
+        //    }
+        //    for (Node *child : node->getChildren())
+        //    {
+        //        json childData;
+        //        _serializeNode(child, childData);
+        //        nodeData["_children"].push_back(childData);
+        //    }
+    };
+    sceneData["_name"] = scene->getName();
+    sceneData["_type"] = "SceneAsset";
+    sceneData["_data"] = json::object();
+    _serializeNode(scene, sceneData["_data"]);
 }
 
 void EditorSceneCache::update()

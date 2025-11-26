@@ -8,6 +8,7 @@
 #include "../math/quat.h"
 #include "../math/vec3.h"
 #include "../math/mat4.h"
+#include "../utils/json-util.h"
 
 namespace NodeEvent
 {
@@ -147,6 +148,16 @@ protected:
 	virtual void _updateWorldTransform();
 
 public:
+	/**
+	 *
+	 */
+	void _serialize(json &nodeData);
+	/**
+	 * @brief 反序列化节点数据
+	 * @param nodeData 节点数据
+	 */
+	void _deserialize(json &nodeData);
+
 	// 基础属性
 	void setName(const std::string &name);
 	std::string getName() const;
@@ -223,7 +234,7 @@ public:
 
 	const bool hasWorldTransformFlag() { return (this->_worldTransformFlag != NodeTransformFlag::NONE_FLAG); }
 	const bool hasFrameTransformFlag() { return (this->_frameTransformFlag != NodeTransformFlag::NONE_FLAG); }
-	const bool isActiveInHierarchy() { return this -> _isActiveInHierarchy; }
+	const bool isActiveInHierarchy() { return this->_isActiveInHierarchy; }
 
 	template <typename T, typename Func>
 	uint64_t onTransformChange(Func func, T *instance)
@@ -250,8 +261,7 @@ public:
 			}
 		}
 	}
-	
-	
+
 	Node *getParent() { return this->_parent; }
 
 	void setParent(Node *node);
@@ -287,6 +297,22 @@ public:
 		}
 		return nullptr;
 	}
+
+	/**
+	 * 添加组件
+	 */
+	virtual Component *addComponent(std::string name, std::string uuid = "");
+	/**
+	 * 获取组件
+	 */
+	Component *getComponent(std::string name);
+	/**
+	 * 获取所有组件
+	 */
+	std::vector<Component *> getComponents();
+	/**
+	 * 删除所有组件
+	 */
 	void destroyAllComponents();
 
 	// 虚函数，子类可以重写
@@ -296,6 +322,6 @@ public:
 	virtual void clearNodeFrameFlag();
 
 	virtual void clearAllEvent();
-	
+
 	virtual void destroy();
 };

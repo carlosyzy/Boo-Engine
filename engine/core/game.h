@@ -47,9 +47,7 @@ private:
     // 调度器相关
     uint64_t _scheduleNextID_ = 0;
     std::unordered_map<int, ScheduleInfo> _schedules;
-    // // 组件创建相关
-    // std::unordered_map<std::string, std::function<Component *(std::string, Node *, std::string)>> _creatorComponentMap;
-
+   
     std::vector<int> _scheduleClearCaches;
     // 组件清理相关
     std::vector<Component *> _compClearCaches;

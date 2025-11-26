@@ -31,6 +31,11 @@ void Scene::setActive(bool active)
 	bool _isActiveInHierarchy = this->_active;
 	this->_updateNodesActiveInHierarchyState(_isActiveInHierarchy);
 }
+Component *Scene::addComponent(std::string name, std::string uuid)
+{
+	std::cout << name << ":Component add fail,node type is Scene" << std::endl;
+	return nullptr;
+}
 void Scene::update(float dt)
 {
 	Node::update(dt);

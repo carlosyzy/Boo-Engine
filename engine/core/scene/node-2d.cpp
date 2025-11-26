@@ -97,20 +97,7 @@ Component *Node2D::addComponent(std::string name, std::string uuid)
 	}
 	return component;
 }
-/*
- * 获取组件
- */
-Component *Node2D::getComponent(std::string name)
-{
-	for (auto component : this->_components)
-	{
-		if (component != nullptr)
-		{
-			return component;
-		}
-	}
-	return nullptr;
-}
+
 
 void Node2D::update(float dt)
 {

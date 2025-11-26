@@ -45,16 +45,11 @@ public:
     void update(float deltaTime) override;
     void lateUpdate(float deltaTime) override;
     void render() override;
-
     /**
      * 添加组件
      */
-    Component *addComponent(std::string name, std::string uuid = "");
+    Component *addComponent(std::string name, std::string uuid = "") override;
 
-    /*
-     * 获取组件
-     */
-    Component *getComponent(std::string name);
     void clearNodeFrameFlag() override;
 
     template <typename T, typename Func>

@@ -186,6 +186,34 @@ void Node::_updateWorldTransform()
 	this->_worldTransformFlag = NodeTransformFlag::NONE_FLAG;
 }
 
+/**
+ * 添加组件
+ */
+Component *Node::addComponent(std::string name, std::string uuid = "")
+{
+}
+/*
+ * 获取组件
+ */
+Component *Node::getComponent(std::string name)
+{
+	for (auto component : this->_components)
+	{
+		if (component != nullptr)
+		{
+			return component;
+		}
+	}
+	return nullptr;
+}
+/**
+ * 获取所有组件
+ */
+std::vector<Component *> Node::getComponents()
+{
+	return this->_components;
+}
+
 void Node::update(float dt)
 {
 	// 更新组件
@@ -241,7 +269,6 @@ void Node::render()
 	{
 		child->render();
 	}
-	
 }
 void Node::clearNodeFrameFlag()
 {
@@ -267,11 +294,11 @@ void Node::removeChild(Node *node)
 {
 	node->_updateNodesActiveInHierarchyState(false);
 	// 使用标准算法更安全
-    auto it = std::find(this->_children.begin(), this->_children.end(), node);
-    if (it != this->_children.end())
-    {
-        this->_children.erase(it);
-    }
+	auto it = std::find(this->_children.begin(), this->_children.end(), node);
+	if (it != this->_children.end())
+	{
+		this->_children.erase(it);
+	}
 }
 void Node::clearAllEvent()
 {
@@ -281,11 +308,11 @@ void Node::clearAllEvent()
 void Node::destroyAllChildren()
 {
 	auto childrenCopy = this->_children;
-    this->_children.clear();  // 先清空，防止递归调用时的修改
-    for (auto &child : childrenCopy)
-    {
-        child->destroy();  // 安全销毁
-    }
+	this->_children.clear(); // 先清空，防止递归调用时的修改
+	for (auto &child : childrenCopy)
+	{
+		child->destroy(); // 安全销毁
+	}
 }
 void Node::destroyAllComponents()
 {
