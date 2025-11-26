@@ -97,27 +97,6 @@ Component *Node2D::addComponent(std::string name, std::string uuid)
 	}
 	return component;
 }
-// void Node2D::addComponent(Component *component)
-// {
-// 	if (component == nullptr)
-// 	{
-// 		std::cout << component->getName() << ":Component Not register" << std::endl;
-// 		return;
-// 	}
-// 	if (component->layer() == NodeLayer::Node3D)
-// 	{
-// 		std::cout << component->getName() << ":Component add fail,node type is Node3D" << std::endl;
-// 		delete component;
-// 		component = nullptr;
-// 		return;
-// 	}
-// 	this->_components.push_back(component);
-// 	if (this->_parent != nullptr)
-// 	{
-// 		component->setNodeActiveInHierarchy(this->_isActiveInHierarchy);
-// 	}
-// }
-
 /*
  * 获取组件
  */

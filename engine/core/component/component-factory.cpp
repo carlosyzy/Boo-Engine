@@ -16,7 +16,7 @@ bool ComponentFactory::registerComponent(const std::string &name, std::function<
     }
     
     if (this->_creators.find(name) != this->_creators.end()) {
-        std::cerr << "❌ 组件 '" << name << "' 已经注册" << std::endl;
+        // std::cerr << "❌ 组件 '" << name << "' 已经注册" << std::endl;
         return false;
     }
     

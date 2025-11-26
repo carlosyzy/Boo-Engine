@@ -14,7 +14,6 @@
 #include "input/input.h"
 #include "utils/time-util.h"
 
-
 #include "utils/json-util.h"
 #include "utils/file-util.h"
 
@@ -110,29 +109,15 @@ void Game::setView(const int width, const int height)
 	this->_view->width = width;
 	this->_view->height = height;
 }
-
-// /**
-//  * @brief 创建组件
-//  *
-//  * @param className 组件类名
-//  * @param node 节点
-//  * @param uuid 组件UUID
-//  * @return Component* 组件指针
-//  */
-// Component *Game::createComponent(const std::string &compName, Node *node, std::string uuid)
-// {
-// 	auto it = this->_creatorComponentMap.find(compName);
-// 	if (it != this->_creatorComponentMap.end())
-// 	{
-// 		return it->second(compName, node, uuid);
-// 	}
-
-// 	std::cout << "Component class not found: " << compName << std::endl;
-// 	return nullptr;
-// }
+/**
+ * @brief 取消调度
+ * 手动直接取消指定ID的调度
+ * @param scheduleID 调度ID
+ */
 void Game::unschedule(int scheduleID)
 {
-	this->_schedules.erase(scheduleID);
+	this->_schedules[scheduleID].clearFlag = true;
+	this->_scheduleClearCaches.push_back(scheduleID);
 }
 
 void Game::openScene(Scene *scene)
@@ -159,7 +144,7 @@ void Game::addCompClearCaches(Component *comp)
 }
 void Game::addNodeClearCaches(Node *node)
 {
-	std::cout << "Game::addNodeClearCaches: node: " << node->getName() << std::endl;
+	// std::cout << "Game::addNodeClearCaches: node: " << node->getName() << std::endl;
 	this->_nodeClearCaches.push_back(node);
 }
 
@@ -218,47 +203,44 @@ void Game::_updateSchedules(float dt)
 	// 待修复
 	for (auto it = this->_schedules.begin(); it != this->_schedules.end();)
 	{
-		ScheduleInfo &info = it->second;
-		if (info.instance == nullptr)
+		if (it->second.clearFlag)
 		{
-			it = this->_schedules.erase(it);
+			// 已经标记清除，跳过
+			continue;
+		}
+		ScheduleInfo &info = it->second;
+		if (info.instance == nullptr || info.func == nullptr)
+		{
+			// 实例或函数为空，标记清除
+			info.clearFlag = true;
+			this->_scheduleClearCaches.push_back(it->first);
 			continue;
 		}
 		info.time += dt;
 		if (info.time >= info.interval)
 		{
-			info.time = 0.0f;
+			info.time = info.time - info.interval;
 			info.func();
 			bool isOnce = info.isOnce;
-			int currentId = it->first; // 保存当前ID
 			if (isOnce)
 			{
-				it = this->_schedules.find(currentId);
-				if (it != this->_schedules.end())
-				{
-					it = this->_schedules.erase(it);
-				}
-				else
-				{
-					// 如果已经被删除，需要重新获取有效的迭代器
-					it = this->_schedules.begin();
-					if (it == this->_schedules.end())
-						break;
-				}
+				// 一次性调度，清除
+				info.clearFlag = true;
+				this->_scheduleClearCaches.push_back(it->first);
 			}
-			else
-			{
-				++it;
-			}
-		}
-		else
-		{
-			++it;
 		}
 	}
 }
 void Game::_updateClearCaches()
 {
+	// 清除计数器
+	for (auto &scheduleId : this->_scheduleClearCaches)
+	{
+		this->_schedules.erase(scheduleId);
+	}
+	this->_scheduleClearCaches.clear();
+
+	// 清除组件缓存
 	for (auto &comp : this->_compClearCaches)
 	{
 		std::cout << "Game::_updateClearCaches: clear comp: " << comp->getNode()->getName() << std::endl;
@@ -269,9 +251,10 @@ void Game::_updateClearCaches()
 		comp = nullptr;
 	}
 	this->_compClearCaches.clear();
+	// 清除节点缓存
 	for (auto &node : this->_nodeClearCaches)
 	{
-		std::cout << "Game::_updateClearCaches: clear node: " <<node<<"   "<< node->getName() << std::endl;
+		std::cout << "Game::_updateClearCaches: clear node: " << node << "   " << node->getName() << std::endl;
 		if (node != nullptr)
 		{
 			delete node;
@@ -293,8 +276,6 @@ void Game::updateKeyState(int key, int scancode, int action, int mods)
 {
 	this->_input->onKey(key, scancode, action, mods);
 }
-
-
 
 Game::~Game()
 {

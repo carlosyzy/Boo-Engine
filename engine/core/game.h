@@ -28,8 +28,9 @@ struct ScheduleInfo
     float interval;
     float time;
     bool isOnce;
+    bool clearFlag;
     ScheduleInfo()
-        : func(), instance(nullptr), interval(0.0f), time(0.0f), isOnce(false)
+        : func(), instance(nullptr), interval(0.0f), time(0.0f), isOnce(false), clearFlag(false)
     {
     }
     ScheduleInfo(std::function<void()> f, void *i, float in, float t, bool once)
@@ -118,10 +119,10 @@ private:
     void _initAlpha();
 
     void _update(float dt);
+    void _updateSchedules(float dt);
     void _lateUpdate(float dt);
     void _render(float dt);
     void _clear();
-    void _updateSchedules(float dt);
     void _updateClearCaches();
 
 public:

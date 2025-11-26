@@ -9,12 +9,9 @@ public:
     void update(float deltaTime) override;
     void lateUpdate(float deltaTime) override;
     void render() override;
-
     /**
      * 添加组件
      */
-    Component *addComponent(std::string name, std::string uuid = "");
-    template <typename Component>
     Component *addComponent(std::string name, std::string uuid = "");
     /*
      * 获取组件

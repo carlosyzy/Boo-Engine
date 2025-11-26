@@ -16,9 +16,6 @@
                     TypeName, \
                     Description \
                 ); \
-                if (!success) { \
-                    std::cerr << "❌ 注册组件 " << TypeName << " 失败" << std::endl; \
-                } \
             } \
         }; \
         static ComponentClass##Registrar ComponentClass##_registrar; \
