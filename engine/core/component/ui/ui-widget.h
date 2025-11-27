@@ -49,6 +49,8 @@ private:
 
     int _nodeTransform_ID = 0;
     void _onNodeTransformChange(int nodeTransform);
+protected:
+    void _deserialized() override;
 public:
     UIWidget(std::string name, Node *node, std::string uuid = "");
     void Awake() override;

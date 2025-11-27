@@ -7,7 +7,10 @@ Color::Color()
 {
     this->set(1.0f, 1.0f, 1.0f, 1.0f);
 }
-
+Color::Color(std::string color)
+{
+    this->set(color);
+}
 Color::Color(float r, float g, float b, float a)
 {
     this->set(r, g, b, a);
@@ -45,6 +48,7 @@ void Color::set(std::string color)
         {
             this->_a = 1.0f;
         }
+        this->_hexString = color;
     }
     catch (const std::exception &e)
     {

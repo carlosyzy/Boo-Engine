@@ -16,6 +16,12 @@ Component::Component(std::string name, Node *node, std::string uuid) : _layer(No
     this->_isEnabledInHierarchy = false;
     this->_isAwaked = false;
 }
+// 序列化组件属性-配置
+void Component::_deserialized()
+{
+    
+}
+
 void Component::setEnabled(bool enabled)
 {
     this->_isEnabled = enabled;

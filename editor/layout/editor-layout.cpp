@@ -16,6 +16,14 @@ EditorLayout::EditorLayout(std::string name, Node *node, std::string uuid) : Com
 {
     
 }
+/**
+ * @brief 反序列化组件属性-配置
+ * 反序列化成功后，更新模块尺寸
+ */
+void EditorLayout::_deserialized()
+{
+    Component::_deserialized();
+}
 void EditorLayout::Awake()
 {
     this->_initMainUI();
@@ -42,8 +50,8 @@ void EditorLayout::_initMainUI()
     if (this->_spriteMain != nullptr)
     {
         std::cout << "EditorLayout::_initMainUI1" << std::endl;
-        this->_spriteMain->setTexture("resources/texture/ic-default.png");
-        this->_spriteMain->setMaterial(nullptr);
+        this->_spriteMain->setTextureAsset("resources/texture/ic-default.png");
+        this->_spriteMain->setMaterialAsset(nullptr);
         this->_spriteMain->setColor(0.1f, 0.1f, 0.1f, 1.0f);
     }
 }
@@ -59,9 +67,9 @@ void EditorLayout::_initMenuUI()
     if (this->_spriteMenu != nullptr)
     {
         std::cout << "EditorLayout::_initMenuUI1" << std::endl;
-        this->_spriteMenu->setTexture("resources/texture/ic-default.png");
+        this->_spriteMenu->setTextureAsset("resources/texture/ic-default.png");
         this->_spriteMenu->setColor(EditorConfig::theme);
-        this->_spriteMenu->setMaterial(nullptr);
+        this->_spriteMenu->setMaterialAsset(nullptr);
     }
 }
 void EditorLayout::_initHierarchyUI()
@@ -74,8 +82,8 @@ void EditorLayout::_initHierarchyUI()
     if (this->_spriteHierarchy != nullptr)
     {
         this->_spriteHierarchy->setColor(EditorConfig::theme);
-        this->_spriteHierarchy->setTexture("resources/texture/ic-default.png");
-        this->_spriteHierarchy->setMaterial(nullptr);
+        this->_spriteHierarchy->setTextureAsset("resources/texture/ic-default.png");
+        this->_spriteHierarchy->setMaterialAsset(nullptr);
     }
 }
 void EditorLayout::_initAssetsUI()
@@ -88,8 +96,8 @@ void EditorLayout::_initAssetsUI()
     if (this->_spriteAsset != nullptr)
     {
         this->_spriteAsset->setColor("#0A2F36");
-        this->_spriteAsset->setTexture("resources/texture/ic-default.png");
-        this->_spriteAsset->setMaterial(nullptr);
+        this->_spriteAsset->setTextureAsset("resources/texture/ic-default.png");
+        this->_spriteAsset->setMaterialAsset(nullptr);
     }
 }
 void EditorLayout::_initPropertyUI()
@@ -102,8 +110,8 @@ void EditorLayout::_initPropertyUI()
     if (this->_spriteProperty != nullptr)
     {
         this->_spriteProperty->setColor(EditorConfig::theme);
-        this->_spriteProperty->setTexture("resources/texture/ic-default.png");
-        this->_spriteProperty->setMaterial(nullptr);
+        this->_spriteProperty->setTextureAsset("resources/texture/ic-default.png");
+        this->_spriteProperty->setMaterialAsset(nullptr);
     }
 }
 void EditorLayout::_initSceneUI()
@@ -116,8 +124,8 @@ void EditorLayout::_initSceneUI()
     if (this->_spriteScene != nullptr)
     {
         this->_spriteScene->setColor(EditorConfig::theme);
-        this->_spriteScene->setTexture("resources/texture/ic-default.png");
-        this->_spriteScene->setMaterial(nullptr);
+        this->_spriteScene->setTextureAsset("resources/texture/ic-default.png");
+        this->_spriteScene->setMaterialAsset(nullptr);
     }
 }
 void EditorLayout::_initToolUI()
@@ -130,8 +138,8 @@ void EditorLayout::_initToolUI()
     if (this->_spriteTool != nullptr)
     {
         this->_spriteTool->setColor(EditorConfig::theme);
-        this->_spriteTool->setTexture("resources/texture/ic-default.png");
-        this->_spriteTool->setMaterial(nullptr);
+        this->_spriteTool->setTextureAsset("resources/texture/ic-default.png");
+        this->_spriteTool->setMaterialAsset(nullptr);
     }
 }
 void EditorLayout::_initBottomUI()
@@ -144,8 +152,8 @@ void EditorLayout::_initBottomUI()
     if (this->_spriteBottom != nullptr)
     {
         this->_spriteBottom->setColor(EditorConfig::theme);
-        this->_spriteBottom->setTexture("resources/texture/ic-default.png");
-        this->_spriteBottom->setMaterial(nullptr);
+        this->_spriteBottom->setTextureAsset("resources/texture/ic-default.png");
+        this->_spriteBottom->setMaterialAsset(nullptr);
     }
 }
 

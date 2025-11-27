@@ -1,62 +1,51 @@
 #pragma once
 #include <string>
-#include "../../component/component.h"
+#include <iostream>
+#include "ui-renderer.h"
+#include "../../component/component-property-register.h"
 #include "../../component/component-register.h"
 #include "../../scene/node.h"
-class Texture;
+class TextureAsset;
 
 /**
  * mask 组件继承与ui-renderer组件
  * 后续优化
  */
 
-
-class UIMask : public Component
+class UIMask : public UIRenderer
 {
 private:
-    std::vector<float> _positions = {
-        -0.5f, 0.5f, 0.0f,  /** @brief 左上 */
-        -0.5f, -0.5f, 0.0f, /** @brief 坐下 */
-        0.5f, -0.5f, 0.0f,  /** @brief 右下 */
-        0.5f, 0.5f, 0.0f    /** @brief 右上 */
-    };
-    std::vector<float> _colors = {
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f};
-    std::vector<float> _normals = {
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f};
-    std::vector<float> _uvs = {
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f};
-    std::vector<uint32_t> _indices = {
-        0, 1, 2,
-        0, 2, 3};
-
     std::string _addUuid;
     std::string _subUuid;
-    Texture* _texture;
+
+protected:
+    /**
+     * @brief 反序列化组件属性-配置
+     * 反序列化成功
+     */
+    void _deserialized() override;
+    /**
+     * 更新渲染状态
+     */
+    void _updateRendererState() override;
+    /**
+     * 更新模型矩阵
+     */
+    void _updateModelMatrix() override;
 
 public:
     UIMask(std::string name, Node *node, std::string uuid = "");
     void Awake() override;
-    void setTexture(std::string text);
-    void setTexture(Texture *texture);
-    void updateModelMatrix();
     void Enable() override;
+
+    void setMaterialAsset(std::string mtl);
+    void setMaterialAsset(MaterialAsset *mtl);
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
     void Render() override;
     void lateRender();
     void Disable() override;
     void destroy() override;
-
     ~UIMask() override;
 };
-REGISTER_COMPONENT(UIMask,  "UI遮罩组件")
+REGISTER_COMPONENT(UIMask, "UI遮罩组件")

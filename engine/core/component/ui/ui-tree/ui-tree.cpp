@@ -20,6 +20,14 @@ UITree::UITree(std::string name, Node *node, std::string uuid) : Component(name,
     node2d->onNodeInputEvent(NodeInput::TOUCH_END, &UITree::_onTreeContentTouchEvent, this);
     node2d->onNodeInputEvent(NodeInput::CURSOR_HOVER, &UITree::_onTreeContentHoverEvent, this);
 }
+/**
+ * @brief 反序列化组件属性-配置
+ * 反序列化成功后，更新模块尺寸
+ */
+void UITree::_deserialized()
+{
+    Component::_deserialized();
+}
 void UITree::Awake()
 {
     Component::Awake();
@@ -51,8 +59,8 @@ void UITree::_initContent()
     // if (this->_spContent != nullptr)
     // {
     //     this->_spContent->setColor(34.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
-    //     this->_spContent->setTexture("resources/texture/ic-default.png");
-    //     this->_spContent->setMaterial(nullptr);
+    //     this->_spContent->setTextureAsset("resources/texture/ic-default.png");
+    //     this->_spContent->setMaterialAsset(nullptr);
     // }
 }
 void UITree::setIcon(std::string iconKey, std::string iconPath)
@@ -76,7 +84,7 @@ void UITree::setIcon(std::string iconKey, std::string iconPath)
 //     // this->_ndContent->addChild(this->_ndSelect);
 //     // this->_ndSelect->setAnchor(0.5, 0.5);
 //     // this->_spSelect = this->_ndSelect->addComponent<Sprite>("Sprite");
-//     // this->_spSelect->setTexture("resources/textures/ic-default.png");
+//     // this->_spSelect->setTextureAsset("resources/textures/ic-default.png");
 //     // this->_spSelect->setColor(9.0f / 250.0f, 74.0f / 255.0f, 53.0f / 255.0f, 1.0f);
 //     // this->_selectWidth = 100.0f;
 //     // this->_selectHeight = 20.0f;
@@ -91,7 +99,7 @@ void UITree::setIcon(std::string iconKey, std::string iconPath)
 //     // this->_node->addChild(this->_ndScrollBarBg);
 //     // this->_ndScrollBarBg->setAnchor(0.5, 0.5);
 //     // this->_spScrollBarBg = this->_ndScrollBarBg->addComponent<Sprite>("Sprite");
-//     // this->_spScrollBarBg->setTexture("resources/textures/ic-default.png");
+//     // this->_spScrollBarBg->setTextureAsset("resources/textures/ic-default.png");
 //     // this->_spScrollBarBg->setColor(24.0f / 255.0f, 32.0f / 255.0f, 43.0f / 255.0f, 1.0f);
 //     // this->_scrollBarBgWidth = 8.0f;
 //     // this->_scrollBarBgHeight = 20.0f;
@@ -100,7 +108,7 @@ void UITree::setIcon(std::string iconKey, std::string iconPath)
 //     // this->_ndScrollBar->setAnchor(0.5, 0.5);
 //     // this->_ndScrollBarBg->addChild(this->_ndScrollBar);
 //     // this->_spScrollBar = this->_ndScrollBar->addComponent<Sprite>("Sprite");
-//     // this->_spScrollBar->setTexture("resources/textures/ic-default.png");
+//     // this->_spScrollBar->setTextureAsset("resources/textures/ic-default.png");
 //     // this->_spScrollBar->setColor(140.0f / 255.0f, 210.0f / 255.0f, 240.0f / 255.0f, 1.0f);
 //     // this->_scrollBarWidth = this->_scrollBarBgWidth - 1.0f;
 //     // this->_scrollBarHeight = 20;
@@ -297,8 +305,8 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         // 后续删除
         // sp = dynamic_cast<UISprite *>(node->addComponent("UISprite"));
         // sp->setColor(340.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
-        // sp->setTexture("resources/texture/ic-default.png");
-        // sp->setMaterial(nullptr);
+        // sp->setTextureAsset("resources/texture/ic-default.png");
+        // sp->setMaterialAsset(nullptr);
         node->onNodeInputEvent(NodeInput::TOUCH_END, &UITree::_onTreeItemTouchEvent, this);
         node->onNodeInputEvent(NodeInput::CURSOR_HOVER, &UITree::_onTreeItemCursorHoverEvent, this);
         // 选择框
@@ -306,29 +314,29 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
         node->addChild(ndSelect);
         ndSelect->setSize(1000.0f, itemHeight - 4);
         spSelect = dynamic_cast<UISprite *>(ndSelect->addComponent("UISprite"));
-        spSelect->setTexture("resources/texture/ic-default.png");
-        spSelect->setMaterial(nullptr);
+        spSelect->setTextureAsset("resources/texture/ic-default.png");
+        spSelect->setMaterialAsset(nullptr);
         spSelect->setColor(9.0f / 250.0f, 74.0f / 255.0f, 93.0f / 255.0f, 0.0f);
         // 折叠符号
         ndFold = new Node2D("NodeTreeItemFold");
         node->addChild(ndFold);
         ndFold->setSize(16.0f, 16.0f);
         spFold = dynamic_cast<UISprite *>(ndFold->addComponent("UISprite"));
-        spFold->setMaterial(nullptr);
+        spFold->setMaterialAsset(nullptr);
         ndFold->onNodeInputEvent(NodeInput::TOUCH_END, &UITree::_onTreeItemFoldTouchEvent, this);
         // 图标
         ndIcon = new Node2D("NodeTreeItemIcon");
         node->addChild(ndIcon);
         ndIcon->setSize(16.0f, 16.0f);
         spIcon = dynamic_cast<UISprite *>(ndIcon->addComponent("UISprite"));
-        spIcon->setMaterial(nullptr);
+        spIcon->setMaterialAsset(nullptr);
         // 名字
         ndName = new Node2D("NodeTreeItemName");
         ndName->setSize(14.0f, 14.0f);
         node->addChild(ndName);
         txtName = dynamic_cast<UIText *>(ndName->addComponent("UIText"));
         txtName->setColor(204.0f / 255.0f, 207.0f / 255.0f, 213.0f / 255.0f, 1.0f);
-        txtName->setMaterial(nullptr);
+        txtName->setMaterialAsset(nullptr);
         this->_nodePools.push_back(node);
     }
     else
@@ -372,11 +380,11 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     // std::cout << "UITree UITree::name: " << uiTreeData.name << " fold: " << uiTreeData.isFold << std::endl;
     if (uiTreeData.isFold)
     {
-        spFold->setTexture("resources/texture/ic-arrow-right.png");
+        spFold->setTextureAsset("resources/texture/ic-arrow-right.png");
     }
     else
     {
-        spFold->setTexture("resources/texture/ic-arrow-bottom.png");
+        spFold->setTextureAsset("resources/texture/ic-arrow-bottom.png");
     }
     if (uiTreeData.children.size() > 0)
     {
@@ -390,7 +398,7 @@ void UITree::_updateTreesItems(UITreeStructure &uiTreeData)
     itemWidth += ndFold->getSize().getWidth();
     // 图标
     ndIcon->setSize(16.0f, 16.0f);
-    spIcon->setTexture(uiTreeData.iconKey);
+    spIcon->setTextureAsset(uiTreeData.iconKey);
     itemWidth += ndIcon->getSize().getWidth();
     // 创建名字
     txtName->setText(uiTreeData.name);

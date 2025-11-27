@@ -3,7 +3,7 @@
 
 
 
-SceneAsset::SceneAsset(const std::string key, const std::string path) : Asset(key, path)
+SceneAsset::SceneAsset(const std::string uuid, const std::string path) : Asset(uuid, path)
 {
     this->_type = AssetType::Scene;
     this->_load();

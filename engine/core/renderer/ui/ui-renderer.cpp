@@ -2,21 +2,25 @@
 #include <filesystem>
 #include "../../gfx/gfx-mgr.h"
 #include "../../boo.h"
-
 #include "../../scene/node.h"
 #include "../../scene/node-2d.h"
-#include "../../assets/material.h"
+#include "../../assets/material-asset.h"
 #include "../../assets/asset.h"
 #include "../../assets/assets-manager.h"
-#include "../../assets/texture.h"
+#include "../../assets/texture-asset.h"
 
 UIRenderer::UIRenderer(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
 {
-	this->_flag = static_cast<uint32_t>(UIFlag::UI_ALL);
 	this->_layer = NodeLayer::Node2D;
-	// 创建渲染物体
-	GfxMgr::getInstance()->createUIObject(this->_uuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
-	this->updateModelMatrix();
+	this->_materialAsset = new MaterialAsset("default-ui", "");
+}
+/**
+ * @brief 反序列化组件属性-配置
+ * 反序列化成功
+ */
+void UIRenderer::_deserialized()
+{
+	Component::_deserialized();
 }
 void UIRenderer::Awake()
 {
@@ -25,96 +29,101 @@ void UIRenderer::Awake()
 void UIRenderer::Enable()
 {
 	Component::Enable();
-	this->updateModelMatrix();
+	// 激活的时候创建渲染物体
+	GfxMgr::getInstance()->createUIObject(this->_uuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
+	this->_updateRendererState();
+	this->_updateModelMatrix();
 }
-void UIRenderer::setColor(float r, float g, float b, float a)
+void UIRenderer::_setColor(float r, float g, float b, float a)
 {
-	this->_color.set(r, g, b, a);
-	this->_flag |= static_cast<uint32_t>(UIFlag::UI_COLOR);
-	GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getR(), this->_color.getG(), this->_color.getB(), this->_color.getA());
-}
-void UIRenderer::setColor(std::string color)
-{
-	this->_color.set(color);
-	this->_flag |= static_cast<uint32_t>(UIFlag::UI_COLOR);
-	GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getR(), this->_color.getG(), this->_color.getB(), this->_color.getA());
-}
-void UIRenderer::setAlpha(float alpha)
-{
-	if (alpha == this->_color.getA())
+	if (r == this->_color.getR() && g == this->_color.getG() && b == this->_color.getB() && a == this->_color.getA())
+	{
 		return;
-	this->_color.setA(alpha);
-	this->_flag |= static_cast<uint32_t>(UIFlag::UI_COLOR);
+	}
+	this->_color.set(r, g, b, a);
+	if (!this->_isEnabledInHierarchy)
+		return;
 	GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getR(), this->_color.getG(), this->_color.getB(), this->_color.getA());
 }
-void UIRenderer::setMaterial(Material *mtl)
+
+void UIRenderer::_setMaterial(MaterialAsset *mtl)
 {
-	this->_material = mtl;
+	if (this->_materialAsset == nullptr)
+	{
+		return;
+	}
+	this->_materialAsset = mtl;
+	if (!this->_isEnabledInHierarchy)
+		return;
+	GfxMgr::getInstance()->setObjectPass(this->_uuid, this->_materialAsset->getPass());
+	GfxMgr::getInstance()->setObjectPipeline(this->_uuid, this->_materialAsset->getPipeline());
 	// std::string vert = std::filesystem::path("resources/shader/ui/ui.vert.spv").generic_string();
 	// std::string frag = std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string();
 	// std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + vert + "|frag:" + frag;
 	// GfxMgr::getInstance()->createPipeline("ui", pipeline);
-	GfxMgr::getInstance()->setObjectPass(this->_uuid, "built-ui");
 	// GfxMgr::getInstance()->setObjectPipeline(this->_uuid, "ui-mask.mtl");
-	GfxMgr::getInstance()->setObjectPipeline(this->_uuid, "built-ui");
 }
-void UIRenderer::setTexture(Texture *texture)
+void UIRenderer::_setTexture(TextureAsset *texture)
 {
 	if (texture == nullptr)
 	{
 		std::cout << "UIRenderer::setTexture: texture is nullptr" << std::endl;
 		return;
 	}
-	if (this->_texture == texture)
+	if (this->_textureAsset == texture)
 	{
 		return;
 	}
-	this->_texture = texture;
-	GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_texture->getUuid());
+	this->_textureAsset = texture;
+	if (!this->_isEnabledInHierarchy)
+		return;
+	GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_textureAsset->getUuid());
 }
-void UIRenderer::setTexture(std::string texture)
+
+void UIRenderer::_updateRendererState()
 {
-	Asset *tex = Boo::game->assetsManager()->get(texture);
-	this->setTexture(dynamic_cast<Texture *>(tex));
+	// 更新颜色状态
+	GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getR(), this->_color.getG(), this->_color.getB(), this->_color.getA());
+	// 更新纹理状态
+	if (this->_textureAsset)
+	{
+		GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_textureAsset->getUuid());
+	}
+	//
+	if (this->_materialAsset)
+	{
+		GfxMgr::getInstance()->setObjectPass(this->_uuid, this->_materialAsset->getPass());
+		GfxMgr::getInstance()->setObjectPipeline(this->_uuid, this->_materialAsset->getPipeline());
+	}
 }
-void UIRenderer::updateModelMatrix()
+void UIRenderer::_updateModelMatrix()
 {
 	Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
 	GfxMgr::getInstance()->setObjectModelMatrix(this->_uuid, node2D->uiWorldMatrix().data());
 }
+
 void UIRenderer::Update(float deltaTime)
 {
 	Component::Update(deltaTime);
-	if (!this->_isEnabledInHierarchy)
-		return; // 组件未激活
 }
 void UIRenderer::LateUpdate(float deltaTime)
 {
 	Component::LateUpdate(deltaTime);
-	if (!this->_isEnabledInHierarchy)
-		return; // 组件未激活
 }
 void UIRenderer::Render()
 {
 	Component::Render();
 	if (this->_node->hasFrameTransformFlag())
 	{
-		this->updateModelMatrix();
+		this->_updateModelMatrix();
 	}
-	if (this->_texture == nullptr)
+	if (this->_textureAsset == nullptr)
 	{
 		return;
 	}
 	if (this->_color.getA() <= 0)
 	{
-		// std::cout << "UIRenderer::render: color alpha is 0" << std::endl;
 		return; // 颜色透明
-	}
-	if (this->_modelMatrix.getM00() <= 0 || this->_modelMatrix.getM11() <= 0)
-	{
-		// 模型矩阵缩放为0
-		// std::cout << "UIRenderer::render: modelMatrix scale to 0" << std::endl;
-		return;
 	}
 	// 提交渲染对象
 	GfxMgr::getInstance()->submitObjectRender(this->_uuid);
@@ -133,5 +142,5 @@ void UIRenderer::destroy()
 
 UIRenderer::~UIRenderer()
 {
-	std::cout << "UIRenderer::~destructor"<<this->_node->getName() << std::endl;
+	std::cout << "UIRenderer::~destructor" << this->_node->getName() << std::endl;
 }

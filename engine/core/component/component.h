@@ -18,7 +18,8 @@ protected:
     Node *_node;
     bool _isEnabled = true;
     bool _isEnabledInHierarchy = false;
-
+    // 反序列化
+    virtual void _deserialized() = 0;
 public:
     Component(std::string name, Node *node, std::string uuid = "");
     const std::string getUuid() { return this->_uuid; }

@@ -8,8 +8,8 @@
 
 #include "asset-load.h"
 #include "asset-cache.h"
-#include "texture.h"
-#include "material.h"
+#include "texture-asset.h"
+#include "material-asset.h"
 #include "shader.h"
 
 

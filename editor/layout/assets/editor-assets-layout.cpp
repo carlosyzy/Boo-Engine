@@ -70,7 +70,7 @@
 //     ndIcon->setPosition(-width / 2.0 + 5.0f + iconWidth / 2.0, 0.0, 0.0);
 //     Sprite *spriteIcon = ndIcon->addComponent<Sprite>("Sprite");
 //     spriteIcon->setColor(EditorConfig::iconColor);
-//     spriteIcon->setTexture("resources/textures/ic-title-assets.png");
+//     spriteIcon->setTextureAsset("resources/textures/ic-title-assets.png");
 //     // name
 //     float nameWidth = 72.0f;
 //     float nameHeight = 16.0f;
@@ -108,7 +108,7 @@
 //     ndOperateAdd->setSize(14.0f, 14.0f);
 //     Sprite *spriteAdd = ndOperateAdd->addComponent<Sprite>("Sprite");
 //     spriteAdd->setColor(EditorConfig::iconColor);
-//     spriteAdd->setTexture("resources/textures/ic-add.png");
+//     spriteAdd->setTextureAsset("resources/textures/ic-add.png");
 //     UIWidget *widgetAdd = ndOperateAdd->addComponent<UIWidget>("UIWidget");
 //     WidgetHorizontalParam paramHorizontal{};
 //     paramHorizontal.left = 5.0f;
@@ -119,7 +119,7 @@
 //     ndOperateCollapse->setSize(14.0f, 14.0f);
 //     Sprite *spriteCollaps = ndOperateCollapse->addComponent<Sprite>("Sprite");
 //     spriteCollaps->setColor(EditorConfig::iconColor);
-//     spriteCollaps->setTexture("resources/textures/ic-flod.png");
+//     spriteCollaps->setTextureAsset("resources/textures/ic-flod.png");
 //     UIWidget *widgetCollaps = ndOperateCollapse->addComponent<UIWidget>("UIWidget");
 //     WidgetHorizontalParam widgetCollapsHParam{};
 //     widgetCollapsHParam.right = 5.0f;

@@ -2,7 +2,7 @@
 #include "asset-task.h"
 #include <filesystem>
 #include <iostream>
-#include "texture.h"
+#include "texture-asset.h"
 #include "shader.h"
 #include "scene-asset.h"
 #include "assets-manager.h"
@@ -69,7 +69,7 @@ void AssetTask::run()
 }
 void AssetTask::_createTexture(const std::string resKey, const std::string fullPath)
 {
-	Texture *texture = new Texture(resKey, fullPath);
+	TextureAsset *texture = new TextureAsset(resKey, fullPath);
 	this->_cache->addAsset(resKey, texture);
 	this->_loadComplete();
 }

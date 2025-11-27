@@ -91,7 +91,8 @@ protected:
     UITreeIconMap _iconMaps;
     // 节点树数据
     UITreeStructure _uiTreeData;
-
+    
+    void _deserialized() override;
 public:
     UITree(std::string name, Node *node, std::string uuid = "");
     void Awake() override;

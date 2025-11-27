@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-class Texture : public Asset
+class TextureAsset : public Asset
 {
 private:
 	int _width = 0;
@@ -16,8 +16,8 @@ protected:
 	void _load() override;
 
 public:
-	Texture(const std::string key, const std::string path);
-	Texture(const std::string key, int width, int height, int channels, std::vector<uint8_t> pixelsVector);
+	TextureAsset(const std::string uuid, const std::string path);
+	TextureAsset(const std::string uuid, int width, int height, int channels, std::vector<uint8_t> pixelsVector);
 
 	/**
 	 * @brief 获取纹理宽度
@@ -48,5 +48,5 @@ public:
 	 */
 	void clearCache();
 	virtual void destroy() override;
-	~Texture() {}
+	~TextureAsset() {}
 };

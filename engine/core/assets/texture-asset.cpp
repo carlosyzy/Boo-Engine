@@ -1,12 +1,12 @@
-#include "texture.h"
+#include "texture-asset.h"
 #include "../../libs/stb/stb_image.h"
 #include "../gfx/gfx-mgr.h"
-Texture::Texture(const std::string uuid, const std::string path) : Asset(uuid, path)
+TextureAsset::TextureAsset(const std::string uuid, const std::string path) : Asset(uuid, path)
 {
     this->_type = AssetType::Texture;
     this->_load();
 }
-Texture::Texture(const std::string uuid, int width, int height, int channels, std::vector<uint8_t> pixels) : Asset(uuid)
+TextureAsset::TextureAsset(const std::string uuid, int width, int height, int channels, std::vector<uint8_t> pixels) : Asset(uuid)
 {
     this->_type = AssetType::Texture;
     this->_width = width;
@@ -16,15 +16,13 @@ Texture::Texture(const std::string uuid, int width, int height, int channels, st
     this->createGfxTexture();
 }
 
-
-
-void Texture::_load()
+void TextureAsset::_load()
 {
-    // std::cout << "Loading texture: " << this->_uuid << " from path: " << this->_path << std::endl;
+    // std::cout << "Loading TextureAsset: " << this->_uuid << " from path: " << this->_path << std::endl;
     const void *_pixels = stbi_load(this->_path.c_str(), &this->_width, &this->_height, &this->_channels, STBI_rgb_alpha);
     if (_pixels == nullptr)
     {
-        std::cerr << "Failed to load texture: " << this->_path << std::endl;
+        std::cerr << "Failed to load TextureAsset: " << this->_path << std::endl;
         return;
     }
     this->_channels = 4;
@@ -33,14 +31,14 @@ void Texture::_load()
     stbi_image_free((void *)_pixels);
     this->createGfxTexture();
 }
-void Texture::createGfxTexture()
+void TextureAsset::createGfxTexture()
 {
     GfxMgr::getInstance()->createTexture(this->_uuid, this->_width, this->_height, this->_channels, &this->_pixelsVector);
 }
-void Texture::clearCache()
+void TextureAsset::clearCache()
 {
 }
-void Texture::destroy()
+void TextureAsset::destroy()
 {
     GfxMgr::getInstance()->destroyTexture(this->_uuid);
 }

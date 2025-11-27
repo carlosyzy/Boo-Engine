@@ -95,7 +95,8 @@ private:
 	 *更新各个模块尺寸
 	 */
 	void _updateModuleSize();
-
+protected:
+	void _deserialized() override;
 public:
 	EditorLayout(std::string name, Node *node, std::string uuid = "");
 

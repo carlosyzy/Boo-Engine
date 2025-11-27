@@ -22,8 +22,8 @@
 //     // 后续不需要这个组件
 //     UISprite *sprite = dynamic_cast<UISprite *>(ndTitle->addComponent("UISprite"));
 //     sprite->setColor(EditorConfig::title);
-//     sprite->setTexture(EditorConfig::txDefault);
-//     sprite->setMaterial(nullptr);
+//     sprite->setTextureAsset(EditorConfig::txDefault);
+//     sprite->setMaterialAsset(nullptr);
 //     // 添加wedget组件
 //     UIWidget *widget = dynamic_cast<UIWidget *>(ndTitle->addComponent("UIWidget"));
 //     WidgetHorizontalParam paramHorizontal{};
@@ -41,8 +41,8 @@
 //     ndTitleName->setPosition(-5.0f, 0.0f, 0.0f);
 //     UISprite *spriteName = dynamic_cast<UISprite *>(ndTitleName->addComponent("UISprite"));
 //     spriteName->setColor("#ffffffff");
-//     spriteName->setTexture("res/ic-title-hierarchy.png");
-//     spriteName->setMaterial(nullptr);
+//     spriteName->setTextureAsset("res/ic-title-hierarchy.png");
+//     spriteName->setMaterialAsset(nullptr);
 
 //     // 计算尺寸
 //     float width = ndTitle->getSize().getWidth() * 0.95f;
@@ -68,8 +68,8 @@
 //     // 渲染组件 后续不需要
 //     // UISprite *sprite = dynamic_cast<UISprite *>(this->_content->addComponent("UISprite"));
 //     // sprite->setColor("#ffe1e1ff");
-//     // sprite->setTexture(EditorConfig::txDefault);
-//     // sprite->setMaterial(nullptr);
+//     // sprite->setTextureAsset(EditorConfig::txDefault);
+//     // sprite->setMaterialAsset(nullptr);
 //     // std::cout << "EditorHierarchyLayout::_initContent1:" << sprite << std::endl;
 
 //     this->_initOperate();
@@ -88,8 +88,8 @@
 
 //     UISprite *sprite = dynamic_cast<UISprite *>(this->_ndOperate->addComponent("UISprite"));
 //     sprite->setColor(EditorConfig::operate);
-//     sprite->setTexture(EditorConfig::txDefault);
-//     sprite->setMaterial(nullptr);
+//     sprite->setTextureAsset(EditorConfig::txDefault);
+//     sprite->setMaterialAsset(nullptr);
 //     // 添加wedget组件
 //     UIWidget *widget = dynamic_cast<UIWidget *>(this->_ndOperate->addComponent("UIWidget"));
 //     WidgetHorizontalParam paramHorizontal{};
@@ -111,8 +111,8 @@
 //     this->_ndOperate->addChild(this->_ndAdd);
 //     this->_ndAdd->setSize(16.0f, 16.0f);
 //     this->_spriteAdd = dynamic_cast<UISprite *>(this->_ndAdd->addComponent("UISprite"));
-//     this->_spriteAdd->setTexture("resources/texture/ic-add.png");
-//     this->_spriteAdd->setMaterial(nullptr);
+//     this->_spriteAdd->setTextureAsset("resources/texture/ic-add.png");
+//     this->_spriteAdd->setMaterialAsset(nullptr);
 
 //     // 添加wedget组件
 //     UIWidget *widget = dynamic_cast<UIWidget *>(this->_ndAdd->addComponent("UIWidget"));
@@ -132,8 +132,8 @@
 //     this->_ndOperate->addChild(this->_ndFold);
 //     this->_ndFold->setSize(16, 16);
 //     this->_spriteFold = dynamic_cast<UISprite *>(this->_ndFold->addComponent("UISprite"));
-//     this->_spriteFold->setTexture("resources/texture/icon/ic-flod.png");
-//     this->_spriteFold->setMaterial(nullptr);
+//     this->_spriteFold->setTextureAsset("resources/texture/icon/ic-flod.png");
+//     this->_spriteFold->setMaterialAsset(nullptr);
 //     // 添加wedget组件
 //     UIWidget *widget = dynamic_cast<UIWidget *>(this->_ndFold->addComponent("UIWidget"));
 //     WidgetHorizontalParam paramHorizontal{};
@@ -153,8 +153,8 @@
 //     // 渲染组件
 //     UISprite *sprite = static_cast<UISprite *>(ndSearchBg->addComponent("UISprite"));
 //     sprite->setColor("#151e2bff");
-//     sprite->setTexture(EditorConfig::txDefault);
-//     sprite->setMaterial(nullptr);
+//     sprite->setTextureAsset(EditorConfig::txDefault);
+//     sprite->setMaterialAsset(nullptr);
 //     UIWidget *widget = static_cast<UIWidget *>(ndSearchBg->addComponent("UIWidget"));
 //     WidgetHorizontalParam paramHorizontal{};
 //     paramHorizontal.left = 28.0f;
@@ -165,8 +165,8 @@
 //     this->_ndOperate->addChild(this->_ndSearchIcon);
 //     this->_ndSearchIcon->setSize(14.0f, 14.0f);
 //     this->_spriteSearchIcon = dynamic_cast<UISprite *>(this->_ndSearchIcon->addComponent("UISprite"));
-//     this->_spriteSearchIcon->setMaterial(nullptr);
-//     this->_spriteSearchIcon->setTexture("resources/texture/ic-search.png");
+//     this->_spriteSearchIcon->setMaterialAsset(nullptr);
+//     this->_spriteSearchIcon->setTextureAsset("resources/texture/ic-search.png");
 //     // 添加wedget组件
 //     UIWidget *widget0 = dynamic_cast<UIWidget *>(this->_ndSearchIcon->addComponent("UIWidget"));
 //     WidgetHorizontalParam paramHorizontal0{};
@@ -178,9 +178,9 @@
 //     this->_ndOperate->addChild(this->_ndSearchBox);
 //     this->_ndSearchBox->setSize(100.0f, 18.0f);
 //     this->_spriteSearchBox = dynamic_cast<UISprite *>(this->_ndSearchBox->addComponent("UISprite"));
-//     this->_spriteSearchBox->setMaterial(nullptr);
+//     this->_spriteSearchBox->setMaterialAsset(nullptr);
 //     this->_spriteSearchBox->setColor("#ffffffff");
-//     this->_spriteSearchBox->setTexture(EditorConfig::txDefault);
+//     this->_spriteSearchBox->setTextureAsset(EditorConfig::txDefault);
 //     // 添加wedget组件
 //     UIWidget *widget1 = dynamic_cast<UIWidget *>(this->_ndSearchBox->addComponent("UIWidget"));
 //     WidgetHorizontalParam paramHorizontal1{};
@@ -206,8 +206,8 @@
 //     // 渲染组件-后续删除
 //     UISprite *sprite = static_cast<UISprite *>(ndNodeTree->addComponent("UISprite"));
 //     sprite->setColor(EditorConfig::content);
-//     sprite->setTexture(EditorConfig::txDefault);
-//     sprite->setMaterial(nullptr);
+//     sprite->setTextureAsset(EditorConfig::txDefault);
+//     sprite->setMaterialAsset(nullptr);
 //     // Mask
 //     UIMask *uiMask = static_cast<UIMask *>(ndNodeTree->addComponent("UIMask"));
 

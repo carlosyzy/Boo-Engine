@@ -10,6 +10,10 @@ UIWidget::UIWidget(std::string name, Node *node, std::string uuid) : Component(n
     this->_layer = NodeLayer::Node2D;
     this->_flag = 1;
 }
+void UIWidget::_deserialized()
+{
+    Component::_deserialized();
+}
 void UIWidget::Awake()
 {
     Component::Awake();

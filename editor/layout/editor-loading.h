@@ -7,7 +7,7 @@
 
 class Node2D;
 class UISprite;
-class Texture;
+class TextureAsset;
 
 class EditorLoading : public Component
 {
@@ -50,7 +50,8 @@ private:
 	int _launchEditorTaskId = -1;
 	void _launchEditor();
 	std::function<void()> _onLoadComplete;
-
+protected:
+	void _deserialized() override;
 public:
 	EditorLoading(std::string name, Node *node, std::string uuid = "");
 	/**

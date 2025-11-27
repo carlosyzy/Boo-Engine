@@ -25,7 +25,8 @@ private:
     void _onNodeTransformEvent(uint32_t eventId);
 
     void _clear();
-
+protected:
+    void _deserialized() override;
 public:
     UILayoutHorizontal(std::string name, Node *node, std::string uuid = "");
     void Awake() override;

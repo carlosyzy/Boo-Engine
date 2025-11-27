@@ -16,6 +16,15 @@
 EditorLoading::EditorLoading(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
 {
 }
+/**
+ * @brief 反序列化组件属性-配置
+ * 反序列化成功后，更新模块尺寸
+ */
+void EditorLoading::_deserialized()
+{
+    Component::_deserialized();
+}
+
 void EditorLoading::Awake()
 {
 	std::cout << "EditorLoading::Awake" << std::endl;
@@ -49,8 +58,8 @@ void EditorLoading::_initBg()
 	if (compAlpha != nullptr)
 	{
 		this->_spriteAlpha = dynamic_cast<UISprite *>(compAlpha);
-		this->_spriteAlpha->setTexture("resources/texture/alpha.png");
-		this->_spriteAlpha->setMaterial(nullptr);
+		this->_spriteAlpha->setTextureAsset("resources/texture/alpha.png");
+		this->_spriteAlpha->setMaterialAsset(nullptr);
 		this->_spriteAlpha->setColor(0.2f, 0.0f, 1.0f, 1.0f);
 	}
 	this->_ndAlpha->setSize(this->_width, this->_height);
@@ -65,11 +74,11 @@ void EditorLoading::_initLogo()
 	if (compLogo != nullptr)
 	{
 		this->_spriteLogo = dynamic_cast<UISprite *>(compLogo);
-		this->_spriteLogo->setTexture("resources/texture/logo.png");
-		this->_spriteLogo->setMaterial(nullptr);
+		this->_spriteLogo->setTextureAsset("resources/texture/logo.png");
+		this->_spriteLogo->setMaterialAsset(nullptr);
 		this->_spriteLogo->setColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
-	Texture *textureLogo = static_cast<Texture *>(Boo::game->assetsManager()->get("resources/texture/logo.png"));
+	TextureAsset *textureLogo = static_cast<TextureAsset *>(Boo::game->assetsManager()->get("resources/texture/logo.png"));
 	if (textureLogo != nullptr)
 	{
 		this->_logoTxWidth = textureLogo->width();
@@ -85,8 +94,8 @@ void EditorLoading::_initLoadUI()
 	this->_spriteLoad = dynamic_cast<UISprite *>(this->_ndLoad->addComponent("UISprite"));
 	if (this->_spriteLoad != nullptr)
 	{
-		this->_spriteLoad->setTexture("resources/texture/ic-default.png");
-		this->_spriteLoad->setMaterial(nullptr);
+		this->_spriteLoad->setTextureAsset("resources/texture/ic-default.png");
+		this->_spriteLoad->setMaterialAsset(nullptr);
 		this->_spriteLoad->setColor("#0A2F36");
 	}
 	this->_ndLoadBar = new Node2D("Editor-LoadBar");
@@ -94,8 +103,8 @@ void EditorLoading::_initLoadUI()
 	this->_spriteLoadBar = dynamic_cast<UISprite *>(this->_ndLoadBar->addComponent("UISprite"));
 	if (this->_spriteLoadBar != nullptr)
 	{
-		this->_spriteLoadBar->setTexture("resources/texture/ic-default.png");
-		this->_spriteLoadBar->setMaterial(nullptr);
+		this->_spriteLoadBar->setTextureAsset("resources/texture/ic-default.png");
+		this->_spriteLoadBar->setMaterialAsset(nullptr);
 		this->_spriteLoadBar->setColor(1.0f, 1.0f, 1.0f, 1.0f);
 		this->_spriteLoadBar->setColor("#AFF2FF");
 	}
@@ -203,8 +212,6 @@ void EditorLoading::Render()
 {
 	Component::Render();
 }
-
-
 
 void EditorLoading::_updateBgSize(float width, float height)
 {

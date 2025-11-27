@@ -1,6 +1,6 @@
 #include "asset-load.h"
 #include "asset.h"
-#include "texture.h"
+#include "texture-asset.h"
 #include <filesystem>
 #include <iostream>
 #include "shader.h"

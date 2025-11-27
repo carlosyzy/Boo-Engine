@@ -4,7 +4,7 @@
 
 class Node2D;
 class UISprite;
-class Texture;
+class TextureAsset;
 
 class Alpha : public Scene
 {

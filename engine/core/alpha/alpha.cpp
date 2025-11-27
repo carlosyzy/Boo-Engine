@@ -21,7 +21,7 @@ void Alpha::_init()
 }
 void Alpha::_initRes()
 {
-	Texture *textureLogo = static_cast<Texture *>(Boo::game->assetsManager()->get("resources/texture/logo.png"));
+	TextureAsset *textureLogo = static_cast<TextureAsset *>(Boo::game->assetsManager()->get("resources/texture/logo.png"));
 	if (textureLogo != nullptr)
 	{
 		this->_logoTxWidth = textureLogo->width();
@@ -38,8 +38,8 @@ void Alpha::_initAlpha()
 	if (compAlpha != nullptr)
 	{
 		this->_spriteAlpha = dynamic_cast<UISprite *>(compAlpha);
-		this->_spriteAlpha->setTexture("resources/texture/ic-default.png");
-		this->_spriteAlpha->setMaterial(nullptr);
+		this->_spriteAlpha->setTextureAsset("resources/texture/ic-default.png");
+		this->_spriteAlpha->setMaterialAsset(nullptr);
 		this->_spriteAlpha->setColor(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
@@ -52,12 +52,12 @@ void Alpha::_initAlpha()
 	{
 		this->_spriteLogo = dynamic_cast<UISprite *>(compLogo);
 		// Asset *tex = Boo::game->assetsManager()->get("resources/texture/logo.png");
-		this->_spriteLogo->setTexture("resources/texture/logo.png");
-		this->_spriteLogo->setMaterial(nullptr);
+		this->_spriteLogo->setTextureAsset("resources/texture/logo.png");
+		this->_spriteLogo->setMaterialAsset(nullptr);
 		this->_spriteLogo->setColor(1.0f, 1.0f, 1.0f, 0.0f);
 	}
-	json aa = ReflectionHelper::serializeToJson((void *)compLogo, "UISprite");
-	std::cout << aa << std::endl;
+	// json aa = ReflectionHelper::serializeToJson((void *)compLogo, "UISprite");
+	// std::cout << aa << std::endl;
 }
 
 void Alpha::update(float deltaTime)

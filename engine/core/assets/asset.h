@@ -29,8 +29,8 @@ protected:
     std::string _path;
     virtual void _load() = 0;
 public:
-    Asset(std::string key);
-    Asset(std::string key,std::string path);
+    Asset(std::string uuid);
+    Asset(std::string uuid,std::string path);
     const std::string& getUuid() {
         return this->_uuid;
     }
