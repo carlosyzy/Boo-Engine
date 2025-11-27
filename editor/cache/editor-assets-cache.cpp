@@ -60,6 +60,10 @@ void EditorAssetsCache::_delNotExistAssets(std::vector<std::string> &existAssets
         this->_assetsCache.erase(key);
     }
 }
+/**
+ * @brief 获取assets目录下的所有资源列表
+ * @return std::vector<std::string> 
+ */
 std::vector<std::string> EditorAssetsCache::_getAssetsList()
 {
    // 初始化资源列表,和assets下的所有资源进行关联
@@ -69,7 +73,7 @@ std::vector<std::string> EditorAssetsCache::_getAssetsList()
     {
         if (std::filesystem::is_regular_file(entry))
         {
-            std::string relativePath = std::filesystem::relative(entry.path(), std::filesystem::path(BooEditor::projectPath)).string();
+            std::string relativePath = std::filesystem::relative(entry.path(), std::filesystem::path(BooEditor::projectPath)).generic_string();
             existAssets.push_back(relativePath);
         }
     }

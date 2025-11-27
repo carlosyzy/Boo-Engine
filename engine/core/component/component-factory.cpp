@@ -48,6 +48,7 @@ bool ComponentFactory::isComponentRegistered(const std::string& typeName) const 
     return this->_creators.find(typeName) != this->_creators.end();
 }
 std::string ComponentFactory::getComponentDescription(const std::string &name) {
-    auto it = this->_descriptions.find(name);
-    return it != this->_descriptions.end() ? it->second : "无描述";
+   /* auto it = this->_descriptions.find(name);
+    return it != this->_descriptions.end() ? it->second : "无描述";*/
+    return "";
 }

@@ -9,7 +9,7 @@ void EditorProjectCache::init()
     std::filesystem::path projectCachePath = std::filesystem::path(BooEditor::projectPath) / "setting" / "project.bin";
     if (std::filesystem::is_regular_file(projectCachePath))
     {
-        this->_projectCache = FileUtil::loadJsonFromBinary(projectCachePath.string());
+        this->_projectCache = FileUtil::loadJsonFromBinary(projectCachePath.generic_string());
     }
     else
     {
@@ -27,7 +27,7 @@ void EditorProjectCache::update()
 
     std::filesystem::path projectCachePath = std::filesystem::path(BooEditor::projectPath) / "setting" / "project.bin";
     std::cout << "update:Project Cache: " << this->_projectCache << std::endl;
-    FileUtil::saveJsonToBinary(projectCachePath.string(), this->_projectCache);
+    FileUtil::saveJsonToBinary(projectCachePath.generic_string(), this->_projectCache);
 }
 
 EditorProjectCache::~EditorProjectCache()

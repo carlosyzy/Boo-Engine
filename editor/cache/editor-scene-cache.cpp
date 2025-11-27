@@ -1,8 +1,12 @@
 #include "editor-scene-cache.h"
 #include "../boo-editor.h"
 
+#include "../../engine/core/component/component.h"
+#include "../../engine/core/component/component-property-reflect.h"
 #include "../../engine/core/scene/scene.h"
+#include "../../engine/core/renderer/ui/ui-sprite.h"
 #include "../../engine/core/utils/dialog-util.h"
+#include "../../engine/core/utils/file-util.h"
 
 EditorSceneCache::EditorSceneCache()
 {
@@ -19,6 +23,19 @@ void EditorSceneCache::newScene()
     this->_scenePath = "";
     this->_scene = new Scene(this->_sceneName);
     this->_saveFlag = 1;
+
+    Node2D *node2d = this->_scene->getRoot2D();
+    Node2D *ndMain = new Node2D("Editor-Main");
+    ndMain->setSize(100.0f, 100.0f);
+    node2d->addChild(ndMain);
+    UISprite *spriteMain = dynamic_cast<UISprite *>(ndMain->addComponent("UISprite"));
+    if (spriteMain != nullptr)
+    {
+        std::cout << "EditorLayout::_initMainUI1" << std::endl;
+        spriteMain->setTextureAsset("resources/texture/ic-default.png");
+        spriteMain->setMaterialAsset(nullptr);
+        spriteMain->setColor(0.1f, 0.1f, 0.1f, 1.0f);
+    }
 }
 /**
  * 打开一个已经存在的场景
@@ -42,25 +59,34 @@ void EditorSceneCache::save()
     {
         return;
     }
+    std::cout << "EditorSceneCache::_saveScene: " << path << std::endl;
     json sceneData;
     this->_serializeSceneData(this->_scene, sceneData);
+    std::cout << "EditorSceneCache::_saveScene: " << sceneData << std::endl;
+    FileUtil::saveJsonToBinary(path, sceneData);
 }
 std::string EditorSceneCache::_preSavePath()
 {
     std::string path;
     if (this->_scenePath.empty())
     {
-        path = DialogUtil::saveFileDialog(BooEditor::projectPath, SceneFilterList);
+        path = DialogUtil::saveFileDialog(BooEditor::projectPath, "scene");
         if (path.empty())
         {
             return "";
         }
+        std::string pathStr(path);
+        // 检查是否已经有 .scene 后缀 如果没有 .scene 后缀，自动添加
+        if (pathStr.size() < 6 || pathStr.substr(pathStr.size() - 6) != ".scene")
+        {
+            path += ".scene";
+        }
     }
     else
     {
-        // path = std::filesystem::path(BooEditor::projectPath, std::filesystem::path(this->_scenePath).generic_string()).string();
+        std::string sceneKey = std::filesystem::path(this->_scenePath).generic_string();
+        path = (std::filesystem::path(BooEditor::projectPath) / sceneKey).generic_string();
     }
-    std::cout << "EditorSceneCache::_saveScene: " << path << std::endl;
     return path;
 }
 void EditorSceneCache::_serializeSceneData(Scene *scene, json &sceneData)
@@ -81,25 +107,21 @@ void EditorSceneCache::_serializeSceneData(Scene *scene, json &sceneData)
             nodeData["_size"] = {static_cast<Node2D *>(node)->getSize().getWidth(), static_cast<Node2D *>(node)->getSize().getHeight()};
         }
         // 组件数据
-        nodeData["_components"] = json::array();
+        json compsData = json::array();
         for (Component *comp : node->getComponents())
         {
             json compData;
-            nodeData["_components"].push_back(compData);
+            compData["_name"] = comp->getName();
+            compData = ReflectionRegistry::getInstance().serializeToJson((void *)comp, comp->getName());
+            compsData.push_back(compData);
         }
-
-        //    for (Component *comp : node->getComponents())
-        //    {
-        //        json compData;
-        //        comp->serialize(compData);
-        //        nodeData["_components"].push_back(compData);
-        //    }
-        //    for (Node *child : node->getChildren())
-        //    {
-        //        json childData;
-        //        _serializeNode(child, childData);
-        //        nodeData["_children"].push_back(childData);
-        //    }
+        nodeData["_components"] = compsData;
+        for (Node *child : node->getChildren())
+        {
+            json childData;
+            _serializeNode(child, childData);
+            nodeData["_children"].push_back(childData);
+        }
     };
     sceneData["_name"] = scene->getName();
     sceneData["_type"] = "SceneAsset";

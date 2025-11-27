@@ -166,17 +166,21 @@ public:
      */
     json serializeToJson(void *object, const std::string &className)
     {
-        json result;
+        json results=json::array();
         auto &registry = ReflectionRegistry::getInstance();
         auto classReflection = registry.getClassReflection(className);
         if (classReflection)
         {
             for (const auto &[propName, propInfo] : classReflection->properties)
             {
-                result[propName] = propInfo.getter(object);
+                json result=json::object();
+                result["_name"] = propName;
+                result["_type"] = propInfo.type;
+                result["_value"] = propInfo.getter(object);
+                results.push_back(result);
             }
         }
-        return result;
+        return results;
     }
     /**
      * @brief 从 JSON 对象反序列化类实例
