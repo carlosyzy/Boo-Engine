@@ -111,9 +111,6 @@
     <ClCompile Include="engine\core\assets\shader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\assets\texture.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\font\freetype-mgr.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -124,9 +121,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\gfx\gfx-shader-compile.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\assets\material.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\alpha\alpha.cpp">
@@ -151,9 +145,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\component\ui\ui-tree\file-tree.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\component\ui\ui-tree\node-tree.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\component\ui\ui-tree\ui-tree.cpp">
@@ -220,6 +211,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\utils\dialog-util.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\component\component-factory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\component\ui\ui-tree\ui-node-tree.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -440,9 +437,6 @@
     <ClInclude Include="engine\core\component\ui\ui-tree\file-tree.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\component\ui\ui-tree\node-tree.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="engine\core\component\ui\ui-tree\ui-tree.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -633,6 +627,24 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\utils\json-util.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\component\component-factory-impl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\component\component-register.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\property\property-reflect-register.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\component\ui\ui-tree\ui-node-tree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\component\component-property-reflect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\component\component-property-register.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
