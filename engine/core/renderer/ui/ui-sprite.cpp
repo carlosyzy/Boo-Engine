@@ -5,6 +5,7 @@
 UISprite::UISprite(std::string name, Node *node, std::string uuid) : UIRenderer(name, node, uuid)
 {
     this->_name = "UISprite";
+    this->spriteTexture = "sdsdfdsfasd";
 }
 void UISprite::Update(float deltaTime)
 {

@@ -4,6 +4,7 @@
 #include "../renderer/ui/ui-sprite.h"
 #include "../gfx/gfx-mgr.h"
 #include "../gfx/gfx-pipeline-struct.h"
+#include "../utils/json-util.h"
 
 Alpha::Alpha(const std::string name, const std::string uuid) : Scene(name, uuid), _logoAlphaNum(0.0f)
 {
@@ -55,6 +56,8 @@ void Alpha::_initAlpha()
 		this->_spriteLogo->setMaterial(nullptr);
 		this->_spriteLogo->setColor(1.0f, 1.0f, 1.0f, 0.0f);
 	}
+	json aa = ReflectionHelper::serializeToJson((void *)compLogo, "UISprite");
+	std::cout << aa << std::endl;
 }
 
 void Alpha::update(float deltaTime)

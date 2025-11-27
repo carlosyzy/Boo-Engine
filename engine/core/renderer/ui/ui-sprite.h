@@ -2,6 +2,8 @@
 #include <string>
 #include "ui-renderer.h"
 #include "../../component/component-register.h"
+#include "../../property/property-reflect-register.h"
+
 class Node;
 
 class UISprite : public UIRenderer
@@ -11,6 +13,7 @@ private:
 
 public:
     UISprite(std::string name, Node *node, std::string uuid="");
+    REGISTER_PROPERTY_STRING(UISprite, spriteTexture, "精灵纹理");
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
     void Render() override;

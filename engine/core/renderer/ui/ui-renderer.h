@@ -71,6 +71,7 @@ protected:
 
 public:
     UIRenderer(std::string name, Node *node, std::string uuid = "");
+
     void Awake() override;
     const Color &color() { return this->_color; };
     /**

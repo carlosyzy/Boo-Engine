@@ -10,7 +10,7 @@ class Texture;
 class UIText : public UIRenderer
 {
 private:
-    // std::string _text;
+    std::string _text;
     TextTexture _fontTexture;
     int _fontSize = 30;
     int _lineHeight = 30;
@@ -19,7 +19,7 @@ private:
     void _clearTexture();
 public:
     UIText(std::string name, Node *node, std::string uuid = "");
-    SERIALIZE_FIELD_STRING(text, "文本", "");
+    // REGISTER_PROPERTY_STRING(UIText, text, "文本");
 
 
     void setText(std::string text);

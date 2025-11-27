@@ -189,8 +189,9 @@ void Node::_updateWorldTransform()
 /**
  * 添加组件
  */
-Component *Node::addComponent(std::string name, std::string uuid = "")
+Component *Node::addComponent(std::string name, std::string uuid)
 {
+	return nullptr;
 }
 /*
  * 获取组件
