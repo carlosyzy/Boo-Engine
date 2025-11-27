@@ -63,4 +63,4 @@ public:
     void destroy() override;
     ~UIWidget();
 };
-REGISTER_COMPONENT(UIWidget, "UIWidget", "UI适配组件")
+REGISTER_COMPONENT(UIWidget,  "UI适配组件")

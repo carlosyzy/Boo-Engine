@@ -125,4 +125,4 @@ public:
 	void destroy() override;
 	~EditorLayout();
 };
-REGISTER_COMPONENT(EditorLayout, "EditorLayout","自定义编辑器布局管理界面组件")
+REGISTER_COMPONENT(EditorLayout,"自定义编辑器布局管理界面组件")

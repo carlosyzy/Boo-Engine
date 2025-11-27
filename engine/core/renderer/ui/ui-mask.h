@@ -59,4 +59,4 @@ public:
 
     ~UIMask() override;
 };
-REGISTER_COMPONENT(UIMask, "UIMask", "UI遮罩组件")
+REGISTER_COMPONENT(UIMask,  "UI遮罩组件")

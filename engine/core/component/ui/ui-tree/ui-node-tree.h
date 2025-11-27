@@ -28,4 +28,4 @@ public:
     void destroy() override;
     ~UINodeTree();
 };
-REGISTER_COMPONENT(UINodeTree, "UINodeTree", "节点树组件")
+REGISTER_COMPONENT(UINodeTree, "节点树组件")

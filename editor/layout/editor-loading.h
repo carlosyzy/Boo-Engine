@@ -69,4 +69,4 @@ public:
 	void destroy() override;
 	~EditorLoading();
 };
-REGISTER_COMPONENT(EditorLoading, "EditorLoading", "自定义编辑器加载界面")
+REGISTER_COMPONENT(EditorLoading, "自定义编辑器加载界面")
