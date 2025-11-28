@@ -26,8 +26,7 @@ Asset *AssetTask::load(const std::string &path)
 
 void AssetTask::run()
 {
-	std::filesystem::path fullPath = std::filesystem::path(this->_mgr->root()) / this->_path;
-	// std::cout << "load asset " << this->_path << " fullPath:" << fullPath << std::endl;
+	std::filesystem::path fullPath = std::filesystem::path(this->_mgr->getAssetsRoot()) / this->_path;
 	if (!std::filesystem::exists(fullPath))
 	{
 		std::cerr << "AssetLoad:No such file or directory:" << fullPath << std::endl;
@@ -41,7 +40,7 @@ void AssetTask::run()
 		return;
 	}
 	long long time = TimeUtil::nowTime();
-	std::filesystem::path path = std::filesystem::relative(fullPath, std::filesystem::path(this->_mgr->root()));
+	std::filesystem::path path = std::filesystem::relative(fullPath, std::filesystem::path(this->_mgr->getAssetsRoot()));
 	std::string resKey = path.generic_string();
 
 	std::string extension = std::filesystem::path(fullPath).extension().string();

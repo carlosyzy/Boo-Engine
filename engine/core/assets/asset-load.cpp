@@ -17,9 +17,12 @@ AssetLoad::AssetLoad(AssetsManager *mgr)
 Asset *AssetLoad::load(const std::string path)
 {
     // 从缓存中获取资产
+    std::cout << "AssetLoad::load: " << path << std::endl;
     std::filesystem::path key = std::filesystem::path(path);
     std::string normPath = key.generic_string();
+    std::cout << "AssetLoad::load: normPath: " << this->_cache << std::endl;
     Asset *asset1 = this->_cache->getAsset(normPath);
+    std::cout << "AssetLoad::load: asset1: " << asset1 << std::endl;
     if (asset1 != nullptr)
     {
         return asset1;
@@ -37,6 +40,7 @@ Asset *AssetLoad::getAsset(const std::string &path)
 {
     std::filesystem::path key = std::filesystem::path(path);
     std::string normPath = key.generic_string();
+    std::cout << "AssetLoad::getAsset: normPath: " << this->_cache << std::endl;
     Asset *asset = this->_cache->getAsset(path);
     if (asset != nullptr)
     {

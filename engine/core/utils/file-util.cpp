@@ -85,14 +85,12 @@ json FileUtil::readJsonFromBinary(const std::string &filename)
         {
             return json::object(); // 返回空对象
         }
-
         // 读取文件内容
         size_t file_size = file.tellg();
         file.seekg(0);
 
         std::vector<uint8_t> buffer(file_size);
         file.read(reinterpret_cast<char *>(buffer.data()), file_size);
-
         // 从MessagePack解析为JSON
         return json::from_msgpack(buffer);
     }
@@ -120,6 +118,7 @@ void FileUtil::copyFile(const std::string &src, const std::string &dst)
 {
     try
     {
+        std::cout << "FileUtil::copyFile: " << src << " -> " << dst << std::endl;
         // 检查源文件是否存在
         if (!std::filesystem::exists(src))
         {
@@ -131,7 +130,7 @@ void FileUtil::copyFile(const std::string &src, const std::string &dst)
         // 拷贝文件
         std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing);
 
-        std::cout << "文件拷贝成功: " << src << " -> " << dst << std::endl;
+        std::cout << "文件拷贝成功: " << std::endl;
         return;
     }
     catch (const std::filesystem::filesystem_error &e)

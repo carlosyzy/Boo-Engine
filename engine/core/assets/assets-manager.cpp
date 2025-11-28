@@ -14,20 +14,45 @@ AssetsManager::AssetsManager()
 }
 void AssetsManager::init()
 {
-	this->_assetLoad = new AssetLoad(this);
 	this->_cache = new AssetCache();
+	this->_assetLoad = new AssetLoad(this);
 }
-void AssetsManager::initAssetPathMap(const std::string &pathMap)
+void AssetsManager::initAssetsDB(const std::string &path)
 {
-	this->_cache->initAssetPathMap(pathMap);
+	this->_cache->initAssetsDB(path);
 }
-json &AssetsManager::getAssetPathMap()
+/**
+ * @brief 获取资产数据库
+ * @return std::unordered_map<std::string, std::vector<AssetDB>> 资产数据库
+ */
+std::unordered_map<std::string, std::vector<AssetDB>> &AssetsManager::getAssetsDB()
 {
-	return this->_cache->getAssetPathMap();
+	return this->_cache->getAssetsDB();
 }
-void AssetsManager::updateAssetPathMap(const std::string path, json infos)
+/**
+ * @brief 更新资产数据库
+ * @param path 资产路径
+ * @param configs 资产配置
+ */
+void AssetsManager::updateAssetsDB(const std::string &path, const std::vector<AssetDB> &configs)
 {
-	this->_cache->updateAssetPathMap(path, infos);
+	this->_cache->updateAssetsDB(path, configs);
+}
+void AssetsManager::setAssetsRoot(const std::string &root)
+{
+	this->_assetsRoot = root;
+}
+const std::string &AssetsManager::getAssetsRoot()
+{
+	return this->_assetsRoot;
+}
+AssetLoad *AssetsManager::assetLoad()
+{
+	return this->_assetLoad;
+}
+AssetCache *AssetsManager::assetCache()
+{
+	return this->_cache;
 }
 
 Asset *AssetsManager::load(const std::string &path)

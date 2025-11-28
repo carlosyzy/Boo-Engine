@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include <filesystem>
 #include <functional>
 #include "../../core/utils/json-util.h"
@@ -8,17 +9,24 @@
 enum class AssetType;
 class Asset;
 class AssetsManager;
+
+struct AssetDB
+{
+   std::string name;
+   std::string path;
+   std::string uuid;
+   std::string extension;
+   AssetType type;
+
+};
+
 /**
  * @brief 资产缓存类
  */
 class AssetCache
 {
 private:
-    /**
-     * @brief 路径资产映射数据
-     */
-    json _pathAssetMap;
-
+    std::unordered_map<std::string, std::vector<AssetDB>> _assetDB;
     /**
      * @brief 资产映射表
      */
@@ -27,26 +35,22 @@ private:
 
 public:
     AssetCache();
-
     /**
-     * @brief 初始化资产路径映射
-     * @param pathMap 资产路径映射
+     * @brief 初始化资产数据库
+     * @param path 资产数据库路径
      */
-    void initAssetPathMap(const std::string &pathMap);
+    void initAssetsDB(const std::string &path);
     /**
-     * @brief 获取资产路径映射
-     * @return json 资产路径映射
+     * @brief 获取资产数据库
+     * @return std::unordered_map<std::string, std::vector<AssetDB>> 资产数据库
      */
-    json &getAssetPathMap();
+    std::unordered_map<std::string, std::vector<AssetDB>> &getAssetsDB();
     /**
-     * @brief 更新资产路径映射
+     * @brief 更新资产数据库
      * @param path 资产路径
-     * @param infos 资产信息
+     * @param configs 资产配置
      */
-    void updateAssetPathMap(const std::string path, json infos);
-
-
-
+    void updateAssetsDB(const std::string &path, const std::vector<AssetDB> &configs);
     /**
      * @brief 添加资产到缓存
      *

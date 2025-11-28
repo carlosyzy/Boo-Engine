@@ -8,49 +8,40 @@
 
 class EditorCache
 {
+    std::string _assetsPath;
     std::string _settingPath;
     std::string _libraryPath;
+    std::string _assetsDBPath;
     void _initRoot();
-    // /**
-    //  * @brief 资产配置文件
-    //  */
-    // json _assetsConfig;
     /**
      * @brief 是否初始化资产映射
      */
-    bool _isInitAssetMap = false;
-    std::vector<EditorCacheTask> _initAssetMapTasks;
-    int _initAssetMapTaskComplete = 0;
-    int _initAssetMapTaskAll = 0;
+    bool _isInitAssetsDB = false;
+    std::vector<EditorCacheTask> _initAssetsDBTasks;
+    int _initAssetsDBTaskComplete = 0;
+    int _initAssetsDBTaskAll = 0;
     /**
-     * @brief 更新library资产回调
+     * @brief 更新资产数据库回调
      */
-    std::function<void(const int complete, const int all, const float progress)> _initLibraryCallback;
+    std::function<void(const int complete, const int all, const float progress)> _initAssetsDBCallback;
 
-    void _updateLibraryAssetsMaps();
+    void _updateAssetsDBMaps();
 
 public:
     EditorCache();
     void init();
     template <typename T, typename Func>
-    void initLibraryAssetsMaps(Func callback, T *instance)
+    void initAssetsDBMaps(Func callback, T *instance)
     {
-        this->_initLibraryCallback = [instance, callback](const int complete, const int all, const float progress)
+        this->_initAssetsDBCallback = [instance, callback](const int complete, const int all, const float progress)
         {
             if (instance != nullptr && callback != nullptr)
             {
                 (instance->*callback)(complete, all, progress);
             }
         };
-        this->_updateLibraryAssetsMaps();
+        this->_updateAssetsDBMaps();
     }
-    /**
-     * @brief 更新资产映射
-     * 
-     * @param path 资产路径
-     * @param infos 资产信息
-     */
-    void updateAssetsMap(std::string path,json infos);
 
 
     void update(float deltaTime);

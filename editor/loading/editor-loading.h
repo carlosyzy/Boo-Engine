@@ -36,7 +36,9 @@ private:
 	void _setLoadProgress(float progress);
 	void _updateLoadBarSize(float width, float height);
 
-	void _initAssetsConfig();
+	void _initAssetsDB();
+	void _initAssetsDBCallback(int completedCount, int allCount, float progress);
+		
 	/**
 	 * @brief 初始化加载资源
 	 * 

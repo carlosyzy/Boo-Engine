@@ -83,6 +83,7 @@ void Game::_initAssets()
 }
 void Game::_initAlpha()
 {
+	std::cout << "INIT ALPHA" << std::endl;
 	Alpha *alpha = new Alpha("Editor-Alpha");
 	this->openScene(alpha);
 }

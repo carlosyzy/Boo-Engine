@@ -19,7 +19,7 @@ private:
 	/**
 	 * @brief 资产根目录
 	 */
-	std::string _root;
+	std::string _assetsRoot;
 
 	/**
 	 * @brief 资产加载器
@@ -37,38 +37,24 @@ public:
 	 */
 	void init();
 
-	void setRoot(const std::string &root)
-	{
-		this->_root = root;
-	};
-	const std::string &root()
-	{
-		return this->_root;
-	}
-	AssetLoad *assetLoad()
-	{
-		return this->_assetLoad;
-	}
-	AssetCache *assetCache()
-	{
-		return this->_cache;
-	}
+	void initAssetsDB(const std::string &path);
 	/**
-	 * @brief 初始化资产路径映射
+	 * @brief 获取资产数据库
+	 * @return std::unordered_map<std::string, std::vector<AssetDB>> 资产数据库
+	 */
+	std::unordered_map<std::string, std::vector<AssetDB>> &getAssetsDB();
+	/**
+	 * @brief 更新资产数据库
 	 * @param path 资产路径
+	 * @param configs 资产配置
 	 */
-	void initAssetPathMap(const std::string &pathMap);
-	/**
-	 * @brief 获取资产路径映射
-	 * @return json 资产路径映射
-	 */
-	json &getAssetPathMap();
-	/**
-	 * @brief 更新资产路径映射
-	 * @param path 资产路径
-	 * @param infos 资产信息
-	 */
-	void updateAssetPathMap(const std::string path, json infos);
+	void updateAssetsDB(const std::string &path, const std::vector<AssetDB> &configs);
+
+	void setAssetsRoot(const std::string &root);
+	const std::string &getAssetsRoot();
+	
+	AssetLoad *assetLoad();
+	AssetCache *assetCache();
 	/**
 	 * @brief 加载资产
 	 * @param path 资产路径

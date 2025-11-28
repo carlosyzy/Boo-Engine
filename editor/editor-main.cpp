@@ -18,7 +18,7 @@
 EditorMain::EditorMain()
 {
     this->_deltaTime = TimeUtil::nowTime();
-	this->_frameRate = 30;
+    this->_frameRate = 30;
     BooEditor::cache = new EditorCache();
     BooEditor::cache->init();
 }
@@ -89,14 +89,14 @@ void EditorMain::tick()
     long long t = deltaTime - this->_deltaTime;
     if (t > (1000.0f / this->_frameRate))
     {
-
-        Boo::game->tick(t / 1000.0f);
+        this->update(t / 1000.0f);
         this->_deltaTime = deltaTime;
     }
 }
 void EditorMain::update(float deltaTime)
 {
-    if(BooEditor::cache){
+    if (BooEditor::cache)
+    {
         BooEditor::cache->update(deltaTime);
     }
 }

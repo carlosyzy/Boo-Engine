@@ -37,7 +37,7 @@ void EditorLoading::Awake()
 	this->_initBg();
 	this->_initLogo();
 	this->_initLoadUI();
-	this->_initAssetsConfig();
+	this->_initAssetsDB();
 	// this->_initLoadingResources();
 	// for (auto &node : this->_node->getChildren())
 	// {
@@ -129,38 +129,49 @@ void EditorLoading::_setLoadProgress(float progress)
 		this->_ndLoadBar->setPosition(-loadWidth / 2.0 + loadBarWidth / 2.0, 0.0f, 0.0f);
 	}
 }
-void EditorLoading::_initAssetsConfig()
+void EditorLoading::_initAssetsDB()
 {
-	
+	BooEditor::cache->initAssetsDBMaps(&EditorLoading::_initAssetsDBCallback, this);
 }
+void EditorLoading::_initAssetsDBCallback(int completedCount, int allCount, float progress)
+{
+	// this->_setLoadProgress(progress * 0.9f);
+	// if (completedCount == allCount)
+	// {
+	// 	// 加载完成
+	// 	this->_initLoadingResources();
+	// }
+	std::cout << "EditorLoading::_initAssetsDBCallback: " << completedCount << " " << allCount << " " << progress << std::endl;
+}
+
 
 void EditorLoading::_initLoadingResources()
 {
-	// 先加载公用resources文件,
-	const std::string &root = Boo::game->assetsManager()->root();
-	std::filesystem::path resources = std::filesystem::path(root) / "resources";
-	std::vector<std::string> paths;
-	for (const auto &entry : std::filesystem::recursive_directory_iterator(resources))
-	{
-		if (std::filesystem::is_regular_file(entry.path()))
-		{
-			std::filesystem::path path = std::filesystem::relative(entry.path(), std::filesystem::path(root));
-			paths.push_back(path.generic_string());
-			std::cout << "add resource " << path.generic_string() << std::endl;
-		}
-	}
-	// 记载工程assets文件
-	std::filesystem::path projectAssets = std::filesystem::path(BooEditor::projectPath) / "assets";
-	for (const auto &entry : std::filesystem::recursive_directory_iterator(projectAssets))
-	{
-		if (std::filesystem::is_regular_file(entry.path()))
-		{
-			std::filesystem::path path = std::filesystem::relative(entry.path(), std::filesystem::path(root));
-			paths.push_back(path.generic_string());
-			std::cout << "add resource " << path.generic_string() << std::endl;
-		}
-	}
-	this->_loadingResourcesTaskId = Boo::game->assetsManager()->loadListAsync(paths, &EditorLoading::_onLoadCallBack, this);
+	// // 先加载公用resources文件,
+	// const std::string &root = Boo::game->assetsManager()->root();
+	// std::filesystem::path resources = std::filesystem::path(root) / "resources";
+	// std::vector<std::string> paths;
+	// for (const auto &entry : std::filesystem::recursive_directory_iterator(resources))
+	// {
+	// 	if (std::filesystem::is_regular_file(entry.path()))
+	// 	{
+	// 		std::filesystem::path path = std::filesystem::relative(entry.path(), std::filesystem::path(root));
+	// 		paths.push_back(path.generic_string());
+	// 		std::cout << "add resource " << path.generic_string() << std::endl;
+	// 	}
+	// }
+	// // 记载工程assets文件
+	// std::filesystem::path projectAssets = std::filesystem::path(BooEditor::projectPath) / "assets";
+	// for (const auto &entry : std::filesystem::recursive_directory_iterator(projectAssets))
+	// {
+	// 	if (std::filesystem::is_regular_file(entry.path()))
+	// 	{
+	// 		std::filesystem::path path = std::filesystem::relative(entry.path(), std::filesystem::path(root));
+	// 		paths.push_back(path.generic_string());
+	// 		std::cout << "add resource " << path.generic_string() << std::endl;
+	// 	}
+	// }
+	// this->_loadingResourcesTaskId = Boo::game->assetsManager()->loadListAsync(paths, &EditorLoading::_onLoadCallBack, this);
 }
 void EditorLoading::_onLoadCallBack(int completedCount, int allCount, float progress)
 {

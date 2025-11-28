@@ -8,27 +8,20 @@
 EditorCacheTask::EditorCacheTask()
 {
 }
-void EditorCacheTask::init(std::string path, json config)
+void EditorCacheTask::init(std::string path, std::vector<AssetDB> configs)
 {
     this->_path = path;
-    this->_config = config;
+    this->_configs = configs;
 }
 void EditorCacheTask::run()
 {
-    if (this->_config.size() > 0)
+    std::cout << "EditorCacheTask::run: " << this->_path << " -> " << this->_configs.size() << std::endl;
+    if (this->_configs.size() > 0)
     {
         bool isOK = true;
-        for (auto &config : this->_config)
+        for (auto &config : this->_configs)
         {
-            // 只要有一个文件不存在就删除旧的重新创建
-            std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / config["uuid"]).replace_extension(config["extension"]).generic_string();
-            std::string assetPath = (std::filesystem::path(BooEditor::projectPath) / "assets" / config["path"]).generic_string();
-            if (!std::filesystem::exists(libraryPath))
-            {
-                isOK = false;
-                break;
-            }
-            else if (!std::filesystem::exists(assetPath))
+            if (!this->_verifyLibraryAsset(config))
             {
                 isOK = false;
                 break;
@@ -36,19 +29,11 @@ void EditorCacheTask::run()
         }
         if (!isOK)
         {
-            // 删除旧的库资产-然后重新创建
-            for (auto &config : this->_config)
-            {
-                std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / config["uuid"]).replace_extension(config["extension"]).generic_string();
-                if (std::filesystem::exists(libraryPath))
-                {
-                    std::filesystem::remove(libraryPath);
-                }
-            }
+            this->_clearLibraryAsset();
             this->_createLibraryAsset();
-        }else{
-            // 资产存在-无需重新创建
-
+        }
+        else
+        {
         }
     }
     else
@@ -57,10 +42,46 @@ void EditorCacheTask::run()
         this->_createLibraryAsset();
     }
 }
+bool EditorCacheTask::_verifyLibraryAsset(AssetDB &config)
+{
+    std::string uuid = config.uuid;
+    std::string extension = config.extension;
+    std::string name = config.name;
+    std::string path = config.path;
+
+    // 只要有一个文件不存在就删除旧的重新创建
+    std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
+    std::string assetPath = (std::filesystem::path(BooEditor::projectPath) / "assets" / path).generic_string();
+    if (!std::filesystem::exists(libraryPath))
+    {
+        return false;
+    }
+    else if (!std::filesystem::exists(assetPath))
+    {
+        return false;
+    }
+    return true;
+}
+void EditorCacheTask::_clearLibraryAsset()
+{
+    // 删除旧的库资产-然后重新创建
+    for (auto &config : this->_configs)
+    {
+        std::string uuid = config.uuid;
+        std::string extension = config.extension;
+        std::string name = config.name;
+        std::string path = config.path;
+        std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
+        FileUtil::removeFile(libraryPath);
+    }
+    this->_configs.clear();
+}
+
 void EditorCacheTask::_createLibraryAsset()
 {
     // 获取原始路径
     std::filesystem::path assetsPath = (std::filesystem::path(BooEditor::projectPath) / "assets" / this->_path).generic_string();
+    std::cout << "EditorCacheTask::_createLibraryAsset: " << assetsPath << std::endl;
     if (!std::filesystem::exists(assetsPath))
     {
         return;
@@ -73,15 +94,16 @@ void EditorCacheTask::_createLibraryAsset()
      */
     if (extension == ".png" || extension == ".PNG" || extension == ".jpg" || extension == ".JPG") // 图片-原始资源
     {
-        json configs = json::array();
         std::string uuid = UuidUtil::generateUUID();
-        json config = {
-            {"type", uint32_t(AssetType::Texture)},
-            {"path", this->_path},
-            {"uuid", uuid},
-            {"extension", extension}};
-        configs.push_back(config);
-        BooEditor::cache->updateAssetsMap(this->_path, configs);
+        std::vector<AssetDB> configs;
+        AssetDB sub{};
+        sub.name = std::filesystem::path(assetsPath).stem().string();
+        sub.path = this->_path;
+        sub.uuid = uuid;
+        sub.type = AssetType::Texture;
+        sub.extension = extension;
+        this->_configs.push_back(sub);
+        Boo::game->assetsManager()->updateAssetsDB(this->_path, configs);
         // 更新Library资产映射
         std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
         FileUtil::copyFile(assetsPath.generic_string(), libraryPath);
@@ -89,45 +111,48 @@ void EditorCacheTask::_createLibraryAsset()
     }
     else if (extension == ".vert" || extension == ".frag") // GLSL-原始资源
     {
-        json configs = json::array();
         std::string uuid = UuidUtil::generateUUID();
-        json config = {
-            {"type", uint32_t(AssetType::Shader)},
-            {"path", this->_path},
-            {"uuid", uuid},
-            {"extension", extension}};
-        configs.push_back(config);
-        BooEditor::cache->updateAssetsMap(this->_path, configs);
+        std::vector<AssetDB> configs;
+        AssetDB sub{};
+        sub.name = std::filesystem::path(assetsPath).stem().string();
+        sub.path = this->_path;
+        sub.uuid = uuid;
+        sub.type = AssetType::Shader;
+        sub.extension = extension;
+        this->_configs.push_back(sub);
+        Boo::game->assetsManager()->updateAssetsDB(this->_path, configs);
         // 更新Library资产映射
         std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
         FileUtil::copyFile(assetsPath.generic_string(), libraryPath);
     }
     else if (extension == ".spv") // SPIR-V-原始资源
     {
-        json configs = json::array();
         std::string uuid = UuidUtil::generateUUID();
-        json config = {
-            {"type", uint32_t(AssetType::Shader)},
-            {"path", this->_path},
-            {"uuid", uuid},
-            {"extension", extension}};
-        configs.push_back(config);
-        BooEditor::cache->updateAssetsMap(this->_path, configs);
+        std::vector<AssetDB> configs;
+        AssetDB sub{};
+        sub.name = std::filesystem::path(assetsPath).stem().string();
+        sub.path = this->_path;
+        sub.uuid = uuid;
+        sub.type = AssetType::Shader;
+        sub.extension = extension;
+        this->_configs.push_back(sub);
+        Boo::game->assetsManager()->updateAssetsDB(this->_path, configs);
         // 更新Library资产映射
         std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
         FileUtil::copyFile(assetsPath.generic_string(), libraryPath);
     }
     else if (extension == ".scene") // 场景-原始资源
     {
-        json configs = json::array();
         std::string uuid = UuidUtil::generateUUID();
-        json config = {
-            {"type", uint32_t(AssetType::Scene)},
-            {"path", this->_path},
-            {"uuid", uuid},
-            {"extension", extension}};
-        configs.push_back(config);
-        BooEditor::cache->updateAssetsMap(this->_path, configs);
+        std::vector<AssetDB> configs;
+        AssetDB sub{};
+        sub.name = std::filesystem::path(assetsPath).stem().string();
+        sub.path = this->_path;
+        sub.uuid = uuid;
+        sub.type = AssetType::Scene;
+        sub.extension = extension;
+        this->_configs.push_back(sub);
+        Boo::game->assetsManager()->updateAssetsDB(this->_path, configs);
         // 更新Library资产映射
         std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
         FileUtil::copyFile(assetsPath.generic_string(), libraryPath);
@@ -135,16 +160,6 @@ void EditorCacheTask::_createLibraryAsset()
     else
     {
     }
-
-    // std::string normPath = assetsPath.generic_string();
-    // Asset *asset = this->_cache->getAsset(normPath);
-    // if (asset != nullptr)
-    // {
-    //     return;
-    // }
-    // AssetTask task(this->_mgr, this->_cache, this->_taskID);
-    // task.loadAsync(normPath, this->_config);
-    // this->_tasks.push_back(task);
 }
 
 EditorCacheTask::~EditorCacheTask()

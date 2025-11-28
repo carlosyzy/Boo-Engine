@@ -3,6 +3,7 @@
 
 #include "../../engine/boo.h"
 #include "../../engine/core/assets/assets-manager.h"
+#include "../../engine/core/assets/asset-cache.h"
 
 EditorCache::EditorCache()
 {
@@ -13,6 +14,15 @@ void EditorCache::init()
 }
 void EditorCache::_initRoot()
 {
+    // 资产目录
+    std::filesystem::path assetsPath = (std::filesystem::path(BooEditor::projectPath) / "assets").generic_string();
+    // 判断当前目录存在不,不存在创建
+    if (!std::filesystem::exists(assetsPath))
+    {
+        std::filesystem::create_directories(assetsPath);
+    }
+    this->_assetsPath = assetsPath.generic_string();
+
     // 配置目录
     std::filesystem::path settingPath = (std::filesystem::path(BooEditor::projectPath) / "setting").generic_string();
     // 判断当前目录存在不,不存在创建
@@ -31,65 +41,56 @@ void EditorCache::_initRoot()
     }
     this->_libraryPath = libraryPath.generic_string();
 
-    // 资产配置文件
-    std::filesystem::path assetsPathMap = (std::filesystem::path(this->_settingPath) / "assets.bin").generic_string();
-    Boo::game->assetsManager()->initAssetPathMap(assetsPathMap);
-    Boo::game->assetsManager()->setRoot(this->_libraryPath);
+    // 资产数据库文件
+    std::filesystem::path assetsDBPath = (std::filesystem::path(this->_settingPath) / "assets.db").generic_string();
+    this->_assetsDBPath = assetsDBPath.generic_string();
+    Boo::game->assetsManager()->initAssetsDB(this->_assetsDBPath);
+    Boo::game->assetsManager()->setAssetsRoot(this->_libraryPath);
 }
 
-void EditorCache::_updateLibraryAssetsMaps()
+void EditorCache::_updateAssetsDBMaps()
 {
-    // key : 相对于assets 目录的路径
-    // value : 当前目录包含子的子资源
-    //        name: 子资源的名称
-    //        uuid: 子资源的uuid
-    //        type: 子资源的类型
-    json &assetsConfig = Boo::game->assetsManager()->getAssetPathMap();
+    std::cout << "EditorCache::_updateAssetsDBMaps: " << std::endl;
+    this->_initAssetsDBTasks.clear();
+    std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig = Boo::game->assetsManager()->getAssetsDB();
     // 获取assets目录下所有资源路径
-    std::filesystem::path assetsPath = (std::filesystem::path(BooEditor::projectPath) / "assets").generic_string();
-    // 需要进行映射的资产队列
-    this->_initAssetMapTasks.clear();
-    for (const auto &entry : std::filesystem::recursive_directory_iterator(assetsPath))
+    for (const auto &entry : std::filesystem::recursive_directory_iterator(this->_assetsPath))
     {
         if (std::filesystem::is_regular_file(entry))
         {
-            std::string relativePath = std::filesystem::relative(entry.path(), std::filesystem::path(BooEditor::projectPath)).generic_string();
+            std::string relativePath = std::filesystem::relative(entry.path(), this->_assetsPath).generic_string();
             EditorCacheTask task;
-            if (assetsConfig.contains(relativePath))
+            if (assetsConfig.find(relativePath) != assetsConfig.end())
             {
                 task.init(relativePath, assetsConfig[relativePath]);
             }
             else
             {
-                task.init(relativePath, json::array());
+                std::vector<AssetDB> empty;
+                task.init(relativePath, empty);
             }
-            this->_initAssetMapTasks.push_back(task);
+            this->_initAssetsDBTasks.push_back(task);
         }
     }
-    this->_isInitAssetMap = true;
-    this->_initAssetMapTaskAll = this->_initAssetMapTasks.size();
-    this->_initAssetMapTaskComplete = 0;
+    this->_isInitAssetsDB = true;
+    this->_initAssetsDBTaskAll = this->_initAssetsDBTasks.size();
+    this->_initAssetsDBTaskComplete = 0;
+    std::cout << "EditorCache::_updateAssetsDBMaps: " << this->_initAssetsDBTaskAll << std::endl;
 }
-
-void EditorCache::updateAssetsMap(std::string path, json infos)
-{
-    Boo::game->assetsManager()->updateAssetPathMap(path, infos);
-}
-
 void EditorCache::update(float deltaTime)
 {
-    if (this->_initAssetMapTasks.size() > 0)
+    if (this->_initAssetsDBTasks.size() > 0)
     {
-        int count = this->_initAssetMapTasks.size() > 30 ? 30 : this->_initAssetMapTasks.size();
+        int count = this->_initAssetsDBTasks.size() > 30 ? 30 : this->_initAssetsDBTasks.size();
         for (int i = 0; i < count; i++)
         {
-            EditorCacheTask task = this->_initAssetMapTasks.front();
-            this->_initAssetMapTasks.erase(this->_initAssetMapTasks.begin());
+            EditorCacheTask task = this->_initAssetsDBTasks.front();
+            this->_initAssetsDBTasks.erase(this->_initAssetsDBTasks.begin());
             task.run();
-            this->_initAssetMapTaskComplete++;
-            if (this->_initLibraryCallback != nullptr)
+            this->_initAssetsDBTaskComplete++;
+            if (this->_initAssetsDBCallback != nullptr)
             {
-                this->_initLibraryCallback(this->_initAssetMapTaskComplete, this->_initAssetMapTaskAll, this->_initAssetMapTaskComplete / (float)this->_initAssetMapTaskAll);
+                this->_initAssetsDBCallback(this->_initAssetsDBTaskComplete, this->_initAssetsDBTaskAll, this->_initAssetsDBTaskComplete / (float)this->_initAssetsDBTaskAll);
             }
         }
     }
