@@ -14,10 +14,8 @@ public:
     EditorProjectCache();
     void init();
     void update();
-    std::string getLaunchScene()
-    {
-        return _projectCache["launchScene"];
-    };
+    std::string getLaunchScene();
+    void setLaunchScene(std::string launchScene);
 
     ~EditorProjectCache();
 };

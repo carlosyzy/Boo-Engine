@@ -16,6 +16,7 @@ private:
 	 * @brief 资产映射表
 	 */
 	std::unordered_map<std::string, Asset*> _assetsMap;
+    std::unordered_map<std::string, Asset*> _sceneAssetsMap;
 public:
     AssetCache();
     /**
@@ -26,6 +27,9 @@ public:
      */
     void addAsset(const std::string path, Asset *asset);
     Asset *getAsset(const std::string &path);
+
+    void addSceneAsset(const std::string path, Asset *asset);
+    Asset *getSceneAsset(const std::string &path);
     ~AssetCache();
 };
 

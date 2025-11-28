@@ -24,7 +24,6 @@ Asset *AssetTask::load(const std::string &path)
 	return this->_cache->getAsset(this->_path);
 }
 
-
 void AssetTask::run()
 {
 	std::filesystem::path fullPath = std::filesystem::path(this->_mgr->root()) / this->_path;
@@ -57,7 +56,9 @@ void AssetTask::run()
 	else if (extension == ".spv")
 	{
 		this->_createSpirvShader(resKey, fullPath.generic_string());
-	}else if (extension == ".scene"){
+	}
+	else if (extension == ".scene")
+	{
 		this->_createScene(resKey, fullPath.generic_string());
 	}
 	else
@@ -90,7 +91,8 @@ void AssetTask::_createSpirvShader(const std::string resKey, const std::string f
 void AssetTask::_createScene(const std::string resKey, const std::string fullPath)
 {
 	SceneAsset *scene = new SceneAsset(resKey, fullPath);
-	this->_cache->addAsset(resKey, scene);
+	this->_cache->addAsset(resKey, scene);		// 添加到普通资产缓存
+	this->_cache->addSceneAsset(resKey, scene); // 添加到场景资产缓存
 	this->_loadComplete();
 }
 

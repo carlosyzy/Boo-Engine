@@ -6,7 +6,9 @@ EditorProjectCache::EditorProjectCache()
 }
 void EditorProjectCache::init()
 {
-    std::filesystem::path projectCachePath = std::filesystem::path(BooEditor::projectPath) / "setting" / "project.bin";
+    // 初始化setting目录
+    std::filesystem::path projectCachePath = (std::filesystem::path(BooEditor::projectPath) / "setting").generic_string();
+    std::filesystem::path projectCachePath = std::filesystem::path(projectCachePath) / "project.bin";
     if (std::filesystem::is_regular_file(projectCachePath))
     {
         this->_projectCache = FileUtil::loadJsonFromBinary(projectCachePath.generic_string());
@@ -22,15 +24,26 @@ void EditorProjectCache::init()
     std::cout << "init:Project Cache: " << this->_projectCache << std::endl;
     this->update();
 }
+
+std::string EditorProjectCache::getLaunchScene()
+{
+    return this->_projectCache["launchScene"];
+};
+void EditorProjectCache::setLaunchScene(std::string launchScene)
+{
+    this->_projectCache["launchScene"] = launchScene;
+    this->update();
+};
+/**
+ * @brief 更新项目缓存
+ */
 void EditorProjectCache::update()
 {
-
     std::filesystem::path projectCachePath = std::filesystem::path(BooEditor::projectPath) / "setting" / "project.bin";
-    std::cout << "update:Project Cache: " << this->_projectCache << std::endl;
     FileUtil::saveJsonToBinary(projectCachePath.generic_string(), this->_projectCache);
+    std::cout << "update:Project Cache: " << this->_projectCache << std::endl;
 }
 
 EditorProjectCache::~EditorProjectCache()
 {
 }
-

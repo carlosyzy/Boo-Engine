@@ -74,6 +74,7 @@ void EditorLoading::_initLogo()
 	if (compLogo != nullptr)
 	{
 		this->_spriteLogo = dynamic_cast<UISprite *>(compLogo);
+		this->_spriteLogo->setEnabled(false);
 		this->_spriteLogo->setTextureAsset("resources/texture/logo.png");
 		this->_spriteLogo->setMaterialAsset(nullptr);
 		this->_spriteLogo->setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -94,6 +95,7 @@ void EditorLoading::_initLoadUI()
 	this->_spriteLoad = dynamic_cast<UISprite *>(this->_ndLoad->addComponent("UISprite"));
 	if (this->_spriteLoad != nullptr)
 	{
+		this->_spriteLoad->setEnabled(false);
 		this->_spriteLoad->setTextureAsset("resources/texture/ic-default.png");
 		this->_spriteLoad->setMaterialAsset(nullptr);
 		this->_spriteLoad->setColor("#0A2F36");
@@ -103,6 +105,7 @@ void EditorLoading::_initLoadUI()
 	this->_spriteLoadBar = dynamic_cast<UISprite *>(this->_ndLoadBar->addComponent("UISprite"));
 	if (this->_spriteLoadBar != nullptr)
 	{
+		this->_spriteLoadBar->setEnabled(false);
 		this->_spriteLoadBar->setTextureAsset("resources/texture/ic-default.png");
 		this->_spriteLoadBar->setMaterialAsset(nullptr);
 		this->_spriteLoadBar->setColor(1.0f, 1.0f, 1.0f, 1.0f);

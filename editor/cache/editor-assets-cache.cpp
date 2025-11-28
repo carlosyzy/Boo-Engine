@@ -6,7 +6,9 @@ EditorAssetsCache::EditorAssetsCache()
 }
 void EditorAssetsCache::init()
 {
-    std::filesystem::path assetsCachePath = std::filesystem::path(BooEditor::projectPath) / "setting" / "assets.bin";
+    // 初始化setting目录
+    std::filesystem::path settingPath = (std::filesystem::path(BooEditor::projectPath) / "setting").generic_string();
+    std::filesystem::path assetsCachePath = std::filesystem::path(settingPath) / "assets.bin";
     if (std::filesystem::is_regular_file(assetsCachePath))
     {
         this->_assetsCache = FileUtil::loadJsonFromBinary(assetsCachePath.string());
@@ -17,7 +19,6 @@ void EditorAssetsCache::init()
     }
     std::cout << "init:Assets Cache: " << this->_assetsCache << std::endl;
     this->reset();
-    
 }
 void EditorAssetsCache::reset()
 {
@@ -51,24 +52,32 @@ void EditorAssetsCache::_insertNewAsset(std::vector<std::string> &existAssets)
 void EditorAssetsCache::_delNotExistAssets(std::vector<std::string> &existAssets)
 {
     std::vector<std::string> keysToRemove;
-    for (const auto& entry : this->_assetsCache.items()) {
-        if (std::find(existAssets.begin(), existAssets.end(), entry.key()) == existAssets.end()) {
+    for (const auto &entry : this->_assetsCache.items())
+    {
+        if (std::find(existAssets.begin(), existAssets.end(), entry.key()) == existAssets.end())
+        {
             keysToRemove.push_back(entry.key());
         }
     }
-    for (const auto& key : keysToRemove) {
+    for (const auto &key : keysToRemove)
+    {
         this->_assetsCache.erase(key);
     }
 }
 /**
  * @brief 获取assets目录下的所有资源列表
- * @return std::vector<std::string> 
+ * @return std::vector<std::string>
  */
 std::vector<std::string> EditorAssetsCache::_getAssetsList()
 {
-   // 初始化资源列表,和assets下的所有资源进行关联
+    std::filesystem::path assetsPath = (std::filesystem::path(BooEditor::projectPath) / "assets").generic_string();
+    // 判断当前目录存在不,不存在创建
+    if (!std::filesystem::exists(assetsPath))
+    {
+        std::filesystem::create_directories(assetsPath);
+    }
+    // 初始化资源列表,和assets下的所有资源进行关联
     std::vector<std::string> existAssets;
-    std::filesystem::path assetsPath = std::filesystem::path(BooEditor::projectPath) / "assets";
     for (const auto &entry : std::filesystem::recursive_directory_iterator(assetsPath))
     {
         if (std::filesystem::is_regular_file(entry))
@@ -79,8 +88,6 @@ std::vector<std::string> EditorAssetsCache::_getAssetsList()
     }
     return existAssets;
 }
-
-
 
 EditorAssetsCache::~EditorAssetsCache()
 {

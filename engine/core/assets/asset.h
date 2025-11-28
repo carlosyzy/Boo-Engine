@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <filesystem>
 enum class AssetType
 {
     None,
@@ -19,6 +20,10 @@ protected:
      */
     AssetType _type;
     /**
+     * 
+     */
+    std::string _name;
+    /**
      * @brief 资源键值
      */
     std::string _uuid;
@@ -31,6 +36,14 @@ protected:
 public:
     Asset(std::string uuid);
     Asset(std::string uuid,std::string path);
+    /**
+     * @brief 获取资源名
+     * 
+     * @return const std::string& 
+     */
+    const std::string& getName() {
+        return this->_name;
+    }
     const std::string& getUuid() {
         return this->_uuid;
     }

@@ -46,6 +46,10 @@ public:
      * 打开一个已经存在的场景
      */
     void openScene(std::string sceneName, std::string scenePath, Scene *scene);
+
+    std::string getSceneName();
+   
+
     void update();
     void save();
     void clear();

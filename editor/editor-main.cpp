@@ -15,6 +15,12 @@
 
 EditorMain::EditorMain()
 {
+    std::filesystem::path settingPath = (std::filesystem::path(BooEditor::projectPath) / "setting").generic_string();
+    // 判断当前目录存在不,不存在创建
+    if (!std::filesystem::exists(settingPath))
+    {
+        std::filesystem::create_directories(settingPath);
+    }
 }
 void EditorMain::init()
 {
@@ -33,10 +39,10 @@ void EditorMain::_startLoading()
 }
 void EditorMain::_launchEditor()
 {
-    Scene *scene = new Scene("Editor-Scene");
-    Node2D *node2d = scene->getRoot2D();
-    this->_editorLayout = static_cast<EditorLayout *>(node2d->addComponent("EditorLayout"));
-    Boo::game->openScene(scene);
+    // Scene *scene = new Scene("Editor-Scene");
+    // Node2D *node2d = scene->getRoot2D();
+    // this->_editorLayout = static_cast<EditorLayout *>(node2d->addComponent("EditorLayout"));
+    // Boo::game->openScene(scene);
     BooEditor::scene->clear();
     // 初始化编辑器模块
     this->_initEditorModules();
@@ -44,7 +50,6 @@ void EditorMain::_launchEditor()
     this->_initEditorRunScene();
     // 启动编辑器场景
     this->_launchEditorScene();
-    BooEditor::scene->save();
 }
 void EditorMain::_initEditorModules()
 {
@@ -73,6 +78,8 @@ void EditorMain::_initEditorRunScene()
 }
 void EditorMain::_launchEditorScene()
 {
+    BooEditor::project->setLaunchScene(BooEditor::scene->getSceneName());
+    BooEditor::scene->save();
 }
 
 EditorMain::~EditorMain()

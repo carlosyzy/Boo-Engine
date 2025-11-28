@@ -56,7 +56,6 @@ void FileUtil::saveJsonToBinary(const std::string &filename, const json &data)
         std::ofstream file(filename, std::ios::binary);
         if (!file.is_open())
         {
-
             return;
         }
         // 写入二进制数据
