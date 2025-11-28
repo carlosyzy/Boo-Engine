@@ -34,6 +34,15 @@ void EditorCacheTask::run()
         }
         else
         {
+            for (auto &config : this->_configs)
+            {
+                std::string uuid = config.uuid;
+                std::string extension = config.extension;
+                std::string name = config.name;
+                std::string path = config.path;
+                std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
+                Boo::game->assetsManager()->load(libraryPath);
+            }
         }
     }
     else
