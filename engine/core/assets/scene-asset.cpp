@@ -8,7 +8,7 @@ SceneAsset::SceneAsset(const std::string uuid, const std::string path) : Asset(u
 }
 void SceneAsset::_load()
 {
-    this->_sceneData = FileUtil::loadJsonFromBinary(this->_path);
+    this->_sceneData = FileUtil::readJsonFromBinary(this->_path);
 }
 SceneAsset::~SceneAsset()
 {

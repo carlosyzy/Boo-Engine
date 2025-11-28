@@ -1,10 +1,10 @@
 #include "editor-loading.h"
 #include "../boo-editor.h"
 #include "../layout/editor-layout.h"
-#include "../cache/editor-assets-cache.h"
-#include "../cache/editor-config-cache.h"
-#include "../cache/editor-project-cache.h"
-#include "../cache/editor-scene-cache.h"	
+// #include "../cache/editor-assets-cache.h"
+// #include "../cache/editor-config-cache.h"
+// #include "../cache/editor-project-cache.h"
+// #include "../cache/editor-scene-cache.h"
 
 #include "../../engine/boo.h"
 #include "../../engine/core/renderer/ui/ui-sprite.h"
@@ -12,6 +12,9 @@
 #include "../../engine/core/scene/scene.h"
 #include "../../engine/core/scene/node.h"
 #include "../../engine/core/scene/node-2d.h"
+
+#include "../../engine/core/utils/json-util.h"
+#include "../../engine/core/utils/file-util.h"
 
 EditorLoading::EditorLoading(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
 {
@@ -22,7 +25,7 @@ EditorLoading::EditorLoading(std::string name, Node *node, std::string uuid) : C
  */
 void EditorLoading::_deserialized()
 {
-    Component::_deserialized();
+	Component::_deserialized();
 }
 
 void EditorLoading::Awake()
@@ -34,11 +37,12 @@ void EditorLoading::Awake()
 	this->_initBg();
 	this->_initLogo();
 	this->_initLoadUI();
-	this->_initLoadingResources();
-	for (auto &node : this->_node->getChildren())
-	{
-		std::cout << "EditorLoading::Awake: " << node->getName() << std::endl;
-	}
+	this->_initAssetsConfig();
+	// this->_initLoadingResources();
+	// for (auto &node : this->_node->getChildren())
+	// {
+	// 	std::cout << "EditorLoading::Awake: " << node->getName() << std::endl;
+	// }
 }
 void EditorLoading::Enable()
 {
@@ -125,6 +129,11 @@ void EditorLoading::_setLoadProgress(float progress)
 		this->_ndLoadBar->setPosition(-loadWidth / 2.0 + loadBarWidth / 2.0, 0.0f, 0.0f);
 	}
 }
+void EditorLoading::_initAssetsConfig()
+{
+	
+}
+
 void EditorLoading::_initLoadingResources()
 {
 	// 先加载公用resources文件,
@@ -167,29 +176,28 @@ void EditorLoading::_onLoadCallBack(int completedCount, int allCount, float prog
 }
 void EditorLoading::_initEditorCache()
 {
-	// 项目setting配置
-	//  初始化editor 配置缓存
-	BooEditor::config->init();
-	// 初始化assets 资源缓存
-	BooEditor::assets->init();
-	// 初始化project 项目配置
-	BooEditor::project->init();
-	// 初始化scene 场景缓存
-	BooEditor::scene->init();
-	this->_setLoadProgress(1.0f);
-	this->_launchEditorTaskId = Boo::game->scheduleOnce(&EditorLoading::_launchEditor, this, 0.1f);
+	// // 项目setting配置
+	// //  初始化editor 配置缓存
+	// BooEditor::config->init();
+	// // 初始化assets 资源缓存
+	// BooEditor::assets->init();
+	// // 初始化project 项目配置
+	// BooEditor::project->init();
+	// // 初始化scene 场景缓存
+	// BooEditor::scene->init();
+	// this->_setLoadProgress(1.0f);
+	// this->_launchEditorTaskId = Boo::game->scheduleOnce(&EditorLoading::_launchEditor, this, 0.1f);
 }
 void EditorLoading::_launchEditor()
 {
 	Boo::game->unschedule(this->_launchEditorTaskId);
 	this->_launchEditorTaskId = -1;
-	
+
 	if (this->_onLoadComplete != nullptr)
 	{
 		this->_onLoadComplete();
 	}
 }
-
 
 void EditorLoading::Update(float deltaTime)
 {

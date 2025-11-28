@@ -1,9 +1,11 @@
 #include "editor.h"
 #include "boo-editor.h"
-#include "cache/editor-assets-cache.h"
-#include "cache/editor-config-cache.h"
-#include "cache/editor-project-cache.h"
-#include "cache/editor-scene-cache.h"
+// #include "cache/editor-assets-cache.h"
+// #include "cache/editor-config-cache.h"
+// #include "cache/editor-project-cache.h"
+// #include "cache/editor-scene-cache.h"
+
+#include "cache/editor-cache.h"
 
 #include "../engine/boo.h"
 #include "../engine/engine.h"
@@ -24,10 +26,10 @@ Editor::Editor()
 void Editor::init()
 {
 	Boo::Editor = true;
-	BooEditor::assets = new EditorAssetsCache();
-	BooEditor::config = new EditorConfigCache();
-	BooEditor::project = new EditorProjectCache();
-	BooEditor::scene = new EditorSceneCache();
+	// BooEditor::assets = new EditorAssetsCache();
+	// BooEditor::config = new EditorConfigCache();
+	// BooEditor::project = new EditorProjectCache();
+	// BooEditor::scene = new EditorSceneCache();
 	this->_initWindow();
 	this->_initEngine();
 	this->_initEditorMain();
@@ -72,6 +74,7 @@ void Editor::run()
 	while (this->_window->isRunning())
 	{
 		this->_window->tick();
+		this->_main->tick();
 		this->_engine->tick();
 	}
 }

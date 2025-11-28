@@ -76,7 +76,7 @@ void FileUtil::saveJsonToBinary(const std::string &filename, const json &data)
     }
 }
 // 从MessagePack加载
-json FileUtil::loadJsonFromBinary(const std::string &filename)
+json FileUtil::readJsonFromBinary(const std::string &filename)
 {
     try
     {
@@ -101,6 +101,67 @@ json FileUtil::loadJsonFromBinary(const std::string &filename)
         std::cerr << "加载失败: " << e.what() << std::endl;
         return json::object();
     }
+}
+void FileUtil::saveJsonToText(const std::string &filename, const json &data)
+{
+    try
+    {
+        std::ofstream json_file(filename);
+        json_file << data.dump(4);
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "保存失败: " << e.what() << std::endl;
+        return;
+    }
+}
+
+void FileUtil::copyFile(const std::string &src, const std::string &dst)
+{
+    try
+    {
+        // 检查源文件是否存在
+        if (!std::filesystem::exists(src))
+        {
+            std::cerr << "源文件不存在: " << src << std::endl;
+            return;
+        }
+        // 创建目标目录（如果不存在）
+        std::filesystem::create_directories(std::filesystem::path(dst).parent_path());
+        // 拷贝文件
+        std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing);
+
+        std::cout << "文件拷贝成功: " << src << " -> " << dst << std::endl;
+        return;
+    }
+    catch (const std::filesystem::filesystem_error &e)
+    {
+        std::cerr << "文件拷贝错误: " << e.what() << std::endl;
+        return;
+    }
+}
+void FileUtil::removeFile(const std::string &path)
+{
+    try
+    {
+        // 检查文件是否存在
+        if (!std::filesystem::exists(path))
+        {
+            std::cerr << "文件不存在: " << path << std::endl;
+            return;
+        }
+        // 删除文件
+        std::filesystem::remove(path);
+        std::cout << "文件删除成功: " << path << std::endl;
+    }
+    catch (const std::filesystem::filesystem_error &e)
+    {
+        std::cerr << "文件删除错误: " << e.what() << std::endl;
+    }
+    //  if (std::filesystem::exists(libraryPath))
+    //             {
+    //                 std::filesystem::remove(libraryPath);
+    //             }
 }
 
 // static bool saveBinary(const json& data, const std::string& filename) {

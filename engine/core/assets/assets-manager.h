@@ -12,9 +12,6 @@
 #include "material-asset.h"
 #include "shader.h"
 
-
-
-
 // 基础图片资源
 class AssetsManager
 {
@@ -28,8 +25,10 @@ private:
 	 * @brief 资产加载器
 	 */
 	AssetLoad *_assetLoad;
-
-	void _initRoot();
+	/**
+	 * @brief 资产缓存
+	 */
+	AssetCache *_cache;
 
 public:
 	AssetsManager();
@@ -38,6 +37,10 @@ public:
 	 */
 	void init();
 
+	void setRoot(const std::string &root)
+	{
+		this->_root = root;
+	};
 	const std::string &root()
 	{
 		return this->_root;
@@ -46,6 +49,26 @@ public:
 	{
 		return this->_assetLoad;
 	}
+	AssetCache *assetCache()
+	{
+		return this->_cache;
+	}
+	/**
+	 * @brief 初始化资产路径映射
+	 * @param path 资产路径
+	 */
+	void initAssetPathMap(const std::string &pathMap);
+	/**
+	 * @brief 获取资产路径映射
+	 * @return json 资产路径映射
+	 */
+	json &getAssetPathMap();
+	/**
+	 * @brief 更新资产路径映射
+	 * @param path 资产路径
+	 * @param infos 资产信息
+	 */
+	void updateAssetPathMap(const std::string path, json infos);
 	/**
 	 * @brief 加载资产
 	 * @param path 资产路径

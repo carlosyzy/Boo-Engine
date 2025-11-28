@@ -36,6 +36,7 @@ private:
 	void _setLoadProgress(float progress);
 	void _updateLoadBarSize(float width, float height);
 
+	void _initAssetsConfig();
 	/**
 	 * @brief 初始化加载资源
 	 * 

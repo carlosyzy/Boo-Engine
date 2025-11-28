@@ -1,9 +1,23 @@
 #include "asset-cache.h"
 #include "assets-manager.h"
+#include "../utils/file-util.h"
+#include "../utils/json-util.h"
 
 AssetCache::AssetCache()
 {
     
+}
+void AssetCache::initAssetPathMap(const std::string &pathMap)
+{
+    this->_pathAssetMap = FileUtil::readJsonFromBinary(pathMap);
+}
+json &AssetCache::getAssetPathMap()
+{
+    return this->_pathAssetMap;
+}
+void AssetCache::updateAssetPathMap(const std::string path, json infos)
+{
+    this->_pathAssetMap[path] = infos;
 }
 void AssetCache::addAsset(const std::string path, Asset *asset)
 {

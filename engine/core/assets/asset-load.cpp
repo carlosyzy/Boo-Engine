@@ -12,7 +12,7 @@
 AssetLoad::AssetLoad(AssetsManager *mgr)
 {
     this->_mgr = mgr;
-    this->_cache = new AssetCache();
+    this->_cache = this->_mgr->assetCache();
 }
 Asset *AssetLoad::load(const std::string path)
 {
