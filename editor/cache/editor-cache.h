@@ -11,7 +11,6 @@ class TextureAsset;
 class EditorCache
 {
     std::string _assetsPath;
-    std::string _internalAssetsPath;
     std::string _settingPath;
     std::string _libraryPath;
     std::string _assetsDBPath;
@@ -32,14 +31,14 @@ class EditorCache
      * @brief 更新资产数据库映射
      */
     void _updateAssetsDBMaps();
-    /**
-     * @brief 更新内置资产数据库映射
-     */
-    void _updateInternalAssetsDBMaps(std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig);
-    /**
-     * @brief 更新项目资产数据库映射
-     */
-    void _updateProjectAssetsDBMaps(std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig);
+    // /**
+    //  * @brief 更新内置资产数据库映射
+    //  */
+    // void _updateInternalAssetsDBMaps(std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig);
+    // /**
+    //  * @brief 更新项目资产数据库映射
+    //  */
+    // void _updateProjectAssetsDBMaps(std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig);
 
 
     std::unordered_map<std::string, TextureAsset*> _editorTextures;

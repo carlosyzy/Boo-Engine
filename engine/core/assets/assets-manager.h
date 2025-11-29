@@ -24,11 +24,11 @@ private:
 	/**
 	 * @brief 资产加载器
 	 */
-	AssetLoad *_assetLoad;
+	AssetLoad *_assetsLoad;
 	/**
 	 * @brief 资产缓存
 	 */
-	AssetCache *_cache;
+	AssetCache *_assetsCache;
 
 public:
 	AssetsManager();
@@ -53,8 +53,8 @@ public:
 	void setAssetsRoot(const std::string &root);
 	const std::string &getAssetsRoot();
 	void setMaxLoadCount(int count);
-	AssetLoad *assetLoad();
-	AssetCache *assetCache();
+	AssetLoad *assetsLoad();
+	AssetCache *assetsCache();
 
 	Asset *loadByUuid(const std::string &uuid);
 	Asset *getAssetByUuid(const std::string &uuid);

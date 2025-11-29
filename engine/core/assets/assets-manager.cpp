@@ -14,30 +14,30 @@ AssetsManager::AssetsManager()
 }
 void AssetsManager::init()
 {
-	this->_cache = new AssetCache();
-	this->_assetLoad = new AssetLoad(this);
+	this->_assetsCache = new AssetCache();
+	this->_assetsLoad = new AssetLoad(this);
 }
 void AssetsManager::initAssetsDB(const std::string &path)
 {
-	this->_cache->initAssetsDB(path);
+	this->_assetsCache->initAssetsDB(path);
 }
-/**
- * @brief 获取资产数据库
- * @return std::unordered_map<std::string, std::vector<AssetDB>> 资产数据库
- */
-std::unordered_map<std::string, std::vector<AssetDB>> &AssetsManager::getAssetsDB()
-{
-	return this->_cache->getAssetsDB();
-}
-/**
- * @brief 更新资产数据库
- * @param path 资产路径
- * @param configs 资产配置
- */
-void AssetsManager::updateAssetsDB(const std::string path, const std::vector<AssetDB> configs)
-{
-	this->_cache->updateAssetsDB(path, configs);
-}
+// /**
+//  * @brief 获取资产数据库
+//  * @return std::unordered_map<std::string, std::vector<AssetDB>> 资产数据库
+//  */
+// std::unordered_map<std::string, std::vector<AssetDB>> &AssetsManager::getAssetsDB()
+// {
+// 	return this->_cache->getAssetsDB();
+// }
+// /**
+//  * @brief 更新资产数据库
+//  * @param path 资产路径
+//  * @param configs 资产配置
+//  */
+// void AssetsManager::updateAssetsDB(const std::string path, const std::vector<AssetDB> configs)
+// {
+// 	this->_cache->updateAssetsDB(path, configs);
+// }
 void AssetsManager::setAssetsRoot(const std::string &root)
 {
 	this->_assetsRoot = root;
@@ -46,13 +46,13 @@ const std::string &AssetsManager::getAssetsRoot()
 {
 	return this->_assetsRoot;
 }
-AssetLoad *AssetsManager::assetLoad()
+AssetLoad *AssetsManager::assetsLoad()
 {
-	return this->_assetLoad;
+	return this->_assetsLoad;
 }
-AssetCache *AssetsManager::assetCache()
+AssetCache *AssetsManager::assetsCache()
 {
-	return this->_cache;
+	return this->_assetsCache;
 }
 /**
  * @brief 加载资产
@@ -61,23 +61,24 @@ AssetCache *AssetsManager::assetCache()
  */
 Asset *AssetsManager::loadByUuid(const std::string &uuid)
 {
-	return this->_assetLoad->loadByUuid(uuid);
+	return this->_assetsLoad->loadByUuid(uuid);
 }
 void AssetsManager::clearLoadCall(const int loadId)
 {
-	// this->_assetLoad->clearLoadCall(loadId);
+	// this->_assetsLoad->clearLoadCall(loadId);
 }
 Asset *AssetsManager::getAssetByUuid(const std::string &path)
 {
-	return this->_cache->getAssetByUuid(path);
+	// return this->_assetsCache->getAssetByUuid(path);
+	return nullptr;
 }
 void AssetsManager::setMaxLoadCount(int count)
 {
-	this->_assetLoad->setMaxLoadCount(count);
+	this->_assetsLoad->setMaxLoadCount(count);
 }
 void AssetsManager::update(float deltaTime)
 {
-	this->_assetLoad->update(deltaTime);
+	this->_assetsLoad->update(deltaTime);
 }
 
 AssetsManager::~AssetsManager()

@@ -1,16 +1,7 @@
 #pragma once
 #include <string>
 #include <filesystem>
-enum class AssetType
-{
-    None,
-    Texture,
-    Audio,
-    Font,
-    Shader,
-    Material,
-    Scene,
-};
+
 class Asset
 {
 private:

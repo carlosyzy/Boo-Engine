@@ -15,15 +15,6 @@ void EditorCache::init()
 }
 void EditorCache::_initRoot()
 {
-    // 内置资产目录
-    std::filesystem::path internalAssetsPath = (std::filesystem::path(BooEditor::editorPath) / "res/internal").generic_string();
-    // 判断当前目录存在不,不存在创建
-    if (!std::filesystem::exists(internalAssetsPath))
-    {
-        std::filesystem::create_directories(internalAssetsPath);
-    }
-    this->_internalAssetsPath = internalAssetsPath.generic_string();
-
     // 资产目录
     std::filesystem::path assetsPath = (std::filesystem::path(BooEditor::projectPath) / "assets").generic_string();
     // 判断当前目录存在不,不存在创建
@@ -62,62 +53,69 @@ void EditorCache::_updateAssetsDBMaps()
 {
     this->_initAssetsDBTasks.clear();
     // 项目资源db更新
-    std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig = Boo::game->assetsManager()->getAssetsDB();
-    // 内置资源db更新
-    this->_updateInternalAssetsDBMaps(assetsConfig);
-    // 项目资源db更新
-    this->_updateProjectAssetsDBMaps(assetsConfig);
+    // std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig = Boo::game->assetsManager()->getAssetsDB();
+    // // 内置资源db更新
+    // this->_updateInternalAssetsDBMaps(assetsConfig);
+    // // 项目资源db更新
+    // this->_updateProjectAssetsDBMaps(assetsConfig);
+
+
+    // std::cout << "Assets Project: " << this->_assetsPath << std::endl;
+    // for (const auto &entry : std::filesystem::recursive_directory_iterator(this->_assetsPath))
+    // {
+    //     if (std::filesystem::is_regular_file(entry))
+    //     {
+    //         std::string relativePath = std::filesystem::relative(entry.path(), this->_assetsPath).generic_string();
+    //         EditorCacheTask task;
+    //         if (assetsConfig.find(relativePath) != assetsConfig.end())
+    //         {
+    //             task.init(relativePath, this->_assetsPath, assetsConfig[relativePath]);
+    //         }
+    //         else
+    //         {
+    //             std::vector<AssetDB> empty;
+    //             task.init(relativePath, this->_assetsPath, empty);
+    //         }
+    //         this->_initAssetsDBTasks.push_back(task);
+    //     }
+    // }
+
+
+
+
 
     this->_isInitAssetsDB = true;
     this->_initAssetsDBTaskAll = this->_initAssetsDBTasks.size();
     this->_initAssetsDBTaskComplete = 0;
     std::cout << "EditorCache::_updateAssetsDBMaps: " << this->_initAssetsDBTaskAll << std::endl;
 }
-void EditorCache::_updateInternalAssetsDBMaps(std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig)
-{
-    std::cout << "Assets Internal: " << this->_internalAssetsPath << std::endl;
-    for (const auto &entry : std::filesystem::recursive_directory_iterator(this->_internalAssetsPath))
-    {
-        if (std::filesystem::is_regular_file(entry))
-        {
-            std::string relativePath = std::filesystem::relative(entry.path(), this->_internalAssetsPath).generic_string();
-            EditorCacheTask task;
-            if (assetsConfig.find(relativePath) != assetsConfig.end())
-            {
-                task.init(relativePath, this->_internalAssetsPath, assetsConfig[relativePath]);
-            }
-            else
-            {
-                std::vector<AssetDB> empty;
-                task.init(relativePath, this->_internalAssetsPath, empty);
-            }
-            this->_initAssetsDBTasks.push_back(task);
-        }
-    }
-}
-void EditorCache::_updateProjectAssetsDBMaps(std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig)
-{
+// void EditorCache::_updateInternalAssetsDBMaps(std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig)
+// {
+//     std::cout << "Assets Internal: " << this->_internalAssetsPath << std::endl;
+//     for (const auto &entry : std::filesystem::recursive_directory_iterator(this->_internalAssetsPath))
+//     {
+//         if (std::filesystem::is_regular_file(entry))
+//         {
+//             std::string relativePath = std::filesystem::relative(entry.path(), this->_internalAssetsPath).generic_string();
+//             EditorCacheTask task;
+//             if (assetsConfig.find(relativePath) != assetsConfig.end())
+//             {
+//                 task.init(relativePath, this->_internalAssetsPath, assetsConfig[relativePath]);
+//             }
+//             else
+//             {
+//                 std::vector<AssetDB> empty;
+//                 task.init(relativePath, this->_internalAssetsPath, empty);
+//             }
+//             this->_initAssetsDBTasks.push_back(task);
+//         }
+//     }
+// }
+// void EditorCache::_updateProjectAssetsDBMaps(std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig)
+// {
 
-     std::cout << "Assets Project: " << this->_assetsPath << std::endl;
-    for (const auto &entry : std::filesystem::recursive_directory_iterator(this->_assetsPath))
-    {
-        if (std::filesystem::is_regular_file(entry))
-        {
-            std::string relativePath = std::filesystem::relative(entry.path(), this->_assetsPath).generic_string();
-            EditorCacheTask task;
-            if (assetsConfig.find(relativePath) != assetsConfig.end())
-            {
-                task.init(relativePath, this->_assetsPath, assetsConfig[relativePath]);
-            }
-            else
-            {
-                std::vector<AssetDB> empty;
-                task.init(relativePath, this->_assetsPath, empty);
-            }
-            this->_initAssetsDBTasks.push_back(task);
-        }
-    }
-}
+   
+// }
 
 void EditorCache::update(float deltaTime)
 {
