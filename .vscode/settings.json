@@ -164,6 +164,11 @@
     "stdfloat": "cpp",
     "syncstream": "cpp",
     "cfloat": "cpp",
-    "version": "cpp"
+    "version": "cpp",
+    "ccomplex": "cpp",
+    "cstdalign": "cpp",
+    "cstdbool": "cpp",
+    "ctgmath": "cpp",
+    "execution": "cpp"
   }
 }

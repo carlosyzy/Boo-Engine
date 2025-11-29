@@ -216,6 +216,9 @@
     <ClCompile Include="editor\cache\editor-cache-task.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\loading\editor-loading.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\core\math\color.h">
@@ -651,6 +654,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\cache\editor-cache-task.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\loading\editor-loading.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -264,7 +264,6 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\component\ui\ui-tree\ui-node-tree.h" />
     <ClInclude Include="engine\core\component\ui\ui-tree\ui-tree.h" />
     <ClInclude Include="engine\core\component\ui\ui-widget.h" />
-    <ClInclude Include="engine\core\config\config-image.h" />
     <ClInclude Include="engine\core\event\event.h" />
     <ClInclude Include="engine\core\font\freetype-mgr.h" />
     <ClInclude Include="engine\core\game.h" />
