@@ -25,8 +25,7 @@ Editor::Editor() {
 #ifdef _WIN32
 	char exePath[MAX_PATH];
 	GetModuleFileNameA(NULL, exePath, MAX_PATH);
-	BooEditor::projectPath =
-		std::filesystem::path(exePath).parent_path().string();
+	BooEditor::editorPath =std::filesystem::path(exePath).parent_path().string();
 #elif defined(__APPLE__) && defined(__MACH__)
 #if TARGET_OS_MAC
 	// macOS 平台
@@ -36,7 +35,7 @@ Editor::Editor() {
 	if (_NSGetExecutablePath(buffer.data(), &size) == 0) {
 		try {
 			std::string appPath = std::string(buffer.data());
-			BooEditor::projectPath = std::filesystem::path(appPath).parent_path().string();
+			BooEditor::editorPath = std::filesystem::path(appPath).parent_path().string();
 		}
 		catch (const std::filesystem::filesystem_error& ex) {
 			std::cerr << "文件系统错误: " << ex.what() << std::endl;
