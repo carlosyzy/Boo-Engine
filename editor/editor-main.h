@@ -10,8 +10,6 @@ private :
     long long _deltaTime;
     int _frameRate;
 
-    int _initDelayScheduleID = 0;
-    void _startLoading();
     EditorLayout *_editorLayout = nullptr;
     void _launchEditor();
 
