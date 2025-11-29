@@ -41,18 +41,8 @@ private:
 
 	void _initAssetsDB();
 	void _initAssetsDBCallback(int completedCount, int allCount, float progress);
-		
-	/**
-	 * @brief 初始化加载资源
-	 * 
-	 */
-	void _initLoadingResources();
-	int _loadingResourcesTaskId = -1;
-	void _onLoadCallBack(int completedCount, int allCount, float progress);
-	/**
-	 * @brief 初始化编辑器缓存
-	 */
-	void _initEditorCache();
+
+	void _saveEditorCache();
 	int _launchEditorTaskId = -1;
 	void _launchEditor();
 	std::function<void()> _onLoadComplete;

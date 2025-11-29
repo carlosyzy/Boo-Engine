@@ -129,84 +129,26 @@ void EditorLoading::_initAssetsDB()
 void EditorLoading::_initAssetsDBCallback(int completedCount, int allCount,
 										  float progress)
 {
-	// this->_setLoadProgress(progress * 0.9f);
-	// if (completedCount == allCount)
-	// {
-	// 	// 加载完成
-	// 	this->_initLoadingResources();
-	// }
-	std::cout << "EditorLoading::_initAssetsDBCallback: " << completedCount << " "
-			  << allCount << " " << progress << std::endl;
-}
-
-void EditorLoading::_initLoadingResources()
-{
-	// // 先加载公用resources文件,
-	// const std::string &root = Boo::game->assetsManager()->root();
-	// std::filesystem::path resources = std::filesystem::path(root) /
-	// "resources"; std::vector<std::string> paths; for (const auto &entry :
-	// std::filesystem::recursive_directory_iterator(resources))
-	// {
-	// 	if (std::filesystem::is_regular_file(entry.path()))
-	// 	{
-	// 		std::filesystem::path path =
-	// std::filesystem::relative(entry.path(), std::filesystem::path(root));
-	// 		paths.push_back(path.generic_string());
-	// 		std::cout << "add resource " << path.generic_string() <<
-	// std::endl;
-	// 	}
-	// }
-	// // 记载工程assets文件
-	// std::filesystem::path projectAssets =
-	// std::filesystem::path(BooEditor::projectPath) / "assets"; for (const auto
-	// &entry : std::filesystem::recursive_directory_iterator(projectAssets))
-	// {
-	// 	if (std::filesystem::is_regular_file(entry.path()))
-	// 	{
-	// 		std::filesystem::path path =
-	// std::filesystem::relative(entry.path(), std::filesystem::path(root));
-	// 		paths.push_back(path.generic_string());
-	// 		std::cout << "add resource " << path.generic_string() <<
-	// std::endl;
-	// 	}
-	// }
-	// this->_loadingResourcesTaskId =
-	// Boo::game->assetsManager()->loadListAsync(paths,
-	// &EditorLoading::_onLoadCallBack, this);
-}
-void EditorLoading::_onLoadCallBack(int completedCount, int allCount,
-									float progress)
-{
+	std::cout << "EditorLoading::_initAssetsDBCallback: " << completedCount << " " << allCount << " " << progress << std::endl;
 	this->_setLoadProgress(progress * 0.9f);
 	if (completedCount == allCount)
 	{
 		// 加载完成
-		Boo::game->assetsManager()->clearLoadCall(this->_loadingResourcesTaskId);
-		this->_loadingResourcesTaskId = -1;
-		// 初始化编辑器缓存
-		this->_initEditorCache();
+		this->_saveEditorCache();
 	}
 }
-void EditorLoading::_initEditorCache()
+void EditorLoading::_saveEditorCache()
 {
-	// // 项目setting配置
-	// //  初始化editor 配置缓存
-	// BooEditor::config->init();
-	// // 初始化assets 资源缓存
-	// BooEditor::assets->init();
-	// // 初始化project 项目配置
-	// BooEditor::project->init();
-	// // 初始化scene 场景缓存
-	// BooEditor::scene->init();
-	// this->_setLoadProgress(1.0f);
-	// this->_launchEditorTaskId =
-	// Boo::game->scheduleOnce(&EditorLoading::_launchEditor, this, 0.1f);
+	std::cout << "EditorLoading::_saveEditorCache" << std::endl;
+	// 初始化编辑器缓存
+	BooEditor::cache->saveAssetsDB();
+	this->_setLoadProgress(1.0f);
+	this->_launchEditorTaskId =Boo::game->scheduleOnce(&EditorLoading::_launchEditor, this, 0.1f);
 }
 void EditorLoading::_launchEditor()
 {
 	Boo::game->unschedule(this->_launchEditorTaskId);
 	this->_launchEditorTaskId = -1;
-
 	if (this->_onLoadComplete != nullptr)
 	{
 		this->_onLoadComplete();
@@ -277,11 +219,7 @@ void EditorLoading::Disable() { Component::Disable(); }
 void EditorLoading::destroy()
 {
 	Component::destroy();
-	Boo::game->assetsManager()->clearLoadCall(this->_loadingResourcesTaskId);
-	this->_loadingResourcesTaskId = -1;
 	Boo::game->unschedule(this->_launchEditorTaskId);
 	this->_launchEditorTaskId = -1;
-	std::cout << "EditorLoading::destroy() loadingResourcesTaskId: "
-			  << this->_loadingResourcesTaskId << std::endl;
 }
 EditorLoading::~EditorLoading() {}

@@ -63,16 +63,16 @@ void FileUtil::saveJsonToBinary(const std::string &filename, const json &data)
         file.write(reinterpret_cast<const char *>(msgpack.data()), msgpack.size());
         if (file.good())
         {
-            std::cerr << "保存成功: " << filename << std::endl;
+            std::cerr << "File :Save Scucess:: " << filename << std::endl;
         }
         else if (!file.fail())
         {
-            std::cerr << "保存失败: " << filename << std::endl;
+            std::cerr << "File :Save Failed:: " << filename << std::endl;
         }
     }
     catch (const std::exception &e)
     {
-        std::cerr << "保存失败: " << e.what() << std::endl;
+        std::cerr << "File :Save Failed:: " << e.what() << std::endl;
         return;
     }
 }
@@ -97,7 +97,7 @@ json FileUtil::readJsonFromBinary(const std::string &filename)
     }
     catch (const std::exception &e)
     {
-        std::cerr << "加载失败: " << e.what() << std::endl;
+        std::cerr << "File :Load Failed:: " << e.what() << std::endl;
         return json::object();
     }
 }
@@ -110,7 +110,7 @@ void FileUtil::saveJsonToText(const std::string &filename, const json &data)
     }
     catch (const std::exception &e)
     {
-        std::cerr << "保存失败: " << e.what() << std::endl;
+        std::cerr << "File :Save Failed:: " << e.what() << std::endl;
         return;
     }
 }
@@ -119,11 +119,11 @@ void FileUtil::copyFile(const std::string &src, const std::string &dst)
 {
     try
     {
-        std::cout << "FileUtil::copyFile: " << src << " -> " << dst << std::endl;
+        std::cout << "File :copyFile:: " << src << " -> " << dst << std::endl;
         // 检查源文件是否存在
         if (!std::filesystem::exists(src))
         {
-            std::cerr << "源文件不存在: " << src << std::endl;
+            std::cerr << "File :copyFile:: src not exist: " << src << std::endl;
             return;
         }
         // 创建目标目录（如果不存在）
@@ -131,12 +131,12 @@ void FileUtil::copyFile(const std::string &src, const std::string &dst)
         // 拷贝文件
         std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing);
 
-        std::cout << "文件拷贝成功: " << std::endl;
+        std::cout << "File :copyFile:: Success: " << dst << std::endl;
         return;
     }
     catch (const std::filesystem::filesystem_error &e)
     {
-        std::cerr << "文件拷贝错误: " << e.what() << std::endl;
+        std::cerr << "File :copyFile:: Failed: " << e.what() << std::endl;
         return;
     }
 }
@@ -147,21 +147,17 @@ void FileUtil::removeFile(const std::string &path)
         // 检查文件是否存在
         if (!std::filesystem::exists(path))
         {
-            std::cerr << "文件不存在: " << path << std::endl;
+            std::cerr << "File :removeFile:: not exist: " << path << std::endl;
             return;
         }
         // 删除文件
         std::filesystem::remove(path);
-        std::cout << "文件删除成功: " << path << std::endl;
+        std::cout << "File :removeFile:: Success: " << path << std::endl;
     }
     catch (const std::filesystem::filesystem_error &e)
     {
-        std::cerr << "文件删除错误: " << e.what() << std::endl;
+        std::cerr << "File :removeFile:: Failed: " << e.what() << std::endl;
     }
-    //  if (std::filesystem::exists(libraryPath))
-    //             {
-    //                 std::filesystem::remove(libraryPath);
-    //             }
 }
 
 // static bool saveBinary(const json& data, const std::string& filename) {

@@ -8,14 +8,15 @@
 EditorCacheTask::EditorCacheTask()
 {
 }
-void EditorCacheTask::init(std::string path, std::vector<AssetDB> configs)
+void EditorCacheTask::init(std::string relativePath, std::string parentPath, std::vector<AssetDB> configs)
 {
-    this->_path = path;
+    this->_relativePath = relativePath;
+    this->_parentPath = parentPath;
     this->_configs = configs;
 }
 void EditorCacheTask::run()
 {
-    std::cout << "EditorCacheTask::run: " << this->_path << " -> " << this->_configs.size() << std::endl;
+   
     if (this->_configs.size() > 0)
     {
         bool isOK = true;
@@ -60,13 +61,15 @@ bool EditorCacheTask::_verifyLibraryAsset(AssetDB &config)
 
     // 只要有一个文件不存在就删除旧的重新创建
     std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
-    std::string assetPath = (std::filesystem::path(BooEditor::projectPath) / "assets" / path).generic_string();
+    std::string originPath = (std::filesystem::path(this->_parentPath) / this->_relativePath).generic_string();
     if (!std::filesystem::exists(libraryPath))
     {
+        std::cout << "File :verifyLibraryAsset:: not exist: " << libraryPath << std::endl;
         return false;
     }
-    else if (!std::filesystem::exists(assetPath))
+    else if (!std::filesystem::exists(originPath))
     {
+        std::cout << "File :verifyLibraryAsset:: not exist: " << originPath << std::endl;
         return false;
     }
     return true;
@@ -89,8 +92,8 @@ void EditorCacheTask::_clearLibraryAsset()
 void EditorCacheTask::_createLibraryAsset()
 {
     // 获取原始路径
-    std::filesystem::path assetsPath = (std::filesystem::path(BooEditor::projectPath) / "assets" / this->_path).generic_string();
-    std::cout << "EditorCacheTask::_createLibraryAsset: " << assetsPath << std::endl;
+    std::filesystem::path assetsPath = (std::filesystem::path(this->_parentPath) / this->_relativePath).generic_string();
+    std::cout << "_createLibraryAsset: " << assetsPath << std::endl;
     if (!std::filesystem::exists(assetsPath))
     {
         return;
@@ -104,15 +107,14 @@ void EditorCacheTask::_createLibraryAsset()
     if (extension == ".png" || extension == ".PNG" || extension == ".jpg" || extension == ".JPG") // 图片-原始资源
     {
         std::string uuid = UuidUtil::generateUUID();
-        std::vector<AssetDB> configs;
         AssetDB sub{};
         sub.name = std::filesystem::path(assetsPath).stem().string();
-        sub.path = this->_path;
+        sub.path = this->_relativePath;
         sub.uuid = uuid;
         sub.type = AssetType::Texture;
         sub.extension = extension;
         this->_configs.push_back(sub);
-        Boo::game->assetsManager()->updateAssetsDB(this->_path, configs);
+        Boo::game->assetsManager()->updateAssetsDB(this->_relativePath, this->_configs);
         // 更新Library资产映射
         std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
         FileUtil::copyFile(assetsPath.generic_string(), libraryPath);
@@ -121,15 +123,14 @@ void EditorCacheTask::_createLibraryAsset()
     else if (extension == ".vert" || extension == ".frag") // GLSL-原始资源
     {
         std::string uuid = UuidUtil::generateUUID();
-        std::vector<AssetDB> configs;
         AssetDB sub{};
         sub.name = std::filesystem::path(assetsPath).stem().string();
-        sub.path = this->_path;
+        sub.path = this->_relativePath;
         sub.uuid = uuid;
         sub.type = AssetType::Shader;
         sub.extension = extension;
         this->_configs.push_back(sub);
-        Boo::game->assetsManager()->updateAssetsDB(this->_path, configs);
+        Boo::game->assetsManager()->updateAssetsDB(this->_relativePath, this->_configs);
         // 更新Library资产映射
         std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
         FileUtil::copyFile(assetsPath.generic_string(), libraryPath);
@@ -137,15 +138,14 @@ void EditorCacheTask::_createLibraryAsset()
     else if (extension == ".spv") // SPIR-V-原始资源
     {
         std::string uuid = UuidUtil::generateUUID();
-        std::vector<AssetDB> configs;
         AssetDB sub{};
         sub.name = std::filesystem::path(assetsPath).stem().string();
-        sub.path = this->_path;
+        sub.path = this->_relativePath;
         sub.uuid = uuid;
         sub.type = AssetType::Shader;
         sub.extension = extension;
         this->_configs.push_back(sub);
-        Boo::game->assetsManager()->updateAssetsDB(this->_path, configs);
+        Boo::game->assetsManager()->updateAssetsDB(this->_relativePath, this->_configs);
         // 更新Library资产映射
         std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
         FileUtil::copyFile(assetsPath.generic_string(), libraryPath);
@@ -153,15 +153,14 @@ void EditorCacheTask::_createLibraryAsset()
     else if (extension == ".scene") // 场景-原始资源
     {
         std::string uuid = UuidUtil::generateUUID();
-        std::vector<AssetDB> configs;
         AssetDB sub{};
         sub.name = std::filesystem::path(assetsPath).stem().string();
-        sub.path = this->_path;
+        sub.path = this->_relativePath;
         sub.uuid = uuid;
         sub.type = AssetType::Scene;
         sub.extension = extension;
         this->_configs.push_back(sub);
-        Boo::game->assetsManager()->updateAssetsDB(this->_path, configs);
+        Boo::game->assetsManager()->updateAssetsDB(this->_relativePath, this->_configs);
         // 更新Library资产映射
         std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
         FileUtil::copyFile(assetsPath.generic_string(), libraryPath);

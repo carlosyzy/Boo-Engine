@@ -67,7 +67,6 @@ void AssetCache::addAsset(const std::string path, Asset *asset)
 
 Asset *AssetCache::getAsset(const std::string &path)
 {
-    std::cout << "AssetCache::getAsset: " << path << " " << this << std::endl;
     if (this->_assetsMap.find(path) != this->_assetsMap.end())
     {
         return this->_assetsMap[path];
