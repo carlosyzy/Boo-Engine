@@ -1,14 +1,18 @@
 #include "asset.h"
-Asset::Asset(std::string key) {
-    this->_uuid = key;
+#include "../utils/uuid-util.h"
+
+Asset::Asset() {
+    this->_uuid = UuidUtil::generateUUID();
 }
-Asset::Asset(std::string key, std::string path)
+Asset::Asset(std::string uuid)
 {
-    this->_uuid = key;
+    this->_uuid = uuid;
+}
+void Asset::create(std::string path)
+{
     this->_path = path;
-    this->_type = AssetType::None;
     //获取资源文件名作为资源名
-    this->_name = std::filesystem::path(key).stem().string();
+    this->_name = std::filesystem::path(path).stem().string();
 }
 void Asset::destroy()
 {

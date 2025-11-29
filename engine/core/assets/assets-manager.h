@@ -75,7 +75,6 @@ public:
 	void clearLoadCall(const int loadId);
 
 	Asset *get(const std::string &path);
-
 	void update(float deltaTime);
 
 	~AssetsManager();

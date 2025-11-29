@@ -8,6 +8,7 @@
 
 enum class AssetType;
 class Asset;
+class TextureAsset;
 class AssetsManager;
 
 struct AssetDB
@@ -59,8 +60,6 @@ public:
      */
     void addAsset(const std::string path, Asset *asset);
     Asset *getAsset(const std::string &path);
-
-    
 
     void addSceneAsset(const std::string path, Asset *asset);
     Asset *getSceneAsset(const std::string &path);

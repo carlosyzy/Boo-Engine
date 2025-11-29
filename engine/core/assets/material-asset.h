@@ -24,11 +24,13 @@ private:
      */
 	std::string _pipeline;
 protected:
-	void _load() override;
+	
 
 public:
-	// MaterialAsset(const std::string key);
-	MaterialAsset(const std::string uuid, const std::string path);
+	MaterialAsset();
+	MaterialAsset(const std::string uuid);
+
+	void create(std::string path) override;
 
 	const std::string &getPass() { return this->_pass; };
 	/**

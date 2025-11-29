@@ -131,7 +131,7 @@ void EditorLoading::_setLoadProgress(float progress)
 }
 void EditorLoading::_initAssetsDB()
 {
-	BooEditor::cache->initAssetsDBMaps(&EditorLoading::_initAssetsDBCallback, this);
+	// BooEditor::cache->initAssetsDBMaps(&EditorLoading::_initAssetsDBCallback, this);
 }
 void EditorLoading::_initAssetsDBCallback(int completedCount, int allCount, float progress)
 {

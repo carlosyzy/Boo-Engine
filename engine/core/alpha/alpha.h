@@ -1,7 +1,10 @@
 #pragma once
 #include <vector>
 #include "../scene/scene.h"
-
+/**
+ * @brief _alpha 场景
+ *  引擎启动界面，不可取消，但是可以修改背景颜色和logo以及显示时间
+ */
 class Node2D;
 class UISprite;
 class TextureAsset;
@@ -14,17 +17,16 @@ private:
 
 	Node2D *_ndAlpha;
 	UISprite *_spriteAlpha;
-
+	TextureAsset *_textureBg;
 	// logo
 	Node2D *_ndLogo;
 	UISprite *_spriteLogo;
+	TextureAsset *_textureLogo;
 	float _logoTxWidth;
 	float _logoTxHeight;
 	float _alphaDuration;
 	float _logoAlphaNum;
 	float _logoRatio;
-
-
 	void _init();
 	void _initRes();
 	void _initAlpha();

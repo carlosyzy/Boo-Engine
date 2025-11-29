@@ -12,7 +12,7 @@
 UIRenderer::UIRenderer(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
 {
 	this->_layer = NodeLayer::Node2D;
-	this->_materialAsset = new MaterialAsset("default-ui", "");
+	this->_materialAsset = new MaterialAsset();
 }
 /**
  * @brief 反序列化组件属性-配置

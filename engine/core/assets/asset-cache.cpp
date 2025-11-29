@@ -86,7 +86,6 @@ Asset *AssetCache::getSceneAsset(const std::string &path)
     }
     return this->_sceneAssetsMap[path];
 }
-
 AssetCache::~AssetCache()
 {
 }

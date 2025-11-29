@@ -26,73 +26,73 @@ Asset *AssetTask::load(const std::string &path)
 
 void AssetTask::run()
 {
-	std::filesystem::path fullPath = std::filesystem::path(this->_mgr->getAssetsRoot()) / this->_path;
-	if (!std::filesystem::exists(fullPath))
-	{
-		std::cerr << "AssetLoad:No such file or directory:" << fullPath << std::endl;
-		this->_loadError();
-		return;
-	}
-	if (!std::filesystem::is_regular_file(fullPath))
-	{
-		std::cerr << "AssetLoad:Not a regular file:" << fullPath << std::endl;
-		this->_loadError();
-		return;
-	}
-	long long time = TimeUtil::nowTime();
-	std::filesystem::path path = std::filesystem::relative(fullPath, std::filesystem::path(this->_mgr->getAssetsRoot()));
-	std::string resKey = path.generic_string();
+	// std::filesystem::path fullPath = std::filesystem::path(this->_mgr->getAssetsRoot()) / this->_path;
+	// if (!std::filesystem::exists(fullPath))
+	// {
+	// 	std::cerr << "AssetLoad:No such file or directory:" << fullPath << std::endl;
+	// 	this->_loadError();
+	// 	return;
+	// }
+	// if (!std::filesystem::is_regular_file(fullPath))
+	// {
+	// 	std::cerr << "AssetLoad:Not a regular file:" << fullPath << std::endl;
+	// 	this->_loadError();
+	// 	return;
+	// }
+	// long long time = TimeUtil::nowTime();
+	// std::filesystem::path path = std::filesystem::relative(fullPath, std::filesystem::path(this->_mgr->getAssetsRoot()));
+	// std::string resKey = path.generic_string();
 
-	std::string extension = std::filesystem::path(fullPath).extension().string();
-	if (extension == ".png" || extension == ".PNG" || extension == ".jpg" || extension == ".JPG")
-	{
-		this->_createTexture(resKey, fullPath.generic_string());
-	}
-	else if (extension == ".vert" || extension == ".frag")
-	{
-		this->_createGlslShader(resKey, fullPath.generic_string());
-	}
-	else if (extension == ".spv")
-	{
-		this->_createSpirvShader(resKey, fullPath.generic_string());
-	}
-	else if (extension == ".scene")
-	{
-		this->_createScene(resKey, fullPath.generic_string());
-	}
-	else
-	{
-		std::cerr << "AssetLoad:Unknown file extension:" << extension << std::endl;
-		this->_loadError();
-	}
-	std::cout << "load asset " << resKey << " cost :" << TimeUtil::nowTime() - time << " ms" << std::endl;
+	// std::string extension = std::filesystem::path(fullPath).extension().string();
+	// if (extension == ".png" || extension == ".PNG" || extension == ".jpg" || extension == ".JPG")
+	// {
+	// 	this->_createTexture(resKey, fullPath.generic_string());
+	// }
+	// else if (extension == ".vert" || extension == ".frag")
+	// {
+	// 	this->_createGlslShader(resKey, fullPath.generic_string());
+	// }
+	// else if (extension == ".spv")
+	// {
+	// 	this->_createSpirvShader(resKey, fullPath.generic_string());
+	// }
+	// else if (extension == ".scene")
+	// {
+	// 	this->_createScene(resKey, fullPath.generic_string());
+	// }
+	// else
+	// {
+	// 	std::cerr << "AssetLoad:Unknown file extension:" << extension << std::endl;
+	// 	this->_loadError();
+	// }
+	// std::cout << "load asset " << resKey << " cost :" << TimeUtil::nowTime() - time << " ms" << std::endl;
 }
 void AssetTask::_createTexture(const std::string resKey, const std::string fullPath)
 {
-	TextureAsset *texture = new TextureAsset(resKey, fullPath);
-	this->_cache->addAsset(resKey, texture);
-	this->_loadComplete();
+	// TextureAsset *texture = new TextureAsset(resKey, fullPath);
+	// this->_cache->addAsset(resKey, texture);
+	// this->_loadComplete();
 }
 void AssetTask::_createGlslShader(const std::string resKey, const std::string fullPath)
 {
-	Shader *shader = new Shader(resKey, fullPath);
-	shader->loadGlsl();
-	this->_cache->addAsset(resKey, shader);
-	this->_loadComplete();
+	// Shader *shader = new Shader(resKey, fullPath);
+	// shader->loadGlsl();
+	// this->_cache->addAsset(resKey, shader);
+	// this->_loadComplete();
 }
 void AssetTask::_createSpirvShader(const std::string resKey, const std::string fullPath)
 {
-	Shader *shader = new Shader(resKey, fullPath);
-	shader->loadSpv();
-	this->_cache->addAsset(resKey, shader);
-	this->_loadComplete();
+	// Shader *shader = new Shader(resKey, fullPath);
+	// shader->loadSpv();
+	// this->_cache->addAsset(resKey, shader);
+	// this->_loadComplete();
 }
 void AssetTask::_createScene(const std::string resKey, const std::string fullPath)
 {
-	SceneAsset *scene = new SceneAsset(resKey, fullPath);
-	this->_cache->addAsset(resKey, scene);		// 添加到普通资产缓存
-	this->_cache->addSceneAsset(resKey, scene); // 添加到场景资产缓存
-	this->_loadComplete();
+	// SceneAsset *scene = new SceneAsset(resKey, fullPath);
+	// this->_cache->addAsset(resKey, scene);		// 添加到普通资产缓存
+	// this->_cache->addSceneAsset(resKey, scene); // 添加到场景资产缓存
+	// this->_loadComplete();
 }
 
 /**

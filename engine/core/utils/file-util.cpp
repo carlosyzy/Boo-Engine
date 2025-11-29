@@ -1,6 +1,7 @@
 #include "file-util.h"
 #include "../../libs/stb/stb_image_write.h"
 
+
 // 保存单通道数据为PGM文件（更高效，文件更小）
 void FileUtil::saveAtlasAsPGM(const std::string &filename, const std::vector<uint8_t> &atlasData, int width, int height)
 {
