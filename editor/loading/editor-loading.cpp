@@ -34,10 +34,10 @@ void EditorLoading::Awake()
 	this->_height = Boo::game->view()->height;
 	this->_textureDefault = new TextureAsset("boo-default-texture");
 	std::filesystem::path defaultPath = (std::filesystem::path(BooEditor::editorPath) / "res/alpha/default.png").generic_string();
-	this->_textureDefault->create(defaultPath);
+	this->_textureDefault->create(defaultPath.string());
 	this->_textureLogo = new TextureAsset("boo-logo-texture");
 	std::filesystem::path logoPath = (std::filesystem::path(BooEditor::editorPath) / "res/alpha/logo.png").generic_string();
-	this->_textureLogo->create(logoPath);
+	this->_textureLogo->create(logoPath.string());
 	this->_logoTxWidth = this->_textureLogo->width();
 	this->_logoTxHeight = this->_textureLogo->height();
 

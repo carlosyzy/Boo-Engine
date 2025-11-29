@@ -155,17 +155,15 @@ if exist "$(ProjectDir)editor\res" (
   <ItemGroup>
     <ClCompile Include="app.cpp" />
     <ClCompile Include="editor\boo-editor.cpp" />
-    <ClCompile Include="editor\cache\editor-assets-cache.cpp" />
-    <ClCompile Include="editor\cache\editor-config-cache.cpp" />
-    <ClCompile Include="editor\cache\editor-project-cache.cpp" />
-    <ClCompile Include="editor\cache\editor-scene-cache.cpp" />
+    <ClCompile Include="editor\cache\editor-cache-task.cpp" />
+    <ClCompile Include="editor\cache\editor-cache.cpp" />
     <ClCompile Include="editor\config\editor-config.cpp" />
     <ClCompile Include="editor\editor-main.cpp" />
     <ClCompile Include="editor\editor.cpp" />
     <ClCompile Include="editor\layout\editor-layout.cpp" />
-    <ClCompile Include="editor\layout\editor-loading.cpp" />
     <ClCompile Include="editor\layout\scene\editor-scene-layout.cpp" />
     <ClCompile Include="editor\layout\scene\editor-scene.cpp" />
+    <ClCompile Include="editor\loading\editor-loading.cpp" />
     <ClCompile Include="engine\boo.cpp" />
     <ClCompile Include="engine\core\alpha\alpha.cpp" />
     <ClCompile Include="engine\core\assets\asset-cache.cpp" />
@@ -227,6 +225,8 @@ if exist "$(ProjectDir)editor\res" (
   <ItemGroup>
     <ClInclude Include="editor\boo-editor.h" />
     <ClInclude Include="editor\cache\editor-assets-cache.h" />
+    <ClInclude Include="editor\cache\editor-cache-task.h" />
+    <ClInclude Include="editor\cache\editor-cache.h" />
     <ClInclude Include="editor\cache\editor-config-cache.h" />
     <ClInclude Include="editor\cache\editor-project-cache.h" />
     <ClInclude Include="editor\cache\editor-scene-cache.h" />
@@ -237,6 +237,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="editor\layout\editor-loading.h" />
     <ClInclude Include="editor\layout\scene\editor-scene-layout.h" />
     <ClInclude Include="editor\layout\scene\editor-scene.h" />
+    <ClInclude Include="editor\loading\editor-loading.h" />
     <ClInclude Include="engine\boo.h" />
     <ClInclude Include="engine\core\alpha\alpha.h" />
     <ClInclude Include="engine\core\assets\asset-cache.h" />
@@ -263,6 +264,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\component\ui\ui-tree\ui-node-tree.h" />
     <ClInclude Include="engine\core\component\ui\ui-tree\ui-tree.h" />
     <ClInclude Include="engine\core\component\ui\ui-widget.h" />
+    <ClInclude Include="engine\core\config\config-image.h" />
     <ClInclude Include="engine\core\event\event.h" />
     <ClInclude Include="engine\core\font\freetype-mgr.h" />
     <ClInclude Include="engine\core\game.h" />
