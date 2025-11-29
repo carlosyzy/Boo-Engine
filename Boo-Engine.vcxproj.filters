@@ -183,9 +183,6 @@
     <ClCompile Include="editor\layout\editor-layout.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\layout\editor-loading.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="editor\layout\scene\editor-scene.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -193,18 +190,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\config\editor-config.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\cache\editor-assets-cache.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\cache\editor-config-cache.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\cache\editor-project-cache.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\cache\editor-scene-cache.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\assets\scene-asset.cpp">
@@ -217,6 +202,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\component\ui\ui-tree\ui-node-tree.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\assets\material-asset.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\assets\texture-asset.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\cache\editor-cache.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\cache\editor-cache-task.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -635,9 +632,6 @@
     <ClInclude Include="engine\core\component\component-register.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\property\property-reflect-register.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="engine\core\component\ui\ui-tree\ui-node-tree.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -645,6 +639,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\component\component-property-register.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\assets\material-asset.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\assets\texture-asset.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\cache\editor-cache.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\cache\editor-cache-task.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -25,12 +25,12 @@ EditorMain::EditorMain()
 void EditorMain::init()
 {
     // 初始化设置根目录
-    this->_initDelayScheduleID = Boo::game->scheduleOnce(&EditorMain::_startLoading, this, 2.0f);
+    // this->_initDelayScheduleID = Boo::game->scheduleOnce(&EditorMain::_startLoading, this, 2.0f);
+    this->_startLoading();
 }
 
 void EditorMain::_startLoading()
 {
-    return;
     std::cout << "EditorMain::_startLoading" << std::endl;
     // 加载场景
     Scene *scene = new Scene("Editor-Loading-Scene");

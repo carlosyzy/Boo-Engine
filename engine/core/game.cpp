@@ -30,7 +30,7 @@ void Game::init()
 	this->_initView();
 	this->_initFont();
 	this->_initAssets();
-	this->_initAlpha();
+	/*this->_initAlpha();*/
 	// json scene;
 
 	// scene["data"] = {

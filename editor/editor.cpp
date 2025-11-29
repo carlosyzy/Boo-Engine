@@ -14,40 +14,68 @@
 #ifdef _WIN32
 #include <windows.h>
 #elif defined(__APPLE__)
-#include <unistd.h>
 #include <limits.h>
 #include <mach-o/dyld.h> // 必需的头文件
+#include <unistd.h>
+
 #endif
 
-Editor::Editor()
-{
-	
-}
-void Editor::init()
-{
+Editor::Editor() {
 	Boo::Editor = true;
-	// BooEditor::assets = new EditorAssetsCache();
-	// BooEditor::config = new EditorConfigCache();
-	// BooEditor::project = new EditorProjectCache();
-	// BooEditor::scene = new EditorSceneCache();
+#ifdef _WIN32
+	char exePath[MAX_PATH];
+	GetModuleFileNameA(NULL, exePath, MAX_PATH);
+	BooEditor::projectPath =
+		std::filesystem::path(exePath).parent_path().string();
+#elif defined(__APPLE__) && defined(__MACH__)
+#if TARGET_OS_MAC
+	// macOS 平台
+	uint32_t size = 0;
+	_NSGetExecutablePath(nullptr, &size);
+	std::vector<char> buffer(size);
+	if (_NSGetExecutablePath(buffer.data(), &size) == 0) {
+		try {
+			std::string appPath = std::string(buffer.data());
+			BooEditor::projectPath = std::filesystem::path(appPath).parent_path().string();
+		}
+		catch (const std::filesystem::filesystem_error& ex) {
+			std::cerr << "文件系统错误: " << ex.what() << std::endl;
+		}
+	}
+#elif TARGET_OS_IPHONE
+#if TARGET_IPHONE_SIMULATOR
+	// iOS 模拟器平台
+#else
+	// iOS 设备平台
+#endif
+#else
+	// 其他 Apple 平台
+	std::cerr << "其他 Apple 平台暂不支持" << std::endl;
+#endif
+#else
+	std::cerr << "其他平台暂不支持" << std::endl;
+#endif
+	std::cout << "Assets root:" << BooEditor::projectPath << std::endl;
+}
+void Editor::init() {
+
 	this->_initWindow();
 	this->_initEngine();
 	this->_initEditorMain();
 }
-void Editor::_initWindow()
-{
+void Editor::_initWindow() {
 	this->_window = new Window();
 	this->_window->init();
 }
-void Editor::_initEngine()
-{
+void Editor::_initEngine() {
 	this->_engine = new Engine();
 #ifdef _WIN32
 	BooEditor::projectPath = "F:\\worksapces\\Boo-Engine\\project";
 	this->_engine->init(this->_window, Platform::Windows);
 #elif defined(__APPLE__) && defined(__MACH__)
 #if TARGET_OS_MAC
-	BooEditor::projectPath = "/Users/yangzongyuan/personal/project/Boo-Engine/project";
+	BooEditor::projectPath =
+		"/Users/yangzongyuan/personal/project/Boo-Engine/project";
 	this->_engine->init(this->_window, Platform::MacOS);
 #elif TARGET_OS_IPHONE
 #if TARGET_IPHONE_SIMULATOR
@@ -63,22 +91,17 @@ void Editor::_initEngine()
 	std::cerr << "其他平台暂不支持" << std::endl;
 #endif
 }
-void Editor::_initEditorMain()
-{
+void Editor::_initEditorMain() {
 	this->_main = new EditorMain();
 	this->_main->init();
 }
 
-void Editor::run()
-{
-	while (this->_window->isRunning())
-	{
+void Editor::run() {
+	while (this->_window->isRunning()) {
 		this->_window->tick();
 		this->_main->tick();
 		this->_engine->tick();
 	}
 }
 
-Editor::~Editor()
-{
-}
+Editor::~Editor() {}

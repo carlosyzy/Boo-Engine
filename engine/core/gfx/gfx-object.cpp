@@ -320,7 +320,6 @@ void GfxObject::_updateProjMatUniformBuffer()
     if(this->_projMatrix[0] == 2.0f / Boo::game->view()->width&&this->_projMatrix[5] == 2.0f / Boo::game->view()->height){
         return;
     }
-
     this->_projMatrix[0] = this->_projMatrix[5] = this->_projMatrix[10] = this->_projMatrix[15] = 1.0f;
     this->_projMatrix[0] = 2.0f / Boo::game->view()->width;
     this->_projMatrix[5] = 2.0f / Boo::game->view()->height;

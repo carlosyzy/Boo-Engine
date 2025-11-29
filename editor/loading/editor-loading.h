@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <functional>
-
+#include <filesystem>
 #include "../../engine/core/component/component.h"
 #include "../../engine/core/component/component-register.h"
 
@@ -14,6 +14,8 @@ class EditorLoading : public Component
 private:
 	float _width;
 	float _height;
+	TextureAsset* _textureDefault;
+
 	Node2D *_ndAlpha;
 	UISprite *_spriteAlpha;
 	void _initBg();
@@ -21,6 +23,7 @@ private:
 	// logo
 	Node2D *_ndLogo;
 	UISprite *_spriteLogo;
+	TextureAsset* _textureLogo;
 	float _logoTxWidth;
 	float _logoTxHeight;
 	float _logoRatio;

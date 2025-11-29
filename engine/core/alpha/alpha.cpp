@@ -20,14 +20,14 @@ void Alpha::_init() {
   this->_initAlpha();
 }
 void Alpha::_initRes() {
-  this->_textureBg = new TextureAsset("boo-default-texture");
-  this->_textureBg->create(IMAGE_DEFAULT, IMAGE_DEFAULT_SIZE);
-  this->_textureLogo = new TextureAsset("boo-logo-texture");
-  this->_textureLogo->create(IMAGE_LOGO, IMAGE_LOGO_SIZE);
-  this->_logoTxWidth = this->_textureLogo->width();
-  this->_logoTxHeight = this->_textureLogo->height();
-  std::cout << "Alpha::_initRes() logoTxWidth: " << this->_logoTxWidth
-            << " logoTxHeight: " << this->_logoTxHeight << std::endl;
+  // this->_textureBg = new TextureAsset("boo-default-texture");
+  // this->_textureBg->create(IMAGE_DEFAULT, IMAGE_DEFAULT_SIZE);
+  // this->_textureLogo = new TextureAsset("boo-logo-texture");
+  // this->_textureLogo->create(IMAGE_LOGO, IMAGE_LOGO_SIZE);
+  // this->_logoTxWidth = this->_textureLogo->width();
+  // this->_logoTxHeight = this->_textureLogo->height();
+  // std::cout << "Alpha::_initRes() logoTxWidth: " << this->_logoTxWidth
+  //           << " logoTxHeight: " << this->_logoTxHeight << std::endl;
 }
 void Alpha::_initAlpha() {
   std::cout << "Alpha::_initAlpha()" << std::endl;

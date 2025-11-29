@@ -5,6 +5,12 @@
 
 namespace BooEditor
 {
+    
+    /**
+     * @brief 编辑器路径
+     */
+	extern std::string editorPath;
+
     /**
      * @brief 工程路径
      */
