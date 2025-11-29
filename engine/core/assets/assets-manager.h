@@ -48,33 +48,32 @@ public:
 	 * @param path 资产路径
 	 * @param configs 资产配置
 	 */
-	void updateAssetsDB(const std::string &path, const std::vector<AssetDB> &configs);
+	void updateAssetsDB(const std::string path, const std::vector<AssetDB> configs);
 
 	void setAssetsRoot(const std::string &root);
 	const std::string &getAssetsRoot();
-	
+	void setMaxLoadCount(int count);
 	AssetLoad *assetLoad();
 	AssetCache *assetCache();
-	/**
-	 * @brief 加载资产
-	 * @param path 资产路径
-	 * @return Asset 资产对象
-	 */
-	Asset *load(const std::string &path);
-	template <typename T, typename Func>
-	int loadAsync(const std::string &path, Func callback, T *instance)
-	{
-		return this->_assetLoad->loadAsync(path, callback, instance);
-	}
-	template <typename T, typename Func>
-	int loadListAsync(const std::vector<std::string> &paths, Func callback, T *instance)
-	{
-		return this->_assetLoad->loadListAsync(paths, callback, instance);
-	}
-	void setMaxLoadCount(int count);
+
+	Asset *loadByUuid(const std::string &uuid);
+	Asset *getAssetByUuid(const std::string &uuid);
+
+	// Asset *loadByPath(const std::string &path);
+	// Asset *getByPath(const std::string &path);
+
+	// template <typename T, typename Func>
+	// int loadAsync(const std::string &path, Func callback, T *instance)
+	// {
+	// 	return this->_assetLoad->loadAsync(path, callback, instance);
+	// }
+	// template <typename T, typename Func>
+	// int loadListAsync(const std::vector<std::string> &paths, Func callback, T *instance)
+	// {
+	// 	return this->_assetLoad->loadListAsync(paths, callback, instance);
+	// }
 	void clearLoadCall(const int loadId);
 
-	Asset *get(const std::string &path);
 	void update(float deltaTime);
 
 	~AssetsManager();

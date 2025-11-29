@@ -2,6 +2,7 @@
 #pragma once
 #include <string>
 #include <functional>
+#include "asset-cache.h"
 
 class Asset;
 class Shader;
@@ -55,9 +56,9 @@ private:
      */
     int _id = 0;
     /**
-     * @brief 资产路径
+     * @brief 资产UUID
      */
-    std::string _path;
+    AssetDB _assetDB;
     /**
      * @brief 资产加载任务类型
      */
@@ -106,9 +107,6 @@ private:
      */
     void _createScene(const std::string resKey, const std::string fullPath);
 
-
-
-
     /**
      * @brief 加载完成
      */
@@ -132,7 +130,7 @@ public:
     template <typename T, typename Func>
     void loadAsync(const std::string &path, Func callback, T *instance)
     {
-        this->_path = path;
+       /* this->_path = path;
         this->_type = AssetTaskType::AsyncOnce;
         this->_callbackOnce = [instance, callback]()
         {
@@ -140,12 +138,12 @@ public:
             {
                 (instance->*callback)();
             }
-        };
+        };*/
     }
     template <typename T, typename Func>
     void loadASync(const std::string path, AssetLoadResult *result, Func callback, T *instance)
     {
-        this->_path = path;
+        /*this->_path = path;
         this->_type = AssetTaskType::AsyncList;
         this->_result = result;
         this->_callbackList = [instance, callback](const int complete, const int all, const float progress)
@@ -154,7 +152,7 @@ public:
             {
                 (instance->*callback)(complete, all, progress);
             }
-        };
+        };*/
     }
     void run();
     void clearCallback();

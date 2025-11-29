@@ -35,12 +35,12 @@ void EditorMain::init()
 }
 void EditorMain::_launchEditor()
 {
-    // // Scene *scene = new Scene("Editor-Scene");
-    // // Node2D *node2d = scene->getRoot2D();
-    // // this->_editorLayout = static_cast<EditorLayout *>(node2d->addComponent("EditorLayout"));
-    // // Boo::game->openScene(scene);
+    Scene *scene = new Scene("Editor-Scene");
+    Node2D *node2d = scene->getRoot2D();
+    this->_editorLayout = static_cast<EditorLayout *>(node2d->addComponent("EditorLayout"));
+    Boo::game->openScene(scene);
     // BooEditor::scene->clear();
-    // // 初始化编辑器模块
+    // 初始化编辑器模块
     // this->_initEditorModules();
     // // 初始化编辑器场景
     // this->_initEditorRunScene();
@@ -97,5 +97,4 @@ void EditorMain::update(float deltaTime)
 
 EditorMain::~EditorMain()
 {
-   
 }

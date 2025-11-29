@@ -37,7 +37,7 @@ UIText::UIText(std::string name, Node *node, std::string uuid)
 void UIText::_deserialized() {
   UIRenderer::_deserialized();
   this->setText(this->_text);
-  this->setMaterialAsset(this->_material);
+  // this->setMaterialAsset(this->_material);
 }
 void UIText::setText(std::string text) {
   this->_clearTexture();
@@ -84,14 +84,14 @@ void UIText::setAlpha(float alpha) {
 }
 
 void UIText::setMaterialAsset(std::string mtl) {
-  MaterialAsset *mtlAsset =
+  /*MaterialAsset *mtlAsset =
       dynamic_cast<MaterialAsset *>(Boo::game->assetsManager()->get(mtl));
   if (mtlAsset == nullptr) {
     std::cout << "UISprite::setMaterial: material " << mtl << " not found"
               << std::endl;
     return;
   }
-  this->_setMaterial(mtlAsset);
+  this->_setMaterial(mtlAsset);*/
 }
 void UIText::setMaterialAsset(MaterialAsset *mtl) {
   if (mtl == nullptr) {

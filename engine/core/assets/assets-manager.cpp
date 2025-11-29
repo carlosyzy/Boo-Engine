@@ -34,7 +34,7 @@ std::unordered_map<std::string, std::vector<AssetDB>> &AssetsManager::getAssetsD
  * @param path 资产路径
  * @param configs 资产配置
  */
-void AssetsManager::updateAssetsDB(const std::string &path, const std::vector<AssetDB> &configs)
+void AssetsManager::updateAssetsDB(const std::string path, const std::vector<AssetDB> configs)
 {
 	this->_cache->updateAssetsDB(path, configs);
 }
@@ -54,18 +54,22 @@ AssetCache *AssetsManager::assetCache()
 {
 	return this->_cache;
 }
-
-Asset *AssetsManager::load(const std::string &path)
+/**
+ * @brief 加载资产
+ * @param path 资产路径 相对于assets 目录的路径
+ * @return Asset* 资产指针
+ */
+Asset *AssetsManager::loadByUuid(const std::string &uuid)
 {
-	return this->_assetLoad->load(path);
+	return this->_assetLoad->loadByUuid(uuid);
 }
 void AssetsManager::clearLoadCall(const int loadId)
 {
-	this->_assetLoad->clearLoadCall(loadId);
+	// this->_assetLoad->clearLoadCall(loadId);
 }
-Asset *AssetsManager::get(const std::string &path)
+Asset *AssetsManager::getAssetByUuid(const std::string &path)
 {
-	return this->_assetLoad->getAsset(path);
+	return this->_cache->getAssetByUuid(path);
 }
 void AssetsManager::setMaxLoadCount(int count)
 {

@@ -14,50 +14,87 @@ AssetLoad::AssetLoad(AssetsManager *mgr)
     this->_mgr = mgr;
     this->_cache = this->_mgr->assetCache();
 }
-Asset *AssetLoad::load(const std::string path)
+Asset *AssetLoad::loadByUuid(const std::string &uuid)
 {
+    Asset *asset = nullptr;
     // 从缓存中获取资产
-    std::filesystem::path key = std::filesystem::path(path);
-    std::string normPath = key.generic_string();
-    Asset *asset1 = this->_cache->getAsset(normPath);
-    if (asset1 != nullptr)
-    {
-        return asset1;
-    }
-    int taskID = this->_TaskNextID++;
-    // 创建加载任务
-   
-    AssetTask task(this->_mgr, this->_cache, taskID);
-    Asset *asset2 = task.load(normPath);
-    
-    return asset2;
-}
-
-Asset *AssetLoad::getAsset(const std::string &path)
-{
-    std::filesystem::path key = std::filesystem::path(path);
-    std::string normPath = key.generic_string();
-    Asset *asset = this->_cache->getAsset(path);
+    asset = this->_cache->getAssetByUuid(uuid);
     if (asset != nullptr)
     {
         return asset;
     }
-    return nullptr;
+    int taskID = this->_TaskNextID++;
+    AssetTask task(this->_mgr, this->_cache, taskID);
+    task.load(uuid);
+    return this->_cache->getAssetByUuid(uuid);;
 }
-/**
- * @brief 清除加载任务回调
- * @param loadId 加载任务ID
- */
-void AssetLoad::clearLoadCall(const int loadId)
-{
-    for (AssetTask &task : this->_tasks)
-    {
-        if (task.getID() == loadId)
-        {
-            task.clearCallback();
-        }
-    }
-}
+// Asset *AssetLoad::load(const std::string path)
+// {
+//     // 从缓存中获取资产
+//     std::filesystem::path _path = std::filesystem::path(path).generic_string();
+//     Asset *asset = nullptr;
+//     // 从缓存中获取资产
+//     asset = this->_cache->getAsset(_path.string());
+//     if(asset != nullptr){
+//         return asset;
+//     }
+
+//     // 当前资源映射文件
+//     std::vector<AssetDB> assetConfigs = this->_cache->getAssetsDB()[_path.string()];
+//     if (assetConfigs.size() <= 0)
+//     {
+//         return nullptr;
+//     }
+
+//     //
+//     // if (asset != nullptr)
+//     // {
+//     //     return asset;
+//     // }
+//     // std::string normPath = tempPath.generic_string();
+//     // Asset *asset1 = this->_cache->getAsset(normPath);
+//     // if (asset1 != nullptr)
+//     // {
+//     //     return asset1;
+//     // }
+//     // int taskID = this->_TaskNextID++;
+//     // // 创建加载任务
+
+//     // AssetTask task(this->_mgr, this->_cache, taskID);
+//     // Asset *asset2 = task.load(normPath);
+
+//     // return asset2;
+// }
+// /**
+//  * @brief 获取资产
+//  * @param path 资产路径 相对于assets 目录的路径
+//  * @return Asset* 资产指针
+//  */
+// Asset *AssetLoad::getAsset(const std::string &path)
+// {
+//     std::filesystem::path key = std::filesystem::path(path);
+//     std::string normPath = key.generic_string();
+//     Asset *asset = this->_cache->getAsset(path);
+//     if (asset != nullptr)
+//     {
+//         return asset;
+//     }
+//     return nullptr;
+// }
+// /**
+//  * @brief 清除加载任务回调
+//  * @param loadId 加载任务ID
+//  */
+// void AssetLoad::clearLoadCall(const int loadId)
+// {
+//     for (AssetTask &task : this->_tasks)
+//     {
+//         if (task.getID() == loadId)
+//         {
+//             task.clearCallback();
+//         }
+//     }
+// }
 
 /**
  * @brief 更新加载任务
@@ -69,25 +106,25 @@ void AssetLoad::update(float deltaTime)
 }
 void AssetLoad::updateLoadTasks()
 {
-    // 删除已经完成的任务
-    auto it = std::remove_if(this->_tasks.begin(), this->_tasks.end(),
-                             [](AssetTask &task)
-                             {
-                                 return task.isComplete();
-                             });
+    // // 删除已经完成的任务
+    // auto it = std::remove_if(this->_tasks.begin(), this->_tasks.end(),
+    //                          [](AssetTask &task)
+    //                          {
+    //                              return task.isComplete();
+    //                          });
 
-    this->_tasks.erase(it, this->_tasks.end());
-    // 执行剩余任务的run
-    int loadCount = 0;
-    for (AssetTask &task : this->_tasks)
-    {
-        task.run();
-        loadCount++;
-        if (loadCount >= this->_MAX_LOAD_COUNT)
-        {
-            break;
-        }
-    }
+    // this->_tasks.erase(it, this->_tasks.end());
+    // // 执行剩余任务的run
+    // int loadCount = 0;
+    // for (AssetTask &task : this->_tasks)
+    // {
+    //     task.run();
+    //     loadCount++;
+    //     if (loadCount >= this->_MAX_LOAD_COUNT)
+    //     {
+    //         break;
+    //     }
+    // }
 }
 
 AssetLoad::~AssetLoad()

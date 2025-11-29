@@ -16,7 +16,7 @@ void EditorCacheTask::init(std::string relativePath, std::string parentPath, std
 }
 void EditorCacheTask::run()
 {
-   
+
     if (this->_configs.size() > 0)
     {
         bool isOK = true;
@@ -41,8 +41,7 @@ void EditorCacheTask::run()
                 std::string extension = config.extension;
                 std::string name = config.name;
                 std::string path = config.path;
-                std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
-                Boo::game->assetsManager()->load(libraryPath);
+                Boo::game->assetsManager()->loadByUuid(uuid);
             }
         }
     }
@@ -118,7 +117,7 @@ void EditorCacheTask::_createLibraryAsset()
         // 更新Library资产映射
         std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
         FileUtil::copyFile(assetsPath.generic_string(), libraryPath);
-        Boo::game->assetsManager()->load(libraryPath);
+         Boo::game->assetsManager()->loadByUuid(uuid);
     }
     else if (extension == ".vert" || extension == ".frag") // GLSL-原始资源
     {
@@ -134,6 +133,7 @@ void EditorCacheTask::_createLibraryAsset()
         // 更新Library资产映射
         std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
         FileUtil::copyFile(assetsPath.generic_string(), libraryPath);
+         Boo::game->assetsManager()->loadByUuid(uuid);
     }
     else if (extension == ".spv") // SPIR-V-原始资源
     {
@@ -149,6 +149,7 @@ void EditorCacheTask::_createLibraryAsset()
         // 更新Library资产映射
         std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
         FileUtil::copyFile(assetsPath.generic_string(), libraryPath);
+         Boo::game->assetsManager()->loadByUuid(uuid);
     }
     else if (extension == ".scene") // 场景-原始资源
     {
@@ -164,6 +165,7 @@ void EditorCacheTask::_createLibraryAsset()
         // 更新Library资产映射
         std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / uuid).replace_extension(extension).generic_string();
         FileUtil::copyFile(assetsPath.generic_string(), libraryPath);
+         Boo::game->assetsManager()->loadByUuid(uuid);
     }
     else
     {

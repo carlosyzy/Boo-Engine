@@ -6,6 +6,8 @@
 #include "../../engine/core/utils/file-util.h"
 #include "../../engine/core/utils/json-util.h"
 
+class TextureAsset;
+
 class EditorCache
 {
     std::string _assetsPath;
@@ -39,6 +41,8 @@ class EditorCache
      */
     void _updateProjectAssetsDBMaps(std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig);
 
+
+    std::unordered_map<std::string, TextureAsset*> _editorTextures;
 public:
     EditorCache();
     void init();
@@ -54,6 +58,9 @@ public:
         };
         this->_updateAssetsDBMaps();
     }
+
+    void addEditorTexture(const std::string &path, TextureAsset *texture);
+    TextureAsset *getEditorTexture(const std::string &path);
 
     void saveAssetsDB();
 

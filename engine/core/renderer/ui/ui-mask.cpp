@@ -65,13 +65,13 @@ void UIMask::Enable()
 }
 void UIMask::setMaterialAsset(std::string mtl)
 {
-    MaterialAsset *mtlAsset = dynamic_cast<MaterialAsset *>(Boo::game->assetsManager()->get(mtl));
-    if (mtlAsset == nullptr)
-    {
-        std::cout << "UIMask::setMaterialAsset: material " << mtl << " not found" << std::endl;
-        return;
-    }
-    this->_setMaterial(mtlAsset);
+    // MaterialAsset *mtlAsset = dynamic_cast<MaterialAsset *>(Boo::game->assetsManager()->get(mtl));
+    // if (mtlAsset == nullptr)
+    // {
+    //     std::cout << "UIMask::setMaterialAsset: material " << mtl << " not found" << std::endl;
+    //     return;
+    // }
+    // this->_setMaterial(mtlAsset);
 }
 void UIMask::setMaterialAsset(MaterialAsset *mtl)
 {

@@ -3,6 +3,7 @@
 
 #include "../../engine/boo.h"
 #include "../../engine/core/assets/assets-manager.h"
+#include "../../engine/core/assets/texture-asset.h"
 #include "../../engine/core/assets/asset-cache.h"
 
 EditorCache::EditorCache()
@@ -163,4 +164,17 @@ void EditorCache::saveAssetsDB()
     FileUtil::saveJsonToBinary(this->_assetsDBPath, content);
     std::cout << "EditorCache::saveAssetsDB: " << this->_assetsDBPath << std::endl;
     std::cout << "EditorCache::saveAssetsDB: " << content << std::endl;
+}
+
+void EditorCache::addEditorTexture(const std::string &path, TextureAsset *texture)
+{
+    this->_editorTextures[path] = texture;
+}
+TextureAsset *EditorCache::getEditorTexture(const std::string &path)
+{
+    if (this->_editorTextures.find(path) != this->_editorTextures.end())
+    {
+        return this->_editorTextures[path];
+    }
+    return nullptr;
 }

@@ -45,8 +45,8 @@ UISprite::UISprite(std::string name, Node *node, std::string uuid) : UIRenderer(
 void UISprite::_deserialized()
 {
     UIRenderer::_deserialized();
-    this->setTextureAsset(this->_texture);
-    this->setMaterialAsset(this->_material);
+    // this->setTextureAsset(this->_texture);
+    // this->setMaterialAsset(this->_material);
 }
 
 void UISprite::Awake()
@@ -101,13 +101,13 @@ void UISprite::setAlpha(float alpha)
 
 void UISprite::setTextureAsset(std::string texture)
 {
-    TextureAsset *tex = dynamic_cast<TextureAsset *>(Boo::game->assetsManager()->get(texture));
-    if (tex == nullptr)
-    {
-        std::cout << "UISprite::setTexture: texture " << texture << " not found" << std::endl;
-        return;
-    }
-    this->_setTexture(tex);
+    // TextureAsset *tex = dynamic_cast<TextureAsset *>(Boo::game->assetsManager()->get(texture));
+    // if (tex == nullptr)
+    // {
+    //     std::cout << "UISprite::setTexture: texture " << texture << " not found" << std::endl;
+    //     return;
+    // }
+    // this->_setTexture(tex);
 }
 void UISprite::setTextureAsset(TextureAsset *texture)
 {
@@ -122,13 +122,13 @@ void UISprite::setTextureAsset(TextureAsset *texture)
 
 void UISprite::setMaterialAsset(std::string mtl)
 {
-    MaterialAsset *mtlAsset = dynamic_cast<MaterialAsset *>(Boo::game->assetsManager()->get(mtl));
-    if (mtlAsset == nullptr)
-    {
-        std::cout << "UISprite::setMaterial: material " << mtl << " not found" << std::endl;
-        return;
-    }
-    this->_setMaterial(mtlAsset);
+    // MaterialAsset *mtlAsset = dynamic_cast<MaterialAsset *>(Boo::game->assetsManager()->get(mtl));
+    // if (mtlAsset == nullptr)
+    // {
+    //     std::cout << "UISprite::setMaterial: material " << mtl << " not found" << std::endl;
+    //     return;
+    // }
+    // this->_setMaterial(mtlAsset);
 }
 void UISprite::setMaterialAsset(MaterialAsset *mtl)
 {
