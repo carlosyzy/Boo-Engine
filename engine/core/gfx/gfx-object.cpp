@@ -165,13 +165,13 @@ void GfxObject::setModelMatrix(std::array<float, 16> &mat)
 }
 void GfxObject::setViewMatrix(std::array<float, 16> &mat)
 {
-    // this->_viewMatrix = mat;
-    // this->_updateViewMatUniformBuffer();
+     this->_viewMatrix = mat;
+     this->_updateViewMatUniformBuffer();
 }
 void GfxObject::setProjMatrix(std::array<float, 16> &mat)
 {
-    // this->_projMatrix = mat;
-    // this->_updateProjMatUniformBuffer();
+     this->_projMatrix = mat;
+     this->_updateProjMatUniformBuffer();
 }
 
 /**
@@ -317,9 +317,9 @@ void GfxObject::_updateViewMatUniformBuffer()
  */
 void GfxObject::_updateProjMatUniformBuffer()
 {
-    if(this->_projMatrix[0] == 2.0f / Boo::game->view()->width&&this->_projMatrix[5] == 2.0f / Boo::game->view()->height){
+   /* if(this->_projMatrix[0] == 2.0f / Boo::game->view()->width&&this->_projMatrix[5] == 2.0f / Boo::game->view()->height){
         return;
-    }
+    }*/
     this->_projMatrix[0] = this->_projMatrix[5] = this->_projMatrix[10] = this->_projMatrix[15] = 1.0f;
     this->_projMatrix[0] = 2.0f / Boo::game->view()->width;
     this->_projMatrix[5] = 2.0f / Boo::game->view()->height;
