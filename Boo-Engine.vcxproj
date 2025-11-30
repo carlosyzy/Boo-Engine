@@ -242,6 +242,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\alpha\alpha.h" />
     <ClInclude Include="engine\core\assets\asset-cache.h" />
     <ClInclude Include="engine\core\assets\asset-load.h" />
+    <ClInclude Include="engine\core\assets\asset-struct.h" />
     <ClInclude Include="engine\core\assets\asset-task.h" />
     <ClInclude Include="engine\core\assets\asset.h" />
     <ClInclude Include="engine\core\assets\assets-manager.h" />

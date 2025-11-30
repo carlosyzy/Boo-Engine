@@ -659,6 +659,9 @@
     <ClInclude Include="editor\loading\editor-loading.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="engine\core\assets\asset-struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="engine\readme.md" />
