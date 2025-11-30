@@ -14,10 +14,6 @@ class AssetLoad
 private:
     AssetsManager *_mgr;
     /**
-     * @brief 资产缓存
-     */
-    AssetCache *_cache;
-    /**
      * @brief 最大加载数量
      */
     int _MAX_LOAD_COUNT = 30;

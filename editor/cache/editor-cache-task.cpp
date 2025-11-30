@@ -45,6 +45,7 @@ void EditorCacheTask::_parseTextureAssetDB()
         newAssetDB.name = std::filesystem::path(this->_assetPath).stem().generic_string();
         assetCache->_updateTextureAssetsDB(this->_assetPath, newAssetDB);
         this->_updateLibraryAsset(newAssetDB);
+        Boo::game->assetsManager()->loadByUuid(newAssetDB.uuid);
     }
     else
     {
@@ -63,13 +64,17 @@ void EditorCacheTask::_parseTextureAssetDB()
             newAssetDB.name = std::filesystem::path(this->_assetPath).stem().generic_string();
             assetCache->_updateTextureAssetsDB(this->_assetPath, newAssetDB);
             this->_updateLibraryAsset(newAssetDB);
+            Boo::game->assetsManager()->loadByUuid(newAssetDB.uuid);
         }
         else
         {
             // 资产配置OK，无条件重新拷贝资产资源
             this->_updateLibraryAsset(assetDB);
+            // 加载资产
+            Boo::game->assetsManager()->loadByUuid(assetDB.uuid);
         }
     }
+
 }
 void EditorCacheTask::_parseMaterialAssetDB()
 {

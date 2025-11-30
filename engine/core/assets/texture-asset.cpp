@@ -2,19 +2,22 @@
 #include "../../libs/stb/stb_image.h"
 #include "../gfx/gfx-mgr.h"
 
-
-TextureAsset::TextureAsset() : Asset() {
+TextureAsset::TextureAsset() : Asset()
+{
   this->_type = AssetType::Texture;
 }
-TextureAsset::TextureAsset(const std::string uuid) : Asset(uuid) {
+TextureAsset::TextureAsset(const std::string uuid) : Asset(uuid)
+{
   this->_type = AssetType::Texture;
 }
-void TextureAsset::create(std::string path) {
+void TextureAsset::create(std::string path)
+{
   Asset::create(path);
   const void *_pixels =
       stbi_load(this->_path.c_str(), &this->_width, &this->_height,
                 &this->_channels, STBI_rgb_alpha);
-  if (_pixels == nullptr) {
+  if (_pixels == nullptr)
+  {
     std::cerr << "Failed to load TextureAsset: " << this->_path << std::endl;
     return;
   }
@@ -27,7 +30,8 @@ void TextureAsset::create(std::string path) {
                                        this->_channels, &this->_pixelsVector);
 }
 void TextureAsset::create(int width, int height, int channels,
-                          std::vector<uint8_t> pixelsVector) {
+                          std::vector<uint8_t> pixelsVector)
+{
   this->_width = width;
   this->_height = height;
   this->_channels = channels;
@@ -35,10 +39,12 @@ void TextureAsset::create(int width, int height, int channels,
   GfxMgr::getInstance()->createTexture(this->_uuid, this->_width, this->_height,
                                        this->_channels, &this->_pixelsVector);
 }
-void TextureAsset::create(const unsigned char *data, size_t size) {
+void TextureAsset::create(const unsigned char *data, size_t size)
+{
   const void *_pixels = stbi_load_from_memory(
       data, size, &this->_width, &this->_height, &this->_channels, 0);
-  if (_pixels == nullptr) {
+  if (_pixels == nullptr)
+  {
     std::cerr << "Failed to load TextureAsset from memory" << std::endl;
     return;
   }
@@ -50,7 +56,8 @@ void TextureAsset::create(const unsigned char *data, size_t size) {
   GfxMgr::getInstance()->createTexture(this->_uuid, this->_width, this->_height,
                                        this->_channels, &this->_pixelsVector);
 }
-void TextureAsset::destroy() {
+void TextureAsset::destroy()
+{
   GfxMgr::getInstance()->destroyTexture(this->_uuid);
 }
 // TextureAsset::TextureAsset(const std::string uuid, const std::string path)

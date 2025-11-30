@@ -46,11 +46,11 @@ private:
      */
     std::unordered_map<std::string, AssetDB> _uuidAssetsDB;
 
-    // /**
-    //  * @brief 资产数据库
-    //  *  uuid映射资产指针
-    //  */
-    // std::unordered_map<std::string, Asset *> _assetsUuidMap;
+    /**
+     * @brief 资产数据库
+     *  uuid映射资产指针
+     */
+    std::unordered_map<std::string, Asset *> _assetsUuidMap;
     // /**
     //  * @brief 资产数据库
     //  *  路径映射资产指针
@@ -87,7 +87,10 @@ public:
     const std::unordered_map<std::string, AssetDB> &_getTextureAssetsDB();
     void _updateTextureAssetsDB(const std::string &path, const AssetDB &config);
 
+    void addAsset(const std::string &uuid, Asset *asset);
+    const AssetDB &getAssetDBByUuid(const std::string &uuid);
 
+    
     // /**
     //  * @brief 获取纹理资产数据库
     //  * @return std::vector<AssetDB> 纹理资产数据库
@@ -137,7 +140,7 @@ public:
     // const AssetDB &getAssetDBByUuid(const std::string &uuid);
 
     // // void addAsset(const std::string &uuid, Asset *asset);
-    // Asset *getAssetByUuid(const std::string &uuid);
+    Asset *getAssetByUuid(const std::string &uuid);
 
     // /**
     //  * @brief 添加资产到缓存

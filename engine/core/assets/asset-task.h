@@ -48,10 +48,7 @@ class AssetTask
 {
 private:
     AssetsManager *_mgr;
-    /**
-     * @brief 资产缓存
-     */
-    AssetCache *_cache;
+
     /**
      * @brief 资产任务ID
      */
@@ -85,28 +82,28 @@ private:
      * @param resKey 资产键值
      * @param fullPath 资产路径
      */
-    void _createTexture(const std::string resKey, const std::string fullPath);
-    /**
-     * @brief 创建GLSL着色器
-     *
-     * @param resKey 资产键值
-     * @param fullPath 资产路径
-     */
-    void _createGlslShader(const std::string resKey, const std::string fullPath);
-    /**
-     * @brief 创建SPIR-V着色器
-     *
-     * @param resKey 资产键值
-     * @param fullPath 资产路径
-     */
-    void _createSpirvShader(const std::string resKey, const std::string fullPath);
-    /**
-     * @brief 创建场景
-     *
-     * @param resKey 资产键值
-     * @param fullPath 资产路径
-     */
-    void _createScene(const std::string resKey, const std::string fullPath);
+    Asset *_createTexture(const AssetDB &db);
+    // /**
+    //  * @brief 创建GLSL着色器
+    //  *
+    //  * @param resKey 资产键值
+    //  * @param fullPath 资产路径
+    //  */
+    // void _createGlslShader(const std::string resKey, const std::string fullPath);
+    // /**
+    //  * @brief 创建SPIR-V着色器
+    //  *
+    //  * @param resKey 资产键值
+    //  * @param fullPath 资产路径
+    //  */
+    // void _createSpirvShader(const std::string resKey, const std::string fullPath);
+    // /**
+    //  * @brief 创建场景
+    //  *
+    //  * @param resKey 资产键值
+    //  * @param fullPath 资产路径
+    //  */
+    // void _createScene(const std::string resKey, const std::string fullPath);
 
     /**
      * @brief 加载完成
@@ -118,7 +115,7 @@ private:
     void _loadError();
 
 public:
-    AssetTask(AssetsManager *mgr, AssetCache *cache, int id);
+    AssetTask(AssetsManager *mgr, int id);
     /**
      * @brief 获取资产任务ID
      * @return int 资产任务ID
@@ -127,35 +124,35 @@ public:
     {
         return this->_id;
     }
-    Asset *load(const std::string &path);
-    template <typename T, typename Func>
-    void loadAsync(const std::string &path, Func callback, T *instance)
-    {
-       /* this->_path = path;
-        this->_type = AssetTaskType::AsyncOnce;
-        this->_callbackOnce = [instance, callback]()
-        {
-            if (instance != nullptr && callback != nullptr)
-            {
-                (instance->*callback)();
-            }
-        };*/
-    }
-    template <typename T, typename Func>
-    void loadASync(const std::string path, AssetLoadResult *result, Func callback, T *instance)
-    {
-        /*this->_path = path;
-        this->_type = AssetTaskType::AsyncList;
-        this->_result = result;
-        this->_callbackList = [instance, callback](const int complete, const int all, const float progress)
-        {
-            if (instance != nullptr && callback != nullptr)
-            {
-                (instance->*callback)(complete, all, progress);
-            }
-        };*/
-    }
-    void run();
+    Asset *load(const AssetDB &_assetDB);
+    // template <typename T, typename Func>
+    // void loadAsync(const std::string &path, Func callback, T *instance)
+    // {
+    //    /* this->_path = path;
+    //     this->_type = AssetTaskType::AsyncOnce;
+    //     this->_callbackOnce = [instance, callback]()
+    //     {
+    //         if (instance != nullptr && callback != nullptr)
+    //         {
+    //             (instance->*callback)();
+    //         }
+    //     };*/
+    // }
+    // template <typename T, typename Func>
+    // void loadASync(const std::string path, AssetLoadResult *result, Func callback, T *instance)
+    // {
+    //     /*this->_path = path;
+    //     this->_type = AssetTaskType::AsyncList;
+    //     this->_result = result;
+    //     this->_callbackList = [instance, callback](const int complete, const int all, const float progress)
+    //     {
+    //         if (instance != nullptr && callback != nullptr)
+    //         {
+    //             (instance->*callback)(complete, all, progress);
+    //         }
+    //     };*/
+    // }
+    // void run();
     void clearCallback();
     bool isComplete()
     {

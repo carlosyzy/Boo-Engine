@@ -60,16 +60,10 @@ void AssetsManager::setMaxLoadCount(int count)
 {
 	this->_assetsLoad->setMaxLoadCount(count);
 }
-
-// /**
-//  * @brief 加载资产
-//  * @param path 资产路径 相对于assets 目录的路径
-//  * @return Asset* 资产指针
-//  */
-// Asset *AssetsManager::loadByUuid(const std::string &uuid)
-// {
-// 	return this->_assetsLoad->loadByUuid(uuid);
-// }
+Asset *AssetsManager::loadByUuid(const std::string &uuid)
+{
+	return this->_assetsLoad->loadByUuid(uuid);
+}
 // void AssetsManager::clearLoadCall(const int loadId)
 // {
 // 	// this->_assetsLoad->clearLoadCall(loadId);

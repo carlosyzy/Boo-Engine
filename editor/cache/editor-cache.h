@@ -16,6 +16,12 @@ class EditorCache
     std::string _assetsDBPath;
     void _initRoot();
     /**
+     * @brief 初始化配置文件
+     */
+    void _initSetting();
+    json _settingEditor;
+
+    /**
      * @brief 是否初始化资产映射
      */
     bool _isInitAssetsDB = false;
@@ -26,12 +32,14 @@ class EditorCache
      * @brief 更新资产数据库回调
      */
     std::function<void(const int complete, const int all, const float progress)> _initAssetsDBCallback;
-
     /**
      * @brief 更新资产数据库映射
      */
     void _updateAssetsDBMaps();
 
+    /**
+     * @brief 编辑器专属纹理资产映射
+     */
     std::unordered_map<std::string, TextureAsset *> _editorTextures;
 
 public:

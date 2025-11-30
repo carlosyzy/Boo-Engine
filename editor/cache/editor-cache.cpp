@@ -12,7 +12,9 @@ EditorCache::EditorCache()
 void EditorCache::init()
 {
     this->_initRoot();
+    this->_initSetting();
 }
+
 void EditorCache::_initRoot()
 {
     // 资产目录
@@ -47,6 +49,22 @@ void EditorCache::_initRoot()
     this->_assetsDBPath = assetsDBPath.generic_string();
     Boo::game->assetsManager()->initAssetsDB(this->_assetsDBPath);
     Boo::game->assetsManager()->setAssetsRoot(this->_libraryPath);
+}
+
+void EditorCache::_initSetting()
+{
+    // 编辑器配置
+    std::string settingPath = this->_settingPath + "/editor.bin";
+    if (std::filesystem::exists(settingPath))
+    {
+        this->_settingEditor = FileUtil::readJsonFromBinary(settingPath);
+    }
+    else
+    {
+        this->_settingEditor = json::object();
+
+        FileUtil::saveJsonToBinary(settingPath, this->_settingEditor);
+    }
 }
 
 void EditorCache::_updateAssetsDBMaps()
@@ -96,8 +114,8 @@ void EditorCache::saveAssetsDB()
     json content = json::object();
     for (auto &textureAsset : textureAssetsDB)
     {
-        std::string path = textureAsset.first;             // 相对于assets 目录的路径
-        AssetDB db = textureAsset.second; // 当前目录包含子的子资源
+        std::string path = textureAsset.first; // 相对于assets 目录的路径
+        AssetDB db = textureAsset.second;      // 当前目录包含子的子资源
         json subItem = json::object();
         subItem["name"] = db.name;
         subItem["path"] = db.path;

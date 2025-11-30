@@ -56,7 +56,7 @@ public:
 	AssetLoad *getAssetsLoad();
 	AssetCache *getAssetsCache();
 
-	// Asset *loadByUuid(const std::string &uuid);
+	Asset *loadByUuid(const std::string &uuid);
 	// Asset *getAssetByUuid(const std::string &uuid);
 
 	// Asset *loadByPath(const std::string &path);

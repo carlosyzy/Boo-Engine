@@ -11,24 +11,23 @@
 
 AssetLoad::AssetLoad(AssetsManager *mgr)
 {
-   /* this->_mgr = mgr;
-    this->_cache = this->_mgr->assetsCache();*/
+    this->_mgr = mgr;
 }
 Asset *AssetLoad::loadByUuid(const std::string &uuid)
 {
-    // Asset *asset = nullptr;
-    // // 从缓存中获取资产
-    // asset = this->_cache->getAssetByUuid(uuid);
-    // if (asset != nullptr)
-    // {
-    //     return asset;
-    // }
-    // int taskID = this->_TaskNextID++;
-    // AssetTask task(this->_mgr, this->_cache, taskID);
-    // task.load(uuid);
-    // return this->_cache->getAssetByUuid(uuid);;
-
-    return nullptr;
+    AssetCache *cache = this->_mgr->getAssetsCache();
+    Asset *asset = nullptr;
+    asset = cache->getAssetByUuid(uuid);
+    if (asset != nullptr)
+    {
+        return asset;
+    }
+    int taskID = this->_TaskNextID++;
+    AssetTask task(this->_mgr, taskID);
+    const AssetDB &config = cache->getAssetDBByUuid(uuid);
+    asset = task.load(config);
+    cache->addAsset(uuid,asset);
+    return asset;
 }
 // Asset *AssetLoad::load(const std::string path)
 // {

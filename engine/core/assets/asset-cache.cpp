@@ -60,10 +60,30 @@ const std::unordered_map<std::string, AssetDB> &AssetCache::_getTextureAssetsDB(
 void AssetCache::_updateTextureAssetsDB(const std::string &path, const AssetDB &config)
 {
     this->_textureAssetsDB[path] = config;
+    this->_uuidAssetsDB[config.uuid] = config;
 }
 
-
-
+void AssetCache::addAsset(const std::string &uuid, Asset *asset)
+{
+    this->_assetsUuidMap[uuid] = asset;
+}
+Asset *AssetCache::getAssetByUuid(const std::string &uuid)
+{
+    if (this->_assetsUuidMap.find(uuid) != this->_assetsUuidMap.end())
+    {
+        return this->_assetsUuidMap[uuid];
+    }
+    return nullptr;
+}
+/**
+ * @brief 获取资产配置
+ * @param uuid 资产uuid
+ * @return AssetDB 资产配置
+ */
+const AssetDB &AssetCache::getAssetDBByUuid(const std::string &uuid)
+{
+    return this->_uuidAssetsDB[uuid];
+}
 // const std::unordered_map<std::string, AssetDB> &AssetCache::getTextureAssetsDB()
 // {
 //     return this->_textureAssetsDB;
@@ -138,14 +158,7 @@ void AssetCache::_updateTextureAssetsDB(const std::string &path, const AssetDB &
 //     return std::vector<AssetDB>();
 // }
 
-// Asset *AssetCache::getAssetByUuid(const std::string &uuid)
-// {
-//     if (this->_assetsUuidMap.find(uuid) != this->_assetsUuidMap.end())
-//     {
-//         return this->_assetsUuidMap[uuid];
-//     }
-//     return nullptr;
-// }
+
 // /**
 //  * @brief 获取资产配置
 //  * @param uuid 资产uuid
