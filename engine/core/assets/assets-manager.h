@@ -38,26 +38,26 @@ public:
 	void init();
 
 	void initAssetsDB(const std::string &path);
-	/**
-	 * @brief 获取资产数据库
-	 * @return std::unordered_map<std::string, std::vector<AssetDB>> 资产数据库
-	 */
-	std::unordered_map<std::string, std::vector<AssetDB>> &getAssetsDB();
-	/**
-	 * @brief 更新资产数据库
-	 * @param path 资产路径
-	 * @param configs 资产配置
-	 */
-	void updateAssetsDB(const std::string path, const std::vector<AssetDB> configs);
+	// /**
+	//  * @brief 获取资产数据库
+	//  * @return
+	//  */
+	// std::unordered_map<std::string, std::vector<AssetDB>> &getAssetsDB();
+	// /**
+	//  * @brief 更新资产数据库
+	//  * @param path 资产路径
+	//  * @param configs 资产配置
+	//  */
+	// void updateAssetsDB(const std::string path, const std::vector<AssetDB> configs);
 
 	void setAssetsRoot(const std::string &root);
 	const std::string &getAssetsRoot();
 	void setMaxLoadCount(int count);
-	AssetLoad *assetsLoad();
-	AssetCache *assetsCache();
+	AssetLoad *getAssetsLoad();
+	AssetCache *getAssetsCache();
 
-	Asset *loadByUuid(const std::string &uuid);
-	Asset *getAssetByUuid(const std::string &uuid);
+	// Asset *loadByUuid(const std::string &uuid);
+	// Asset *getAssetByUuid(const std::string &uuid);
 
 	// Asset *loadByPath(const std::string &path);
 	// Asset *getByPath(const std::string &path);

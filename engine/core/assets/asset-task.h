@@ -3,6 +3,7 @@
 #include <string>
 #include <functional>
 #include "asset-cache.h"
+#include "asset-struct.h"
 
 class Asset;
 class Shader;

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <filesystem>
+#include "asset-struct.h"
 
 class Asset
 {

@@ -18,9 +18,9 @@ AssetTask::AssetTask(AssetsManager *mgr, AssetCache *cache, int id)
 }
 Asset *AssetTask::load(const std::string &resUuid)
 {
-	this->_assetDB = this->_cache->getAssetDBByUuid(resUuid);
-	this->_type = AssetTaskType::Sync;
-	this->run();
+	//this->_assetDB = this->_cache->getAssetDBByUuid(resUuid);
+	//this->_type = AssetTaskType::Sync;
+	//this->run();
 	return nullptr;
 }
 
@@ -70,9 +70,9 @@ void AssetTask::run()
 }
 void AssetTask::_createTexture(const std::string uuid, const std::string fullPath)
 {
-	TextureAsset *texture = new TextureAsset(uuid);
+	/*TextureAsset *texture = new TextureAsset(uuid);
 	texture->create(fullPath);
-	this->_cache->addAssetByUuid(uuid, texture);
+	this->_cache->addAssetByUuid(uuid, texture);*/
 	
 }
 void AssetTask::_createGlslShader(const std::string resKey, const std::string fullPath)

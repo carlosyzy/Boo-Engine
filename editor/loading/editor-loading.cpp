@@ -140,6 +140,8 @@ void EditorLoading::_initAssetsDBCallback(int completedCount, int allCount,
 void EditorLoading::_saveEditorCache()
 {
 	std::cout << "EditorLoading::_saveEditorCache" << std::endl;
+	// 保存资产数据库
+	BooEditor::cache->saveAssetsDB();
 	// 加载 res/private 下边的所有资产
 	std::filesystem::path privatePath = (std::filesystem::path(BooEditor::editorPath) / "res/private").generic_string();
 	for (const auto &entry : std::filesystem::recursive_directory_iterator(privatePath))
@@ -152,8 +154,6 @@ void EditorLoading::_saveEditorCache()
 			BooEditor::cache->addEditorTexture(relativePath, texture);
 		}
 	}
-	// 初始化编辑器缓存
-	BooEditor::cache->saveAssetsDB();
 	this->_setLoadProgress(1.0f);
 	this->_launchEditorTaskId = Boo::game->scheduleOnce(&EditorLoading::_launchEditor, this, 0.1f);
 }

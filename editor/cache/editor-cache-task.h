@@ -3,6 +3,8 @@
 #include <filesystem>
 #include <unordered_map>
 #include <vector>
+
+#include "../../engine/core/assets/asset-struct.h"
 #include "../../engine/core/utils/file-util.h"
 #include "../../engine/core/utils/json-util.h"
 #include "../../engine/core/utils/uuid-util.h"
@@ -12,14 +14,34 @@ struct AssetDB;
 class EditorCacheTask
 {
 private:
-    std::string _relativePath;
-    std::string _parentPath;
-    std::vector<AssetDB> _configs;
+    /**
+     * 资产原始路径
+     * 全路径
+     */
+    std::string _originalPath;
+    /**
+     * 资产库路径
+     * 相对路径
+     */
+    std::string _assetPath;
+    /**
+     * 资产扩展名
+     */
+    std::string _assetExtension;
+    /**
+     * 资产类型
+     */
+    AssetType _assetType;
 
-    bool _verifyLibraryAsset(AssetDB &config);
-    void _clearLibraryAsset();
-    void _createLibraryAsset();
+    AssetType getAssetType(const std::string &path);
 
+    void _parseTextureAssetDB();
+    void _parseMaterialAssetDB();
+    /**
+     * @brief 更新资产
+     * 拷贝资产资源到资产库
+     */
+    void _updateLibraryAsset(const AssetDB &db);
 public:
     EditorCacheTask();
     /**
@@ -27,7 +49,7 @@ public:
      * 父路径
      * 资产配置
      */
-    void init(std::string relativePath, std::string parentPath, std::vector<AssetDB> configs);
+    void init(const std::string assetPath);
     void run();
     ~EditorCacheTask();
 };

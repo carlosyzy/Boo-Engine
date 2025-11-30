@@ -15,83 +15,93 @@ void AssetCache::initAssetsDB(const std::string &path)
         std::string path = asset.key();
         json value = asset.value();
         AssetType type = (AssetType)value["type"];
-        std::string extension = value["extension"];
-        std::string uuid = value["uuid"];
-        std::string name = value["name"];
-
         if (type == AssetType::Texture)
         {
-            AssetDB db{};
-            db.name = name;
-            db.path = path;
-            db.uuid = uuid;
-            db.type = type;
-            db.extension = extension;
-            this->_textureAssetsDB[path] = db;
-            this->_uuidAssetsDB[db.uuid] = db;
-        }
-        else if (type == AssetType::Audio)
-        {
-            AssetDB db{};
-            db.name = name;
-            db.path = path;
-            db.uuid = uuid;
-            db.type = type;
-            db.extension = extension;
-            this->_audioAssetsDB[path] = db;
-            this->_uuidAssetsDB[db.uuid] = db;
+            this->_insertTextureAssetDB(path, value);
         }
         else if (type == AssetType::Material)
         {
-            AssetDB db{};
-            db.name = name;
-            db.path = path;
-            db.uuid = uuid;
-            db.type = type;
-            db.extension = extension;
-            this->_materialAssetsDB[path] = db;
-            this->_uuidAssetsDB[db.uuid] = db;
+            this->_insertMaterialAssetDB(path, value);
+        }
+        else
+        {
+            std::cout << "Unknown asset type: " << value["name"] << std::endl;
         }
     }
 }
-const std::unordered_map<std::string, AssetDB> &AssetCache::getTextureAssetsDB()
+void AssetCache::_insertTextureAssetDB(const std::string &path, json assetDB)
+{
+    std::cout << "Insert texture asset db: " << path << std::endl;
+    AssetDB db{};
+    db.name = assetDB["name"];
+    db.path = path;
+    db.uuid = assetDB["uuid"];
+    db.type = (AssetType)assetDB["type"];
+    db.extension = assetDB["extension"];
+    this->_textureAssetsDB[path] = db;
+    this->_uuidAssetsDB[db.uuid] = db;
+}
+void AssetCache::_insertMaterialAssetDB(const std::string &path, json assetDB)
+{
+    std::cout << "Insert material asset db: " << path << std::endl;
+    AssetDB db{};
+    db.name = assetDB["name"];
+    db.path = path;
+    db.uuid = assetDB["uuid"];
+    db.type = (AssetType)assetDB["type"];
+    db.extension = assetDB["extension"];
+    this->_materialAssetsDB[path] = db;
+    this->_uuidAssetsDB[db.uuid] = db;
+}
+const std::unordered_map<std::string, AssetDB> &AssetCache::_getTextureAssetsDB()
 {
     return this->_textureAssetsDB;
 }
-
-void AssetCache::updateTextureAssetsDB(const std::string &path, const AssetDB &config)
+void AssetCache::_updateTextureAssetsDB(const std::string &path, const AssetDB &config)
 {
     this->_textureAssetsDB[path] = config;
-    this->_uuidAssetsDB[config.uuid] = config;
 }
-const std::unordered_map<std::string, AssetDB> &AssetCache::getAudioAssetsDB()
-{
-    return this->_audioAssetsDB;
-}
-/**
- * @brief 更新音频资产数据库
- * @param path 资产路径
- * @param configs 资产配置
- */
-void AssetCache::updateAudioAssetsDB(const std::string &path, const AssetDB &config)
-{
-    this->_audioAssetsDB[path] = config;
-    this->_uuidAssetsDB[config.uuid] = config;
-}
-const std::unordered_map<std::string, AssetDB> &AssetCache::getMaterialAssetsDB()
-{
-    return this->_materialAssetsDB;
-}
-/**
- * @brief 更新材质资产数据库
- * @param path 资产路径
- * @param configs 资产配置
- */
-void AssetCache::updateMaterialAssetsDB(const std::string &path, const AssetDB &config)
-{
-    this->_materialAssetsDB[path] = config;
-    this->_uuidAssetsDB[config.uuid] = config;
-}
+
+
+
+// const std::unordered_map<std::string, AssetDB> &AssetCache::getTextureAssetsDB()
+// {
+//     return this->_textureAssetsDB;
+// }
+
+// void AssetCache::updateTextureAssetsDB(const std::string &path, const AssetDB &config)
+// {
+//     this->_textureAssetsDB[path] = config;
+//     this->_uuidAssetsDB[config.uuid] = config;
+// }
+// const std::unordered_map<std::string, AssetDB> &AssetCache::getAudioAssetsDB()
+// {
+//     return this->_audioAssetsDB;
+// }
+// /**
+//  * @brief 更新音频资产数据库
+//  * @param path 资产路径
+//  * @param configs 资产配置
+//  */
+// void AssetCache::updateAudioAssetsDB(const std::string &path, const AssetDB &config)
+// {
+//     this->_audioAssetsDB[path] = config;
+//     this->_uuidAssetsDB[config.uuid] = config;
+// }
+// const std::unordered_map<std::string, AssetDB> &AssetCache::getMaterialAssetsDB()
+// {
+//     return this->_materialAssetsDB;
+// }
+// /**
+//  * @brief 更新材质资产数据库
+//  * @param path 资产路径
+//  * @param configs 资产配置
+//  */
+// void AssetCache::updateMaterialAssetsDB(const std::string &path, const AssetDB &config)
+// {
+//     this->_materialAssetsDB[path] = config;
+//     this->_uuidAssetsDB[config.uuid] = config;
+// }
 
 // /**
 //  * @brief 获取资产数据库

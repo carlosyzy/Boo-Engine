@@ -53,69 +53,21 @@ void EditorCache::_updateAssetsDBMaps()
 {
     this->_initAssetsDBTasks.clear();
     // 项目资源db更新
-    // std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig = Boo::game->assetsManager()->getAssetsDB();
-    // // 内置资源db更新
-    // this->_updateInternalAssetsDBMaps(assetsConfig);
-    // // 项目资源db更新
-    // this->_updateProjectAssetsDBMaps(assetsConfig);
-
-
-    // std::cout << "Assets Project: " << this->_assetsPath << std::endl;
-    // for (const auto &entry : std::filesystem::recursive_directory_iterator(this->_assetsPath))
-    // {
-    //     if (std::filesystem::is_regular_file(entry))
-    //     {
-    //         std::string relativePath = std::filesystem::relative(entry.path(), this->_assetsPath).generic_string();
-    //         EditorCacheTask task;
-    //         if (assetsConfig.find(relativePath) != assetsConfig.end())
-    //         {
-    //             task.init(relativePath, this->_assetsPath, assetsConfig[relativePath]);
-    //         }
-    //         else
-    //         {
-    //             std::vector<AssetDB> empty;
-    //             task.init(relativePath, this->_assetsPath, empty);
-    //         }
-    //         this->_initAssetsDBTasks.push_back(task);
-    //     }
-    // }
-
-
-
-
+    for (const auto &entry : std::filesystem::recursive_directory_iterator(this->_assetsPath))
+    {
+        if (std::filesystem::is_regular_file(entry))
+        {
+            EditorCacheTask task;
+            task.init(entry.path().generic_string());
+            this->_initAssetsDBTasks.push_back(task);
+        }
+    }
 
     this->_isInitAssetsDB = true;
     this->_initAssetsDBTaskAll = this->_initAssetsDBTasks.size();
     this->_initAssetsDBTaskComplete = 0;
     std::cout << "EditorCache::_updateAssetsDBMaps: " << this->_initAssetsDBTaskAll << std::endl;
 }
-// void EditorCache::_updateInternalAssetsDBMaps(std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig)
-// {
-//     std::cout << "Assets Internal: " << this->_internalAssetsPath << std::endl;
-//     for (const auto &entry : std::filesystem::recursive_directory_iterator(this->_internalAssetsPath))
-//     {
-//         if (std::filesystem::is_regular_file(entry))
-//         {
-//             std::string relativePath = std::filesystem::relative(entry.path(), this->_internalAssetsPath).generic_string();
-//             EditorCacheTask task;
-//             if (assetsConfig.find(relativePath) != assetsConfig.end())
-//             {
-//                 task.init(relativePath, this->_internalAssetsPath, assetsConfig[relativePath]);
-//             }
-//             else
-//             {
-//                 std::vector<AssetDB> empty;
-//                 task.init(relativePath, this->_internalAssetsPath, empty);
-//             }
-//             this->_initAssetsDBTasks.push_back(task);
-//         }
-//     }
-// }
-// void EditorCache::_updateProjectAssetsDBMaps(std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfig)
-// {
-
-   
-// }
 
 void EditorCache::update(float deltaTime)
 {
@@ -138,26 +90,21 @@ void EditorCache::update(float deltaTime)
 
 void EditorCache::saveAssetsDB()
 {
-    std::unordered_map<std::string, std::vector<AssetDB>> &assetsConfigs = Boo::game->assetsManager()->getAssetsDB();
+    AssetCache *assetCache = Boo::game->assetsManager()->getAssetsCache();
+    const std::unordered_map<std::string, AssetDB> &textureAssetsDB = assetCache->_getTextureAssetsDB();
+    // 保存纹理资产数据库
     json content = json::object();
-    for (auto &assetConfig : assetsConfigs)
+    for (auto &textureAsset : textureAssetsDB)
     {
-        std::string path = assetConfig.first;             // 相对于assets 目录的路径
-        std::vector<AssetDB> dbList = assetConfig.second; // 当前目录包含子的子资源
-        json subContent = json::array();
-         std::cout << "EditorCache::sub: " << path << " " << dbList.size() << std::endl;
-        for (auto &db : dbList)
-        {
-            json subItem = json::object();
-            subItem["name"] = db.name;
-            subItem["path"] = db.path;
-            subItem["uuid"] = db.uuid;
-            subItem["type"] = (int)db.type;
-            subItem["extension"] = db.extension;
-            subContent.push_back(subItem);
-           
-        }
-        content[path] = subContent;
+        std::string path = textureAsset.first;             // 相对于assets 目录的路径
+        AssetDB db = textureAsset.second; // 当前目录包含子的子资源
+        json subItem = json::object();
+        subItem["name"] = db.name;
+        subItem["path"] = db.path;
+        subItem["uuid"] = db.uuid;
+        subItem["type"] = (int)db.type;
+        subItem["extension"] = db.extension;
+        content[path] = subItem;
     }
     FileUtil::saveJsonToBinary(this->_assetsDBPath, content);
     std::cout << "EditorCache::saveAssetsDB: " << this->_assetsDBPath << std::endl;

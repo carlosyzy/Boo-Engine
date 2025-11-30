@@ -11,8 +11,8 @@
 
 AssetLoad::AssetLoad(AssetsManager *mgr)
 {
-    this->_mgr = mgr;
-    this->_cache = this->_mgr->assetsCache();
+   /* this->_mgr = mgr;
+    this->_cache = this->_mgr->assetsCache();*/
 }
 Asset *AssetLoad::loadByUuid(const std::string &uuid)
 {
@@ -28,7 +28,7 @@ Asset *AssetLoad::loadByUuid(const std::string &uuid)
     // task.load(uuid);
     // return this->_cache->getAssetByUuid(uuid);;
 
-    return nullptr
+    return nullptr;
 }
 // Asset *AssetLoad::load(const std::string path)
 // {

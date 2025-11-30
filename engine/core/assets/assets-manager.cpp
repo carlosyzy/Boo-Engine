@@ -36,8 +36,9 @@ void AssetsManager::initAssetsDB(const std::string &path)
 //  */
 // void AssetsManager::updateAssetsDB(const std::string path, const std::vector<AssetDB> configs)
 // {
-// 	this->_cache->updateAssetsDB(path, configs);
+	
 // }
+
 void AssetsManager::setAssetsRoot(const std::string &root)
 {
 	this->_assetsRoot = root;
@@ -46,36 +47,39 @@ const std::string &AssetsManager::getAssetsRoot()
 {
 	return this->_assetsRoot;
 }
-AssetLoad *AssetsManager::assetsLoad()
+
+AssetLoad *AssetsManager::getAssetsLoad()
 {
 	return this->_assetsLoad;
 }
-AssetCache *AssetsManager::assetsCache()
+AssetCache *AssetsManager::getAssetsCache()
 {
 	return this->_assetsCache;
-}
-/**
- * @brief 加载资产
- * @param path 资产路径 相对于assets 目录的路径
- * @return Asset* 资产指针
- */
-Asset *AssetsManager::loadByUuid(const std::string &uuid)
-{
-	return this->_assetsLoad->loadByUuid(uuid);
-}
-void AssetsManager::clearLoadCall(const int loadId)
-{
-	// this->_assetsLoad->clearLoadCall(loadId);
-}
-Asset *AssetsManager::getAssetByUuid(const std::string &path)
-{
-	// return this->_assetsCache->getAssetByUuid(path);
-	return nullptr;
 }
 void AssetsManager::setMaxLoadCount(int count)
 {
 	this->_assetsLoad->setMaxLoadCount(count);
 }
+
+// /**
+//  * @brief 加载资产
+//  * @param path 资产路径 相对于assets 目录的路径
+//  * @return Asset* 资产指针
+//  */
+// Asset *AssetsManager::loadByUuid(const std::string &uuid)
+// {
+// 	return this->_assetsLoad->loadByUuid(uuid);
+// }
+// void AssetsManager::clearLoadCall(const int loadId)
+// {
+// 	// this->_assetsLoad->clearLoadCall(loadId);
+// }
+// Asset *AssetsManager::getAssetByUuid(const std::string &path)
+// {
+// 	// return this->_assetsCache->getAssetByUuid(path);
+// 	return nullptr;
+// }
+
 void AssetsManager::update(float deltaTime)
 {
 	this->_assetsLoad->update(deltaTime);

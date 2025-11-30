@@ -2,23 +2,16 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <any>
 #include <filesystem>
 #include <functional>
+#include "asset-struct.h"
 #include "../../core/utils/json-util.h"
 
 enum class AssetType;
 class Asset;
 class TextureAsset;
 class AssetsManager;
-
-struct AssetDB
-{
-    std::string name;
-    std::string path;
-    std::string uuid;
-    std::string extension;
-    AssetType type;
-};
 
 /**
  * @brief 资产缓存类
@@ -32,41 +25,56 @@ private:
      */
     std::unordered_map<std::string, AssetDB> _textureAssetsDB;
     /**
-     * @brief 音频资产数据库
-     * 路径映射资产基本信息
-     */
-    std::unordered_map<std::string, AssetDB> _audioAssetsDB;
-    /**
      * @brief 材质资产数据库
      * 路径映射资产基本信息
      */
     std::unordered_map<std::string, AssetDB> _materialAssetsDB;
-    /**
-     * @brief 模型资产数据库
-     */
-    std::unordered_map<std::string, std::vector<AssetDB>> _modelAssetsDB;
+    // /**
+    //  * @brief 音频资产数据库
+    //  * 路径映射资产基本信息
+    //  */
+    // std::unordered_map<std::string, AssetDB> _audioAssetsDB;
+    
+    // /**
+    //  * @brief 模型资产数据库
+    //  */
+    // std::unordered_map<std::string, std::vector<AssetDB>> _modelAssetsDB;
 
     /**
      * @brief 模型资产数据库
-     *  uuid映射唯一资产信息
+     *  uuid--path 映射资产基本信息
      */
     std::unordered_map<std::string, AssetDB> _uuidAssetsDB;
 
+    // /**
+    //  * @brief 资产数据库
+    //  *  uuid映射资产指针
+    //  */
+    // std::unordered_map<std::string, Asset *> _assetsUuidMap;
+    // /**
+    //  * @brief 资产数据库
+    //  *  路径映射资产指针
+    //  */
+    // std::unordered_map<std::string, Asset *> _assetsPathMap;
+    // /**
+    //  * @brief 资产数据库
+    //  *  场景名称映射资产指针
+    //  */
+    // std::unordered_map<std::string, Asset *> _sceneAssetsMap;
+
+private:
     /**
-     * @brief 资产数据库
-     *  uuid映射资产指针
+     * @brief 解析纹理资产数据库
+     * @param path 资产数据库路径
+     * @param assetDB 资产数据库
      */
-    std::unordered_map<std::string, Asset *> _assetsUuidMap;
+    void _insertTextureAssetDB(const std::string &path, json assetDB);
     /**
-     * @brief 资产数据库
-     *  路径映射资产指针
+     * @brief 解析材质资产数据库
+     * @param path 资产数据库路径
+     * @param assetDB 资产数据库
      */
-    std::unordered_map<std::string, Asset *> _assetsPathMap;
-    /**
-     * @brief 资产数据库
-     *  场景名称映射资产指针
-     */
-    std::unordered_map<std::string, Asset *> _sceneAssetsMap;
+    void _insertMaterialAssetDB(const std::string &path, json assetDB);
 
 public:
     AssetCache();
@@ -75,41 +83,39 @@ public:
      * @param path 资产数据库路径
      */
     void initAssetsDB(const std::string &path);
+    
+    const std::unordered_map<std::string, AssetDB> &_getTextureAssetsDB();
+    void _updateTextureAssetsDB(const std::string &path, const AssetDB &config);
+
+
     // /**
-    //  * @brief 更新资产数据库
+    //  * @brief 获取纹理资产数据库
+    //  * @return std::vector<AssetDB> 纹理资产数据库
+    //  */
+    // const std::unordered_map<std::string, AssetDB> &getTextureAssetsDB();
+    // void _updateTextureAssetsDB(const std::string &path, const AssetDB &config);
+    // /**
+    //  * @brief 获取音频资产数据库
+    //  * @return std::vector<AssetDB> 音频资产数据库
+    //  */
+    // const std::unordered_map<std::string, AssetDB> &getAudioAssetsDB();
+    // /**
+    //  * @brief 更新音频资产数据库
     //  * @param path 资产路径
     //  * @param configs 资产配置
     //  */
-    // void updateAssetsDB(const std::string path, const std::vector<AssetDB> configs);
-
-    /**
-     * @brief 获取纹理资产数据库
-     * @return std::vector<AssetDB> 纹理资产数据库
-     */
-    const std::unordered_map<std::string, AssetDB> &getTextureAssetsDB();
-    void updateTextureAssetsDB(const std::string &path, const AssetDB &config);
-    /**
-     * @brief 获取音频资产数据库
-     * @return std::vector<AssetDB> 音频资产数据库
-     */
-    const std::unordered_map<std::string, AssetDB> &getAudioAssetsDB();
-    /**
-     * @brief 更新音频资产数据库
-     * @param path 资产路径
-     * @param configs 资产配置
-     */
-    void updateAudioAssetsDB(const std::string &path, const AssetDB &config);
-    /**
-     * @brief 获取材质资产数据库
-     * @return std::vector<AssetDB> 材质资产数据库
-     */
-    const std::unordered_map<std::string, AssetDB> &getMaterialAssetsDB();
-    /**
-     * @brief 更新材质资产数据库
-     * @param path 资产路径
-     * @param configs 资产配置
-     */
-    void updateMaterialAssetsDB(const std::string &path, const AssetDB &config);
+    // void updateAudioAssetsDB(const std::string &path, const AssetDB &config);
+    // /**
+    //  * @brief 获取材质资产数据库
+    //  * @return std::vector<AssetDB> 材质资产数据库
+    //  */
+    // const std::unordered_map<std::string, AssetDB> &getMaterialAssetsDB();
+    // /**
+    //  * @brief 更新材质资产数据库
+    //  * @param path 资产路径
+    //  * @param configs 资产配置
+    //  */
+    // void updateMaterialAssetsDB(const std::string &path, const AssetDB &config);
 
     // /**
     //  * @brief 获取资产数据库
