@@ -40,10 +40,10 @@ void Node3D::lateUpdate(float dt)
 {
 	Node::lateUpdate(dt);
 }
-void Node3D::render()
-{
-	Node::render();
-}
+// void Node3D::render()
+// {
+// 	Node::render();
+// }
 
 void Node3D::clearNodeFrameFlag()
 {

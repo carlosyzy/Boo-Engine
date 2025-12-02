@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <functional>
+#include <vector>
 #include <unordered_map>
 
 class Event;
@@ -11,6 +12,7 @@ class Component;
 class AssetsManager;
 class FreetypeMgr;
 class Input;
+class Camera;
 
 struct View
 {
@@ -82,6 +84,10 @@ private:
      * @brief 当前场景
      */
     Scene *_curScene;
+    /**
+     * @brief 相机系统
+     */
+    std::vector<Camera *> _cameras;
 
     /**
      * @brief 初始化图形库
@@ -154,6 +160,13 @@ public:
     }
     void openScene(Scene *scene);
     void destroyScene();
+    /**
+     * @brief 挂在相机到游戏中
+     *
+     * @param camera 相机指针
+     */
+    void extractCamera(Camera *camera);
+
     // typename T: 表示一个类型参数，通常指类的类型
     // typename Func: 表示另一个类型参数，通常指函数类型（函数指针、成员函数指针、函数对象等）
     template <typename T, typename Func>

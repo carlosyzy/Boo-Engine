@@ -12,8 +12,8 @@
 #include "alpha/alpha.h"
 #include "font/freetype-mgr.h"
 #include "input/input.h"
+#include "renderer/camera.h"
 #include "utils/time-util.h"
-
 #include "utils/json-util.h"
 #include "utils/file-util.h"
 
@@ -98,6 +98,10 @@ void Game::setView(const int width, const int height)
 	this->_view->isFlag = true;
 	this->_view->width = width;
 	this->_view->height = height;
+	for (auto camera : this->_cameras)
+	{
+		camera->resize(width, height);
+	}
 }
 /**
  * @brief 取消调度
@@ -122,10 +126,23 @@ void Game::destroyScene()
 {
 	if (this->_curScene)
 	{
+		this->_cameras.clear();
 		this->_curScene->destroy();
 		this->_curScene = nullptr;
 	}
 }
+/**
+ * @brief 挂在相机到游戏中
+ *
+ * @param camera 相机指针
+ */
+void Game::extractCamera(Camera *camera)
+{
+	this->_cameras.push_back(camera);
+	camera->resize(this->_view->width, this->_view->height);
+}
+
+
 
 void Game::addCompClearCaches(Component *comp)
 {
@@ -171,9 +188,17 @@ void Game::_lateUpdate(float dt)
 }
 void Game::_render(float dt)
 {
-	if (this->_curScene)
+	// if (this->_curScene)
+	// {
+	// 	this->_curScene->render();
+	// }
+	// 相机排序 按照从小到大优先级
+	std::sort(this->_cameras.begin(), this->_cameras.end(), [](Camera *a, Camera *b)
+			  { return a->priority < b->priority; });
+	// 渲染相机
+	for (auto camera : this->_cameras)
 	{
-		this->_curScene->render();
+		camera->Render();
 	}
 	// 更新渲染器
 	GfxMgr::getInstance()->update();

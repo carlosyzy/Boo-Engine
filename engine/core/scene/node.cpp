@@ -257,20 +257,20 @@ void Node::lateUpdate(float dt)
 		child->lateUpdate(dt);
 	}
 }
-void Node::render()
-{
-	// 渲染组件
-	for (auto &component : this->_components)
-	{
-		if (!component->isEnabledInHierarchy())
-			continue;
-		component->Render();
-	}
-	for (auto &child : this->_children)
-	{
-		child->render();
-	}
-}
+// void Node::render()
+// {
+// 	// 渲染组件
+// 	for (auto &component : this->_components)
+// 	{
+// 		if (!component->isEnabledInHierarchy())
+// 			continue;
+// 		component->Render();
+// 	}
+// 	for (auto &child : this->_children)
+// 	{
+// 		child->render();
+// 	}
+// }
 void Node::clearNodeFrameFlag()
 {
 	this->_frameTransformFlag = NodeTransformFlag::NONE_FLAG;

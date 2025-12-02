@@ -27,7 +27,7 @@ enum NodeTransformFlag : uint32_t
 
 enum class NodeLayer
 {
-	Node,
+	Default = 0,
 	Node2D,
 	Node3D,
 	Scene,
@@ -53,7 +53,7 @@ private:
 	std::vector<TransformListener> _transformListeners;
 
 protected:
-	// int _visibility = 1;  后续与摄像机的Visibility对应
+	int visibility = 1;  //后续与摄像机的Visibility对应
 	/**
 	 * 当前节点类型
 	 * 固定不变的,在创建时就已经确定了
@@ -318,7 +318,7 @@ public:
 	// 虚函数，子类可以重写
 	virtual void update(float deltaTime);
 	virtual void lateUpdate(float deltaTime);
-	virtual void render();
+	// virtual void render();
 	virtual void clearNodeFrameFlag();
 
 	virtual void clearAllEvent();

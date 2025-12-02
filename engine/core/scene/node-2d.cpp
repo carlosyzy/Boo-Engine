@@ -107,20 +107,20 @@ void Node2D::lateUpdate(float dt)
 {
 	Node::lateUpdate(dt);
 }
-void Node2D::render()
-{
-	Node::render();
-	for (auto &component : this->_components)
-	{
-		if (!component->isEnabledInHierarchy())
-			continue;
-		UIMask *uiMask = dynamic_cast<UIMask *>(component);
-		if (uiMask != nullptr)
-		{
-			uiMask->lateRender();
-		}
-	}
-}
+// void Node2D::render()
+// {
+// 	Node::render();
+// 	for (auto &component : this->_components)
+// 	{
+// 		if (!component->isEnabledInHierarchy())
+// 			continue;
+// 		UIMask *uiMask = dynamic_cast<UIMask *>(component);
+// 		if (uiMask != nullptr)
+// 		{
+// 			uiMask->lateRender();
+// 		}
+// 	}
+// }
 void Node2D::clearNodeFrameFlag()
 {
 	Node::clearNodeFrameFlag();
