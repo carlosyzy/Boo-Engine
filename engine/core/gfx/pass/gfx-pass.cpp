@@ -1,11 +1,10 @@
 #include "gfx-pass.h"
-#include "gfx-mgr.h"
-#include "gfx-context.h"
+#include "../gfx.h"
+#include "../gfx-context.h"
 
-GfxPass::GfxPass(std::string name, GfxContext *context)
+GfxPass::GfxPass(std::string name)
 {
     this->_name = name;
-    this->_context = context;
 }
 void GfxPass::create(GfxPassStruct gfxPassStruct)
 {
@@ -96,7 +95,7 @@ void GfxPass::_createVkRenderPass()
 
 
     /*  // 创建渲染流程 */
-    if (vkCreateRenderPass(this->_context->getVkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
+    if (vkCreateRenderPass(Gfx::context->vkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
     {
         // throw std::runtime_error("failed to create render pass!");
         std::cout << "GfxPass :create render pass failed " << this->_name << std::endl;
@@ -108,7 +107,7 @@ VkFormat GfxPass::getAttachmentFormat(uint32_t attachment)
 {
     if (attachment == 0)
     {
-        return this->_context->getSwapChainImageFormat();
+        return Gfx::context->getSwapChainImageFormat();
     }
     else if (attachment == 1)
     {
@@ -187,20 +186,13 @@ void GfxPass::clear()
 {
     if (this->_vkRenderPass != VK_NULL_HANDLE)
     {
-        vkDestroyRenderPass(this->_context->getVkDevice(), this->_vkRenderPass, nullptr);
-
+        vkDestroyRenderPass(Gfx::context->vkDevice(), this->_vkRenderPass, nullptr);
         this->_vkRenderPass = VK_NULL_HANDLE;
     }
 }
 void GfxPass::reset()
 {
     this->_createVkRenderPass();
-}
-
-void GfxPass::_Log(std::string msg)
-{
-    return;
-    std::cout << "GfxPass: " << msg << std::endl;
 }
 GfxPass::~GfxPass()
 {

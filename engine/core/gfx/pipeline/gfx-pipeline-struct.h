@@ -3,7 +3,6 @@
 #include <string>
 #include <unordered_map>
 #include <vulkan/vulkan_core.h>
-#include "gfx-struct.h"
 /**
  * 深度比较操作
  */

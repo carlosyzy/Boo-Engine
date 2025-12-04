@@ -24,6 +24,7 @@ EditorMain::EditorMain()
 }
 void EditorMain::init()
 {
+    return;
     std::cout << "EditorMain::_startLoading" << std::endl;
     // 加载场景
     Scene *scene = new Scene("Editor-Loading-Scene");

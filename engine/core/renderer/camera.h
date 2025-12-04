@@ -1,7 +1,6 @@
 #pragma once
 #include "../component/component.h"
 #include "../component/component-register.h"
-#include "../gfx/gfx-render-texture.h"
 
 // 相机组件
 // 每个相机对应一个离屏渲染target
@@ -44,7 +43,7 @@ private:
      */
     Mat4 _matProj = Mat4::identity();
 
-    GfxRenderTexture *_renderTexture = nullptr;
+    // GfxRenderTexture *_renderTexture = nullptr;
 protected:
     void _deserialized() override;
 

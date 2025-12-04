@@ -9,12 +9,10 @@
 #include <map>
 #include <cstdint>
 
-class GfxContext;
 
 class GfxTexture
 {
 private:
-    GfxContext *_context;
 
     std::string _path;
     int _width;
@@ -26,7 +24,13 @@ private:
     VkImage _textureImage = VK_NULL_HANDLE;
     VkDeviceMemory _textureImageMemory = VK_NULL_HANDLE;
     VkImageView _textureImageView = VK_NULL_HANDLE;
+
+    // 绑定less 采样器
+    // 后续更具不同类型,添加到采样池中,不需要每个纹理都创建一个采样器
     VkSampler _textureSampler = VK_NULL_HANDLE;
+
+    // 绑定less 索引
+    uint32_t _bindlessIndex = 0;
 
     void _createTextureImage();
     void _createTextureImageView();
@@ -41,9 +45,9 @@ private:
 
 public:
    /*  // 主要用于创建附件贴图 */
-    GfxTexture(GfxContext *context);
+    GfxTexture();
    /*  // 多通道贴图创建 */
-    GfxTexture(GfxContext *context, const std::vector<uint8_t> *pixels, uint32_t width, uint32_t height, uint32_t channels);
+    GfxTexture(const std::vector<uint8_t> *pixels, uint32_t width, uint32_t height, uint32_t channels);
 
     void createImage(uint32_t width, uint32_t height, VkFormat format,
                      VkImageTiling tiling, VkImageUsageFlags usage,
@@ -57,6 +61,11 @@ public:
 
     VkImageView getImageView();
     VkSampler getSampler();
+
+    // 绑定less 索引
+    uint32_t getBindlessIndex();
+    void setBindlessIndex(uint32_t index);
+
     ~GfxTexture();
 };
 

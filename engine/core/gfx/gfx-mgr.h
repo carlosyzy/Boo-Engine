@@ -28,7 +28,6 @@ private:
 
 public:
 	static GfxMgr *getInstance();
-	void showVersion();
 	/**
 	 * 初始化
 	 */
@@ -37,6 +36,10 @@ public:
 	/*  // 采样次数 */
 	void _testMSAASample();
 	VkSampleCountFlagBits _getMaxMSAAUsableSampleCount();
+	/**
+	 * @brief 测试Bindless
+	 */
+	void _testBindless();
 
 	void update();
 	void resetSwapChain();
@@ -157,8 +160,4 @@ public:
 	VkResult createBuffer(VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags, VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size, void *data);
 	uint32_t getMemoryTypeIndex(uint32_t typeBits, VkMemoryPropertyFlags properties);
 	std::vector<char> readShaderFile(const std::string &filename);
-	static void Log(const std::string tag, const std::string msg)
-	{
-		std::cout << "Boo-Engine: " << tag << ":" << msg << std::endl;
-	}
 };

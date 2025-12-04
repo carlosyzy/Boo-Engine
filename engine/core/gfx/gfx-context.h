@@ -7,9 +7,30 @@
 #include <vector>
 #include <set>
 #include <map>
-#include "gfx-texture.h"
 
-#include "gfx-struct.h"
+
+// 查询并记录交换链支持的细节
+struct SwapChainSupportDetails
+{
+	VkSurfaceCapabilitiesKHR capabilities;		/* // 基础表面特性 */
+	std::vector<VkSurfaceFormatKHR> formats;	/* // 像素格式、色彩空间 */
+	std::vector<VkPresentModeKHR> presentModes; /* // 可用的呈现模式 */
+};
+
+struct QueueFamilyIndices
+{
+	/* // 支持图像绘制的队列 */
+	uint32_t graphicsFamily = -1;
+
+	/* // 支持图形呈现的队列 */
+	uint32_t presentFamily = -1;
+
+	bool isComplete()
+	{
+		return (graphicsFamily >= 0) && (presentFamily >= 0);
+	}
+};
+
 class GfxContext
 {
 private:
@@ -69,12 +90,7 @@ private:
      */
     VkCommandPool _commandPool;
     void _createCommandPool();
-    /**
-     * @brief 描述符池
-     */
-    VkDescriptorPool _descriptorPool;
-    void _createDescriptorPool();
-
+    
     /**
      * @brief 交换链
      * 本质上是一个等待被呈现在屏幕上的图像队列
@@ -132,13 +148,6 @@ private:
     void _createSyncObjects();
     void _cleanSyncObjects();
 
-    // /**
-    //  * 多重采样-颜色附件贴图和深度附件贴图
-    //  */
-    // GfxTexture *_colorMsaaTexture;
-    // GfxTexture *_depthMsaaTexture;
-    // void _createMsaaAttachmentTexture();
-    // void _cleanMsaaAttachmentTexture();
     
 
     QueueFamilyIndices _findQueueFamilies(VkPhysicalDevice device);
@@ -155,12 +164,11 @@ public:
     void frameSubmitCommands(uint32_t imageIndex, const std::vector<VkCommandBuffer> &commandBuffers, size_t currentFrame);
     VkResult framePresentFrame(uint32_t imageIndex, size_t currentFrame);
     
-
-    VkDevice getVkDevice() const
+    VkDevice vkDevice() const
     {
         return this->_vkdevice;
     }
-    VkPhysicalDevice getPhysicalDevice() const
+    VkPhysicalDevice physicalDevice() const
     {
         return this->_physicalDevice;
     }
@@ -192,18 +200,6 @@ public:
     {
         return this->_swapChainImages;
     }
-    VkDescriptorPool getDescriptorPool() const
-    {
-        return this->_descriptorPool;
-    }
-    // GfxTexture *getColorMsaaTexture() const
-    // {
-    //     return this->_colorMsaaTexture;
-    // }
-    // GfxTexture *getDepthMsaaTexture() const
-    // {
-    //     return this->_depthMsaaTexture;
-    // }
 
     ~GfxContext();
 };

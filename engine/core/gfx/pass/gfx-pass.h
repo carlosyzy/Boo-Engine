@@ -2,8 +2,8 @@
 #include <vulkan/vulkan_core.h>
 #include <vector>
 #include <string>
-#include "gfx-struct.h"
-#include "gfx-pass-struct.h"
+#include "../gfx-struct.h"
+#include "../pass/gfx-pass-struct.h"
 #include <unordered_map>
 class GfxContext;
 
@@ -11,15 +11,12 @@ class GfxPass
 {
 private:
 	std::string _name;
-	GfxContext *_context;
 	VkRenderPass _vkRenderPass = VK_NULL_HANDLE;
 	GfxPassStruct _gfxPassStruct;
-
 	void _createVkRenderPass();
-	void _Log(std::string msg);
 
 public:
-	GfxPass(std::string name, GfxContext *context);
+	GfxPass(std::string name);
 	void create(GfxPassStruct gfxPassStruct);
 	void clear();
 	void reset();

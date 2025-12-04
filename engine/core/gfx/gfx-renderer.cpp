@@ -1,31 +1,36 @@
 #include "gfx-renderer.h"
 #include "gfx-context.h"
-#include "gfx-texture.h"
-#include "gfx-pass.h"
-#include "gfx-pass-struct.h"
-#include "gfx-pipeline.h"
-#include "gfx-pipeline-struct.h"
-#include "gfx-shader.h"
-#include "gfx-shader-struct.h"
-#include "gfx-queue.h"
-#include "gfx-object.h"
-#include "gfx-object-struct.h"
-#include "../math/mat4.h"
-#include "gfx-shader-compile.h"
+#include "gfx-descriptor.h"
+#include "pass/gfx-pass.h"
+#include "pass/gfx-pass-struct.h"
+#include "pipeline/gfx-pipeline.h"
+#include "pipeline/gfx-pipeline-struct.h"
+#include "shader/gfx-shader.h"
+#include "shader/gfx-shader-struct.h"
+#include "shader/gfx-shader-compile.h"
+#include "texture/gfx-texture.h"
 
-GfxRenderer::GfxRenderer(GfxContext *context)
+// #include "gfx-queue.h"
+// #include "gfx-object.h"
+// #include "gfx-object-struct.h"
+#include "../math/mat4.h"
+
+
+GfxRenderer::GfxRenderer()
 {
-    this->_context = context;
 }
 void GfxRenderer::init()
 {
     std::cout << "GfxRenderer:init" << std::endl;
     GfxShaderCompile::getInstance()->init();
+    this->_descriptor = new GfxDescriptor();
+    // this->_queue = new GfxQueue();
     this->_initDefaultUIPasses();
     this->_initDefaultUIShaders();
     this->_initDefaultUIPipeline();
     this->_initDefaultUIMaskPipeline();
 }
+
 /**
  * 创建内置默认的ui pass
  */
@@ -69,22 +74,22 @@ void GfxRenderer::_initDefaultUIPasses()
 void GfxRenderer::_initDefaultUIShaders()
 {
     std::string shaderVertName = "built-ui.vert";
-    GfxShader *shader = new GfxShader(this->_context, shaderVertName);
+    GfxShader *shader = new GfxShader(shaderVertName);
     shader->createShaderModule(GfxShaderUIVertSPV, GfxShaderUIVertSPVSize);
     this->_shaders[shaderVertName] = shader;
 
     std::string shaderFragName = "built-ui.frag";
-    shader = new GfxShader(this->_context, shaderFragName);
+    shader = new GfxShader(shaderFragName);
     shader->createShaderModule(GfxShaderUIFragSPV, GfxShaderUIFragSPVSize);
     this->_shaders[shaderFragName] = shader;
 
     std::string shaderMaskVertName = "built-ui-mask.vert";
-    shader = new GfxShader(this->_context, shaderMaskVertName);
+    shader = new GfxShader(shaderMaskVertName);
     shader->createShaderModule(GfxShaderUIMaskVertSPV, GfxShaderUIMaskVertSPVSzie);
     this->_shaders[shaderMaskVertName] = shader;
 
     std::string shaderMaskFragName = "built-ui-mask.frag";
-    shader = new GfxShader(this->_context, shaderMaskFragName);
+    shader = new GfxShader(shaderMaskFragName);
     shader->createShaderModule(GfxShaderUIMaskFragSPV, GfxShaderUIMaskFragSPVSzie);
     this->_shaders[shaderMaskFragName] = shader;
 }
@@ -189,20 +194,19 @@ void GfxRenderer::_initDefaultUIMaskPipeline()
 
 void GfxRenderer::createRenderPass(std::string name, GfxPassStruct passStruct)
 {
-    /*  // 创建渲染通道 */
     if (this->_passes.find(name) == this->_passes.end())
     {
-        GfxPass *pass = new GfxPass(name, this->_context);
+        GfxPass *pass = new GfxPass(name);
         pass->create(passStruct);
         this->_passes[name] = pass;
     }
-    /*  // 创建对应的渲染队列 */
-    if (this->_queues.find(name) == this->_queues.end())
-    {
-        GfxQueue *queue = new GfxQueue(name, this->_context);
-        this->_queues[name] = queue;
-        queue->create(this->_passes[name]);
-    }
+    // /*  // 创建对应的渲染队列 */
+    // if (this->_queues.find(name) == this->_queues.end())
+    // {
+    //     GfxQueue *queue = new GfxQueue(name, this->_context);
+    //     this->_queues[name] = queue;
+    //     queue->create(this->_passes[name]);
+    // }
 }
 void GfxRenderer::createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct)
 {
@@ -222,7 +226,7 @@ void GfxRenderer::createPipeline(std::string pipelineName, GfxPipelineStruct pip
         std::cout << "createPipeline:pass not found:" << pipelineStruct.pass << std::endl;
         return;
     }
-    GfxPipeline *pipeline = new GfxPipeline(pipelineName, this->_context);
+    GfxPipeline *pipeline = new GfxPipeline(pipelineName);
     pipeline->create(this->_passes[pipelineStruct.pass], this->_shaders[pipelineStruct.vert], this->_shaders[pipelineStruct.frag], pipelineStruct);
     this->_pipelines[pipelineName] = pipeline;
 }
@@ -231,9 +235,8 @@ void GfxRenderer::createTexture(std::string textureUuid, uint32_t width, uint32_
 {
     if (this->_textures.find(textureUuid) == this->_textures.end())
     {
-        GfxTexture *texture = new GfxTexture(this->_context, pixels, width, height, channels);
+        GfxTexture *texture = new GfxTexture(pixels, width, height, channels);
         this->_textures[textureUuid] = texture;
-        // std::cout << "createGfxTexture: " << textureUuid << std::endl;
     }
 }
 void GfxRenderer::destroyTexture(std::string textureUuid)
@@ -280,7 +283,7 @@ void GfxRenderer::createGlslShader(const std::string &shaderName, const std::str
     try
     {
         std::vector<uint32_t> spirvCode = GfxShaderCompile::getInstance()->compile(shaderType, finalCacheKey, data, macros);
-        GfxShader *shader = new GfxShader(this->_context, finalCacheKey);
+        GfxShader *shader = new GfxShader(finalCacheKey);
         shader->createShaderModule(spirvCode);
         this->_shaders[finalCacheKey] = shader;
     }
@@ -298,54 +301,53 @@ void GfxRenderer::createSpirvShader(const std::string &shaderName, const std::ve
         std::cout << "Shader already exists: " << shaderName << std::endl;
         return;
     }
-    GfxShader *shader = new GfxShader(this->_context, shaderName);
+    GfxShader *shader = new GfxShader(shaderName);
     shader->createShaderModule(data);
     this->_shaders[shaderName] = shader;
 }
 
 void GfxRenderer::cleanRendererState()
 {
-    /* // 渲染物体清除 */
-    for (auto &[name, object] : this->_objects)
-    {
-        object->clear();
-    }
+    // /* // 渲染物体清除 */
+    // for (auto &[name, object] : this->_objects)
+    // {
+    //     object->clear();
+    // }
 
-    /*  // 渲染物体清除 */
-    for (auto &[name, queue] : this->_queues)
-    {
-        queue->clear();
-    }
-
-    /*  // 渲染管线清除 */
-    for (auto &[name, pipeline] : this->_pipelines)
-    {
-        pipeline->clear();
-    }
-    /*  // 渲染pass清除 */
-    for (auto &[name, pass] : this->_passes)
-    {
-        pass->clear();
-    }
+    // /*  // 渲染物体清除 */
+    // for (auto &[name, queue] : this->_queues)
+    // {
+    //     queue->clear();
+    // }
+    // /*  // 渲染管线清除 */
+    // for (auto &[name, pipeline] : this->_pipelines)
+    // {
+    //     pipeline->clear();
+    // }
+    // /*  // 渲染pass清除 */
+    // for (auto &[name, pass] : this->_passes)
+    // {
+    //     pass->clear();
+    // }
 }
 void GfxRenderer::resetRendererState()
 {
-    for (auto &[name, pass] : this->_passes)
-    {
-        pass->reset();
-    }
-    for (auto &[name, pipeline] : this->_pipelines)
-    {
-        pipeline->reset();
-    }
-    for (auto &[name, queue] : this->_queues)
-    {
-        queue->reset();
-    }
-    for (auto &[name, object] : this->_objects)
-    {
-        object->reset();
-    }
+    // for (auto &[name, pass] : this->_passes)
+    // {
+    //     pass->reset();
+    // }
+    // for (auto &[name, pipeline] : this->_pipelines)
+    // {
+    //     pipeline->reset();
+    // }
+    // for (auto &[name, queue] : this->_queues)
+    // {
+    //     queue->reset();
+    // }
+    // for (auto &[name, object] : this->_objects)
+    // {
+    //     object->reset();
+    // }
 }
 
 void GfxRenderer::createObject(std::string id, std::string passName, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
@@ -386,58 +388,58 @@ void GfxRenderer::createObject(std::string id, std::string passName, std::vector
 }
 void GfxRenderer::createUIObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
 {
-    if (this->_objects.find(id) != this->_objects.end())
-    {
-        std::cerr << "GfxRenderer: createUIObject:id already exists" << std::endl;
-        return;
-    }
-    GfxObject *object = new GfxObject(id, GfxObjectType::UI, this->_context);
-    object->setVertexs(points, colors, normals, uvs, indices);
-    this->_objects[id] = object;
-    // object->setUIMaskPipeline(this->_pipelines["ui-mask.mtl"]);
-    // this->_queues["ui-pass"]->submit(object);
+    // if (this->_objects.find(id) != this->_objects.end())
+    // {
+    //     std::cerr << "GfxRenderer: createUIObject:id already exists" << std::endl;
+    //     return;
+    // }
+    // GfxObject *object = new GfxObject(id, GfxObjectType::UI, this->_context);
+    // object->setVertexs(points, colors, normals, uvs, indices);
+    // this->_objects[id] = object;
+    // // object->setUIMaskPipeline(this->_pipelines["ui-mask.mtl"]);
+    // // this->_queues["ui-pass"]->submit(object);
 }
 void GfxRenderer::createUIMaskObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
 {
-    if (this->_objects.find(id) != this->_objects.end())
-    {
-        std::cerr << "GfxRenderer: createUIMaskObject:id already exists" << std::endl;
-        return;
-    }
-    GfxObject *object = new GfxObject(id, GfxObjectType::UI_MASK, this->_context);
-    object->setVertexs(points, colors, normals, uvs, indices);
-    this->_objects[id] = object;
-    // object->setUIMaskPipeline(this->_pipelines["ui-mask.mtl"]);
-    // this->_queues["ui-pass"]->submit(object);
+    // if (this->_objects.find(id) != this->_objects.end())
+    // {
+    //     std::cerr << "GfxRenderer: createUIMaskObject:id already exists" << std::endl;
+    //     return;
+    // }
+    // GfxObject *object = new GfxObject(id, GfxObjectType::UI_MASK, this->_context);
+    // object->setVertexs(points, colors, normals, uvs, indices);
+    // this->_objects[id] = object;
+    // // object->setUIMaskPipeline(this->_pipelines["ui-mask.mtl"]);
+    // // this->_queues["ui-pass"]->submit(object);
 }
 void GfxRenderer::setObjectPass(std::string id, std::string pass)
 {
-    if (this->_objects.find(id) == this->_objects.end())
-    {
-        std::cerr << "GfxRenderer: setObjectPass:object id not found" << std::endl;
-        return;
-    }
-    if (this->_passes.find(pass) == this->_passes.end())
-    {
-        std::cerr << "GfxRenderer: setObjectPass:pass not found" << std::endl;
-        return;
-    }
-    this->_objects[id]->setPass(this->_passes[pass]);
+    // if (this->_objects.find(id) == this->_objects.end())
+    // {
+    //     std::cerr << "GfxRenderer: setObjectPass:object id not found" << std::endl;
+    //     return;
+    // }
+    // if (this->_passes.find(pass) == this->_passes.end())
+    // {
+    //     std::cerr << "GfxRenderer: setObjectPass:pass not found" << std::endl;
+    //     return;
+    // }
+    // this->_objects[id]->setPass(this->_passes[pass]);
 }
 
 void GfxRenderer::setObjectPipeline(std::string id, std::string pipeline)
 {
-    if (this->_objects.find(id) == this->_objects.end())
-    {
-        std::cerr << "GfxRenderer: setObjectPipeline:object id not found" << std::endl;
-        return;
-    }
-    if (this->_pipelines.find(pipeline) == this->_pipelines.end())
-    {
-        std::cerr << "GfxRenderer: setObjectPipeline:pipeline not found" << std::endl;
-        return;
-    }
-    this->_objects[id]->setPipeline(this->_pipelines[pipeline]);
+    // if (this->_objects.find(id) == this->_objects.end())
+    // {
+    //     std::cerr << "GfxRenderer: setObjectPipeline:object id not found" << std::endl;
+    //     return;
+    // }
+    // if (this->_pipelines.find(pipeline) == this->_pipelines.end())
+    // {
+    //     std::cerr << "GfxRenderer: setObjectPipeline:pipeline not found" << std::endl;
+    //     return;
+    // }
+    // this->_objects[id]->setPipeline(this->_pipelines[pipeline]);
 }
 /**
  * @brief 设置UI遮罩行为
@@ -447,102 +449,102 @@ void GfxRenderer::setObjectPipeline(std::string id, std::string pipeline)
  */
 void GfxRenderer::setObjectUIMaskBehavior(std::string id, uint32_t behavior)
 {
-    if (this->_objects.find(id) == this->_objects.end())
-    {
-        std::cerr << "GfxRenderer: setObjectUIMaskBehavior:object id not found" << std::endl;
-        return;
-    }
-    this->_objects[id]->setUIMaskBehavior(behavior);
+    // if (this->_objects.find(id) == this->_objects.end())
+    // {
+    //     std::cerr << "GfxRenderer: setObjectUIMaskBehavior:object id not found" << std::endl;
+    //     return;
+    // }
+    // this->_objects[id]->setUIMaskBehavior(behavior);
 }
 
 void GfxRenderer::setObjectTexture(const std::string &id, const std::string &texture)
 {
-    if (this->_objects.find(id) != this->_objects.end())
-    {
-        if (this->_textures.find(texture) == this->_textures.end())
-        {
-            this->_Log("setObjectTexture:texture not found");
-            return;
-        }
-        this->_objects[id]->setTexture(this->_textures[texture]);
-        return;
-    }
+    // if (this->_objects.find(id) != this->_objects.end())
+    // {
+    //     if (this->_textures.find(texture) == this->_textures.end())
+    //     {
+    //         this->_Log("setObjectTexture:texture not found");
+    //         return;
+    //     }
+    //     this->_objects[id]->setTexture(this->_textures[texture]);
+    //     return;
+    // }
 }
 void GfxRenderer::setObjectColor(std::string id, float r, float g, float b, float a)
 {
-    if (this->_objects.find(id) != this->_objects.end())
-    {
-        this->_objects[id]->setColor(r, g, b, a);
-        return;
-    }
+    // if (this->_objects.find(id) != this->_objects.end())
+    // {
+    //     this->_objects[id]->setColor(r, g, b, a);
+    //     return;
+    // }
 }
 void GfxRenderer::setObjectModelMatrix(std::string id, std::array<float, 16> modelMatrix)
 {
-    if (this->_objects.find(id) != this->_objects.end())
-    {
-        this->_objects[id]->setModelMatrix(modelMatrix);
-        return;
-    }
+    // if (this->_objects.find(id) != this->_objects.end())
+    // {
+    //     this->_objects[id]->setModelMatrix(modelMatrix);
+    //     return;
+    // }
 }
 void GfxRenderer::setObjectViewMatrix(std::string id, std::array<float, 16> viewMatrix)
 {
-    if (this->_objects.find(id) != this->_objects.end())
-    {
-        this->_objects[id]->setViewMatrix(viewMatrix);
-        return;
-    }
+    // if (this->_objects.find(id) != this->_objects.end())
+    // {
+    //     this->_objects[id]->setViewMatrix(viewMatrix);
+    //     return;
+    // }
 }
 void GfxRenderer::setObjectProjMatrix(std::string id, std::array<float, 16> projMatrix)
 {
-    if (this->_objects.find(id) != this->_objects.end())
-    {
-        this->_objects[id]->setProjMatrix(projMatrix);
-        return;
-    }
+    // if (this->_objects.find(id) != this->_objects.end())
+    // {
+    //     this->_objects[id]->setProjMatrix(projMatrix);
+    //     return;
+    // }
 }
 void GfxRenderer::destroyObject(std::string id)
 {
-    this->_clearObjects.push_back(id);
+    // this->_clearObjects.push_back(id);
 }
 void GfxRenderer::clearDestroyObjects()
 {
-    for (auto &id : this->_clearObjects)
-    {
-        if (this->_objects.find(id) != this->_objects.end())
-        {
-            GfxObject *object = this->_objects[id];
-            object->destroy();
-            delete object;
-            object = nullptr;
-            this->_objects.erase(id);
-        }
-    }
-    this->_clearObjects.clear();
+    // for (auto &id : this->_clearObjects)
+    // {
+    //     if (this->_objects.find(id) != this->_objects.end())
+    //     {
+    //         GfxObject *object = this->_objects[id];
+    //         object->destroy();
+    //         delete object;
+    //         object = nullptr;
+    //         this->_objects.erase(id);
+    //     }
+    // }
+    // this->_clearObjects.clear();
 }
 
 void GfxRenderer::submitObjectRender(std::string id)
 {
-    if (this->_objects.find(id) == this->_objects.end())
-    {
-        std::cerr << "GfxRenderer submitObjectRender:id not found" << std::endl;
-        return;
-    }
-    GfxObject *object = this->_objects[id];
-    GfxPass *pass = object->getPass();
-    if (pass == nullptr || this->_queues.find(pass->name()) == this->_queues.end())
-    {
-        std::cerr << "GfxRenderer submitObjectRender:pass not found" << std::endl;
-        return;
-    }
-    this->_queues[pass->name()]->submit(object);
+    // if (this->_objects.find(id) == this->_objects.end())
+    // {
+    //     std::cerr << "GfxRenderer submitObjectRender:id not found" << std::endl;
+    //     return;
+    // }
+    // GfxObject *object = this->_objects[id];
+    // GfxPass *pass = object->getPass();
+    // if (pass == nullptr || this->_queues.find(pass->name()) == this->_queues.end())
+    // {
+    //     std::cerr << "GfxRenderer submitObjectRender:pass not found" << std::endl;
+    //     return;
+    // }
+    // this->_queues[pass->name()]->submit(object);
 }
 
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
-    for (auto &queue : this->_queues)
-    {
-        queue.second->render(imageIndex, commandBuffers);
-    }
+    // for (auto &queue : this->_queues)
+    // {
+    //     queue.second->render(imageIndex, commandBuffers);
+    // }
 }
 
 void GfxRenderer::_Log(std::string msg)

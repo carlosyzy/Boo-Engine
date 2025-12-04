@@ -2,7 +2,6 @@
 #include "../../boo.h"
 #include "../assets/assets-manager.h"
 #include "../gfx/gfx-mgr.h"
-#include "../gfx/gfx-pipeline-struct.h"
 #include "../renderer/ui/ui-sprite.h"
 #include "../utils/json-util.h"
 

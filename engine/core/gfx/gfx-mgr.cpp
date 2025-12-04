@@ -1,18 +1,12 @@
 
 #define GLFW_INCLUDE_VULKAN
+#include "gfx.h"
 #include "gfx-mgr.h"
-
-#include "gfx-texture.h"
 #include "gfx-context.h"
-#include "gfx-struct.h"
 #include "gfx-renderer.h"
-#include "gfx-pass.h"
-#include "gfx-pass-struct.h"
-#include "gfx-pipeline-struct.h"
-#include "gfx-texture.h"
-#include "gfx-shader.h"
-#include "gfx-queue.h"
-#include "gfx-object.h"
+// #include "pass/gfx-pass.h"
+#include "pass/gfx-pass-struct.h"
+#include "pipeline/gfx-pipeline-struct.h"
 
 #include "../utils/time-util.h"
 
@@ -24,84 +18,107 @@ GfxMgr *GfxMgr::getInstance()
 
 GfxMgr::GfxMgr()
 {
-}
-
-void GfxMgr::init()
-{
-    this->showVersion();
-    this->_context = new GfxContext();
-    this->_context->init();
-    this->_renderer = new GfxRenderer(this->_context);
-    this->_renderer->init();
-    /* // 初始化显示测试参数 */
-    this->initTestInfo();
-}
-void GfxMgr::showVersion()
-{
     uint32_t instanceVersion = 0;
     VkResult result = vkEnumerateInstanceVersion(&instanceVersion);
-
     if (result == VK_SUCCESS)
     {
         uint32_t major = VK_VERSION_MAJOR(instanceVersion);
         uint32_t minor = VK_VERSION_MINOR(instanceVersion);
         uint32_t patch = VK_VERSION_PATCH(instanceVersion);
-        GfxMgr::Log("GfxMgr", "Vulkan Instance (Driver) Version:" + std::to_string(major) + "." + std::to_string(minor) + "." + std::to_string(patch));
+        std::cout << "Gfx :: Vulkan Instance (Driver) Version:" << major << "." << minor << "." << patch << std::endl;
     }
+}
+
+void GfxMgr::init()
+{
+    Gfx::context = new GfxContext();
+    Gfx::context->init();
+    Gfx::renderer = new GfxRenderer();
+    Gfx::renderer->init();
 }
 
 void GfxMgr::initTestInfo()
 {
-    this->_testMSAASample();
+    // this->_testMSAASample();
+    // this->_testBindless();
 }
 /**
  * @brief 测试MSAA采样次数
  */
 void GfxMgr::_testMSAASample()
 {
-    VkPhysicalDeviceProperties physicalDeviceProperties;
-    vkGetPhysicalDeviceProperties(this->_context->getPhysicalDevice(), &physicalDeviceProperties);
-    /* // 采样次数 */
-    VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts &
-                                physicalDeviceProperties.limits.framebufferDepthSampleCounts;
-    VkSampleCountFlagBits sampleCount = this->_getMaxMSAAUsableSampleCount();
-    GfxMgr::Log("GfxMgr", "GPU Maximum supported sampling:" + std::to_string(sampleCount));
+    // VkPhysicalDeviceProperties physicalDeviceProperties;
+    // vkGetPhysicalDeviceProperties(this->_context->getPhysicalDevice(), &physicalDeviceProperties);
+    // /* // 采样次数 */
+    // VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts &
+    //                             physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+    // VkSampleCountFlagBits sampleCount = this->_getMaxMSAAUsableSampleCount();
+    // GfxMgr::Log("GfxMgr", "GPU Maximum supported sampling:" + std::to_string(sampleCount));
 }
 VkSampleCountFlagBits GfxMgr::_getMaxMSAAUsableSampleCount()
 {
-    VkPhysicalDeviceProperties physicalDeviceProperties;
-    vkGetPhysicalDeviceProperties(this->_context->getPhysicalDevice(), &physicalDeviceProperties);
+    // VkPhysicalDeviceProperties physicalDeviceProperties;
+    // vkGetPhysicalDeviceProperties(this->_context->getPhysicalDevice(), &physicalDeviceProperties);
 
-    VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts &
-                                physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+    // VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts &
+    //                             physicalDeviceProperties.limits.framebufferDepthSampleCounts;
 
-    if (counts & VK_SAMPLE_COUNT_64_BIT)
-    {
-        return VK_SAMPLE_COUNT_64_BIT;
-    }
-    if (counts & VK_SAMPLE_COUNT_32_BIT)
-    {
-        return VK_SAMPLE_COUNT_32_BIT;
-    }
-    if (counts & VK_SAMPLE_COUNT_16_BIT)
-    {
-        return VK_SAMPLE_COUNT_16_BIT;
-    }
-    if (counts & VK_SAMPLE_COUNT_8_BIT)
-    {
-        return VK_SAMPLE_COUNT_8_BIT;
-    }
-    if (counts & VK_SAMPLE_COUNT_4_BIT)
-    {
-        return VK_SAMPLE_COUNT_4_BIT;
-    }
-    if (counts & VK_SAMPLE_COUNT_2_BIT)
-    {
-        return VK_SAMPLE_COUNT_2_BIT;
-    }
+    // if (counts & VK_SAMPLE_COUNT_64_BIT)
+    // {
+    //     return VK_SAMPLE_COUNT_64_BIT;
+    // }
+    // if (counts & VK_SAMPLE_COUNT_32_BIT)
+    // {
+    //     return VK_SAMPLE_COUNT_32_BIT;
+    // }
+    // if (counts & VK_SAMPLE_COUNT_16_BIT)
+    // {
+    //     return VK_SAMPLE_COUNT_16_BIT;
+    // }
+    // if (counts & VK_SAMPLE_COUNT_8_BIT)
+    // {
+    //     return VK_SAMPLE_COUNT_8_BIT;
+    // }
+    // if (counts & VK_SAMPLE_COUNT_4_BIT)
+    // {
+    //     return VK_SAMPLE_COUNT_4_BIT;
+    // }
+    // if (counts & VK_SAMPLE_COUNT_2_BIT)
+    // {
+    //     return VK_SAMPLE_COUNT_2_BIT;
+    // }
 
     return VK_SAMPLE_COUNT_1_BIT;
 }
+void GfxMgr::_testBindless()
+{
+    // // const std::vector<const char *> deviceExtensions = {
+    // //     VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
+    // //     VK_KHR_MAINTENANCE3_EXTENSION_NAME,
+    // // };
+    // // 检查支持
+    // VkPhysicalDeviceDescriptorIndexingFeaturesEXT indexingFeatures = {};
+    // indexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT;
+
+    // VkPhysicalDeviceFeatures2 features2 = {};
+    // features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+    // features2.pNext = &indexingFeatures;
+
+    // vkGetPhysicalDeviceFeatures2(this->_context->getPhysicalDevice(), &features2);
+
+    // // 必须支持的特性
+    // if (!indexingFeatures.descriptorBindingPartiallyBound ||
+    //     !indexingFeatures.descriptorBindingSampledImageUpdateAfterBind ||
+    //     !indexingFeatures.runtimeDescriptorArray)
+    // {
+    //     throw std::runtime_error("Bindless textures not supported!");
+    // }
+    // else
+    // {
+    //     GfxMgr::Log("GfxMgr", "Bindless textures supported!");
+    // }
+}
+
 void GfxMgr::createRenderPass(std::string name, GfxPassStruct passStruct)
 {
     this->_renderer->createRenderPass(name, passStruct);
@@ -123,7 +140,7 @@ bool GfxMgr::isExistTexture(std::string texture)
 {
     return this->_renderer->isExistTexture(texture);
 }
-void GfxMgr::createGlslShader(const std::string &shaderName,const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros)
+void GfxMgr::createGlslShader(const std::string &shaderName, const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros)
 {
     this->_renderer->createGlslShader(shaderName, shaderType, data, macros);
 }
@@ -132,14 +149,13 @@ void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<
     this->_renderer->createSpirvShader(shaderName, data);
 }
 
-
 /**
  * 旧的
  * 过时的
  */
 void GfxMgr::createObject(std::string id, std::string renderPassType, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
 {
-    this->_renderer->createObject(id, renderPassType,  points, colors, normals, uvs, indices);
+    this->_renderer->createObject(id, renderPassType, points, colors, normals, uvs, indices);
 }
 void GfxMgr::createUIObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
 {
@@ -162,8 +178,6 @@ void GfxMgr::setObjectPipeline(std::string id, std::string pipeline)
     this->_renderer->setObjectPipeline(id, pipeline);
 }
 
-
-
 void GfxMgr::destroyObject(std::string id)
 {
     this->_renderer->destroyObject(id);
@@ -184,11 +198,10 @@ void GfxMgr::setObjectColor(std::string id, float r, float g, float b, float a)
 {
     this->_renderer->setObjectColor(id, r, g, b, a);
 }
-void GfxMgr::setObjectTexture(const std::string& id, const  std::string& texture)
+void GfxMgr::setObjectTexture(const std::string &id, const std::string &texture)
 {
     this->_renderer->setObjectTexture(id, texture);
 }
-
 
 void GfxMgr::submitObjectRender(std::string id)
 {
@@ -207,23 +220,23 @@ void GfxMgr::update()
      * 通过 _imageAvailableSemaphores[_currentFrame] 信号量，通知 GPU："必须等这个信号量触发后，才能开始渲染该图像"。
      */
     VkResult result1 = this->_context->frameAcquireNextImage(&imageIndex, this->_currentFrame);
-   /*  // 如果交换链已过期（如窗口大小改变），会返回 VK_ERROR_OUT_OF_DATE_KHR，触发重建交换链 */
+    /*  // 如果交换链已过期（如窗口大小改变），会返回 VK_ERROR_OUT_OF_DATE_KHR，触发重建交换链 */
     if (result1 == VK_ERROR_OUT_OF_DATE_KHR || result1 == VK_SUBOPTIMAL_KHR)
     {
-       std::cout << "renderer update:'VK_ERROR_OUT_OF_DATE_KHR',The window size might have changed, and the swap chain needs to be recreated." << std::endl;  
+        std::cout << "renderer update:'VK_ERROR_OUT_OF_DATE_KHR',The window size might have changed, and the swap chain needs to be recreated." << std::endl;
         this->resetSwapChain();
         return;
     }
     /* // 检查当前索引图像是否被其他帧使用，若已被使用，则等待其他帧完成 */
     this->_context->frameWaitImageInUse(imageIndex, this->_currentFrame);
 
-   /*  // 准备渲染buffer */
+    /*  // 准备渲染buffer */
     std::vector<VkCommandBuffer> commandBuffers;
     this->_renderer->frameRenderer(imageIndex, commandBuffers);
 
-   /*  // 提交渲染命令 */
+    /*  // 提交渲染命令 */
     this->_context->frameSubmitCommands(imageIndex, commandBuffers, this->_currentFrame);
-   /*  // 显示图像 */
+    /*  // 显示图像 */
     VkResult result2 = this->_context->framePresentFrame(imageIndex, this->_currentFrame);
     if (result2 == VK_ERROR_OUT_OF_DATE_KHR || result2 == VK_SUBOPTIMAL_KHR)
     {
@@ -232,9 +245,9 @@ void GfxMgr::update()
     }
     else if (result2 != VK_SUCCESS)
     {
-        GfxMgr::Log("GfxMgr", "Failed to present swap chain imag22222e!");
+        std::cout << "GfxMgr :Failed to present swap chain imag22222e!" << std::endl;
     }
-   /*  // 0 1 0 1 0 1 */
+    /*  // 0 1 0 1 0 1 */
     /**
      * 帧0	提交命令，信号量A	开始渲染帧0
      * 帧1	提交命令，信号量B	渲染帧0完成，开始渲染帧1
@@ -244,33 +257,32 @@ void GfxMgr::update()
 }
 void GfxMgr::resetSwapChain()
 {
-    GfxMgr::Log("GfxMgr", "reset swap chain start...");
-    vkDeviceWaitIdle(this->_context->getVkDevice());/*  // 等待所有操作完成 */
-   /*  // 线清除， */
+    vkDeviceWaitIdle(Gfx::context->vkDevice()); /*  // 等待所有操作完成 */
+                                                     /*  // 线清除， */
     this->_renderer->cleanRendererState();
     this->_context->cleanSwapChain();
-   /*  // 后重置 */
+    /*  // 后重置 */
     this->_context->resetSwapChain();
     this->_renderer->resetRendererState();
-    GfxMgr::Log("GfxMgr", "reset swap chain end...");
+    std::cout << "GfxMgr :reset swap chain end..." << std::endl;
 }
 
 /* // 读取shader内容 */
 std::vector<char> GfxMgr::readShaderFile(const std::string &filename)
 {
-  /*   // ate: 表示从文件末未开始读取
-    // binary: 表示以二进制方式读取 */
+    /*   // ate: 表示从文件末未开始读取
+      // binary: 表示以二进制方式读取 */
     std::ifstream file(filename, std::ios::ate | std::ios::binary);
- /*    // std::cout << filename << std::endl; */
+    /*    // std::cout << filename << std::endl; */
     if (!file.is_open())
     {
         throw std::runtime_error("failed to open file!");
     }
-   /*  // tellg()返回当前定位指针的位置，也代表着输入流的大小。 */
+    /*  // tellg()返回当前定位指针的位置，也代表着输入流的大小。 */
     size_t fileSize = (size_t)file.tellg();
-   /*  // std::cout << fileSize << std::endl; */
+    /*  // std::cout << fileSize << std::endl; */
     std::vector<char> buffer(fileSize);
-   /*  // seekg()是对输入流的操作 g是get缩写，0是代表从开头读起。 */
+    /*  // seekg()是对输入流的操作 g是get缩写，0是代表从开头读起。 */
     file.seekg(0);
     /* // 读入到Buffer当中 */
     file.read(buffer.data(), fileSize);
@@ -286,31 +298,31 @@ VkResult GfxMgr::createBuffer(VkBufferUsageFlags usageFlags, VkMemoryPropertyFla
     bufferCreateInfo.usage = usageFlags;
     bufferCreateInfo.size = size;
     bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    vkCreateBuffer(this->_context->getVkDevice(), &bufferCreateInfo, nullptr, buffer);
+    vkCreateBuffer(Gfx::context->vkDevice(), &bufferCreateInfo, nullptr, buffer);
 
     VkMemoryRequirements memReqs;
     VkMemoryAllocateInfo memAlloc{};
     memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    vkGetBufferMemoryRequirements(this->_context->getVkDevice(), *buffer, &memReqs);
+    vkGetBufferMemoryRequirements(Gfx::context->vkDevice(), *buffer, &memReqs);
     memAlloc.allocationSize = memReqs.size;
     memAlloc.memoryTypeIndex = getMemoryTypeIndex(memReqs.memoryTypeBits, memoryPropertyFlags);
-    vkAllocateMemory(this->_context->getVkDevice(), &memAlloc, nullptr, memory);
+    vkAllocateMemory(Gfx::context->vkDevice(), &memAlloc, nullptr, memory);
 
     if (data != nullptr)
     {
         void *mapped;
-        vkMapMemory(this->_context->getVkDevice(), *memory, 0, size, 0, &mapped);
+        vkMapMemory(Gfx::context->vkDevice(), *memory, 0, size, 0, &mapped);
         memcpy(mapped, data, size);
-        vkUnmapMemory(this->_context->getVkDevice(), *memory);
+        vkUnmapMemory(Gfx::context->vkDevice(), *memory);
     }
 
-    vkBindBufferMemory(this->_context->getVkDevice(), *buffer, *memory, 0);
+    vkBindBufferMemory(Gfx::context->vkDevice(), *buffer, *memory, 0);
     return VK_SUCCESS;
 }
 uint32_t GfxMgr::getMemoryTypeIndex(uint32_t typeBits, VkMemoryPropertyFlags properties)
 {
     VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
-    vkGetPhysicalDeviceMemoryProperties(this->_context->getPhysicalDevice(), &deviceMemoryProperties);
+    vkGetPhysicalDeviceMemoryProperties(Gfx::context->physicalDevice(), &deviceMemoryProperties);
     for (uint32_t i = 0; i < deviceMemoryProperties.memoryTypeCount; i++)
     {
         if ((typeBits & 1) == 1)

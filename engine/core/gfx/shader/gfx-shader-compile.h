@@ -5,7 +5,6 @@
 #include <map>
 #include <vulkan/vulkan_core.h>
 #include <shaderc/shaderc.hpp>
-class GfxContext;
 
 class GfxShaderCompile
 {

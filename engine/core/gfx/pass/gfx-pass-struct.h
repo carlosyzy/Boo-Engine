@@ -3,8 +3,8 @@
 #include <vulkan/vulkan_core.h>
 #include <vector>
 #include <string>
-#include "gfx-struct.h"
 #include <unordered_map>
+#include "../gfx-struct.h"
 
 enum class GfxPassAttachmentLoadOp
 {
