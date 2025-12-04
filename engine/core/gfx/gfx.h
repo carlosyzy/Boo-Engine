@@ -4,6 +4,8 @@
 class GfxContext;
 class GfxRenderer;
 
+
+
 namespace Gfx
 {
 	extern GfxContext *context;
