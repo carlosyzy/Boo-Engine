@@ -24,6 +24,7 @@ struct UniformBufferObject
     alignas(4) float time;
 };
 
+class GfxBatch;
 
 class GfxQueue
 {
@@ -36,6 +37,8 @@ private:
     void _createUniformBuffers();
     uint32_t _findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
     void _cleanUniformBuffers();
+
+    std::vector<GfxBatch> _batches;
 
     // VkBuffer _buffer = VK_NULL_HANDLE;
     // VkDeviceMemory _memory = VK_NULL_HANDLE;
@@ -78,8 +81,16 @@ private:
     // void _beginBindRenderPass(uint32_t imageIndex);
     // void _renderObject(uint32_t imageIndex,GfxObject *object);
 
+    void _reset();
+
 public:
     GfxQueue();
+    /**
+     * @brief 准备渲染队列
+     *  1. 创建uniform buffer
+     *  2. 创建command buffer
+     */
+    void preapre();
     // void create(GfxPass *pass);
     // void add(GfxObject *object);
     // void remove(GfxObject *object);

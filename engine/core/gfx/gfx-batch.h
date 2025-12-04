@@ -5,13 +5,16 @@
  * @brief 渲染批次
  */
 
+//后期想办法走动态的分配，现在先固定大小
 struct StorageBufferObject
 {
     alignas(16) float modelMat[16];          // 模型矩阵
     alignas(4) float color[4];               // 颜色
-    alignas(4) uint32_t defaultTextureIndex; // 默认纹理索引
+    alignas(4) uint32_t textureIndex; // 默认纹理索引
 };
 
+class GfxPass;
+class GfxPipeline;
 
 class GfxBatch
 {
@@ -20,6 +23,11 @@ private:
     static const uint32_t maxObjects = 1024;
     // 当前对象数量
     uint32_t _objectCount = 0;
+
+    GfxPass *_pass;
+    GfxPipeline *_pipeline;
+
+    
 
     // 现有的成员变量...
     VkBuffer _storageBuffers;

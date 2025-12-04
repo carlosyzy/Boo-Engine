@@ -2,10 +2,26 @@
 #include "gfx.h"
 #include "gfx-mgr.h"
 #include "gfx-context.h"
+#include "gfx-batch.h"
 
 GfxQueue::GfxQueue()
 {
 }
+void GfxQueue::preapre()
+{
+    this->_reset();
+    this->_createUniformBuffers();
+}
+void GfxQueue::_reset()
+{
+    this->_cleanUniformBuffers();
+}
+
+
+
+
+
+
 void GfxQueue::_createUniformBuffers()
 {
     VkDeviceSize bufferSize = sizeof(UniformBufferObject);

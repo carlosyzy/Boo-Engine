@@ -26,6 +26,7 @@ class GfxObject;
 class GfxRenderer
 {
 private:
+	float _time;
 	GfxDescriptor *_descriptor;
 
 	std::map<std::string, GfxTexture *> _textures;
