@@ -48,3 +48,7 @@ void Camera::destroy()
 {
     Component::destroy();
 }
+Camera::~Camera()
+{
+    std::cout << "Camera::~destructor" << std::endl;
+}

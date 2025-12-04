@@ -318,7 +318,6 @@ public:
 	// 虚函数，子类可以重写
 	virtual void update(float deltaTime);
 	virtual void lateUpdate(float deltaTime);
-	// virtual void render();
 	virtual void clearNodeFrameFlag();
 
 	virtual void clearAllEvent();

@@ -45,10 +45,10 @@ void Scene::lateUpdate(float dt)
 	Node::lateUpdate(dt);
 }
 
-void Scene::render()
-{
-	Node::render();
-}
+// void Scene::render()
+// {
+// 	Node::render();
+// }
 void Scene::clearNodeFrameFlag()
 {
 	Node::clearNodeFrameFlag();
