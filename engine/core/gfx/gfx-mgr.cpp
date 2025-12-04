@@ -121,32 +121,32 @@ void GfxMgr::_testBindless()
 
 void GfxMgr::createRenderPass(std::string name, GfxPassStruct passStruct)
 {
-    this->_renderer->createRenderPass(name, passStruct);
+    // this->_renderer->createRenderPass(name, passStruct);
 }
 void GfxMgr::createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct)
 {
-    this->_renderer->createPipeline(pipelineName, pipelineStruct);
+    // this->_renderer->createPipeline(pipelineName, pipelineStruct);
 }
 
 void GfxMgr::createTexture(std::string texture, uint32_t width, uint32_t height, uint32_t channels, const std::vector<uint8_t> *pixels)
 {
-    this->_renderer->createTexture(texture, width, height, channels, pixels);
+    // this->_renderer->createTexture(texture, width, height, channels, pixels);
 }
 void GfxMgr::destroyTexture(std::string texture)
 {
-    this->_renderer->destroyTexture(texture);
+    // this->_renderer->destroyTexture(texture);
 }
 bool GfxMgr::isExistTexture(std::string texture)
 {
-    return this->_renderer->isExistTexture(texture);
+    // return this->_renderer->isExistTexture(texture);
 }
 void GfxMgr::createGlslShader(const std::string &shaderName, const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros)
 {
-    this->_renderer->createGlslShader(shaderName, shaderType, data, macros);
+    // this->_renderer->createGlslShader(shaderName, shaderType, data, macros);
 }
 void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<char> &data)
 {
-    this->_renderer->createSpirvShader(shaderName, data);
+    // this->_renderer->createSpirvShader(shaderName, data);
 }
 
 /**
@@ -155,71 +155,73 @@ void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<
  */
 void GfxMgr::createObject(std::string id, std::string renderPassType, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
 {
-    this->_renderer->createObject(id, renderPassType, points, colors, normals, uvs, indices);
+    // this->_renderer->createObject(id, renderPassType, points, colors, normals, uvs, indices);
 }
 void GfxMgr::createUIObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
 {
-    this->_renderer->createUIObject(id, points, colors, normals, uvs, indices);
+    // this->_renderer->createUIObject(id, points, colors, normals, uvs, indices);
 }
 void GfxMgr::createUIMaskObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
 {
-    this->_renderer->createUIMaskObject(id, points, colors, normals, uvs, indices);
+    // this->_renderer->createUIMaskObject(id, points, colors, normals, uvs, indices);
 }
 void GfxMgr::setObjectUIMaskBehavior(std::string id, uint32_t behavior)
 {
-    this->_renderer->setObjectUIMaskBehavior(id, behavior);
+    // this->_renderer->setObjectUIMaskBehavior(id, behavior);
 }
 void GfxMgr::setObjectPass(std::string id, std::string pass)
 {
-    this->_renderer->setObjectPass(id, pass);
+    // this->_renderer->setObjectPass(id, pass);
 }
 void GfxMgr::setObjectPipeline(std::string id, std::string pipeline)
 {
-    this->_renderer->setObjectPipeline(id, pipeline);
+    // this->_renderer->setObjectPipeline(id, pipeline);
 }
 
 void GfxMgr::destroyObject(std::string id)
 {
-    this->_renderer->destroyObject(id);
+    // this->_renderer->destroyObject(id);
 }
 void GfxMgr::setObjectModelMatrix(std::string id, const std::array<float, 16> &modelMatrix)
 {
-    this->_renderer->setObjectModelMatrix(id, modelMatrix);
+    // this->_renderer->setObjectModelMatrix(id, modelMatrix);
 }
 void GfxMgr::setObjectViewMatrix(std::string id, const std::array<float, 16> &viewMatrix)
 {
-    this->_renderer->setObjectViewMatrix(id, viewMatrix);
+    // this->_renderer->setObjectViewMatrix(id, viewMatrix);
 }
 void GfxMgr::setObjectProjMatrix(std::string id, const std::array<float, 16> &projMatrix)
 {
-    this->_renderer->setObjectProjMatrix(id, projMatrix);
+    // this->_renderer->setObjectProjMatrix(id, projMatrix);
 }
 void GfxMgr::setObjectColor(std::string id, float r, float g, float b, float a)
 {
-    this->_renderer->setObjectColor(id, r, g, b, a);
+    // this->_renderer->setObjectColor(id, r, g, b, a);
 }
 void GfxMgr::setObjectTexture(const std::string &id, const std::string &texture)
 {
-    this->_renderer->setObjectTexture(id, texture);
+    // this->_renderer->setObjectTexture(id, texture);
 }
 
 void GfxMgr::submitObjectRender(std::string id)
 {
-    this->_renderer->submitObjectRender(id);
+    // this->_renderer->submitObjectRender(id);
 }
 
 void GfxMgr::update()
 {
-    this->_renderer->clearDestroyObjects();
-    // std::cout << "renderer update" << std::endl;
-    this->_context->frameFencesPrepare(this->_currentFrame);
+
+    // Gfx::renderer->clearDestroyObjects();
+    std::cout << "renderer update" << std::endl;
+    Gfx::context->frameFencesPrepare(this->_currentFrame);
+    std::cout << "renderer update1" << std::endl;
     /* // 可用的图像的索引 */
     uint32_t imageIndex;
     /**
      * 从交换链申请一个可渲染的图像
      * 通过 _imageAvailableSemaphores[_currentFrame] 信号量，通知 GPU："必须等这个信号量触发后，才能开始渲染该图像"。
      */
-    VkResult result1 = this->_context->frameAcquireNextImage(&imageIndex, this->_currentFrame);
+    VkResult result1 = Gfx::context->frameAcquireNextImage(&imageIndex, this->_currentFrame);
     /*  // 如果交换链已过期（如窗口大小改变），会返回 VK_ERROR_OUT_OF_DATE_KHR，触发重建交换链 */
     if (result1 == VK_ERROR_OUT_OF_DATE_KHR || result1 == VK_SUBOPTIMAL_KHR)
     {
@@ -227,17 +229,18 @@ void GfxMgr::update()
         this->resetSwapChain();
         return;
     }
+    std::cout << "renderer update2" << std::endl;
     /* // 检查当前索引图像是否被其他帧使用，若已被使用，则等待其他帧完成 */
-    this->_context->frameWaitImageInUse(imageIndex, this->_currentFrame);
-
+    Gfx::context->frameWaitImageInUse(imageIndex, this->_currentFrame);
+    std::cout << "renderer update:'VK_SUCCESS',imageIndex:" << imageIndex << std::endl;
     /*  // 准备渲染buffer */
     std::vector<VkCommandBuffer> commandBuffers;
-    this->_renderer->frameRenderer(imageIndex, commandBuffers);
+    Gfx::renderer->frameRenderer(imageIndex, commandBuffers);
 
     /*  // 提交渲染命令 */
-    this->_context->frameSubmitCommands(imageIndex, commandBuffers, this->_currentFrame);
+    Gfx::context->frameSubmitCommands(imageIndex, commandBuffers, this->_currentFrame);
     /*  // 显示图像 */
-    VkResult result2 = this->_context->framePresentFrame(imageIndex, this->_currentFrame);
+    VkResult result2 = Gfx::context->framePresentFrame(imageIndex, this->_currentFrame);
     if (result2 == VK_ERROR_OUT_OF_DATE_KHR || result2 == VK_SUBOPTIMAL_KHR)
     {
         this->resetSwapChain();
@@ -258,12 +261,12 @@ void GfxMgr::update()
 void GfxMgr::resetSwapChain()
 {
     vkDeviceWaitIdle(Gfx::context->vkDevice()); /*  // 等待所有操作完成 */
-                                                     /*  // 线清除， */
-    this->_renderer->cleanRendererState();
-    this->_context->cleanSwapChain();
+                                                /*  // 线清除， */
+    Gfx::renderer->cleanRendererState();
+    Gfx::context->cleanSwapChain();
     /*  // 后重置 */
-    this->_context->resetSwapChain();
-    this->_renderer->resetRendererState();
+    Gfx::context->resetSwapChain();
+    Gfx::renderer->resetRendererState();
     std::cout << "GfxMgr :reset swap chain end..." << std::endl;
 }
 

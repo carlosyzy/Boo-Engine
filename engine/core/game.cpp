@@ -169,38 +169,38 @@ void Game::tick(float dt)
 }
 void Game::_update(float dt)
 {
-	if (this->_curScene)
-	{
-		this->_curScene->update(dt);
-	}
-	this->_updateSchedules(dt);
-	if (this->_assetsManager)
-	{
-		this->_assetsManager->update(dt);
-	}
+	// if (this->_curScene)
+	// {
+	// 	this->_curScene->update(dt);
+	// }
+	// this->_updateSchedules(dt);
+	// if (this->_assetsManager)
+	// {
+	// 	this->_assetsManager->update(dt);
+	// }
 }
 void Game::_lateUpdate(float dt)
 {
-	if (this->_curScene)
-	{
-		this->_curScene->lateUpdate(dt);
-	}
+	// if (this->_curScene)
+	// {
+	// 	this->_curScene->lateUpdate(dt);
+	// }
 }
 void Game::_render(float dt)
 {
-	// if (this->_curScene)
+	// // if (this->_curScene)
+	// // {
+	// // 	this->_curScene->render();
+	// // }
+	// // 相机排序 按照从小到大优先级
+	// std::sort(this->_cameras.begin(), this->_cameras.end(), [](Camera *a, Camera *b)
+	// 		  { return a->priority < b->priority; });
+	// // 渲染相机
+	// for (auto camera : this->_cameras)
 	// {
-	// 	this->_curScene->render();
+	// 	camera->Render();
 	// }
-	// 相机排序 按照从小到大优先级
-	std::sort(this->_cameras.begin(), this->_cameras.end(), [](Camera *a, Camera *b)
-			  { return a->priority < b->priority; });
-	// 渲染相机
-	for (auto camera : this->_cameras)
-	{
-		camera->Render();
-	}
-	// 更新渲染器
+	// // 更新渲染器
 	GfxMgr::getInstance()->update();
 }
 void Game::_clear()

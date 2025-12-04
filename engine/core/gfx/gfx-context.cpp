@@ -311,12 +311,14 @@ void GfxContext::_createLogicalDevice()
     indexingFeatures.descriptorBindingSampledImageUpdateAfterBind = supportedIndexingFeatures.descriptorBindingSampledImageUpdateAfterBind;
 
     // 检查关键 features 是否可用
-    if (!supportedIndexingFeatures.descriptorBindingSampledImageUpdateAfterBind) {
+    if (!supportedIndexingFeatures.descriptorBindingSampledImageUpdateAfterBind)
+    {
         std::cerr << "⚠️ WARNING: descriptorBindingSampledImageUpdateAfterBind not supported!" << std::endl;
         std::cerr << "   Bindless texture dynamic updates will not work." << std::endl;
     }
 
-    std::cout << "============================================\n" << std::endl;
+    std::cout << "============================================\n"
+              << std::endl;
 
     /* 指定应用程序使用的设备特性 */
     VkPhysicalDeviceFeatures deviceFeatures = {};
@@ -326,16 +328,16 @@ void GfxContext::_createLogicalDevice()
     // 使用 Features2 结构来链接扩展 features
     VkPhysicalDeviceFeatures2 deviceFeatures2{};
     deviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-    deviceFeatures2.pNext = &indexingFeatures;  // 链接 Descriptor Indexing features
+    deviceFeatures2.pNext = &indexingFeatures; // 链接 Descriptor Indexing features
     deviceFeatures2.features = deviceFeatures;
 
     /*   // 创建逻辑设备 */
     VkDeviceCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pNext = &deviceFeatures2;  // ✓ 使用 pNext 链接 features
+    createInfo.pNext = &deviceFeatures2; // ✓ 使用 pNext 链接 features
     createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
     createInfo.pQueueCreateInfos = queueCreateInfos.data();
-    createInfo.pEnabledFeatures = nullptr;  // ✓ 使用 pNext 时设为 nullptr
+    createInfo.pEnabledFeatures = nullptr; // ✓ 使用 pNext 时设为 nullptr
 
     /* // For macos */
     std::vector<const char *> localDeviceExtensions = DeviceExtensions;
@@ -594,7 +596,7 @@ void GfxContext::_createSyncObjects()
     this->_imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
     this->_renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
     this->_inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-    this->_imagesInFlight.resize(MAX_FRAMES_IN_FLIGHT, VK_NULL_HANDLE);
+    this->_imagesInFlight.resize(imageCount, VK_NULL_HANDLE);
 
     VkSemaphoreCreateInfo semaphoreInfo{};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;

@@ -21,9 +21,6 @@ private:
 	GfxMgr();
 	~GfxMgr();
 
-	GfxContext *_context;
-	GfxRenderer *_renderer;
-
 	size_t _currentFrame = 0;
 
 public:
