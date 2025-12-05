@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-#include "../gfx-struct.h"
+#include "gfx-struct.h"
 
 enum class GfxPassAttachmentLoadOp
 {
@@ -100,18 +100,6 @@ struct GfxPassAttachment
 };
 struct GfxPassStruct
 {
-	/**
-	 * 渲染 pass 名称
-	 */
-	std::string name = "";
-	/**
-	 * 是否可开启MSAA
-	 */
-	bool canMSAA = false;
-	// /**
-	//  * 是否离屏渲染
-	//  */
-	// bool offscreen = false;
 	/**
 	 * 附件数量
 	 */

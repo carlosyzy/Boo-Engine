@@ -6,6 +6,7 @@
  3. camera 渲染直接提交到渲染队列中，重构渲染队列，队列中添加渲染批次，不同渲染状态在不同批次中进行渲染
  4. 每个摄像机都需要对场景中中的所有的物体进行渲染遍历
  5. pass和pipeline 采取集成式的创建，手动进行pass和pipeline队列的管理
+ 6. pass,pipeline,shader 采取关键影响状态Hash ID的存储方式
 
 ## gfx-mgr 图形管理器
 - 图形渲染管理：分别负责gfx-context（专门负责 Vulkan 环境的初始化、管理和生命周期）以及gfx-renderer（负责渲染相关的操作，如绘制、交换链管理等）

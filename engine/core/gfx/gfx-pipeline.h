@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <vulkan/vulkan_core.h>
-#include "../pipeline/gfx-pipeline-struct.h"
+#include "gfx-pipeline-struct.h"
 
 class GfxContext;
 class GfxPass;

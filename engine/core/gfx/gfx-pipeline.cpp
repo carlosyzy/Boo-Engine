@@ -1,10 +1,10 @@
 #include "gfx-pipeline.h"
-#include "../gfx.h"
-#include "../gfx-context.h"
-#include "../gfx-renderer.h"
-#include "../gfx-descriptor.h"
-#include "../pass/gfx-pass.h"
-#include "../shader/gfx-shader.h"
+#include "gfx.h"
+#include "gfx-context.h"
+#include "gfx-renderer.h"
+#include "gfx-descriptor.h"
+#include "gfx-pass.h"
+#include "gfx-shader.h"
 
 GfxPipeline::GfxPipeline(const std::string &name)
 {
@@ -426,6 +426,12 @@ void GfxPipeline::_initPipeline()
 
     this->_pipelineInfo.subpass = 0;
     this->_pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+	if (vkCreateGraphicsPipelines(Gfx::context->vkDevice(), VK_NULL_HANDLE, 1, &this->_pipelineInfo, nullptr, &this->_vkPipeline) != VK_SUCCESS)
+	{
+		std::cout << "GfxPipeline :create pipeline failed " << this->_name << std::endl;
+		return;
+	}
+	std::cout << "GfxPipeline :create pipeline success " << this->_name << std::endl;
 }
 void GfxPipeline::reset()
 {

@@ -1,7 +1,7 @@
 
 #include "gfx-shader.h"
-#include "../gfx.h"
-#include "../gfx-context.h"
+#include "gfx.h"
+#include "gfx-context.h"
 
 GfxShader::GfxShader(const std::string &name):  _name(name)
 {

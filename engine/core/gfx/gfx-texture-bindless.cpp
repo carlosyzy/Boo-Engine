@@ -1,10 +1,10 @@
 #include "gfx-texture-bindless.h"
 #include "gfx-texture.h"
-#include "../gfx.h"
-#include "../gfx-context.h"
-#include "../gfx-renderer.h"
+#include "gfx.h"
+#include "gfx-context.h"
+#include "gfx-renderer.h"
 #include "../gfx-struct.h"
-#include "../gfx-descriptor.h"
+#include "gfx-descriptor.h"
 GfxTextureBindless::GfxTextureBindless(GfxContext *context)
 {
     this->_context = context;

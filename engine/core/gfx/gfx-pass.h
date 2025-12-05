@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include "../gfx-struct.h"
-#include "../pass/gfx-pass-struct.h"
+#include "gfx-pass-struct.h"
 #include <unordered_map>
 class GfxContext;
 

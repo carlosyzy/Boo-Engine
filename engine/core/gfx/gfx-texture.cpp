@@ -1,6 +1,6 @@
 #include "gfx-texture.h"
-#include "../gfx.h"
-#include "../gfx-context.h"
+#include "gfx.h"
+#include "gfx-context.h"
 #include "../gfx-struct.h"
 #include "../gfx-mgr.h"
 
