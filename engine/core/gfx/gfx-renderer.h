@@ -11,6 +11,9 @@
 #include <sstream>
 #include <vulkan/vulkan_core.h>
 
+#include "gfx-struct.h"
+#include "pipeline/gfx-pipeline-struct.h"
+
 class GfxContext;
 class GfxDescriptor;
 
@@ -20,7 +23,6 @@ class GfxShader;
 class GfxPipeline;
 class GfxRenderQueue;
 class GfxBuffer;
-struct GfxPipelineStruct;
 
 class GfxRenderer
 {
@@ -74,6 +76,7 @@ public:
 	// GfxDescriptor *descriptor() const { return this->_descriptor; }
 
 	void createPipeline(std::string name, GfxPipelineStruct pipelineStruct);
+	void createUIPipeline(std::string name, GfxPipelineStruct pipelineStruct);
 	/**
 	 * 创建 or 销毁渲染纹理
 	 */
@@ -109,7 +112,7 @@ public:
 	 * @param vertices 顶点数据
 	 * @param indices 索引数据
 	 */
-	void submitRenderObject(uint32_t renderId, std::string pass, std::string pipeline, std::vector<float> &vertices, std::vector<uint32_t> &indices);
+	void submitRenderObject(uint32_t renderId, GfxMaterial &material, GfxMesh &mesh);
 
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
 	void cleanRendererState();

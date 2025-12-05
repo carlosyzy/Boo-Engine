@@ -328,21 +328,21 @@ VkBlendOp GfxPipeline::_getBlendOp(GfxPipelineColorBlendOp blendOp)
 
 void GfxPipeline::_initPipelineLayout()
 {
-    this->_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    std::vector<VkDescriptorSetLayout> setLayouts = {
-        Gfx::renderer->descriptor()->descriptorSetLayout()};
-    this->_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(setLayouts.size());
-    this->_pipelineLayoutInfo.pSetLayouts = setLayouts.data();
-    // 绑定推送常量 默认没有推送常量
-    this->_pipelineLayoutInfo.pushConstantRangeCount = 0;
-    // 第八步：管线布局
-    if (vkCreatePipelineLayout(Gfx::context->vkDevice(), &this->_pipelineLayoutInfo, nullptr, &this->_vkPipelineLayout) != VK_SUCCESS)
-    {
-        // throw std::runtime_error("failed to create pipeline layout!");
-        std::cout << "GfxPipeline :create pipeline layout failed " << this->_name << std::endl;
+    // this->_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    // std::vector<VkDescriptorSetLayout> setLayouts = {
+    //     Gfx::renderer->descriptor()->descriptorSetLayout()};
+    // this->_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(setLayouts.size());
+    // this->_pipelineLayoutInfo.pSetLayouts = setLayouts.data();
+    // // 绑定推送常量 默认没有推送常量
+    // this->_pipelineLayoutInfo.pushConstantRangeCount = 0;
+    // // 第八步：管线布局
+    // if (vkCreatePipelineLayout(Gfx::context->vkDevice(), &this->_pipelineLayoutInfo, nullptr, &this->_vkPipelineLayout) != VK_SUCCESS)
+    // {
+    //     // throw std::runtime_error("failed to create pipeline layout!");
+    //     std::cout << "GfxPipeline :create pipeline layout failed " << this->_name << std::endl;
 
-        return;
-    }
+    //     return;
+    // }
 }
 void GfxPipeline::_initPipeline()
 {

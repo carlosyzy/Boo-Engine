@@ -2,9 +2,20 @@
 #include "../gfx.h"
 #include "../gfx-context.h"
 
-GfxRenderBatch::GfxRenderBatch()
+GfxRenderBatch::GfxRenderBatch(GfxMaterial &material, GfxMesh &mesh):_material(material),_mesh(mesh),_objectCount(0)
 {
 }
+void GfxRenderBatch::addObject()
+{
+    if (this->_objectCount >= maxObjects)
+    {
+        throw std::runtime_error("GfxRenderBatch::addObject() object count exceeds maxObjects!");
+    }
+}
+GfxRenderBatch::~GfxRenderBatch()
+{
+}
+
 // void GfxRenderBatch::_createStorageBuffers()
 // {
 //     VkDeviceSize bufferSize = sizeof(StorageBufferObject) * maxObjects;
@@ -82,6 +93,4 @@ GfxRenderBatch::GfxRenderBatch()
 // void GfxRenderBatch::_cleanStorageBuffers()
 // {
 // }
-GfxRenderBatch::~GfxRenderBatch()
-{
-}
+

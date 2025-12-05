@@ -4,6 +4,7 @@
 #include "gfx-mgr.h"
 #include "gfx-context.h"
 #include "gfx-renderer.h"
+
 #include "../utils/time-util.h"
 
 GfxMgr *GfxMgr::getInstance()
@@ -118,8 +119,8 @@ void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<
 void GfxMgr:: initRenderQueue(uint32_t renderId, uint32_t renderType, std::array<float, 16> &viewMat, std::array<float, 16> &projMat){
     Gfx::renderer->initRenderQueue(renderId, renderType, viewMat, projMat);
 }
-void GfxMgr:: submitRenderObject(uint32_t renderId, std::string pass, std::string pipeline, std::vector<float> &vertices, std::vector<uint32_t> &indices){
-    Gfx::renderer->submitRenderObject(renderId, pass, pipeline, vertices, indices);
+void GfxMgr:: submitRenderObject(uint32_t renderId, GfxMaterial &material, GfxMesh &mesh){
+    Gfx::renderer->submitRenderObject(renderId, material, mesh);
 }
 
 // void GfxMgr::initTestInfo()

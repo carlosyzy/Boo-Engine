@@ -4,29 +4,19 @@
 #include <fstream>
 #include <cstring>
 
-
-// const VkSampleCountFlagBits MsaaSamples = VK_SAMPLE_COUNT_1_BIT;
-
-
-
-
-// // 后修管线中写死
-// struct PushConstants
-// {
-// 	float defaultColor[4];
-// 	// float maskRect[4];
-// };
-/* // // 图形对象类型
-// enum  GfxRendererPassTypeE
-// {
-// 	UI="GfxPass:UI",
-// 	MODEL="GfxPass:Model",
-// };
-
-// enum class GfxObjectTypeE
-// {
-// 	DEFAULT,
-// 	UI,
-// 	MODEL,
-// };
- */
+struct GfxMaterial
+{
+	std::string name;
+    std::string uuid;
+	std::string pass;
+	std::string pipeline;
+    uint32_t ssboSize;
+};
+struct GfxMesh
+{
+    std::string name;
+    std::string uuid;
+    std::vector<float> vertices;
+    std::vector<uint32_t> indices;
+    //后续可以加入网格哈希
+};

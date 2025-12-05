@@ -1,8 +1,8 @@
 #include "gfx-texture.h"
 #include "gfx.h"
 #include "gfx-context.h"
-#include "../gfx-struct.h"
-#include "../gfx-mgr.h"
+#include "gfx-struct.h"
+#include "gfx-mgr.h"
 
 /* // 主要用于创建附件贴图 */
 GfxTexture::GfxTexture()

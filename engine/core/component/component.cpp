@@ -3,7 +3,7 @@
 #include "../utils/uuid-util.h"
 #include "../../boo.h"
 
-Component::Component(std::string name, Node *node, std::string uuid) : _layer(NodeLayer::Node)
+Component::Component(std::string name, Node *node, std::string uuid) : _layer(NodeLayer::Default)
 {
     this->_uuid = uuid;
     if (this->_uuid.size() <= 0)

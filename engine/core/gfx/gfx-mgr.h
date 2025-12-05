@@ -8,10 +8,9 @@
 #include <set>
 #include <map>
 
-class GfxContext;
-class GfxRenderer;
-struct GfxPassStruct;
-struct GfxPipelineStruct;
+#include "gfx-struct.h"
+#include "pipeline/gfx-pipeline-struct.h"
+
 
 class GfxMgr
 {
@@ -87,7 +86,7 @@ public:
 	 * @param vertices 顶点数据
 	 * @param indices 索引数据
 	 */
-	void submitRenderObject(uint32_t renderId, std::string pass, std::string pipeline,std::vector<float> &vertices,std::vector<uint32_t> &indices);
+	void submitRenderObject(uint32_t renderId, GfxMaterial &material,GfxMesh &mesh);
 
 	// void initTestInfo();
 	// /*  // 采样次数 */
@@ -98,7 +97,6 @@ public:
 	//  */
 	// void _testBindless();
 
-	
 	// /**
 	//  * 创建渲染通道
 	//  */

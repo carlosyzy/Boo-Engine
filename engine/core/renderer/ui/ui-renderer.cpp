@@ -30,7 +30,7 @@ void UIRenderer::Enable()
 {
 	Component::Enable();
 	// 激活的时候创建渲染物体
-	GfxMgr::getInstance()->createUIObject(this->_uuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
+	// GfxMgr::getInstance()->createUIObject(this->_uuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
 	this->_updateRendererState();
 	this->_updateModelMatrix();
 }
@@ -43,7 +43,7 @@ void UIRenderer::_setColor(float r, float g, float b, float a)
 	this->_color.set(r, g, b, a);
 	if (!this->_isEnabledInHierarchy)
 		return;
-	GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getR(), this->_color.getG(), this->_color.getB(), this->_color.getA());
+	// GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getR(), this->_color.getG(), this->_color.getB(), this->_color.getA());
 }
 
 void UIRenderer::_setMaterial(MaterialAsset *mtl)
@@ -55,13 +55,13 @@ void UIRenderer::_setMaterial(MaterialAsset *mtl)
 	this->_materialAsset = mtl;
 	if (!this->_isEnabledInHierarchy)
 		return;
-	GfxMgr::getInstance()->setObjectPass(this->_uuid, this->_materialAsset->getPass());
-	GfxMgr::getInstance()->setObjectPipeline(this->_uuid, this->_materialAsset->getPipeline());
-	// std::string vert = std::filesystem::path("resources/shader/ui/ui.vert.spv").generic_string();
-	// std::string frag = std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string();
-	// std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + vert + "|frag:" + frag;
-	// GfxMgr::getInstance()->createPipeline("ui", pipeline);
-	// GfxMgr::getInstance()->setObjectPipeline(this->_uuid, "ui-mask.mtl");
+	// GfxMgr::getInstance()->setObjectPass(this->_uuid, this->_materialAsset->getPass());
+	// GfxMgr::getInstance()->setObjectPipeline(this->_uuid, this->_materialAsset->getPipeline());
+	// // std::string vert = std::filesystem::path("resources/shader/ui/ui.vert.spv").generic_string();
+	// // std::string frag = std::filesystem::path("resources/shader/ui/ui.frag.spv").generic_string();
+	// // std::string pipeline = "Blend:1|DepthTest:0|DepthWrite:0|vert:" + vert + "|frag:" + frag;
+	// // GfxMgr::getInstance()->createPipeline("ui", pipeline);
+	// // GfxMgr::getInstance()->setObjectPipeline(this->_uuid, "ui-mask.mtl");
 }
 void UIRenderer::_setTexture(TextureAsset *texture)
 {
@@ -77,29 +77,29 @@ void UIRenderer::_setTexture(TextureAsset *texture)
 	this->_textureAsset = texture;
 	if (!this->_isEnabledInHierarchy)
 		return;
-	GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_textureAsset->getUuid());
+	// GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_textureAsset->getUuid());
 }
 
 void UIRenderer::_updateRendererState()
 {
 	// 更新颜色状态
-	GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getR(), this->_color.getG(), this->_color.getB(), this->_color.getA());
+	// GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getR(), this->_color.getG(), this->_color.getB(), this->_color.getA());
 	// 更新纹理状态
 	if (this->_textureAsset)
 	{
-		GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_textureAsset->getUuid());
+		// GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_textureAsset->getUuid());
 	}
 	//
 	if (this->_materialAsset)
 	{
-		GfxMgr::getInstance()->setObjectPass(this->_uuid, this->_materialAsset->getPass());
-		GfxMgr::getInstance()->setObjectPipeline(this->_uuid, this->_materialAsset->getPipeline());
+		// GfxMgr::getInstance()->setObjectPass(this->_uuid, this->_materialAsset->getPass());
+		// GfxMgr::getInstance()->setObjectPipeline(this->_uuid, this->_materialAsset->getPipeline());
 	}
 }
 void UIRenderer::_updateModelMatrix()
 {
 	Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
-	GfxMgr::getInstance()->setObjectModelMatrix(this->_uuid, node2D->uiWorldMatrix().data());
+	// GfxMgr::getInstance()->setObjectModelMatrix(this->_uuid, node2D->uiWorldMatrix().data());
 }
 
 void UIRenderer::Update(float deltaTime)
@@ -126,7 +126,7 @@ void UIRenderer::Render()
 		return; // 颜色透明
 	}
 	// 提交渲染对象
-	GfxMgr::getInstance()->submitObjectRender(this->_uuid);
+	// GfxMgr::getInstance()->submitObjectRender(this->_uuid);
 }
 
 void UIRenderer::Disable()
@@ -136,7 +136,7 @@ void UIRenderer::Disable()
 void UIRenderer::destroy()
 {
 	Component::destroy();
-	GfxMgr::getInstance()->destroyObject(this->_uuid);
+	// GfxMgr::getInstance()->destroyObject(this->_uuid);
 	std::cout << "UIRenderer::destroy" << std::endl;
 }
 

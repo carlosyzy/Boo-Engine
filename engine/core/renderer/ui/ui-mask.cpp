@@ -58,8 +58,8 @@ void UIMask::Awake()
 void UIMask::Enable()
 {
     Component::Enable();
-    GfxMgr::getInstance()->createUIMaskObject(this->_addUuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
-    GfxMgr::getInstance()->createUIMaskObject(this->_subUuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
+    // GfxMgr::getInstance()->createUIMaskObject(this->_addUuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
+    // GfxMgr::getInstance()->createUIMaskObject(this->_subUuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
     this->_updateRendererState();
     this->_updateModelMatrix();
 }
@@ -89,8 +89,8 @@ void UIMask::_updateRendererState()
 void UIMask::_updateModelMatrix()
 {
     Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
-    GfxMgr::getInstance()->setObjectModelMatrix(this->_addUuid, node2D->uiWorldMatrix().data());
-    GfxMgr::getInstance()->setObjectModelMatrix(this->_subUuid, node2D->uiWorldMatrix().data());
+    // GfxMgr::getInstance()->setObjectModelMatrix(this->_addUuid, node2D->uiWorldMatrix().data());
+    // GfxMgr::getInstance()->setObjectModelMatrix(this->_subUuid, node2D->uiWorldMatrix().data());
 }
 
 void UIMask::Update(float deltaTime)
@@ -108,11 +108,11 @@ void UIMask::Render()
         this->_updateModelMatrix();
     }
     // 提交遮罩状态到渲染器
-    GfxMgr::getInstance()->submitObjectRender(this->_addUuid);
+    // GfxMgr::getInstance()->submitObjectRender(this->_addUuid);
 }
 void UIMask::lateRender()
 {
-    GfxMgr::getInstance()->submitObjectRender(this->_subUuid);
+    // GfxMgr::getInstance()->submitObjectRender(this->_subUuid);
 }
 void UIMask::Disable()
 {
@@ -121,8 +121,8 @@ void UIMask::Disable()
 void UIMask::destroy()
 {
     Component::destroy();
-    GfxMgr::getInstance()->destroyObject(this->_addUuid);
-    GfxMgr::getInstance()->destroyObject(this->_subUuid);
+    // GfxMgr::getInstance()->destroyObject(this->_addUuid);
+    // GfxMgr::getInstance()->destroyObject(this->_subUuid);
 }
 UIMask::~UIMask()
 {

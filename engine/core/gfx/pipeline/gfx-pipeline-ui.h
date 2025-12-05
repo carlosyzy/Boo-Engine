@@ -6,6 +6,6 @@ protected:
     void _initVertexInputState() override;
 
 public:
-    GfxPipelineUI(const std::string &name) : GfxPipeline(name) {}
+    GfxPipelineUI(const std::string &name);
     ~GfxPipelineUI() {}
 };

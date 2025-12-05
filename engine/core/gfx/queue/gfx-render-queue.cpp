@@ -1,25 +1,47 @@
 #include "gfx-render-queue.h"
-#include "gfx.h"
-#include "gfx-mgr.h"
-#include "gfx-context.h"
+#include "../gfx.h"
+#include "../gfx-mgr.h"
+#include "../gfx-context.h"
 #include "gfx-render-batch.h"
 
 GfxRenderQueue::GfxRenderQueue()
 {
-   
 }
 void GfxRenderQueue::init(std::array<float, 16> &viewMat, std::array<float, 16> &projMat)
 {
     this->_viewMat = viewMat;
     this->_projMat = projMat;
 }
-void GfxRenderQueue::submitObject(std::string pass, std::string pipeline, std::vector<float> &vertices, std::vector<uint32_t> &indices)
+void GfxRenderQueue::submitObject(GfxMaterial &material, GfxMesh &mesh)
 {
-   
+    if (this->_batches.empty())
+    {
+        GfxRenderBatch *batch = new GfxRenderBatch(material, mesh);
+        this->_batches.push_back(batch);
+        batch->addObject();
+    }
+    else
+    {
+        GfxRenderBatch *batch = this->_batches.back();
+        if (batch->material().uuid == material.uuid && batch->mesh().uuid == mesh.uuid)
+        {
+            batch->addObject();
+        }
+        else
+        {
+            GfxRenderBatch *batch = new GfxRenderBatch(material, mesh);
+            this->_batches.push_back(batch);
+            batch->addObject();
+        }
+    }
 }
 GfxRenderQueue::~GfxRenderQueue()
 {
 }
+
+
+
+
 
 // void GfxQueue::updateUniformBuffer(uint32_t frame, std::array<float, 16> &viewMat, std::array<float, 16> &projMat, float time)
 // {
@@ -53,8 +75,6 @@ GfxRenderQueue::~GfxRenderQueue()
 //     this->_uniformBuffersMemory.clear();
 //     this->_uniformBuffersMapped.clear();
 // }
-
-
 
 // GfxQueue::GfxQueue(std::string name, GfxContext *context)
 // {

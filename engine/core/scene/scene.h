@@ -27,7 +27,6 @@ public:
 
     void update(float deltaTime) override;
     void lateUpdate(float deltaTime) override;
-    void render() override;
     void clearNodeFrameFlag() override;
 
     void destroy() override;

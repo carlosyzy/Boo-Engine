@@ -1,4 +1,5 @@
 #include "gfx-pipeline-ui.h"
+
 GfxPipelineUI::GfxPipelineUI(const std::string &name) : GfxPipeline(name) {
 
 }

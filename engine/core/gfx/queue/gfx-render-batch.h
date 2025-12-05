@@ -1,5 +1,13 @@
 #pragma once
 #include <vulkan/vulkan_core.h>
+#include <iostream>
+#include <algorithm>
+#include <fstream>
+#include <vector>
+#include <set>
+#include <map>
+#include <cstdint>
+#include "../gfx-struct.h"
 
 /**
  * @brief 渲染批次
@@ -23,11 +31,9 @@ private:
     static const uint32_t maxObjects = 1024;
     // 当前对象数量
     uint32_t _objectCount = 0;
+    GfxMaterial &_material;
+    GfxMesh &_mesh;
 
-    GfxPass *_pass;
-    GfxPipeline *_pipeline;
-
-    
 
     // 现有的成员变量...
     std::vector<VkBuffer> _storageBuffers;
@@ -38,7 +44,10 @@ private:
     uint32_t _findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 public:
-    GfxRenderBatch();
-    // void addObject(StorageBufferObject &object);
+    GfxRenderBatch(GfxMaterial &material, GfxMesh &mesh);
+    const GfxMaterial &material() const { return _material; }
+    const GfxMesh &mesh() const { return _mesh; }
+    void addObject();
+    
     ~GfxRenderBatch();
 };

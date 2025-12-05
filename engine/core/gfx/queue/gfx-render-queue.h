@@ -7,6 +7,7 @@
 #include <set>
 #include <map>
 #include <cstdint>
+#include "../gfx-struct.h"
 
 /**
  * 渲染队列-一个摄像机一个队列
@@ -24,7 +25,7 @@ struct UniformBufferObject
     alignas(4) float time;
 };
 
-class GfxBatch;
+class GfxRenderBatch;
 
 class GfxRenderQueue
 {
@@ -35,12 +36,12 @@ protected:
    
 
     // 渲染批次
-    std::vector<GfxBatch> _batches;
+    std::vector<GfxRenderBatch*> _batches;
 
 public:
     GfxRenderQueue();
     void init(std::array<float, 16> &viewMat, std::array<float, 16> &projMat);
-    void submitObject(std::string pass, std::string pipeline, std::vector<float> &vertices, std::vector<uint32_t> &indices);
+    void submitObject(GfxMaterial &material, GfxMesh &mesh);
     ~GfxRenderQueue();
 };
 
