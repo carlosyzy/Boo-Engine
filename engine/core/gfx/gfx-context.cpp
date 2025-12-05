@@ -480,7 +480,7 @@ void GfxContext::_createSwapChainKHR()
     this->_swapChainExtent = extent;
     std::cout << "swap chain image count: " << imageCount << std::endl;
 }
-
+// 从 GPU 支持的格式中选择最合适的交换链图像格式
 /* // https://www.iogl.cn/tutorial/swapchain */
 VkSurfaceFormatKHR GfxContext::_chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats)
 {

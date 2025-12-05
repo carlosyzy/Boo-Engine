@@ -16,7 +16,6 @@ class GfxDescriptor;
 
 class GfxTexture;
 class GfxPass;
-struct GfxPassStruct;
 class GfxShader;
 class GfxPipeline;
 struct GfxPipelineStruct;
@@ -53,9 +52,9 @@ private:
 	void _Log(std::string msg);
 
 	/**
-	 * @brief 初始化默认UI通道
+	 * @brief 初始化默认通道
 	 */
-	void _initDefaultUIPasses();
+	void _initDefaultPasses();
 	void _initDefaultUIShaders();
 	void _initDefaultUIPipeline();
 	void _initDefaultUIMaskPipeline();
@@ -73,7 +72,7 @@ public:
 	/**
 	 * 创建通道
 	 */
-	void createRenderPass(std::string name, GfxPassStruct passStruct);
+	// void createRenderPass(std::string name, GfxPassStruct passStruct);
 	// void createPipeline(std::string passName, std::string pipelineName);
 	void createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct);
 

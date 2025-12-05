@@ -85,7 +85,7 @@ struct GfxPassAttachment
 	 * 2: VK_FORMAT_D24_UNORM_S8_UINT	 24位深度,8位模版
 	 * 3: VK_FORMAT_D32_SFLOAT_S8_UINT  32位深度,8位模版
 	 */
-	uint32_t format = 0;
+	VkFormat format = VK_FORMAT_UNDEFINED;
 	VkSampleCountFlagBits samples;
 	GfxPassAttachmentLoadOp loadOp = GfxPassAttachmentLoadOp::Load;
 	GfxPassAttachmentStoreOp storeOp = GfxPassAttachmentStoreOp::Store;

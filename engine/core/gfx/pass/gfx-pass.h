@@ -2,63 +2,30 @@
 #include <vulkan/vulkan_core.h>
 #include <vector>
 #include <string>
-#include "../gfx-struct.h"
-#include "gfx-pass-struct.h"
 #include <unordered_map>
 class GfxContext;
 
 class GfxPass
 {
 private:
+protected:
 	std::string _name;
 	VkRenderPass _vkRenderPass = VK_NULL_HANDLE;
-	GfxPassStruct _gfxPassStruct;
-	void _createVkRenderPass();
+	virtual void create();
 
 public:
 	GfxPass(std::string name);
-	void create(GfxPassStruct gfxPassStruct);
-	void clear();
-	void reset();
-
-	GfxPassStruct &getGfxPassStruct()
-	{
-		return this->_gfxPassStruct;
-	}
-
-	std::string name()
+	const std::string name()
 	{
 		return this->_name;
 	}
-	VkFormat getAttachmentFormat(uint32_t attachment);
-	/**
-	 * @brief 获取附件的加载操作
-	 *
-	 * @param loadOp 加载操作类型
-	 * @return VkAttachmentLoadOp Vulkan 附件加载操作
-	 */
-	VkAttachmentLoadOp getAttachmentLoadOp(GfxPassAttachmentLoadOp loadOp);
-	/**
-	 * @brief 获取附件的存储操作
-	 *
-	 * @param storeOp 存储操作类型
-	 * @return VkAttachmentStoreOp Vulkan 附件存储操作
-	 */
-	VkAttachmentStoreOp getAttachmentStoreOp(GfxPassAttachmentStoreOp storeOp);
-	/**
-	 * @brief 获取附件的布局类型
-	 *
-	 * @param finalLayout 最终布局类型
-	 * @return VkImageLayout Vulkan 附件最终布局
-	 */
-	VkImageLayout getAttachmentLayout(GfxPassAttachmentLayout layout);
-
-	VkRenderPass getVkRenderPass()
+	const VkRenderPass vkRenderPass()
 	{
 		return this->_vkRenderPass;
 	}
-
-	~GfxPass();
+	void clear();
+	void reset();
+	virtual ~GfxPass();
 };
 
 // const std::unordered_map<std::string, int> GfxPassColorAttachmenloadOp = {

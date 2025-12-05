@@ -1,10 +1,10 @@
 #include "gfx-pipeline.h"
-#include "gfx.h"
-#include "gfx-context.h"
-#include "gfx-renderer.h"
-#include "gfx-descriptor.h"
-#include "gfx-pass.h"
-#include "gfx-shader.h"
+#include "../gfx.h"
+#include "../gfx-context.h"
+#include "../gfx-renderer.h"
+#include "../gfx-descriptor.h"
+#include "../pass/gfx-pass.h"
+#include "../gfx-shader.h"
 
 GfxPipeline::GfxPipeline(const std::string &name)
 {
@@ -20,6 +20,18 @@ void GfxPipeline::create(GfxPass *pass, GfxShader *vertexShader, GfxShader *frag
 }
 void GfxPipeline::_createPipeline()
 {
+    this->_initShaderState();
+    this->_initVertexInputState();
+    this->_initInputAssemblyState();
+    this->_initDynamicState();
+    this->_initViewportState();
+    this->_initRasterizationState();
+    this->_initMultisampleState();
+    this->_initDepthStencilState();
+    this->_initColorBlendState();
+    this->_initPipelineLayout();
+    this->_initPipeline();
+
 }
 
 void GfxPipeline::_initShaderState()
@@ -313,6 +325,50 @@ VkBlendOp GfxPipeline::_getBlendOp(GfxPipelineColorBlendOp blendOp)
         return VK_BLEND_OP_MIN;
     }
 }
+
+void GfxPipeline::_initPipelineLayout()
+{
+    this->_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    std::vector<VkDescriptorSetLayout> setLayouts = {
+        Gfx::renderer->descriptor()->descriptorSetLayout()};
+    this->_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(setLayouts.size());
+    this->_pipelineLayoutInfo.pSetLayouts = setLayouts.data();
+    // 绑定推送常量 默认没有推送常量
+    this->_pipelineLayoutInfo.pushConstantRangeCount = 0;
+    // 第八步：管线布局
+    if (vkCreatePipelineLayout(Gfx::context->vkDevice(), &this->_pipelineLayoutInfo, nullptr, &this->_vkPipelineLayout) != VK_SUCCESS)
+    {
+        // throw std::runtime_error("failed to create pipeline layout!");
+        std::cout << "GfxPipeline :create pipeline layout failed " << this->_name << std::endl;
+
+        return;
+    }
+}
+void GfxPipeline::_initPipeline()
+{
+    this->_pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    this->_pipelineInfo.stageCount = this->_shaderStages.size();
+    this->_pipelineInfo.pStages = this->_shaderStages.data();
+    this->_pipelineInfo.pVertexInputState = &this->_vertexInputInfo;
+    this->_pipelineInfo.pInputAssemblyState = &this->_inputAssemblyInfo;
+    this->_pipelineInfo.pViewportState = &this->_viewportInfo;
+    this->_pipelineInfo.pDynamicState = &this->_dynamicStateInfo; // 关键：设置动态状态
+    this->_pipelineInfo.pRasterizationState = &this->_rasterizationInfo;
+    this->_pipelineInfo.pMultisampleState = &this->_multisampleInfo;
+    this->_pipelineInfo.pColorBlendState = &this->_colorBlendInfo;
+    this->_pipelineInfo.pDepthStencilState = &this->_depthStencilInfo;
+    this->_pipelineInfo.layout = this->_vkPipelineLayout;
+    this->_pipelineInfo.renderPass = this->_pass->vkRenderPass();
+
+    this->_pipelineInfo.subpass = 0;
+    this->_pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+    if (vkCreateGraphicsPipelines(Gfx::context->vkDevice(), VK_NULL_HANDLE, 1, &this->_pipelineInfo, nullptr, &this->_vkPipeline) != VK_SUCCESS)
+    {
+        std::cout << "GfxPipeline :create pipeline failed " << this->_name << std::endl;
+        return;
+    }
+    std::cout << "GfxPipeline :create pipeline success " << this->_name << std::endl;
+}
 void GfxPipeline::clear()
 {
     /* // 销毁图形管线（Pipeline） */
@@ -328,6 +384,19 @@ void GfxPipeline::clear()
         this->_vkPipelineLayout = VK_NULL_HANDLE;
     }
 }
+void GfxPipeline::reset()
+{
+    this->_initPipelineLayout();
+    this->_initPipeline();
+}
+
+GfxPipeline::~GfxPipeline()
+{
+}
+
+
+
+
 
 // /**
 //  * @brief 初始化描述符集布局
@@ -390,53 +459,3 @@ void GfxPipeline::clear()
 //     }
 //     std::cout << "GfxPipeline :create descriptor set layout success " << this->_name << std::endl;
 // }
-void GfxPipeline::_initPipelineLayout()
-{
-    this->_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    std::vector<VkDescriptorSetLayout> setLayouts = {
-        Gfx::renderer->descriptor()->descriptorSetLayout()};
-    this->_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(setLayouts.size());
-    this->_pipelineLayoutInfo.pSetLayouts = setLayouts.data();
-    // 绑定推送常量 默认没有推送常量
-    this->_pipelineLayoutInfo.pushConstantRangeCount = 0;
-    // 第八步：管线布局
-    if (vkCreatePipelineLayout(Gfx::context->vkDevice(), &this->_pipelineLayoutInfo, nullptr, &this->_vkPipelineLayout) != VK_SUCCESS)
-    {
-        // throw std::runtime_error("failed to create pipeline layout!");
-        std::cout << "GfxPipeline :create pipeline layout failed " << this->_name << std::endl;
-
-        return;
-    }
-}
-void GfxPipeline::_initPipeline()
-{
-    this->_pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-    this->_pipelineInfo.stageCount = this->_shaderStages.size();
-    this->_pipelineInfo.pStages = this->_shaderStages.data();
-    this->_pipelineInfo.pVertexInputState = &this->_vertexInputInfo;
-    this->_pipelineInfo.pInputAssemblyState = &this->_inputAssemblyInfo;
-    this->_pipelineInfo.pViewportState = &this->_viewportInfo;
-    this->_pipelineInfo.pDynamicState = &this->_dynamicStateInfo; // 关键：设置动态状态
-    this->_pipelineInfo.pRasterizationState = &this->_rasterizationInfo;
-    this->_pipelineInfo.pMultisampleState = &this->_multisampleInfo;
-    this->_pipelineInfo.pColorBlendState = &this->_colorBlendInfo;
-    this->_pipelineInfo.pDepthStencilState = &this->_depthStencilInfo;
-    this->_pipelineInfo.layout = this->_vkPipelineLayout;
-    this->_pipelineInfo.renderPass = this->_pass->getVkRenderPass();
-
-    this->_pipelineInfo.subpass = 0;
-    this->_pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
-	if (vkCreateGraphicsPipelines(Gfx::context->vkDevice(), VK_NULL_HANDLE, 1, &this->_pipelineInfo, nullptr, &this->_vkPipeline) != VK_SUCCESS)
-	{
-		std::cout << "GfxPipeline :create pipeline failed " << this->_name << std::endl;
-		return;
-	}
-	std::cout << "GfxPipeline :create pipeline success " << this->_name << std::endl;
-}
-void GfxPipeline::reset()
-{
-}
-
-GfxPipeline::~GfxPipeline()
-{
-}

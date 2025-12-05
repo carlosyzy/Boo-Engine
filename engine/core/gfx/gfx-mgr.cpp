@@ -4,10 +4,6 @@
 #include "gfx-mgr.h"
 #include "gfx-context.h"
 #include "gfx-renderer.h"
-// #include "pass/gfx-pass.h"
-#include "pass/gfx-pass-struct.h"
-#include "pipeline/gfx-pipeline-struct.h"
-
 #include "../utils/time-util.h"
 
 GfxMgr *GfxMgr::getInstance()
@@ -119,14 +115,14 @@ void GfxMgr::_testBindless()
     // }
 }
 
-void GfxMgr::createRenderPass(std::string name, GfxPassStruct passStruct)
-{
-    // this->_renderer->createRenderPass(name, passStruct);
-}
-void GfxMgr::createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct)
-{
-    // this->_renderer->createPipeline(pipelineName, pipelineStruct);
-}
+// void GfxMgr::createRenderPass(std::string name, GfxPassStruct passStruct)
+// {
+//     // this->_renderer->createRenderPass(name, passStruct);
+// }
+// void GfxMgr::createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct)
+// {
+//     // this->_renderer->createPipeline(pipelineName, pipelineStruct);
+// }
 
 void GfxMgr::createTexture(std::string texture, uint32_t width, uint32_t height, uint32_t channels, const std::vector<uint8_t> *pixels)
 {

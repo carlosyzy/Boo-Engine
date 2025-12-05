@@ -1,5 +1,21 @@
 # GFX 图形管理器
 ## history 历史
+
+- 2025 12.5 重新设计结构
+ 1. gfx-context 图形上下文保持不变
+ 2. renderpass 全局统一
+    - Clear: 清除颜色附件和深度附件
+    - UI: renderpass1: 离屏渲染,双通道,颜色附件,深度附件  renderpass2: 屏幕渲染,单通道,颜色附件
+    - 3D: renderpass1: 离屏渲染,双通道,颜色附件,深度附件  renderpass2: 屏幕渲染,单通道,颜色附件(理论)
+ 3. pipeline:
+    - UI: 顶点输入只包顶点和uv
+    - 3D: 顶点输入包含顶点，uv，法线，切线，位法向量, 颜色,可能还有多套uv,
+    
+
+ 2. 取消gfx-object的这个类，不需要存储渲染物体，在camera的过程中直接整理渲染数据，提交渲染
+ 3. camera 渲染直接提交到渲染队列中，重构渲染队列，队列中添加渲染批次，不同渲染状态在不同批次中进行渲染
+ 4. 每个摄像机都需要对场景中中的所有的物体进行渲染遍历
+
 - 2025 12.3
  1. 保持pass和pipeline结构不变，添加检测pass相同性和pipeline相同性的功能
  2. 取消gfx-object的这个类，不需要存储渲染物体，在camera的过程中直接整理渲染数据，提交渲染
@@ -7,6 +23,9 @@
  4. 每个摄像机都需要对场景中中的所有的物体进行渲染遍历
  5. pass和pipeline 采取集成式的创建，手动进行pass和pipeline队列的管理
  6. pass,pipeline,shader 采取关键影响状态Hash ID的存储方式
+
+
+
 
 ## gfx-mgr 图形管理器
 - 图形渲染管理：分别负责gfx-context（专门负责 Vulkan 环境的初始化、管理和生命周期）以及gfx-renderer（负责渲染相关的操作，如绘制、交换链管理等）
