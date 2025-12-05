@@ -57,6 +57,6 @@ public:
     void Render() override;
     void Disable() override;
     void destroy() override;
-    ~Camera() override;
+    ~Camera();
 };
 REGISTER_COMPONENT(Camera, "相机组件");
