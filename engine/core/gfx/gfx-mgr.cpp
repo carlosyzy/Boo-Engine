@@ -33,177 +33,6 @@ void GfxMgr::init()
     Gfx::renderer->init();
 }
 
-void GfxMgr::initTestInfo()
-{
-    // this->_testMSAASample();
-    // this->_testBindless();
-}
-/**
- * @brief 测试MSAA采样次数
- */
-void GfxMgr::_testMSAASample()
-{
-    // VkPhysicalDeviceProperties physicalDeviceProperties;
-    // vkGetPhysicalDeviceProperties(this->_context->getPhysicalDevice(), &physicalDeviceProperties);
-    // /* // 采样次数 */
-    // VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts &
-    //                             physicalDeviceProperties.limits.framebufferDepthSampleCounts;
-    // VkSampleCountFlagBits sampleCount = this->_getMaxMSAAUsableSampleCount();
-    // GfxMgr::Log("GfxMgr", "GPU Maximum supported sampling:" + std::to_string(sampleCount));
-}
-VkSampleCountFlagBits GfxMgr::_getMaxMSAAUsableSampleCount()
-{
-    // VkPhysicalDeviceProperties physicalDeviceProperties;
-    // vkGetPhysicalDeviceProperties(this->_context->getPhysicalDevice(), &physicalDeviceProperties);
-
-    // VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts &
-    //                             physicalDeviceProperties.limits.framebufferDepthSampleCounts;
-
-    // if (counts & VK_SAMPLE_COUNT_64_BIT)
-    // {
-    //     return VK_SAMPLE_COUNT_64_BIT;
-    // }
-    // if (counts & VK_SAMPLE_COUNT_32_BIT)
-    // {
-    //     return VK_SAMPLE_COUNT_32_BIT;
-    // }
-    // if (counts & VK_SAMPLE_COUNT_16_BIT)
-    // {
-    //     return VK_SAMPLE_COUNT_16_BIT;
-    // }
-    // if (counts & VK_SAMPLE_COUNT_8_BIT)
-    // {
-    //     return VK_SAMPLE_COUNT_8_BIT;
-    // }
-    // if (counts & VK_SAMPLE_COUNT_4_BIT)
-    // {
-    //     return VK_SAMPLE_COUNT_4_BIT;
-    // }
-    // if (counts & VK_SAMPLE_COUNT_2_BIT)
-    // {
-    //     return VK_SAMPLE_COUNT_2_BIT;
-    // }
-
-    return VK_SAMPLE_COUNT_1_BIT;
-}
-void GfxMgr::_testBindless()
-{
-    // // const std::vector<const char *> deviceExtensions = {
-    // //     VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
-    // //     VK_KHR_MAINTENANCE3_EXTENSION_NAME,
-    // // };
-    // // 检查支持
-    // VkPhysicalDeviceDescriptorIndexingFeaturesEXT indexingFeatures = {};
-    // indexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT;
-
-    // VkPhysicalDeviceFeatures2 features2 = {};
-    // features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-    // features2.pNext = &indexingFeatures;
-
-    // vkGetPhysicalDeviceFeatures2(this->_context->getPhysicalDevice(), &features2);
-
-    // // 必须支持的特性
-    // if (!indexingFeatures.descriptorBindingPartiallyBound ||
-    //     !indexingFeatures.descriptorBindingSampledImageUpdateAfterBind ||
-    //     !indexingFeatures.runtimeDescriptorArray)
-    // {
-    //     throw std::runtime_error("Bindless textures not supported!");
-    // }
-    // else
-    // {
-    //     GfxMgr::Log("GfxMgr", "Bindless textures supported!");
-    // }
-}
-
-// void GfxMgr::createRenderPass(std::string name, GfxPassStruct passStruct)
-// {
-//     // this->_renderer->createRenderPass(name, passStruct);
-// }
-// void GfxMgr::createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct)
-// {
-//     // this->_renderer->createPipeline(pipelineName, pipelineStruct);
-// }
-
-void GfxMgr::createTexture(std::string texture, uint32_t width, uint32_t height, uint32_t channels, const std::vector<uint8_t> *pixels)
-{
-    // this->_renderer->createTexture(texture, width, height, channels, pixels);
-}
-void GfxMgr::destroyTexture(std::string texture)
-{
-    // this->_renderer->destroyTexture(texture);
-}
-bool GfxMgr::isExistTexture(std::string texture)
-{
-    // return this->_renderer->isExistTexture(texture);
-}
-void GfxMgr::createGlslShader(const std::string &shaderName, const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros)
-{
-    // this->_renderer->createGlslShader(shaderName, shaderType, data, macros);
-}
-void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<char> &data)
-{
-    // this->_renderer->createSpirvShader(shaderName, data);
-}
-
-/**
- * 旧的
- * 过时的
- */
-void GfxMgr::createObject(std::string id, std::string renderPassType, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
-{
-    // this->_renderer->createObject(id, renderPassType, points, colors, normals, uvs, indices);
-}
-void GfxMgr::createUIObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
-{
-    // this->_renderer->createUIObject(id, points, colors, normals, uvs, indices);
-}
-void GfxMgr::createUIMaskObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
-{
-    // this->_renderer->createUIMaskObject(id, points, colors, normals, uvs, indices);
-}
-void GfxMgr::setObjectUIMaskBehavior(std::string id, uint32_t behavior)
-{
-    // this->_renderer->setObjectUIMaskBehavior(id, behavior);
-}
-void GfxMgr::setObjectPass(std::string id, std::string pass)
-{
-    // this->_renderer->setObjectPass(id, pass);
-}
-void GfxMgr::setObjectPipeline(std::string id, std::string pipeline)
-{
-    // this->_renderer->setObjectPipeline(id, pipeline);
-}
-
-void GfxMgr::destroyObject(std::string id)
-{
-    // this->_renderer->destroyObject(id);
-}
-void GfxMgr::setObjectModelMatrix(std::string id, const std::array<float, 16> &modelMatrix)
-{
-    // this->_renderer->setObjectModelMatrix(id, modelMatrix);
-}
-void GfxMgr::setObjectViewMatrix(std::string id, const std::array<float, 16> &viewMatrix)
-{
-    // this->_renderer->setObjectViewMatrix(id, viewMatrix);
-}
-void GfxMgr::setObjectProjMatrix(std::string id, const std::array<float, 16> &projMatrix)
-{
-    // this->_renderer->setObjectProjMatrix(id, projMatrix);
-}
-void GfxMgr::setObjectColor(std::string id, float r, float g, float b, float a)
-{
-    // this->_renderer->setObjectColor(id, r, g, b, a);
-}
-void GfxMgr::setObjectTexture(const std::string &id, const std::string &texture)
-{
-    // this->_renderer->setObjectTexture(id, texture);
-}
-
-void GfxMgr::submitObjectRender(std::string id)
-{
-    // this->_renderer->submitObjectRender(id);
-}
-
 void GfxMgr::update()
 {
 
@@ -265,6 +94,183 @@ void GfxMgr::resetSwapChain()
     Gfx::renderer->resetRendererState();
     std::cout << "GfxMgr :reset swap chain end..." << std::endl;
 }
+
+void GfxMgr::createTexture(std::string texture, uint32_t width, uint32_t height, uint32_t channels, const std::vector<uint8_t> *pixels)
+{
+    Gfx::renderer->createTexture(texture, width, height, channels, pixels);
+}
+void GfxMgr::destroyTexture(std::string texture)
+{
+    Gfx::renderer->destroyTexture(texture);
+}
+bool GfxMgr::isExistTexture(std::string texture)
+{
+    Gfx::renderer->isExistTexture(texture);
+}
+void GfxMgr::createGlslShader(const std::string &shaderName, const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros)
+{
+    Gfx::renderer->createGlslShader(shaderName, shaderType, data, macros);
+}
+void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<char> &data)
+{
+    Gfx::renderer->createSpirvShader(shaderName, data);
+}
+void GfxMgr:: initRenderQueue(uint32_t renderId, uint32_t renderType, std::array<float, 16> &viewMat, std::array<float, 16> &projMat){
+    Gfx::renderer->initRenderQueue(renderId, renderType, viewMat, projMat);
+}
+void GfxMgr:: submitRenderObject(uint32_t renderId, std::string pass, std::string pipeline, std::vector<float> &vertices, std::vector<uint32_t> &indices){
+    Gfx::renderer->submitRenderObject(renderId, pass, pipeline, vertices, indices);
+}
+
+// void GfxMgr::initTestInfo()
+// {
+//     // this->_testMSAASample();
+//     // this->_testBindless();
+// }
+// /**
+//  * @brief 测试MSAA采样次数
+//  */
+// void GfxMgr::_testMSAASample()
+// {
+//     // VkPhysicalDeviceProperties physicalDeviceProperties;
+//     // vkGetPhysicalDeviceProperties(this->_context->getPhysicalDevice(), &physicalDeviceProperties);
+//     // /* // 采样次数 */
+//     // VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts &
+//     //                             physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+//     // VkSampleCountFlagBits sampleCount = this->_getMaxMSAAUsableSampleCount();
+//     // GfxMgr::Log("GfxMgr", "GPU Maximum supported sampling:" + std::to_string(sampleCount));
+// }
+// VkSampleCountFlagBits GfxMgr::_getMaxMSAAUsableSampleCount()
+// {
+//     // VkPhysicalDeviceProperties physicalDeviceProperties;
+//     // vkGetPhysicalDeviceProperties(this->_context->getPhysicalDevice(), &physicalDeviceProperties);
+
+//     // VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts &
+//     //                             physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+
+//     // if (counts & VK_SAMPLE_COUNT_64_BIT)
+//     // {
+//     //     return VK_SAMPLE_COUNT_64_BIT;
+//     // }
+//     // if (counts & VK_SAMPLE_COUNT_32_BIT)
+//     // {
+//     //     return VK_SAMPLE_COUNT_32_BIT;
+//     // }
+//     // if (counts & VK_SAMPLE_COUNT_16_BIT)
+//     // {
+//     //     return VK_SAMPLE_COUNT_16_BIT;
+//     // }
+//     // if (counts & VK_SAMPLE_COUNT_8_BIT)
+//     // {
+//     //     return VK_SAMPLE_COUNT_8_BIT;
+//     // }
+//     // if (counts & VK_SAMPLE_COUNT_4_BIT)
+//     // {
+//     //     return VK_SAMPLE_COUNT_4_BIT;
+//     // }
+//     // if (counts & VK_SAMPLE_COUNT_2_BIT)
+//     // {
+//     //     return VK_SAMPLE_COUNT_2_BIT;
+//     // }
+
+//     return VK_SAMPLE_COUNT_1_BIT;
+// }
+// void GfxMgr::_testBindless()
+// {
+//     // // const std::vector<const char *> deviceExtensions = {
+//     // //     VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
+//     // //     VK_KHR_MAINTENANCE3_EXTENSION_NAME,
+//     // // };
+//     // // 检查支持
+//     // VkPhysicalDeviceDescriptorIndexingFeaturesEXT indexingFeatures = {};
+//     // indexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT;
+
+//     // VkPhysicalDeviceFeatures2 features2 = {};
+//     // features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+//     // features2.pNext = &indexingFeatures;
+
+//     // vkGetPhysicalDeviceFeatures2(this->_context->getPhysicalDevice(), &features2);
+
+//     // // 必须支持的特性
+//     // if (!indexingFeatures.descriptorBindingPartiallyBound ||
+//     //     !indexingFeatures.descriptorBindingSampledImageUpdateAfterBind ||
+//     //     !indexingFeatures.runtimeDescriptorArray)
+//     // {
+//     //     throw std::runtime_error("Bindless textures not supported!");
+//     // }
+//     // else
+//     // {
+//     //     GfxMgr::Log("GfxMgr", "Bindless textures supported!");
+//     // }
+// }
+
+// // void GfxMgr::createRenderPass(std::string name, GfxPassStruct passStruct)
+// // {
+// //     // this->_renderer->createRenderPass(name, passStruct);
+// // }
+// // void GfxMgr::createPipeline(std::string pipelineName, GfxPipelineStruct pipelineStruct)
+// // {
+// //     // this->_renderer->createPipeline(pipelineName, pipelineStruct);
+// // }
+
+// /**
+//  * 旧的
+//  * 过时的
+//  */
+// void GfxMgr::createObject(std::string id, std::string renderPassType, std::vector<float> points, std::vector<float> colors, std::vector<float> normals, std::vector<float> uvs, std::vector<uint32_t> indices)
+// {
+//     // this->_renderer->createObject(id, renderPassType, points, colors, normals, uvs, indices);
+// }
+// void GfxMgr::createUIObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
+// {
+//     // this->_renderer->createUIObject(id, points, colors, normals, uvs, indices);
+// }
+// void GfxMgr::createUIMaskObject(std::string id, std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices)
+// {
+//     // this->_renderer->createUIMaskObject(id, points, colors, normals, uvs, indices);
+// }
+// void GfxMgr::setObjectUIMaskBehavior(std::string id, uint32_t behavior)
+// {
+//     // this->_renderer->setObjectUIMaskBehavior(id, behavior);
+// }
+// void GfxMgr::setObjectPass(std::string id, std::string pass)
+// {
+//     // this->_renderer->setObjectPass(id, pass);
+// }
+// void GfxMgr::setObjectPipeline(std::string id, std::string pipeline)
+// {
+//     // this->_renderer->setObjectPipeline(id, pipeline);
+// }
+
+// void GfxMgr::destroyObject(std::string id)
+// {
+//     // this->_renderer->destroyObject(id);
+// }
+// void GfxMgr::setObjectModelMatrix(std::string id, const std::array<float, 16> &modelMatrix)
+// {
+//     // this->_renderer->setObjectModelMatrix(id, modelMatrix);
+// }
+// void GfxMgr::setObjectViewMatrix(std::string id, const std::array<float, 16> &viewMatrix)
+// {
+//     // this->_renderer->setObjectViewMatrix(id, viewMatrix);
+// }
+// void GfxMgr::setObjectProjMatrix(std::string id, const std::array<float, 16> &projMatrix)
+// {
+//     // this->_renderer->setObjectProjMatrix(id, projMatrix);
+// }
+// void GfxMgr::setObjectColor(std::string id, float r, float g, float b, float a)
+// {
+//     // this->_renderer->setObjectColor(id, r, g, b, a);
+// }
+// void GfxMgr::setObjectTexture(const std::string &id, const std::string &texture)
+// {
+//     // this->_renderer->setObjectTexture(id, texture);
+// }
+
+// void GfxMgr::submitObjectRender(std::string id)
+// {
+//     // this->_renderer->submitObjectRender(id);
+// }
 
 /* // 读取shader内容 */
 std::vector<char> GfxMgr::readShaderFile(const std::string &filename)

@@ -3,6 +3,27 @@
 #include <string>
 #include <unordered_map>
 #include <vulkan/vulkan_core.h>
+
+// struct GfxPipelineType{
+//     const std::string UI = "UI";
+//     const std::string MODEL = "MODEL";
+// };
+enum class GfxPipelineType
+{
+    /**
+     * UI 渲染管线
+     */
+    UI = 0,
+    /**
+     * 模型渲染管线
+     */
+    MODEL = 1,
+};
+const std::unordered_map<GfxPipelineType, std::string> GfxPipelineTypeNames = {
+    {GfxPipelineType::UI, "UI"},
+    {GfxPipelineType::MODEL, "MODEL"},
+};
+
 /**
  * 深度比较操作
  */
@@ -143,8 +164,6 @@ enum class GfxPipelineCullMode
 
 struct GfxPipelineStruct
 {
-    std::string name = "";
-
     std::string vert = "";
     std::string geom = "";
     std::string frag = "";
@@ -241,6 +260,52 @@ struct GfxPipelineStruct
      */
     GfxPipelineCullMode cullMode = GfxPipelineCullMode::Back;
 };
+
+// 后期方案确定
+// 方案 3: 动态渲染（最佳，Vulkan 1.3+）
+
+//   // ✅ 使用动态渲染，完全避免 Render Pass 和 Pipeline 的耦合
+
+//   // 创建 Pipeline 时不指定 Render Pass
+//   VkPipelineRenderingCreateInfo pipelineRenderingInfo{};
+//   pipelineRenderingInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO;
+//   pipelineRenderingInfo.colorAttachmentCount = 1;
+//   VkFormat colorFormat = VK_FORMAT_B8G8R8A8_UNORM;
+//   pipelineRenderingInfo.pColorAttachmentFormats = &colorFormat;
+//   pipelineRenderingInfo.depthAttachmentFormat = VK_FORMAT_D32_SFLOAT;
+
+//   VkGraphicsPipelineCreateInfo pipelineInfo{};
+//   pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+//   pipelineInfo.pNext = &pipelineRenderingInfo;
+//   pipelineInfo.renderPass = VK_NULL_HANDLE;  // ⚠️ 不需要 Render Pass！
+//   // ...
+
+//   vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo,
+//                            nullptr, &graphicsPipeline);
+
+//   // 渲染时动态指定
+//   VkRenderingAttachmentInfo colorAttachment{};
+//   colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+//   colorAttachment.imageView = swapChainImageViews[imageIndex];
+//   colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+//   colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+//   colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+//   colorAttachment.clearValue = clearColor;
+
+//   VkRenderingInfo renderingInfo{};
+//   renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+//   renderingInfo.renderArea = {{0, 0}, swapChainExtent};
+//   renderingInfo.layerCount = 1;
+//   renderingInfo.colorAttachmentCount = 1;
+//   renderingInfo.pColorAttachments = &colorAttachment;
+//   renderingInfo.pDepthAttachment = &depthAttachment;
+
+//   vkCmdBeginRendering(commandBuffer, &renderingInfo);
+//   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+//   graphicsPipeline);
+//   // ...
+//   vkCmdEndRendering(commandBuffer);
+
 
 
 

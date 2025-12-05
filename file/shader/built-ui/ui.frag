@@ -20,5 +20,5 @@ void main() {
     // vec4 color = PushConsts.defaultColor;
     // vec4 texColor = texture(texSampler, fragTexCoord);
     // outColor = color*texColor;
-    outColor = vec4(fragTexCoord, 0.0, 1.0);
+    outColor = vec4(0.5, 0.5, 0.5, 1.0);
 }

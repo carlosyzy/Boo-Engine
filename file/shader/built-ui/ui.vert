@@ -2,6 +2,7 @@
 #extension GL_ARB_separate_shader_objects : enable
 
 layout(binding = 0) uniform UniformBufferObject {
+    mat4 model;
     mat4 view;
     mat4 proj;
 } ubo;
@@ -9,7 +10,7 @@ layout(binding = 0) uniform UniformBufferObject {
 layout (location = 0) in vec4 inPos;
 layout (location = 1) in vec2 inTexCoord;
 
-layout(location = 0) out vec3 fragTexCoord;
+layout(location = 0) out vec2 fragTexCoord;
 // layout(location = 1) out vec3 fragNormal;  // 输出法线
 // layout(location = 2) out vec2 fragTexCoord; // 输出UV坐标
 // layout(location = 3) out vec2 viewSize;
@@ -22,7 +23,7 @@ void main() {
    
     //计算世界坐标
     vec4 worldPosition = ubo.model * vec4(inPos.xy, 0.0, 1.0);
-    worldPos = worldPosition.xy;
+    // worldPos = worldPosition.xy;
     //将物体从世界空间 → 观察空间（相机空间）
     //视图矩阵移动的是整个世界，而不是相机
     // 视图矩阵将相机位置从世界空间转换到观察空间

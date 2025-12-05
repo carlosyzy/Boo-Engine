@@ -16,7 +16,7 @@ struct StorageBufferObject
 class GfxPass;
 class GfxPipeline;
 
-class GfxBatch
+class GfxRenderBatch
 {
 private:
     // 最大对象数量
@@ -30,16 +30,15 @@ private:
     
 
     // 现有的成员变量...
-    VkBuffer _storageBuffers;
-    VkDeviceMemory _storageBuffersMemory;
-    void *_storageBuffersMapped;
+    std::vector<VkBuffer> _storageBuffers;
+    std::vector<VkDeviceMemory> _storageBuffersMemory;
+    std::vector<void *> _storageBuffersMapped;
     // 现有的方法...
     void _createStorageBuffers();
     uint32_t _findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
-    void _cleanStorageBuffers();
 
 public:
-    GfxBatch();
-    void addObject(StorageBufferObject &object);
-    ~GfxBatch();
+    GfxRenderBatch();
+    // void addObject(StorageBufferObject &object);
+    ~GfxRenderBatch();
 };

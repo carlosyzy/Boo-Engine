@@ -1,108 +1,60 @@
-#include "gfx-queue.h"
+#include "gfx-render-queue.h"
 #include "gfx.h"
 #include "gfx-mgr.h"
 #include "gfx-context.h"
-#include "gfx-batch.h"
+#include "gfx-render-batch.h"
 
-GfxQueue::GfxQueue()
+GfxRenderQueue::GfxRenderQueue()
+{
+   
+}
+void GfxRenderQueue::init(std::array<float, 16> &viewMat, std::array<float, 16> &projMat)
+{
+    this->_viewMat = viewMat;
+    this->_projMat = projMat;
+}
+void GfxRenderQueue::submitObject(std::string pass, std::string pipeline, std::vector<float> &vertices, std::vector<uint32_t> &indices)
+{
+   
+}
+GfxRenderQueue::~GfxRenderQueue()
 {
 }
-void GfxQueue::preapre()
-{
-    this->_reset();
-    this->_createUniformBuffers();
-}
-void GfxQueue::_reset()
-{
-    this->_cleanUniformBuffers();
-}
+
+// void GfxQueue::updateUniformBuffer(uint32_t frame, std::array<float, 16> &viewMat, std::array<float, 16> &projMat, float time)
+// {
+//     UniformBufferObject *ubo = (UniformBufferObject *)this->_uniformBuffersMapped[frame];
+//     memcpy(ubo->viewMat, viewMat.data(), sizeof(float) * 16);
+//     memcpy(ubo->projMat, projMat.data(), sizeof(float) * 16);
+//     ubo->time = time;
+// }
+
+// void GfxQueue::_cleanUniformBuffers()
+// {
+//     for (size_t i = 0; i < this->_uniformBuffers.size(); i++)
+//     {
+//         if (this->_uniformBuffersMapped[i])
+//         {
+//             vkUnmapMemory(Gfx::context->vkDevice(), this->_uniformBuffersMemory[i]);
+//             this->_uniformBuffersMapped[i] = nullptr;
+//         }
+//         if (this->_uniformBuffers[i] != VK_NULL_HANDLE)
+//         {
+//             vkDestroyBuffer(Gfx::context->vkDevice(), this->_uniformBuffers[i], nullptr);
+//             this->_uniformBuffers[i] = VK_NULL_HANDLE;
+//         }
+//         if (this->_uniformBuffersMemory[i] != VK_NULL_HANDLE)
+//         {
+//             vkFreeMemory(Gfx::context->vkDevice(), this->_uniformBuffersMemory[i], nullptr);
+//             this->_uniformBuffersMemory[i] = VK_NULL_HANDLE;
+//         }
+//     }
+//     this->_uniformBuffers.clear();
+//     this->_uniformBuffersMemory.clear();
+//     this->_uniformBuffersMapped.clear();
+// }
 
 
-
-
-
-
-void GfxQueue::_createUniformBuffers()
-{
-    VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-    // 创建缓冲区
-    VkBufferCreateInfo bufferInfo{};
-    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bufferInfo.size = bufferSize;
-    bufferInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    if (vkCreateBuffer(Gfx::context->vkDevice(), &bufferInfo, nullptr, &this->_uniformBuffers) != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to create uniform buffer!");
-    }
-    // 获取内存需求
-    VkMemoryRequirements memRequirements;
-    vkGetBufferMemoryRequirements(Gfx::context->vkDevice(), this->_uniformBuffers, &memRequirements);
-    // 分配内存
-    VkMemoryAllocateInfo allocInfo{};
-    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    allocInfo.allocationSize = memRequirements.size;
-    allocInfo.memoryTypeIndex = this->_findMemoryType(
-        memRequirements.memoryTypeBits,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-    if (vkAllocateMemory(Gfx::context->vkDevice(), &allocInfo, nullptr, &this->_uniformBuffersMemory) != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to allocate uniform buffer memory!");
-    }
-    // 绑定内存
-    vkBindBufferMemory(Gfx::context->vkDevice(), this->_uniformBuffers, this->_uniformBuffersMemory, 0);
-    // 映射内存
-    vkMapMemory(Gfx::context->vkDevice(), this->_uniformBuffersMemory, 0, bufferSize, 0, &this->_uniformBuffersMapped);
-}
-uint32_t GfxQueue::_findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
-{
-    VkPhysicalDeviceMemoryProperties memProperties;
-    vkGetPhysicalDeviceMemoryProperties(Gfx::context->physicalDevice(), &memProperties);
-
-    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
-    {
-        /* // 检查内存类型是否满足类型过滤器要求
-        // 并且具有我们需要的属性标志 */
-        if ((typeFilter & (1 << i)) &&
-            (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
-        {
-            return i;
-        }
-    }
-
-    throw std::runtime_error("Failed to find suitable memory type!");
-}
-void GfxQueue::updateUniformBuffer(std::array<float, 16> &viewMat, std::array<float, 16> &projMat, float time)
-{
-    UniformBufferObject *ubo = (UniformBufferObject *)this->_uniformBuffersMapped;
-    memcpy(ubo->viewMat, viewMat.data(), sizeof(float) * 16);
-    memcpy(ubo->projMat, projMat.data(), sizeof(float) * 16);
-    ubo->time = time;
-}
-
-void GfxQueue::_cleanUniformBuffers()
-{
-    if (this->_uniformBuffersMapped)
-    {
-        vkUnmapMemory(Gfx::context->vkDevice(), this->_uniformBuffersMemory);
-        this->_uniformBuffersMapped = nullptr;
-    }
-    if (this->_uniformBuffers != VK_NULL_HANDLE)
-    {
-        vkDestroyBuffer(Gfx::context->vkDevice(), this->_uniformBuffers, nullptr);
-        this->_uniformBuffers = VK_NULL_HANDLE;
-    }
-    if (this->_uniformBuffersMemory != VK_NULL_HANDLE)
-    {
-        vkFreeMemory(Gfx::context->vkDevice(), this->_uniformBuffersMemory, nullptr);
-        this->_uniformBuffersMemory = VK_NULL_HANDLE;
-    }
-}
-
-GfxQueue::~GfxQueue()
-{
-}
 
 // GfxQueue::GfxQueue(std::string name, GfxContext *context)
 // {
@@ -197,7 +149,7 @@ GfxQueue::~GfxQueue()
 //         framebufferInfo.width = this->_context->getSwapChainExtent().width;   /*  // width和height用于指定帧缓冲的大小 */
 //         framebufferInfo.height = this->_context->getSwapChainExtent().height; /* // 交换链图像都是单层，layers设置为1 */
 //         framebufferInfo.layers = 1;
-//         if (vkCreateFramebuffer(this->_context->getVkDevice(), &framebufferInfo, nullptr, &this->_queueFramebuffers[i]) != VK_SUCCESS)
+//         if (vkCreateFramebuffer(Gfx::context->vkDevice(), &framebufferInfo, nullptr, &this->_queueFramebuffers[i]) != VK_SUCCESS)
 //         {
 //             throw std::runtime_error("Failed to create framebuffer!");
 //         }
@@ -213,7 +165,7 @@ GfxQueue::~GfxQueue()
 //     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 //     allocInfo.commandBufferCount = (uint32_t)this->_queueCommandBuffers.size();
 
-//     if (vkAllocateCommandBuffers(this->_context->getVkDevice(), &allocInfo, this->_queueCommandBuffers.data()) != VK_SUCCESS)
+//     if (vkAllocateCommandBuffers(Gfx::context->vkDevice(), &allocInfo, this->_queueCommandBuffers.data()) != VK_SUCCESS)
 //     {
 //         throw std::runtime_error("Failed to allocate command buffers!");
 //     }
@@ -418,7 +370,7 @@ GfxQueue::~GfxQueue()
 //     /*  // 销毁帧缓冲（Framebuffers） */
 //     for (auto framebuffer : this->_queueFramebuffers)
 //     {
-//         vkDestroyFramebuffer(this->_context->getVkDevice(), framebuffer, nullptr);
+//         vkDestroyFramebuffer(Gfx::context->vkDevice(), framebuffer, nullptr);
 //     }
 //     this->_queueFramebuffers.clear();
 // }
@@ -428,7 +380,7 @@ GfxQueue::~GfxQueue()
 //     if (!this->_queueCommandBuffers.empty())
 
 //     {
-//         vkFreeCommandBuffers(this->_context->getVkDevice(), this->_context->getCommandPool(), static_cast<uint32_t>(_queueCommandBuffers.size()), _queueCommandBuffers.data());
+//         vkFreeCommandBuffers(Gfx::context->vkDevice(), this->_context->getCommandPool(), static_cast<uint32_t>(_queueCommandBuffers.size()), _queueCommandBuffers.data());
 //         this->_queueCommandBuffers.clear();
 //     }
 // }
