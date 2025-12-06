@@ -51,7 +51,6 @@ void GfxPass::_create()
     /*  // 创建渲染流程 */
     if (vkCreateRenderPass(Gfx::context->getVkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
     {
-        // throw std::runtime_error("failed to create render pass!");
         std::cout << "Gfx : Pass :: create render pass failed " << this->_name << std::endl;
         return;
     }
