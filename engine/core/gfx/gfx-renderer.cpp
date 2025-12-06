@@ -2,7 +2,7 @@
 #include "gfx.h"
 #include "gfx-context.h"
 #include "pass/gfx-pass.h"
-#include "pass/gfx-pass-built-screen.h"
+#include "pass/gfx-pass-built.h"
 #include "pass/gfx-pass-built-ui.h"
 #include "pipeline/gfx-pipeline.h"
 #include "pipeline/gfx-pipeline-ui.h"
@@ -23,7 +23,7 @@ GfxRenderer::GfxRenderer()
 }
 void GfxRenderer::init()
 {
-    std::cout << "GfxRenderer:init" << std::endl;
+    std::cout << "Gfx : Renderer :: init" << std::endl;
     // GfxShaderCompile::getInstance()->init();
     // this->_descriptor = new GfxDescriptor();
     this->_initDescriptor();
@@ -82,10 +82,10 @@ void GfxRenderer::_initDescriptorPool()
         throw std::runtime_error("failed to create descriptor pool!");
     }
 
-    std::cout << "✓ Created descriptor pool with UPDATE_AFTER_BIND support" << std::endl;
-    std::cout << "  UBO descriptors: " << poolSizes[0].descriptorCount << std::endl;
-    std::cout << "  Storage Buffer descriptors: " << poolSizes[1].descriptorCount << std::endl;
-    std::cout << "  Texture descriptors: " << poolSizes[2].descriptorCount << std::endl;
+    std::cout << "Gfx : Renderer ::   Created descriptor pool with UPDATE_AFTER_BIND support" << std::endl;
+    std::cout << "Gfx : Renderer ::   UBO descriptors: " << poolSizes[0].descriptorCount << std::endl;
+    std::cout << "Gfx : Renderer ::   Storage Buffer descriptors: " << poolSizes[1].descriptorCount << std::endl;
+    std::cout << "Gfx : Renderer ::   Texture descriptors: " << poolSizes[2].descriptorCount << std::endl;
 }
 void GfxRenderer::_initDescriptorSetLayout()
 {
@@ -142,17 +142,17 @@ void GfxRenderer::_initDescriptorSetLayout()
     layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
     layoutInfo.pBindings = bindings.data();
 
-    std::cout << "  Texture Array Descriptors: " << textureArrayBinding.descriptorCount << std::endl;
-    std::cout << "  Binding Flags: " << bindingFlags[2] << std::endl;
-    std::cout << "  vkDevice: " << Gfx::context->vkDevice() << std::endl;
+    std::cout << "Gfx : Renderer ::   Texture Array Descriptors: " << textureArrayBinding.descriptorCount << std::endl;
+    std::cout << "Gfx : Renderer ::   Binding Flags: " << bindingFlags[2] << std::endl;
+    std::cout << "Gfx : Renderer ::   vkDevice: " << Gfx::context->vkDevice() << std::endl;
 
     if (vkCreateDescriptorSetLayout(Gfx::context->vkDevice(),
                                     &layoutInfo, nullptr, &this->_descriptorSetLayout) != VK_SUCCESS)
     {
-        std::cout << "GfxPipeline :create descriptor set layout failed " << std::endl;
+        std::cout << "Gfx : Renderer :: create descriptor set layout failed " << std::endl;
         return;
     }
-    std::cout << "GfxPipeline :create descriptor set layout success " << std::endl;
+    std::cout << "Gfx : Renderer :: create descriptor set layout success " << std::endl;
 }
 void GfxRenderer::_initDescriptorSets()
 {
@@ -178,17 +178,17 @@ void GfxRenderer::_initDescriptorSets()
     {
         throw std::runtime_error("Failed to allocate descriptor sets!");
     }
-    std::cout << "Allocated " << MAX_FRAMES_IN_FLIGHT << " descriptor sets" << std::endl;
+    std::cout << "Gfx : Renderer :: Allocated " << MAX_FRAMES_IN_FLIGHT << " descriptor sets" << std::endl;
 }
 /**
  * 创建内置默认的ui pass
  */
 void GfxRenderer::_initDefaultPasses()
 {
-    GfxPassBuiltScreen *screenPass = new GfxPassBuiltScreen("pass-built");
+    GfxPassBuilt *screenPass = new GfxPassBuilt("pass-built");
     this->_passes["pass-built"] = screenPass;
-    GfxPassBuiltUI *uiPass = new GfxPassBuiltUI("pass-built-ui");
-    this->_passes["pass-built-ui"] = uiPass;
+    // GfxPassBuiltUI *uiPass = new GfxPassBuiltUI("pass-built-ui");
+    // this->_passes["pass-built-ui"] = uiPass;
 }
 /**
  * 创建内置默认的ui shader
@@ -221,7 +221,7 @@ void GfxRenderer::_initDefaultShaders()
 void GfxRenderer::_initDefaultPipeline()
 {
     GfxPipelineStruct screenPipelineStruct = {};
-    screenPipelineStruct.vert = "built-ui.vert";
+    screenPipelineStruct.vert = "built.vert";
     screenPipelineStruct.frag = "built.frag";
     screenPipelineStruct.pass = "pass-built";
     screenPipelineStruct.depthTest = 0;
@@ -308,17 +308,17 @@ void GfxRenderer::createUIPipeline(std::string name, GfxPipelineStruct pipelineS
 {
     if (this->_shaders.find(pipelineStruct.vert) == this->_shaders.end())
     {
-        std::cout << "createPipeline:vert not found:" << pipelineStruct.vert << std::endl;
+        std::cout << "Gfx : Renderer :: createPipeline:vert not found:" << pipelineStruct.vert << std::endl;
         return;
     }
     if (this->_shaders.find(pipelineStruct.frag) == this->_shaders.end())
     {
-        std::cout << "createPipeline:frag not found:" << pipelineStruct.frag << std::endl;
+        std::cout << "Gfx : Renderer :: createPipeline:frag not found:" << pipelineStruct.frag << std::endl;
         return;
     }
     if (this->_passes.find(pipelineStruct.pass) == this->_passes.end())
     {
-        std::cout << "createPipeline:pass not found:" << pipelineStruct.pass << std::endl;
+        std::cout << "Gfx : Renderer :: createPipeline:pass not found:" << pipelineStruct.pass << std::endl;
         return;
     }
     GfxPipelineUI *pipeline = new GfxPipelineUI(name);
@@ -371,7 +371,7 @@ void GfxRenderer::createGlslShader(const std::string &shaderName, const std::str
     //  检查是否已存在
     if (this->_shaders.find(finalCacheKey) != this->_shaders.end())
     {
-        std::cout << "Shader already exists: " << finalCacheKey << std::endl;
+        std::cout << "Gfx : Renderer :: Shader already exists: " << finalCacheKey << std::endl;
         return;
     }
     // 创建着色器
@@ -393,7 +393,7 @@ void GfxRenderer::createSpirvShader(const std::string &shaderName, const std::ve
 {
     if (this->_shaders.find(shaderName) != this->_shaders.end())
     {
-        std::cout << "Shader already exists: " << shaderName << std::endl;
+        std::cout << "Gfx : Renderer :: Shader already exists: " << shaderName << std::endl;
         return;
     }
     GfxShader *shader = new GfxShader(shaderName);
@@ -452,11 +452,11 @@ std::vector<uint32_t> GfxRenderer::compileShaderGlslToSpirv(const std::string &t
     // 输出警告信息
     if (result.GetNumWarnings() > 0)
     {
-        std::cout << "Shader compilation warnings for " << cacheKey << ":\n"
+        std::cout << "Gfx : Renderer :: Shader compilation warnings for " << cacheKey << ":\n"
                   << result.GetErrorMessage() << std::endl;
     }
     std::vector<uint32_t> spirvCode(result.cbegin(), result.cend());
-    std::cout << "Successfully compiled " << cacheKey
+    std::cout << "Gfx : Renderer :: Successfully compiled " << cacheKey
               << " (" << spirvCode.size() << " SPIR-V words)" << std::endl;
     return spirvCode;
 }
@@ -474,7 +474,7 @@ void GfxRenderer::submitRenderObject(uint32_t renderId, GfxMaterial &material, G
 {
     if (this->_queues.find(renderId) == this->_queues.end())
     {
-        std::cout << "submitRenderObject:renderId not found:" << renderId << std::endl;
+        std::cout << "Gfx : Renderer :: submitRenderObject:renderId not found:" << renderId << std::endl;
         return;
     }
     this->_queues[renderId]->submitObject(material, mesh);
@@ -482,6 +482,7 @@ void GfxRenderer::submitRenderObject(uint32_t renderId, GfxMaterial &material, G
 
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
+    return;
     // 渲染默认队列
     std::array<float, 16> viewMat = {1.0f};
     std::array<float, 16> projMat = {1.0f};

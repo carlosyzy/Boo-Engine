@@ -3,7 +3,7 @@
 class GfxPassBuiltUI : public GfxPass
 {
 protected:
-    void create() override;
+    void _create() override;
 public:
     GfxPassBuiltUI(std::string name);
     ~GfxPassBuiltUI();

@@ -11,8 +11,7 @@ private:
 protected:
 	std::string _name;
 	VkRenderPass _vkRenderPass = VK_NULL_HANDLE;
-	virtual void create();
-
+	virtual void _create();
 public:
 	GfxPass(std::string name);
 	const std::string name()

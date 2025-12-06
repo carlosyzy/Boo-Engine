@@ -9,7 +9,7 @@
 GfxPassBuiltUI::GfxPassBuiltUI(std::string name) : GfxPass(name)
 {
 }
-void GfxPassBuiltUI::create()
+void GfxPassBuiltUI::_create()
 {
     std::vector<VkAttachmentDescription> attachments;
     attachments.resize(2);

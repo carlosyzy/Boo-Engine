@@ -216,7 +216,6 @@ bool GfxContext::_isDeviceSuitable(VkPhysicalDevice device)
 
     // 显卡支持集合着色器的判断条件
     bool isSupportSetShader = (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) && deviceFeatures.geometryShader;
-    /*  std::cout << "isSupportSetShader: " << isSupportSetShader << std::endl; */
 
     QueueFamilyIndices indices = this->_findQueueFamilies(device);
 
@@ -243,10 +242,10 @@ bool GfxContext::_checkDeviceExtensionSupport(VkPhysicalDevice device)
 
     std::set<std::string> requiredExtensions(DeviceExtensions.begin(), DeviceExtensions.end());
 
-    // for (auto extension : DeviceExtensions)
-    // {
-    //     std::cout << "extension: " << extension << std::endl;
-    // }
+    for (auto extension : DeviceExtensions)
+    {
+        std::cout << "Gfx : Context :: extension: " << extension << std::endl;
+    }
 
     for (const auto &extension : availableExtensions)
     {
@@ -478,7 +477,7 @@ void GfxContext::_createSwapChainKHR()
     /*   // 同时还需要将这个格式和分辨率保存下来。 */
     this->_swapChainImageFormat = surfaceFormat.format;
     this->_swapChainExtent = extent;
-    std::cout << "swap chain image count: " << imageCount << std::endl;
+    std::cout << "Gfx : Context :: swap chain image count: " << imageCount << std::endl;
 }
 // 从 GPU 支持的格式中选择最合适的交换链图像格式
 /* // https://www.iogl.cn/tutorial/swapchain */

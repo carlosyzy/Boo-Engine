@@ -17,6 +17,7 @@ void GfxPipeline::create(GfxPass *pass, GfxShader *vertexShader, GfxShader *frag
     this->_vertexShader = vertexShader;
     this->_fragmentShader = fragmentShader;
     this->_pipelineStruct = pipelineStruct;
+    this->_createPipeline();
 }
 void GfxPipeline::_createPipeline()
 {
@@ -65,17 +66,17 @@ void GfxPipeline::_initVertexInputState()
     this->_vInputAttribDescriptionPos.binding = 0;
     this->_vInputAttribDescriptionPos.format = VK_FORMAT_R32G32B32_SFLOAT;
     this->_vInputAttribDescriptionPos.offset = 0;
-    // 初始化顶点纹理坐标输入属性描述
-    this->_vInputAttribDescriptionTexCoord.location = 1;
-    this->_vInputAttribDescriptionTexCoord.binding = 0;
-    this->_vInputAttribDescriptionTexCoord.format = VK_FORMAT_R32G32_SFLOAT;
-    this->_vInputAttribDescriptionTexCoord.offset = sizeof(float) * (3);
+    // // 初始化顶点纹理坐标输入属性描述
+    // this->_vInputAttribDescriptionTexCoord.location = 1;
+    // this->_vInputAttribDescriptionTexCoord.binding = 0;
+    // this->_vInputAttribDescriptionTexCoord.format = VK_FORMAT_R32G32_SFLOAT;
+    // this->_vInputAttribDescriptionTexCoord.offset = sizeof(float) * (3);
 
     this->_vertexInputAttributes.push_back(this->_vInputAttribDescriptionPos);
-    this->_vertexInputAttributes.push_back(this->_vInputAttribDescriptionTexCoord);
+    // this->_vertexInputAttributes.push_back(this->_vInputAttribDescriptionTexCoord);
 
     this->_vInputBindDescription.binding = 0;
-    this->_vInputBindDescription.stride = sizeof(float) * (3 + 2);
+    this->_vInputBindDescription.stride = sizeof(float) * (3);
     this->_vInputBindDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
     this->_vertexInputBindings.push_back(this->_vInputBindDescription);
 
@@ -93,15 +94,15 @@ void GfxPipeline::_initInputAssemblyState()
 }
 void GfxPipeline::_initDynamicState()
 {
-    std::vector<VkDynamicState> dynamicStates = {
+    this->_dynamicStates = {
         VK_DYNAMIC_STATE_VIEWPORT,
-        VK_DYNAMIC_STATE_SCISSOR, // 启用动态裁剪
+        VK_DYNAMIC_STATE_SCISSOR,
         VK_DYNAMIC_STATE_STENCIL_REFERENCE,
         VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK,
         VK_DYNAMIC_STATE_STENCIL_WRITE_MASK};
     this->_dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-    this->_dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
-    this->_dynamicStateInfo.pDynamicStates = dynamicStates.data();
+    this->_dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(this->_dynamicStates.size());
+    this->_dynamicStateInfo.pDynamicStates = this->_dynamicStates.data();
 }
 void GfxPipeline::_initViewportState()
 {
@@ -247,27 +248,26 @@ VkStencilOp GfxPipeline::_getStencilOp(GfxPipelineStencilOp stencilOp)
 }
 void GfxPipeline::_initColorBlendState()
 {
-    VkPipelineColorBlendAttachmentState colorBlendAttachment{};
-    colorBlendAttachment.blendEnable = this->_pipelineStruct.colorBlend != 0 ? VK_TRUE : VK_FALSE;
+    this->_colorBlendAttachment.blendEnable = this->_pipelineStruct.colorBlend != 0 ? VK_TRUE : VK_FALSE;
     if (this->_pipelineStruct.colorBlend != 0)
     {
-        colorBlendAttachment.srcColorBlendFactor = this->_getBlendFactor(this->_pipelineStruct.srcColorBlendFactor); // VK_BLEND_FACTOR_ONE;
-        colorBlendAttachment.dstColorBlendFactor = this->_getBlendFactor(this->_pipelineStruct.dstColorBlendFactor); // VK_BLEND_FACTOR_ZERO;
-        colorBlendAttachment.colorBlendOp = this->_getBlendOp(this->_pipelineStruct.colorBlendOp);                   // VK_BLEND_OP_ADD;
-        colorBlendAttachment.srcAlphaBlendFactor = this->_getBlendFactor(this->_pipelineStruct.srcAlphaBlendFactor); // VK_BLEND_FACTOR_ONE;
-        colorBlendAttachment.dstAlphaBlendFactor = this->_getBlendFactor(this->_pipelineStruct.dstAlphaBlendFactor); // VK_BLEND_FACTOR_ZERO;
-        colorBlendAttachment.alphaBlendOp = this->_getBlendOp(this->_pipelineStruct.alphaBlendOp);                   // VK_BLEND_OP_ADD;
-        colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+        this->_colorBlendAttachment.srcColorBlendFactor = this->_getBlendFactor(this->_pipelineStruct.srcColorBlendFactor); // VK_BLEND_FACTOR_ONE;
+        this->_colorBlendAttachment.dstColorBlendFactor = this->_getBlendFactor(this->_pipelineStruct.dstColorBlendFactor); // VK_BLEND_FACTOR_ZERO;
+        this->_colorBlendAttachment.colorBlendOp = this->_getBlendOp(this->_pipelineStruct.colorBlendOp);                   // VK_BLEND_OP_ADD;
+        this->_colorBlendAttachment.srcAlphaBlendFactor = this->_getBlendFactor(this->_pipelineStruct.srcAlphaBlendFactor); // VK_BLEND_FACTOR_ONE;
+        this->_colorBlendAttachment.dstAlphaBlendFactor = this->_getBlendFactor(this->_pipelineStruct.dstAlphaBlendFactor); // VK_BLEND_FACTOR_ZERO;
+        this->_colorBlendAttachment.alphaBlendOp = this->_getBlendOp(this->_pipelineStruct.alphaBlendOp);                   // VK_BLEND_OP_ADD;
+        this->_colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     }
     else
     {
         // 禁用颜色写入（用于只写Stencil的遮罩管线）
-        colorBlendAttachment.colorWriteMask = 0; // 不写入任何颜色通道
+        this->_colorBlendAttachment.colorWriteMask = 0; // 不写入任何颜色通道
     }
     this->_colorBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
     this->_colorBlendInfo.logicOpEnable = VK_FALSE;
     this->_colorBlendInfo.attachmentCount = 1;
-    this->_colorBlendInfo.pAttachments = &colorBlendAttachment;
+    this->_colorBlendInfo.pAttachments = &this->_colorBlendAttachment;
     this->_colorBlendInfo.logicOp = VK_LOGIC_OP_COPY;
     this->_colorBlendInfo.blendConstants[0] = 0.0f;
     this->_colorBlendInfo.blendConstants[1] = 0.0f;
@@ -329,10 +329,9 @@ VkBlendOp GfxPipeline::_getBlendOp(GfxPipelineColorBlendOp blendOp)
 void GfxPipeline::_initPipelineLayout()
 {
     this->_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    std::vector<VkDescriptorSetLayout> setLayouts = {
-        Gfx::renderer->descriptorSetLayout()};
-    this->_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(setLayouts.size());
-    this->_pipelineLayoutInfo.pSetLayouts = setLayouts.data();
+    this->_setLayouts.push_back(Gfx::renderer->descriptorSetLayout());
+    this->_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(this->_setLayouts.size());
+    this->_pipelineLayoutInfo.pSetLayouts = this->_setLayouts.data();
     // 绑定推送常量 默认没有推送常量
     this->_pipelineLayoutInfo.pushConstantRangeCount = 0;
     // 第八步：管线布局

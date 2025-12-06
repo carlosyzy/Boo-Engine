@@ -15,6 +15,7 @@ void GfxRenderBatch::addObject()
     {
         throw std::runtime_error("GfxRenderBatch::addObject() object count exceeds maxObjects!");
     }
+    this->_objectCount++;
 }
 void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
@@ -22,8 +23,10 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
     {
         return;
     }
+    std::cout << "GfxRenderBatch::render() imageIndex:" << imageIndex << std::endl;
     this->_createBuffers();
     this->_createVertexBuffers();
+
     this->_beginBindRenderPass(imageIndex);
     GfxPipeline *pipeline = Gfx::renderer->getPipeline(this->_material.pipeline);
     if (pipeline == nullptr)
@@ -159,7 +162,7 @@ void GfxRenderBatch::_beginBindRenderPass(uint32_t imageIndex)
     GfxPass *pass = Gfx::renderer->getPass(this->_material.pass);
     if (pass == nullptr)
     {
-        throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
+       std::cout << "GfxRenderBatch::_beginBindRenderPass() pass not found!" << std::endl;
     }
 
     // 绑定render pass
@@ -184,7 +187,7 @@ void GfxRenderBatch::_beginBindRenderPass(uint32_t imageIndex)
     VkClearValue clearColor{};
     clearColor.color = {1.0f, 1.0f, 1.0f, 0.0f};
     renderPassInfo.pClearValues = &clearColor;
-
+    std::cout << "GfxRenderBatch::_beginBindRenderPass() imageIndex:" << imageIndex<< " pass:"<< pass->name() << " commandBuffer:" << this->_commandBuffers[imageIndex] << std::endl;
     vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 

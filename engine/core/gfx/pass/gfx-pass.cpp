@@ -6,8 +6,9 @@ GfxPass::GfxPass(std::string name)
 {
     this->_name = name;
 }
-void GfxPass::create()
+void GfxPass::_create()
 {
+    std::cout << "Gfx : Pass :: create render pass " << this->_name << std::endl;
 }
 void GfxPass::clear()
 {
@@ -19,7 +20,7 @@ void GfxPass::clear()
 }
 void GfxPass::reset()
 {
-    this->create();
+    this->_create();
 }
 GfxPass::~GfxPass()
 {

@@ -67,6 +67,7 @@ protected:
     virtual void _initInputAssemblyState();
 
     //  视图端口状态描述
+    std::vector<VkDynamicState> _dynamicStates;
     VkPipelineDynamicStateCreateInfo _dynamicStateInfo;
     virtual void _initDynamicState();
 
@@ -91,6 +92,7 @@ protected:
     virtual void _initDepthStencilState();
 
     //  颜色混合状态描述
+     VkPipelineColorBlendAttachmentState _colorBlendAttachment;
     VkPipelineColorBlendStateCreateInfo _colorBlendInfo;
     VkBlendFactor _getBlendFactor(GfxPipelineColorBlendFactor blendFactor);
     VkBlendOp _getBlendOp(GfxPipelineColorBlendOp blendOp);
@@ -98,6 +100,7 @@ protected:
     /**
      * @brief Vulkan 管道布局
      */
+    std::vector<VkDescriptorSetLayout> _setLayouts;
     VkPipelineLayoutCreateInfo _pipelineLayoutInfo;
     VkPipelineLayout _vkPipelineLayout;
     virtual void _initPipelineLayout();

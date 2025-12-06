@@ -1,4 +1,4 @@
-#include "gfx-pass-built-screen.h"
+#include "gfx-pass-built.h"
 #include "../gfx.h"
 #include "../gfx-context.h"
 /**
@@ -6,11 +6,15 @@
  * 只有一个颜色附件
  * 保留上一帧的内容
  */
-GfxPassBuiltScreen::GfxPassBuiltScreen(std::string name) : GfxPass(name)
+GfxPassBuilt::GfxPassBuilt(std::string name) : GfxPass(name)
 {
+    std::cout << "Gfx : GfxPassBuilt :: create render pass " << this->_name << std::endl;
+     this->_create();
 }
-void GfxPassBuiltScreen::create()
+void GfxPassBuilt::_create()
 {
+    GfxPass::_create();
+    std::cout << "Gfx : Pass :: create render pass1 " << this->_name << std::endl;
     VkAttachmentDescription colorAttachment = {};
     colorAttachment.format = Gfx::context->getSwapChainImageFormat(); // 颜色缓冲附着(VkImageView)的格式
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;                  // 指定采样数，没有使用多重采样，设置为1
@@ -53,12 +57,12 @@ void GfxPassBuiltScreen::create()
     if (vkCreateRenderPass(Gfx::context->vkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
     {
         // throw std::runtime_error("failed to create render pass!");
-        std::cout << "GfxPass :create render pass failed " << this->_name << std::endl;
+        std::cout << "Gfx : Pass :: create render pass failed " << this->_name << std::endl;
         return;
     }
-    std::cout << "GfxPass :create render pass success " << this->_name << std::endl;
+    std::cout << "Gfx : Pass :: create render pass success " << this->_name << std::endl;
 }
 
-GfxPassBuiltScreen::~GfxPassBuiltScreen()
+GfxPassBuilt::~GfxPassBuilt()
 {
 }

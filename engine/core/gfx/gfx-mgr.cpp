@@ -37,9 +37,9 @@ void GfxMgr::init()
 void GfxMgr::update()
 {
     // Gfx::renderer->clearDestroyObjects();
-    std::cout << "renderer update" << std::endl;
+    // std::cout << "renderer update" << std::endl;
     Gfx::context->frameFencesPrepare(this->_currentFrame);
-    std::cout << "renderer update1" << std::endl;
+    // std::cout << "renderer update1" << std::endl;
     /* // 可用的图像的索引 */
     uint32_t imageIndex;
     /**
@@ -54,10 +54,10 @@ void GfxMgr::update()
         this->resetSwapChain();
         return;
     }
-    std::cout << "renderer update2" << std::endl;
+    // std::cout << "renderer update2" << std::endl;
     /* // 检查当前索引图像是否被其他帧使用，若已被使用，则等待其他帧完成 */
     Gfx::context->frameWaitImageInUse(imageIndex, this->_currentFrame);
-    std::cout << "renderer update:'VK_SUCCESS',imageIndex:" << imageIndex << std::endl;
+    // std::cout << "renderer update:'VK_SUCCESS',imageIndex:" << imageIndex << std::endl;
     /*  // 准备渲染buffer */
     std::vector<VkCommandBuffer> commandBuffers;
     Gfx::renderer->frameRenderer(imageIndex, commandBuffers);
