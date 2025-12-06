@@ -55,7 +55,7 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
     scissor.offset = {10, 10};
     scissor.extent = {300, 200};
     vkCmdSetScissor(this->_commandBuffers[imageIndex], 0, 1, &scissor);
-
+    std::cout << "GfxRenderBatch::render() indexSize:" << this->_indexSize << std::endl;
     vkCmdDrawIndexed(
         this->_commandBuffers[imageIndex],
         this->_indexSize, // 只绘制3个索引（第一个三角形）

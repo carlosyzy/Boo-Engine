@@ -26,13 +26,13 @@ const GfxMesh defaultMesh = {
     .uuid = "defaultMesh",
     .vertices = {
         -0.5f, 0.5f, 0.0f,  /** @brief 左上 */  0.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f, /** @brief 坐下 */  0.0f, 1.0f,
+        -0.5f, -0.5f, 0.0f, /** @brief 左下 */  0.0f, 1.0f,
         0.5f, -0.5f, 0.0f,  /** @brief 右下 */  1.0f, 1.0f,
-        0.5f, 0.5f, 0.0f    /** @brief 右上 */  ,1.0f, 0.0f
+        // 0.5f, 0.5f, 0.0f    /** @brief 右上 */  ,1.0f, 0.0f
     },
     .indices = {
         0, 1, 2,  /** @brief 左上-坐下-右下 */
-        0, 2, 3   /** @brief 左上-右下-右上 */
+        // 0, 2, 3   /** @brief 左上-右下-右上 */
     },
 };
 const GfxMaterial defaultMaterial = {
