@@ -8,7 +8,7 @@
 // layout(location = 4) in vec2 worldPos;
 // layout(binding = 1) uniform sampler2D texSampler; // 对应 binding = 1
 
-// layout(location = 0) in vec2 fragTexCoord;  // 输入UV坐标
+layout(location = 0) in vec2 fragTexCoord;  // 输入UV坐标
 layout(location = 0) out vec4 outColor;
 
 // // 正确的推送常量块声明

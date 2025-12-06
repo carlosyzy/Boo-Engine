@@ -8,8 +8,9 @@ layout(binding = 0) uniform UniformBufferObject {
 } ubo;
 
 layout (location = 0) in vec4 inPos;
-// layout (location = 1) in vec2 inTexCoord;
-// layout(location = 0) out vec2 fragTexCoord;
+layout (location = 1) in vec2 inTexCoord;
+
+layout(location = 0) out vec2 fragTexCoord;
 // layout(location = 1) out vec3 fragNormal;  // 输出法线
 // layout(location = 2) out vec2 fragTexCoord; // 输出UV坐标
 // layout(location = 3) out vec2 viewSize;
@@ -32,6 +33,6 @@ void main() {
     gl_Position = vec4(inPos.xyz, 1.0);
     gl_Position.y = -gl_Position.y;
     // fragNormal = inNormal;
-    // fragTexCoord = inTexCoord;
+    fragTexCoord = inTexCoord;
     // viewSize=vec2(2.0/ubo.proj[0][0],2.0/ubo.proj[1][1]);
 }

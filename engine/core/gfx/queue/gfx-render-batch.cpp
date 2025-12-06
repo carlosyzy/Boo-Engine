@@ -25,20 +25,37 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
     }
     std::cout << "GfxRenderBatch::render() imageIndex:" << imageIndex << std::endl;
     this->_createBuffers();
+    this->_beginBindRenderPass(imageIndex);
+
     this->_createVertexBuffers();
 
-    this->_beginBindRenderPass(imageIndex);
     GfxPipeline *pipeline = Gfx::renderer->getPipeline(this->_material.pipeline);
     if (pipeline == nullptr)
     {
         throw std::runtime_error("GfxRenderBatch::render() pipeline not found!");
     }
-    vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipeline());
+    vkCmdBindPipeline(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipeline());
     VkDeviceSize offsets[1] = {0};
-    vkCmdBindVertexBuffers(commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
-    vkCmdBindIndexBuffer(commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+    vkCmdBindVertexBuffers(this->_commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
+    vkCmdBindIndexBuffer(this->_commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
     VkDescriptorSet descriptorSet = Gfx::renderer->getDescriptorSet(imageIndex);
-    vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipelineLayout(), 0, 1, &descriptorSet, 0, nullptr);
+    vkCmdBindDescriptorSets(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipelineLayout(), 0, 1, &descriptorSet, 0, nullptr);
+
+    VkViewport viewport{};
+    viewport.x = 10.0f;       // 距离左边 10 像素
+    viewport.y = 10.0f;       // 距离顶部 10 像素
+    viewport.width = 300.0f;  // 宽度 300 像素
+    viewport.height = 200.0f; // 高度 200 像素
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    vkCmdSetViewport(this->_commandBuffers[imageIndex], 0, 1, &viewport);
+
+    // 使用相同的区域进行裁剪（确保不超出）
+    VkRect2D scissor{};
+    scissor.offset = {10, 10};
+    scissor.extent = {300, 200};
+    vkCmdSetScissor(this->_commandBuffers[imageIndex], 0, 1, &scissor);
+
     vkCmdDrawIndexed(
         this->_commandBuffers[imageIndex],
         this->_indexSize, // 只绘制3个索引（第一个三角形）
@@ -155,6 +172,7 @@ void GfxRenderBatch::_createVertexBuffers()
         &this->_indexMemory,
         indices.size() * sizeof(uint32_t),
         indices.data());
+    this->_indexSize = indices.size();
 }
 
 void GfxRenderBatch::_beginBindRenderPass(uint32_t imageIndex)
@@ -162,7 +180,8 @@ void GfxRenderBatch::_beginBindRenderPass(uint32_t imageIndex)
     GfxPass *pass = Gfx::renderer->getPass(this->_material.pass);
     if (pass == nullptr)
     {
-       std::cout << "GfxRenderBatch::_beginBindRenderPass() pass not found!" << std::endl;
+        std::cout << "GfxRenderBatch::_beginBindRenderPass() pass not found!" << std::endl;
+        return;
     }
 
     // 绑定render pass
@@ -185,9 +204,9 @@ void GfxRenderBatch::_beginBindRenderPass(uint32_t imageIndex)
 
     renderPassInfo.clearValueCount = 1;
     VkClearValue clearColor{};
-    clearColor.color = {1.0f, 1.0f, 1.0f, 0.0f};
+    clearColor.color = {1.0f, 1.0f, 1.0f, 1.0f};
     renderPassInfo.pClearValues = &clearColor;
-    std::cout << "GfxRenderBatch::_beginBindRenderPass() imageIndex:" << imageIndex<< " pass:"<< pass->name() << " commandBuffer:" << this->_commandBuffers[imageIndex] << std::endl;
+    // std::cout << "GfxRenderBatch::_beginBindRenderPass() imageIndex:" << imageIndex << " pass:" << pass->name() << " commandBuffer:" << this->_commandBuffers[imageIndex] << std::endl;
     vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 

@@ -60,7 +60,7 @@ void GfxMgr::update()
     // std::cout << "renderer update:'VK_SUCCESS',imageIndex:" << imageIndex << std::endl;
     /*  // 准备渲染buffer */
     std::vector<VkCommandBuffer> commandBuffers;
-    Gfx::renderer->frameRenderer(imageIndex, commandBuffers);
+    Gfx::renderer->frameRenderer(this->_currentFrame, commandBuffers);
 
     /*  // 提交渲染命令 */
     Gfx::context->frameSubmitCommands(imageIndex, commandBuffers, this->_currentFrame);

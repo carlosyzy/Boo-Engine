@@ -66,17 +66,17 @@ void GfxPipeline::_initVertexInputState()
     this->_vInputAttribDescriptionPos.binding = 0;
     this->_vInputAttribDescriptionPos.format = VK_FORMAT_R32G32B32_SFLOAT;
     this->_vInputAttribDescriptionPos.offset = 0;
-    // // 初始化顶点纹理坐标输入属性描述
-    // this->_vInputAttribDescriptionTexCoord.location = 1;
-    // this->_vInputAttribDescriptionTexCoord.binding = 0;
-    // this->_vInputAttribDescriptionTexCoord.format = VK_FORMAT_R32G32_SFLOAT;
-    // this->_vInputAttribDescriptionTexCoord.offset = sizeof(float) * (3);
+    // 初始化顶点纹理坐标输入属性描述
+    this->_vInputAttribDescriptionTexCoord.location = 1;
+    this->_vInputAttribDescriptionTexCoord.binding = 0;
+    this->_vInputAttribDescriptionTexCoord.format = VK_FORMAT_R32G32_SFLOAT;
+    this->_vInputAttribDescriptionTexCoord.offset = sizeof(float) * (3);
 
     this->_vertexInputAttributes.push_back(this->_vInputAttribDescriptionPos);
-    // this->_vertexInputAttributes.push_back(this->_vInputAttribDescriptionTexCoord);
+    this->_vertexInputAttributes.push_back(this->_vInputAttribDescriptionTexCoord);
 
     this->_vInputBindDescription.binding = 0;
-    this->_vInputBindDescription.stride = sizeof(float) * (3);
+    this->_vInputBindDescription.stride = sizeof(float) * (3 + 2);
     this->_vInputBindDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
     this->_vertexInputBindings.push_back(this->_vInputBindDescription);
 

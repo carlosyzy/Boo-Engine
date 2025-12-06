@@ -240,7 +240,7 @@ void GfxRenderer::_initDefaultPipeline()
     screenPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
     // 剔除模式 背面
     screenPipelineStruct.cullMode = GfxPipelineCullMode::Back;
-    this->createUIPipeline("pipeline-built", screenPipelineStruct);
+    this->createPipeline("pipeline-built", screenPipelineStruct);
 
     // GfxPipelineStruct uiPipelineStruct = {};
     // uiPipelineStruct.vert = "built-ui.vert";
@@ -281,28 +281,24 @@ void GfxRenderer::_initDefaultRenderQueue()
 
 void GfxRenderer::createPipeline(std::string name, GfxPipelineStruct pipelineStruct)
 {
-
-    // if (this->_shaders.find(pipelineStruct.vert) == this->_shaders.end())
-    // {
-    //     std::cout << "createPipeline:vert not found:" << pipelineStruct.vert << std::endl;
-    //     return;
-    // }
-    // if (this->_shaders.find(pipelineStruct.frag) == this->_shaders.end())
-    // {
-    //     std::cout << "createPipeline:frag not found:" << pipelineStruct.frag << std::endl;
-    //     return;
-    // }
-    // if (this->_passes.find(pipelineStruct.pass) == this->_passes.end())
-    // {
-    //     std::cout << "createPipeline:pass not found:" << pipelineStruct.pass << std::endl;
-    //     return;
-    // }
-    // // std::string pipelineName = GfxPipelineTypeNames.at(type) + "-" + pipelineStruct.pass;
-    // // 通过type-pipelineStruct,哈希一个唯一的pipelineName-这个后续完善  在材质中就已经准备好了
-    // // GfxPipeline *pipeline = new GfxPipeline(pipelineName);
-    // GfxPipeline *pipeline = new GfxPipeline(name);
-    // pipeline->create(this->_passes[pipelineStruct.pass], this->_shaders[pipelineStruct.vert], this->_shaders[pipelineStruct.frag], pipelineStruct);
-    // this->_pipelines[name] = pipeline;
+    if (this->_shaders.find(pipelineStruct.vert) == this->_shaders.end())
+    {
+        std::cout << "createPipeline:vert not found:" << pipelineStruct.vert << std::endl;
+        return;
+    }
+    if (this->_shaders.find(pipelineStruct.frag) == this->_shaders.end())
+    {
+        std::cout << "createPipeline:frag not found:" << pipelineStruct.frag << std::endl;
+        return;
+    }
+    if (this->_passes.find(pipelineStruct.pass) == this->_passes.end())
+    {
+        std::cout << "createPipeline:pass not found:" << pipelineStruct.pass << std::endl;
+        return;
+    }
+    GfxPipeline *pipeline = new GfxPipeline(name);
+    pipeline->create(this->_passes[pipelineStruct.pass], this->_shaders[pipelineStruct.vert], this->_shaders[pipelineStruct.frag], pipelineStruct);
+    this->_pipelines[name] = pipeline;
 }
 void GfxRenderer::createUIPipeline(std::string name, GfxPipelineStruct pipelineStruct)
 {
@@ -482,7 +478,6 @@ void GfxRenderer::submitRenderObject(uint32_t renderId, GfxMaterial &material, G
 
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
-    return;
     // 渲染默认队列
     std::array<float, 16> viewMat = {1.0f};
     std::array<float, 16> projMat = {1.0f};

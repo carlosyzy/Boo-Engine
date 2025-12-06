@@ -39,7 +39,7 @@ void GfxRenderQueue::submitObject(const GfxMaterial &material,const GfxMesh &mes
 }
 void GfxRenderQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
-    std::cout << "GfxRenderQueue::render() imageIndex:" << imageIndex << " batches.size:" << this->_batches.size() << std::endl;
+    // std::cout << "GfxRenderQueue::render() imageIndex:" << imageIndex << " batches.size:" << this->_batches.size() << std::endl;
     for (auto &batch : this->_batches)
     {
         batch->render(imageIndex, commandBuffers);
