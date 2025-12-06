@@ -2,14 +2,17 @@
 # vulkan 版本 1.3+
 
 ## history 历史
+- 2025 12.7
+ 1. 交换链重置影响必须重置对象:renderpass,pipeline,
 
 - 2025 12.5 重新设计结构
  1. gfx-context 图形上下文保持不变
  2. renderpass 全局统一
-    - Clear: 清除颜色附件和深度附件
+    - Default: 清除颜色附件和深度附件
     - UI: renderpass1: 离屏渲染,双通道,颜色附件,深度附件  renderpass2: 屏幕渲染,单通道,颜色附件
-    - 3D: renderpass1: 离屏渲染,双通道,颜色附件,深度附件  renderpass2: 屏幕渲染,单通道,颜色附件(理论)
+    - 3D: renderpass1: 离屏渲染,双通道,颜色附件,深度附件  renderpass2: 屏幕渲染,单通道,颜色附件
  3. pipeline:
+    - Default: 顶点输入只包含顶点和uv
     - UI: 顶点输入只包顶点和uv
     - 3D: 顶点输入包含顶点，uv，法线，切线，位法向量, 颜色,可能还有多套uv,
     
