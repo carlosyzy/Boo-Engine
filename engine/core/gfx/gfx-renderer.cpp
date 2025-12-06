@@ -11,7 +11,6 @@
 
 #include "gfx-descriptor.h"
 
-
 #include "gfx-shader.h"
 #include "gfx-shader-struct.h"
 #include "gfx-shader-compile.h"
@@ -27,10 +26,158 @@ void GfxRenderer::init()
     std::cout << "GfxRenderer:init" << std::endl;
     // GfxShaderCompile::getInstance()->init();
     // this->_descriptor = new GfxDescriptor();
+    this->_initDescriptor();
     this->_initDefaultPasses();
     this->_initDefaultShaders();
     this->_initDefaultPipeline();
     // this->_initDefaultUIMaskPipeline();
+}
+void GfxRenderer::_initDescriptor()
+{
+    this->_initDescriptorPool();
+    this->_initDescriptorSetLayout();
+    this->_initDescriptorSets();
+}
+void GfxRenderer::_initDescriptorPool()
+{
+    std::vector<VkDescriptorPoolSize> poolSizes(3);
+    // 1. UBO数量计算
+    // 每个帧：2个UBO（3D UBO + UI UBO）
+    // 可能需要额外：阴影UBO、后处理UBO
+    poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    poolSizes[0].descriptorCount = 100; // 支持更多
+    // 2. 存储缓冲区数量计算
+    // 每个帧可能需要的存储缓冲区：
+    // - 模型数据buffer（所有物体的变换）
+    // - 材质数据buffer
+    // - 灯光数据buffer
+    // - 实例数据buffer
+    poolSizes[1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    poolSizes[1].descriptorCount = 200; // 支持更多
+    // 3. Bindless纹理：关键是这个要足够大！
+    poolSizes[2].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    // ⚠️ 临时修复：增加容量（但这不是最佳方案，见下方建议）
+    // 如果每帧 500 个 × MAX_FRAMES_IN_FLIGHT 帧 = 需要更大容量
+    poolSizes[2].descriptorCount = 500 * MAX_FRAMES_IN_FLIGHT;
+
+    // 4. maxSets计算：需要多少个描述符集？
+    // 每个帧需要：
+    // - 3D渲染描述符集
+    // - UI渲染描述符集
+    // - 可能还有：阴影Pass描述符集、后处理描述符集
+    // int descriptorSetsPerFrame = 400;          // 3D + UI（最基本）
+    // uint32_t maxSets = descriptorSetsPerFrame; // 6个描述符集
+
+    VkDescriptorPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    // ✓ 关键：添加 UPDATE_AFTER_BIND 标志（Bindless 必需）
+    poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT_EXT;
+    poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+    poolInfo.pPoolSizes = poolSizes.data();
+    poolInfo.maxSets = 10; // 支持更多描述符集
+
+    if (vkCreateDescriptorPool(Gfx::context->vkDevice(), &poolInfo, nullptr, &this->_descriptorPool) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create descriptor pool!");
+    }
+
+    std::cout << "✓ Created descriptor pool with UPDATE_AFTER_BIND support" << std::endl;
+    std::cout << "  UBO descriptors: " << poolSizes[0].descriptorCount << std::endl;
+    std::cout << "  Storage Buffer descriptors: " << poolSizes[1].descriptorCount << std::endl;
+    std::cout << "  Texture descriptors: " << poolSizes[2].descriptorCount << std::endl;
+}
+void GfxRenderer::_initDescriptorSetLayout()
+{
+    // 动态 UBO 研究
+    std::vector<VkDescriptorSetLayoutBinding> bindings;
+    // ubo缓冲区绑定  -全局统一属性
+    VkDescriptorSetLayoutBinding uboLayoutBinding{};
+    uboLayoutBinding.binding = 0;
+    uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    uboLayoutBinding.descriptorCount = 1;
+    uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    bindings.push_back(uboLayoutBinding);
+    // 使用存储缓冲区绑定 - 物体单独属性
+    VkDescriptorSetLayoutBinding ssboBinding = {};
+    ssboBinding.binding = 1; // 对应shader中的 binding = 0
+    ssboBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    ssboBinding.descriptorCount = 1;
+    ssboBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT |   // 顶点着色器可以访问
+                             VK_SHADER_STAGE_FRAGMENT_BIT | // 片段着色器可以访问
+                             VK_SHADER_STAGE_COMPUTE_BIT;   // 计算着色器可以访问
+    bindings.push_back(ssboBinding);
+    // 绑定纹理数组采样器
+    VkDescriptorSetLayoutBinding textureArrayBinding{};
+    textureArrayBinding.binding = 2;
+    textureArrayBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    textureArrayBinding.descriptorCount = 500; // 你的池子大小
+    textureArrayBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    bindings.push_back(textureArrayBinding);
+
+    // ==================== 启用Bindless扩展 ====================
+    // 需要这些扩展标志
+    std::vector<VkDescriptorBindingFlags> bindingFlags(bindings.size(), 0);
+    bindingFlags[0] = 0;
+    bindingFlags[1] = 0;
+    // 为纹理数组启用部分绑定和更新后绑定
+    bindingFlags[2] = VK_DESCRIPTOR_BINDING_PARTIALLY_BOUND_BIT_EXT |
+                      VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT_EXT |
+                      VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT_EXT; // 新增
+
+    // VkDescriptorSetLayoutBindingFlagsCreateInfoEXT bindingFlagsInfo;
+    // bindingFlagsInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO;
+    // bindingFlagsInfo.bindingCount = static_cast<uint32_t>(bindingFlags.size());
+    // bindingFlagsInfo.pBindingFlags = bindingFlags.data();
+    VkDescriptorSetLayoutBindingFlagsCreateInfo bindingFlagsInfo{};
+    bindingFlagsInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO;
+    bindingFlagsInfo.pNext = nullptr; // 如果还有其他扩展链，需要正确设置
+    bindingFlagsInfo.bindingCount = static_cast<uint32_t>(bindingFlags.size());
+    bindingFlagsInfo.pBindingFlags = bindingFlags.data();
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo{};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.pNext = &bindingFlagsInfo;                                              // 链接扩展结构
+    layoutInfo.flags = VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT; // 注意：这里使用 EXT 后缀
+    layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+    layoutInfo.pBindings = bindings.data();
+
+    std::cout << "  Texture Array Descriptors: " << textureArrayBinding.descriptorCount << std::endl;
+    std::cout << "  Binding Flags: " << bindingFlags[2] << std::endl;
+    std::cout << "  vkDevice: " << Gfx::context->vkDevice() << std::endl;
+
+    if (vkCreateDescriptorSetLayout(Gfx::context->vkDevice(),
+                                    &layoutInfo, nullptr, &this->_descriptorSetLayout) != VK_SUCCESS)
+    {
+        std::cout << "GfxPipeline :create descriptor set layout failed " << std::endl;
+        return;
+    }
+    std::cout << "GfxPipeline :create descriptor set layout success " << std::endl;
+}
+void GfxRenderer::_initDescriptorSets()
+{
+    // 每个帧需要一个描述符集
+    std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, this->_descriptorSetLayout);
+
+    // 关键：设置可变描述符数量信息
+    VkDescriptorSetVariableDescriptorCountAllocateInfoEXT countInfo = {};
+    countInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT;
+    countInfo.descriptorSetCount = MAX_FRAMES_IN_FLIGHT;
+    // 每个描述符集实际使用的纹理数量（可以动态设置）
+    std::vector<uint32_t> counts(MAX_FRAMES_IN_FLIGHT, 500); // 每个集最多500个纹理
+    countInfo.pDescriptorCounts = counts.data();
+
+    VkDescriptorSetAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    allocInfo.pNext = &countInfo; // 链接可变数量信息
+    allocInfo.descriptorPool = this->_descriptorPool;
+    allocInfo.descriptorSetCount = MAX_FRAMES_IN_FLIGHT;
+    allocInfo.pSetLayouts = layouts.data();
+    this->_descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+    if (vkAllocateDescriptorSets(Gfx::context->vkDevice(), &allocInfo, this->_descriptorSets.data()) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to allocate descriptor sets!");
+    }
+    std::cout << "Allocated " << MAX_FRAMES_IN_FLIGHT << " descriptor sets" << std::endl;
 }
 /**
  * 创建内置默认的ui pass
@@ -225,7 +372,7 @@ void GfxRenderer::createGlslShader(const std::string &shaderName, const std::str
     // 创建着色器
     try
     {
-        std::vector<uint32_t> spirvCode = GfxShaderCompile::getInstance()->compile(shaderType, finalCacheKey, data, macros);
+        std::vector<uint32_t> spirvCode = this->compileShaderGlslToSpirv(shaderType, finalCacheKey, data, macros);
         GfxShader *shader = new GfxShader(finalCacheKey);
         shader->createShaderModule(spirvCode);
         this->_shaders[finalCacheKey] = shader;
@@ -247,6 +394,66 @@ void GfxRenderer::createSpirvShader(const std::string &shaderName, const std::ve
     GfxShader *shader = new GfxShader(shaderName);
     shader->createShaderModule(data);
     this->_shaders[shaderName] = shader;
+}
+std::vector<uint32_t> GfxRenderer::compileShaderGlslToSpirv(const std::string &type, const std::string &cacheKey, const std::string &source, const std::map<std::string, std::string> &macros)
+{
+    shaderc::Compiler _compiler;
+    // 配置编译选项
+    shaderc::CompileOptions compileOptions;
+    // 设置目标环境
+    compileOptions.SetTargetEnvironment(
+        shaderc_target_env_vulkan,
+        shaderc_env_version_vulkan_1_0);
+    // 优化级别
+    compileOptions.SetOptimizationLevel(shaderc_optimization_level_performance);
+    // 生成调试信息
+    compileOptions.SetGenerateDebugInfo();
+    // 添加宏定义
+    // 添加通用宏定义
+    compileOptions.AddMacroDefinition("GL_SPIRV", "1");
+    compileOptions.AddMacroDefinition("VULKAN", "100");
+    for (const auto &[key, value] : macros)
+    {
+        compileOptions.AddMacroDefinition(key, value);
+    }
+    // compileOptions.AddMacroDefinition("GL_SPIRV", "1");
+    // compileOptions.AddMacroDefinition("VULKAN", "100");
+
+    shaderc::SpvCompilationResult result;
+    if (type == "Vert")
+    {
+        result = _compiler.CompileGlslToSpv(
+            source.c_str(), shaderc_vertex_shader, cacheKey.c_str(), compileOptions);
+    }
+    else if (type == "Frag")
+    {
+        result = _compiler.CompileGlslToSpv(
+            source.c_str(), shaderc_fragment_shader, cacheKey.c_str(), compileOptions);
+    }
+    else
+    {
+        throw std::runtime_error("Shader type not supported");
+    }
+    shaderc_compilation_status status = result.GetCompilationStatus();
+    if (status != shaderc_compilation_status_success)
+    {
+        std::string errorMsg = "Shader compilation failed:\n";
+        errorMsg += "File: " + cacheKey + "\n";
+        errorMsg += "Error: " + result.GetErrorMessage();
+        errorMsg += "Status: " + std::to_string(status);
+
+        throw std::runtime_error(errorMsg);
+    }
+    // 输出警告信息
+    if (result.GetNumWarnings() > 0)
+    {
+        std::cout << "Shader compilation warnings for " << cacheKey << ":\n"
+                  << result.GetErrorMessage() << std::endl;
+    }
+    std::vector<uint32_t> spirvCode(result.cbegin(), result.cend());
+    std::cout << "Successfully compiled " << cacheKey
+              << " (" << spirvCode.size() << " SPIR-V words)" << std::endl;
+    return spirvCode;
 }
 
 void GfxRenderer::initRenderQueue(uint32_t renderId, uint32_t renderType, std::array<float, 16> &viewMat, std::array<float, 16> &projMat)

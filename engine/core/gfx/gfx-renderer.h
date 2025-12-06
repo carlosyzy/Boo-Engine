@@ -28,7 +28,19 @@ class GfxRenderer
 {
 private:
 	float _time;
-	GfxDescriptor *_descriptor;
+
+	VkDescriptorPool _descriptorPool;
+    /**
+     * @brief 描述符集布局
+     * 绑定ubo和采样器
+     */
+    VkDescriptorSetLayout _descriptorSetLayout;
+	/**
+	 * @brief 描述符集
+	 * 描述符集
+	 */
+	std::vector<VkDescriptorSet> _descriptorSets;
+
 
 	std::map<std::string, GfxTexture *> _textures;
 	/**
@@ -59,7 +71,14 @@ private:
 	 */
 	std::map<VkDeviceSize, std::vector<GfxBuffer *>> _buffers;
 
-	void _Log(std::string msg);
+
+	/**
+	 * 描述符相关
+	 */
+	void _initDescriptor();
+    void _initDescriptorPool();
+    void _initDescriptorSetLayout();
+    void _initDescriptorSets();
 
 	/**
 	 * @brief 初始化默认通道
@@ -73,7 +92,12 @@ public:
 	GfxRenderer();
 	void init();
 
-	// GfxDescriptor *descriptor() const { return this->_descriptor; }
+	/**
+	 * @brief 获取描述符集布局
+	 *
+	 * @return VkDescriptorSetLayout
+	 */
+	VkDescriptorSetLayout descriptorSetLayout() const { return this->_descriptorSetLayout; }
 
 	void createPipeline(std::string name, GfxPipelineStruct pipelineStruct);
 	void createUIPipeline(std::string name, GfxPipelineStruct pipelineStruct);
@@ -90,6 +114,15 @@ public:
 	 * @param buffer 着色器字节码
 	 */
 	void createGlslShader(const std::string &shaderName, const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros);
+	/**
+	 * @brief 编译GLSL着色器到SPIR-V
+	 *
+	 * @param type 着色器类型
+	 * @param cacheKey 缓存键
+	 * @param source GLSL着色器源代码
+	 * @param macros 宏定义
+	 */
+	std::vector<uint32_t> compileShaderGlslToSpirv(const std::string &type, const std::string &cacheKey, const std::string &source, const std::map<std::string, std::string> &macros);
 	/**
 	 * @brief 创建SPIR-V着色器
 	 */

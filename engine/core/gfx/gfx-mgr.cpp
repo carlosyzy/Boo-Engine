@@ -36,6 +36,7 @@ void GfxMgr::init()
 
 void GfxMgr::update()
 {
+    return;
 
     // Gfx::renderer->clearDestroyObjects();
     std::cout << "renderer update" << std::endl;

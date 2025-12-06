@@ -11,7 +11,7 @@
 #include "../engine/engine.h"
 #include "editor-main.h"
 
-#ifdef _WIN32
+#ifdef defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #elif defined(__APPLE__)
 #include <limits.h>
@@ -22,7 +22,10 @@
 
 Editor::Editor() {
 	Boo::Editor = true;
-#ifdef _WIN32
+#ifdef defined(_WIN32) || defined(_WIN64)
+	SetConsoleOutputCP(CP_UTF8);
+	SetConsoleCP(CP_UTF8); // 也设置输入编码为 UTF-8，保持统一
+
 	char exePath[MAX_PATH];
 	GetModuleFileNameA(NULL, exePath, MAX_PATH);
 	BooEditor::editorPath =std::filesystem::path(exePath).parent_path().string();
