@@ -50,7 +50,7 @@ void GfxMgr::update()
     /*  // 如果交换链已过期（如窗口大小改变），会返回 VK_ERROR_OUT_OF_DATE_KHR，触发重建交换链 */
     if (result1 == VK_ERROR_OUT_OF_DATE_KHR || result1 == VK_SUBOPTIMAL_KHR)
     {
-        std::cout << "renderer update:'VK_ERROR_OUT_OF_DATE_KHR',The window size might have changed, and the swap chain needs to be recreated." << std::endl;
+        std::cout << "Gfx : Render :: update:'VK_ERROR_OUT_OF_DATE_KHR',The window size might have changed, and the swap chain needs to be recreated." << std::endl;
         this->resetSwapChain();
         return;
     }
@@ -60,7 +60,7 @@ void GfxMgr::update()
     // std::cout << "renderer update:'VK_SUCCESS',imageIndex:" << imageIndex << std::endl;
     /*  // 准备渲染buffer */
     std::vector<VkCommandBuffer> commandBuffers;
-    Gfx::renderer->frameRenderer(this->_currentFrame, commandBuffers);
+    Gfx::renderer->frameRenderer(imageIndex, commandBuffers);
 
     /*  // 提交渲染命令 */
     Gfx::context->frameSubmitCommands(imageIndex, commandBuffers, this->_currentFrame);
@@ -73,7 +73,7 @@ void GfxMgr::update()
     }
     else if (result2 != VK_SUCCESS)
     {
-        std::cout << "GfxMgr :Failed to present swap chain imag22222e!" << std::endl;
+        std::cout << "Gfx : Render :: Failed to present swap chain imag22222e!" << std::endl;
     }
     /*  // 0 1 0 1 0 1 */
     /**

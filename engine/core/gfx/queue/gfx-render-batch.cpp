@@ -8,6 +8,75 @@
 
 GfxRenderBatch::GfxRenderBatch(const GfxMaterial &material, const GfxMesh &mesh) : _material(material), _mesh(mesh), _objectCount(0)
 {
+
+    std::vector<float> vertices{
+        -0.5f,
+        0.5f,
+        0.0f,
+        0.0f,
+        0.0f,
+        -0.5f,
+        -0.5f,
+        0.0f,
+        0.0f,
+        1.0f,
+        0.5f,
+        -0.5f,
+        0.0f,
+        1.0f,
+        1.0f,
+    };
+
+    std::vector<float> indices{
+        0,
+        1,
+        2,
+    };
+    // 等待设备空闲
+    vkDeviceWaitIdle(Gfx::context->vkDevice());
+    /*  // 清理旧缓冲区 */
+    if (this->_vertexBuffer != VK_NULL_HANDLE)
+    {
+        vkDestroyBuffer(Gfx::context->vkDevice(), this->_vertexBuffer, nullptr);
+        this->_vertexBuffer = VK_NULL_HANDLE;
+    }
+    if (_vertexMemory != VK_NULL_HANDLE)
+    {
+        vkFreeMemory(Gfx::context->vkDevice(), this->_vertexMemory, nullptr);
+        this->_vertexMemory = VK_NULL_HANDLE;
+    }
+    if (this->_indexBuffer != VK_NULL_HANDLE)
+    {
+        vkDestroyBuffer(Gfx::context->vkDevice(), this->_indexBuffer, nullptr);
+        this->_indexBuffer = VK_NULL_HANDLE;
+    }
+    if (this->_indexMemory != VK_NULL_HANDLE)
+    {
+        vkFreeMemory(Gfx::context->vkDevice(), this->_indexMemory, nullptr);
+        this->_indexMemory = VK_NULL_HANDLE;
+    }
+
+    // 顶点缓冲区
+    GfxMgr::getInstance()->createBuffer(
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+        &this->_vertexBuffer,
+        &this->_vertexMemory,
+        vertices.size() * sizeof(float),
+        vertices.data());
+    /*  // 索引缓冲区（不变） */
+    GfxMgr::getInstance()->createBuffer(
+        VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+        &this->_indexBuffer,
+        &this->_indexMemory,
+        indices.size() * sizeof(uint32_t),
+        indices.data());
+    this->_indexSize = indices.size();
+    std::cout << "``````1..." << this->_vertexBuffer << std::endl;
+    std::cout << "``````2..." << this->_indexBuffer << std::endl;
+
+    this->_createBuffers();
 }
 void GfxRenderBatch::addObject()
 {
@@ -24,10 +93,19 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
         return;
     }
     std::cout << "GfxRenderBatch::render() imageIndex:" << imageIndex << std::endl;
-    this->_createBuffers();
+
+    vkResetCommandBuffer(this->_commandBuffers[imageIndex], 0);
+
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    if (vkBeginCommandBuffer(this->_commandBuffers[imageIndex], &beginInfo) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to begin recording command buffer!");
+    }
+
     this->_beginBindRenderPass(imageIndex);
 
-    this->_createVertexBuffers();
+    // this->_createVertexBuffers();
 
     GfxPipeline *pipeline = Gfx::renderer->getPipeline(this->_material.pipeline);
     if (pipeline == nullptr)
@@ -35,15 +113,17 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
         throw std::runtime_error("GfxRenderBatch::render() pipeline not found!");
     }
     vkCmdBindPipeline(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipeline());
+
     VkDeviceSize offsets[1] = {0};
     vkCmdBindVertexBuffers(this->_commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
     vkCmdBindIndexBuffer(this->_commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
     VkDescriptorSet descriptorSet = Gfx::renderer->getDescriptorSet(imageIndex);
     vkCmdBindDescriptorSets(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipelineLayout(), 0, 1, &descriptorSet, 0, nullptr);
 
     VkViewport viewport{};
-    viewport.x = 10.0f;       // 距离左边 10 像素
-    viewport.y = 10.0f;       // 距离顶部 10 像素
+    viewport.x = 0.0f;        // 距离左边 10 像素
+    viewport.y = 0.0f;        // 距离顶部 10 像素
     viewport.width = 300.0f;  // 宽度 300 像素
     viewport.height = 200.0f; // 高度 200 像素
     viewport.minDepth = 0.0f;
@@ -52,10 +132,10 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
 
     // 使用相同的区域进行裁剪（确保不超出）
     VkRect2D scissor{};
-    scissor.offset = {10, 10};
+    scissor.offset = {0, 0};
     scissor.extent = {300, 200};
     vkCmdSetScissor(this->_commandBuffers[imageIndex], 0, 1, &scissor);
-    std::cout << "GfxRenderBatch::render() indexSize:" << this->_indexSize << std::endl;
+
     vkCmdDrawIndexed(
         this->_commandBuffers[imageIndex],
         this->_indexSize, // 只绘制3个索引（第一个三角形）
@@ -88,17 +168,18 @@ void GfxRenderBatch::_createFramebuffers()
 
     this->_framebuffers.clear();
     std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
+
     this->_framebuffers.resize(swapChainImageViews.size());
     for (size_t i = 0; i < swapChainImageViews.size(); i++)
     {
-        // std::array<VkImageView, 1> attachments;
-        // attachments[0] = swapChainImageViews[i];
+        VkImageView attachments[] = {swapChainImageViews[i]};
+        
         VkFramebufferCreateInfo framebufferInfo = {};
         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         framebufferInfo.renderPass = pass->vkRenderPass();
 
         framebufferInfo.attachmentCount = 1;
-        framebufferInfo.pAttachments = &swapChainImageViews[i];             // 渲染流程对象用于描述附着信息的pAttachment数组
+        framebufferInfo.pAttachments = attachments;             // 渲染流程对象用于描述附着信息的pAttachment数组
         framebufferInfo.width = Gfx::context->getSwapChainExtent().width;   // width和height用于指定帧缓冲的大小
         framebufferInfo.height = Gfx::context->getSwapChainExtent().height; // 交换链图像都是单层，layers设置为1
         framebufferInfo.layers = 1;
@@ -128,51 +209,6 @@ void GfxRenderBatch::_createCommandBuffers()
 }
 void GfxRenderBatch::_createVertexBuffers()
 {
-    // 等待设备空闲
-    vkDeviceWaitIdle(Gfx::context->vkDevice());
-    /*  // 清理旧缓冲区 */
-    if (this->_vertexBuffer != VK_NULL_HANDLE)
-    {
-        vkDestroyBuffer(Gfx::context->vkDevice(), this->_vertexBuffer, nullptr);
-        this->_vertexBuffer = VK_NULL_HANDLE;
-    }
-    if (_vertexMemory != VK_NULL_HANDLE)
-    {
-        vkFreeMemory(Gfx::context->vkDevice(), this->_vertexMemory, nullptr);
-        this->_vertexMemory = VK_NULL_HANDLE;
-    }
-    if (this->_indexBuffer != VK_NULL_HANDLE)
-    {
-        vkDestroyBuffer(Gfx::context->vkDevice(), this->_indexBuffer, nullptr);
-        this->_indexBuffer = VK_NULL_HANDLE;
-    }
-    if (this->_indexMemory != VK_NULL_HANDLE)
-    {
-        vkFreeMemory(Gfx::context->vkDevice(), this->_indexMemory, nullptr);
-        this->_indexMemory = VK_NULL_HANDLE;
-    }
-    std::vector<float> vertices(this->_mesh.vertices.begin(),
-                                this->_mesh.vertices.end());
-    std::vector<float> indices(this->_mesh.indices.begin(),
-                               this->_mesh.indices.end());
-
-    // 顶点缓冲区
-    GfxMgr::getInstance()->createBuffer(
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-        &this->_vertexBuffer,
-        &this->_vertexMemory,
-        vertices.size() * sizeof(float),
-        vertices.data());
-    /*  // 索引缓冲区（不变） */
-    GfxMgr::getInstance()->createBuffer(
-        VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-        &this->_indexBuffer,
-        &this->_indexMemory,
-        indices.size() * sizeof(uint32_t),
-        indices.data());
-    this->_indexSize = indices.size();
 }
 
 void GfxRenderBatch::_beginBindRenderPass(uint32_t imageIndex)
@@ -202,12 +238,24 @@ void GfxRenderBatch::_beginBindRenderPass(uint32_t imageIndex)
     // renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
     // renderPassInfo.pClearValues = clearValues.data();
 
-    renderPassInfo.clearValueCount = 1;
     VkClearValue clearColor{};
     clearColor.color = {1.0f, 1.0f, 1.0f, 1.0f};
+    renderPassInfo.clearValueCount = 1;
     renderPassInfo.pClearValues = &clearColor;
     // std::cout << "GfxRenderBatch::_beginBindRenderPass() imageIndex:" << imageIndex << " pass:" << pass->name() << " commandBuffer:" << this->_commandBuffers[imageIndex] << std::endl;
     vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+    // 清除颜色
+    VkClearAttachment clearAtt{};
+    clearAtt.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    clearAtt.clearValue.color = {{0.0f, 0.0f, 1.0f, 1.0f}}; // 红色，Alpha=0（透明）
+    clearAtt.colorAttachment = 0;                           // 第0个颜色附件
+    VkClearRect clearRect{};
+    clearRect.rect = renderPassInfo.renderArea; // 与 RenderPass 范围一致
+    clearRect.baseArrayLayer = 0;
+    clearRect.layerCount = 1;
+
+    vkCmdClearAttachments(this->_commandBuffers[imageIndex], 1, &clearAtt, 1, &clearRect);
 }
 
 GfxRenderBatch::~GfxRenderBatch()

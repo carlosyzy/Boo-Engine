@@ -592,9 +592,9 @@ void GfxContext::_createSyncObjects()
 {
 
     size_t imageCount = this->_swapChainImages.size(); /* // 使用交换链图像数量 */
-    this->_imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-    this->_renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-    this->_inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+    this->_imageAvailableSemaphores.resize(imageCount);
+    this->_renderFinishedSemaphores.resize(imageCount);
+    this->_inFlightFences.resize(imageCount);
     this->_imagesInFlight.resize(imageCount, VK_NULL_HANDLE);
 
     VkSemaphoreCreateInfo semaphoreInfo{};
@@ -604,7 +604,7 @@ void GfxContext::_createSyncObjects()
     fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
     fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+    for (size_t i = 0; i < imageCount; i++)
     {
         vkCreateSemaphore(this->_vkdevice, &semaphoreInfo, nullptr, &this->_imageAvailableSemaphores[i]);
         vkCreateSemaphore(this->_vkdevice, &semaphoreInfo, nullptr, &this->_renderFinishedSemaphores[i]);

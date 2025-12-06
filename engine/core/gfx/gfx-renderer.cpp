@@ -41,12 +41,14 @@ void GfxRenderer::_initDescriptor()
 }
 void GfxRenderer::_initDescriptorPool()
 {
+    std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
+
     std::vector<VkDescriptorPoolSize> poolSizes(3);
     // 1. UBO数量计算
     // 每个帧：2个UBO（3D UBO + UI UBO）
     // 可能需要额外：阴影UBO、后处理UBO
     poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    poolSizes[0].descriptorCount = 100; // 支持更多
+    poolSizes[0].descriptorCount = 30 * swapChainImageViews.size(); // 支持更多
     // 2. 存储缓冲区数量计算
     // 每个帧可能需要的存储缓冲区：
     // - 模型数据buffer（所有物体的变换）
@@ -54,12 +56,11 @@ void GfxRenderer::_initDescriptorPool()
     // - 灯光数据buffer
     // - 实例数据buffer
     poolSizes[1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-    poolSizes[1].descriptorCount = 200; // 支持更多
+    poolSizes[1].descriptorCount = 300 * swapChainImageViews.size(); // 支持更多
     // 3. Bindless纹理：关键是这个要足够大！
     poolSizes[2].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     // ⚠️ 临时修复：增加容量（但这不是最佳方案，见下方建议）
-    // 如果每帧 500 个 × MAX_FRAMES_IN_FLIGHT 帧 = 需要更大容量
-    poolSizes[2].descriptorCount = 500 * MAX_FRAMES_IN_FLIGHT;
+    poolSizes[2].descriptorCount = 500 * swapChainImageViews.size();
 
     // 4. maxSets计算：需要多少个描述符集？
     // 每个帧需要：
@@ -75,7 +76,7 @@ void GfxRenderer::_initDescriptorPool()
     poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT_EXT;
     poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
     poolInfo.pPoolSizes = poolSizes.data();
-    poolInfo.maxSets = 10; // 支持更多描述符集
+    poolInfo.maxSets = 10 * swapChainImageViews.size(); // 支持更多描述符集
 
     if (vkCreateDescriptorPool(Gfx::context->vkDevice(), &poolInfo, nullptr, &this->_descriptorPool) != VK_SUCCESS)
     {
@@ -157,28 +158,30 @@ void GfxRenderer::_initDescriptorSetLayout()
 void GfxRenderer::_initDescriptorSets()
 {
     // 每个帧需要一个描述符集
-    std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, this->_descriptorSetLayout);
+    std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
+
+    std::vector<VkDescriptorSetLayout> layouts(swapChainImageViews.size(), this->_descriptorSetLayout);
 
     // 关键：设置可变描述符数量信息
     VkDescriptorSetVariableDescriptorCountAllocateInfoEXT countInfo = {};
     countInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT;
-    countInfo.descriptorSetCount = MAX_FRAMES_IN_FLIGHT;
+    countInfo.descriptorSetCount = swapChainImageViews.size();
     // 每个描述符集实际使用的纹理数量（可以动态设置）
-    std::vector<uint32_t> counts(MAX_FRAMES_IN_FLIGHT, 500); // 每个集最多500个纹理
+    std::vector<uint32_t> counts(swapChainImageViews.size(), 500); // 每个集最多500个纹理
     countInfo.pDescriptorCounts = counts.data();
 
     VkDescriptorSetAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
     allocInfo.pNext = &countInfo; // 链接可变数量信息
     allocInfo.descriptorPool = this->_descriptorPool;
-    allocInfo.descriptorSetCount = MAX_FRAMES_IN_FLIGHT;
+    allocInfo.descriptorSetCount = swapChainImageViews.size();
     allocInfo.pSetLayouts = layouts.data();
-    this->_descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+    this->_descriptorSets.resize(swapChainImageViews.size());
     if (vkAllocateDescriptorSets(Gfx::context->vkDevice(), &allocInfo, this->_descriptorSets.data()) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to allocate descriptor sets!");
     }
-    std::cout << "Gfx : Renderer :: Allocated " << MAX_FRAMES_IN_FLIGHT << " descriptor sets" << std::endl;
+    std::cout << "Gfx : Renderer :: create descriptor sets success..." << std::endl;
 }
 /**
  * 创建内置默认的ui pass

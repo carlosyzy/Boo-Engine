@@ -7,10 +7,12 @@ GfxBufferSSBO::GfxBufferSSBO()
 }
 void GfxBufferSSBO::create(VkDeviceSize bufferSize)
 {
-    this->_buffers.resize(MAX_FRAMES_IN_FLIGHT);
-    this->_buffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
-    this->_buffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+    std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
+
+    this->_buffers.resize(swapChainImageViews.size());
+    this->_buffersMemory.resize(swapChainImageViews.size());
+    this->_buffersMapped.resize(swapChainImageViews.size());
+    for (size_t i = 0; i < swapChainImageViews.size(); i++)
     {
         // 创建缓冲区
         VkBufferCreateInfo bufferInfo{};
