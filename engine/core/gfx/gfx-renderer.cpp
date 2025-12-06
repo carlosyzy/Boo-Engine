@@ -9,7 +9,6 @@
 #include "pipeline/gfx-pipeline-struct.h"
 #include "queue/gfx-render-queue.h"
 
-
 #include "gfx-shader.h"
 #include "gfx-shader-struct.h"
 #include "gfx-shader-compile.h"
@@ -226,11 +225,18 @@ void GfxRenderer::_initDefaultPipeline()
     screenPipelineStruct.vert = "built.vert";
     screenPipelineStruct.frag = "built.frag";
     screenPipelineStruct.pass = "pass-built";
+
+    // 多边形模式 填充
+    screenPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
+    // 剔除模式 背面
+    screenPipelineStruct.cullMode = GfxPipelineCullMode::Back;
+
     screenPipelineStruct.depthTest = 0;
     screenPipelineStruct.depthWrite = 0;
     screenPipelineStruct.depthCompareOp = GfxPipelineCompareOp::Always;
+    screenPipelineStruct.stencilTest = 0;
     // 颜色混合 开启
-    screenPipelineStruct.colorBlend = 0;
+    screenPipelineStruct.colorBlend = 1;
     screenPipelineStruct.srcColorBlendFactor = GfxPipelineColorBlendFactor::SrcAlpha;
     screenPipelineStruct.dstColorBlendFactor = GfxPipelineColorBlendFactor::OneMinusSrcAlpha;
     screenPipelineStruct.colorBlendOp = GfxPipelineColorBlendOp::Add;
@@ -238,10 +244,7 @@ void GfxRenderer::_initDefaultPipeline()
     screenPipelineStruct.dstAlphaBlendFactor = GfxPipelineColorBlendFactor::OneMinusSrcAlpha;
     screenPipelineStruct.alphaBlendOp = GfxPipelineColorBlendOp::Add;
     screenPipelineStruct.colorWriteMask = 4;
-    // 多边形模式 填充
-    screenPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
-    // 剔除模式 背面
-    screenPipelineStruct.cullMode = GfxPipelineCullMode::Back;
+
     this->createPipeline("pipeline-built", screenPipelineStruct);
 
     // GfxPipelineStruct uiPipelineStruct = {};
