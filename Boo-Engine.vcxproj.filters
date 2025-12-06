@@ -66,24 +66,6 @@
     <ClCompile Include="engine\core\global\global.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-context.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-mgr.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-object.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-pass.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-pipeline.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-queue.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\gfx\gfx-renderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -219,6 +201,51 @@
     <ClCompile Include="editor\loading\editor-loading.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-render-texture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-texture-bindless.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-context.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-mgr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\pass\gfx-pass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\pass\gfx-pass-built.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\pass\gfx-pass-built-ui.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\pipeline\gfx-pipeline.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\pipeline\gfx-pipeline-ui.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-buffer\gfx-buffer-ssbo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-buffer\gfx-buffer-ubo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\queue\gfx-render-batch.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\queue\gfx-render-queue.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\renderer\camera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\core\math\color.h">
@@ -273,30 +300,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\global\global.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-context.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-mgr.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-object.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-pass.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-pass-struct.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-pipeline.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-pipeline-struct.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-queue.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\gfx\gfx-renderer.h">
@@ -572,12 +575,6 @@
     <ClInclude Include="engine\core\input\input-impl.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-object-struct.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-queue-struct.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="engine\core\gfx\gfx-shader-struct.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -660,6 +657,54 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\assets\asset-struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-render-texture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-texture-bindless.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-context.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-mgr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\pass\gfx-pass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\pass\gfx-pass-built.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\pass\gfx-pass-built-ui.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\pipeline\gfx-pipeline.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\pipeline\gfx-pipeline-struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\pipeline\gfx-pipeline-ui.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-buffer\gfx-buffer-ssbo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-buffer\gfx-buffer-ubo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\queue\gfx-render-batch.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\queue\gfx-render-queue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\renderer\camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

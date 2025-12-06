@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>F:\worksapces\Boo-Engine\engine\libs\stb;E:\software\vulkan\Include;E:\software\glfw\include;F:\worksapces\Boo-Engine\engine\libs\freetype2\win\include;F:\worksapces\Boo-Engine\engine\libs\nativefiledialog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -186,16 +186,24 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\event\event.cpp" />
     <ClCompile Include="engine\core\font\freetype-mgr.cpp" />
     <ClCompile Include="engine\core\game.cpp" />
+    <ClCompile Include="engine\core\gfx\gfx-buffer\gfx-buffer-ssbo.cpp" />
+    <ClCompile Include="engine\core\gfx\gfx-buffer\gfx-buffer-ubo.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-context.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-mgr.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-object.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-pass.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-pipeline.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-queue.cpp" />
+    <ClCompile Include="engine\core\gfx\gfx-render-texture.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-renderer.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-shader-compile.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-shader.cpp" />
+    <ClCompile Include="engine\core\gfx\gfx-texture-bindless.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-texture.cpp" />
+    <ClCompile Include="engine\core\gfx\gfx.cpp" />
+    <ClCompile Include="engine\core\gfx\pass\gfx-pass-built-ui.cpp" />
+    <ClCompile Include="engine\core\gfx\pass\gfx-pass-built.cpp" />
+    <ClCompile Include="engine\core\gfx\pass\gfx-pass.cpp" />
+    <ClCompile Include="engine\core\gfx\pipeline\gfx-pipeline-ui.cpp" />
+    <ClCompile Include="engine\core\gfx\pipeline\gfx-pipeline.cpp" />
+    <ClCompile Include="engine\core\gfx\queue\gfx-render-batch.cpp" />
+    <ClCompile Include="engine\core\gfx\queue\gfx-render-queue.cpp" />
     <ClCompile Include="engine\core\global\global.cpp" />
     <ClCompile Include="engine\core\input\input.cpp" />
     <ClCompile Include="engine\core\math\color.cpp" />
@@ -204,6 +212,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\math\size.cpp" />
     <ClCompile Include="engine\core\math\vec2.cpp" />
     <ClCompile Include="engine\core\math\vec3.cpp" />
+    <ClCompile Include="engine\core\renderer\camera.cpp" />
     <ClCompile Include="engine\core\renderer\ui\ui-mask.cpp" />
     <ClCompile Include="engine\core\renderer\ui\ui-sprite.cpp" />
     <ClCompile Include="engine\core\renderer\ui\ui-renderer.cpp" />
@@ -268,22 +277,27 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\event\event.h" />
     <ClInclude Include="engine\core\font\freetype-mgr.h" />
     <ClInclude Include="engine\core\game.h" />
+    <ClInclude Include="engine\core\gfx\gfx-buffer\gfx-buffer-ssbo.h" />
+    <ClInclude Include="engine\core\gfx\gfx-buffer\gfx-buffer-ubo.h" />
     <ClInclude Include="engine\core\gfx\gfx-context.h" />
     <ClInclude Include="engine\core\gfx\gfx-mgr.h" />
-    <ClInclude Include="engine\core\gfx\gfx-object-struct.h" />
-    <ClInclude Include="engine\core\gfx\gfx-object.h" />
-    <ClInclude Include="engine\core\gfx\gfx-pass-struct.h" />
-    <ClInclude Include="engine\core\gfx\gfx-pass.h" />
-    <ClInclude Include="engine\core\gfx\gfx-pipeline-struct.h" />
-    <ClInclude Include="engine\core\gfx\gfx-pipeline.h" />
-    <ClInclude Include="engine\core\gfx\gfx-queue-struct.h" />
-    <ClInclude Include="engine\core\gfx\gfx-queue.h" />
+    <ClInclude Include="engine\core\gfx\gfx-render-texture.h" />
     <ClInclude Include="engine\core\gfx\gfx-renderer.h" />
     <ClInclude Include="engine\core\gfx\gfx-shader-compile.h" />
     <ClInclude Include="engine\core\gfx\gfx-shader-struct.h" />
     <ClInclude Include="engine\core\gfx\gfx-shader.h" />
     <ClInclude Include="engine\core\gfx\gfx-struct.h" />
+    <ClInclude Include="engine\core\gfx\gfx-texture-bindless.h" />
     <ClInclude Include="engine\core\gfx\gfx-texture.h" />
+    <ClInclude Include="engine\core\gfx\gfx.h" />
+    <ClInclude Include="engine\core\gfx\pass\gfx-pass-built-ui.h" />
+    <ClInclude Include="engine\core\gfx\pass\gfx-pass-built.h" />
+    <ClInclude Include="engine\core\gfx\pass\gfx-pass.h" />
+    <ClInclude Include="engine\core\gfx\pipeline\gfx-pipeline-struct.h" />
+    <ClInclude Include="engine\core\gfx\pipeline\gfx-pipeline-ui.h" />
+    <ClInclude Include="engine\core\gfx\pipeline\gfx-pipeline.h" />
+    <ClInclude Include="engine\core\gfx\queue\gfx-render-batch.h" />
+    <ClInclude Include="engine\core\gfx\queue\gfx-render-queue.h" />
     <ClInclude Include="engine\core\global\event.h" />
     <ClInclude Include="engine\core\global\global.h" />
     <ClInclude Include="engine\core\input\input-impl.h" />
@@ -294,6 +308,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\math\size.h" />
     <ClInclude Include="engine\core\math\vec2.h" />
     <ClInclude Include="engine\core\math\vec3.h" />
+    <ClInclude Include="engine\core\renderer\camera.h" />
     <ClInclude Include="engine\core\renderer\ui\ui-mask.h" />
     <ClInclude Include="engine\core\renderer\ui\ui-sprite.h" />
     <ClInclude Include="engine\core\renderer\ui\ui-renderer.h" />
