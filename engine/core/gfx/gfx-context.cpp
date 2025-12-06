@@ -288,15 +288,15 @@ void GfxContext::_createLogicalDevice()
     // 2. 打印支持情况
     std::cout << "\n=== Descriptor Indexing Features Support ===" << std::endl;
     std::cout << "  shaderSampledImageArrayNonUniformIndexing: "
-              << (supportedIndexingFeatures.shaderSampledImageArrayNonUniformIndexing ? "✓" : "✗") << std::endl;
+              << (supportedIndexingFeatures.shaderSampledImageArrayNonUniformIndexing ? "OK" : "Error") << std::endl;
     std::cout << "  descriptorBindingPartiallyBound: "
-              << (supportedIndexingFeatures.descriptorBindingPartiallyBound ? "✓" : "✗") << std::endl;
+              << (supportedIndexingFeatures.descriptorBindingPartiallyBound ? "OK" : "Error") << std::endl;
     std::cout << "  runtimeDescriptorArray: "
-              << (supportedIndexingFeatures.runtimeDescriptorArray ? "✓" : "✗") << std::endl;
+              << (supportedIndexingFeatures.runtimeDescriptorArray ? "OK" : "Error") << std::endl;
     std::cout << "  descriptorBindingVariableDescriptorCount: "
-              << (supportedIndexingFeatures.descriptorBindingVariableDescriptorCount ? "✓" : "✗") << std::endl;
+              << (supportedIndexingFeatures.descriptorBindingVariableDescriptorCount ? "OK" : "Error") << std::endl;
     std::cout << "  descriptorBindingSampledImageUpdateAfterBind: "
-              << (supportedIndexingFeatures.descriptorBindingSampledImageUpdateAfterBind ? "✓" : "✗") << std::endl;
+              << (supportedIndexingFeatures.descriptorBindingSampledImageUpdateAfterBind ? "OK" : "Error") << std::endl;
 
     // 3. 启用支持的 features
     VkPhysicalDeviceDescriptorIndexingFeatures indexingFeatures{};
@@ -334,10 +334,10 @@ void GfxContext::_createLogicalDevice()
     /*   // 创建逻辑设备 */
     VkDeviceCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pNext = &deviceFeatures2; // ✓ 使用 pNext 链接 features
+    createInfo.pNext = &deviceFeatures2; // OK 使用 pNext 链接 features
     createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
     createInfo.pQueueCreateInfos = queueCreateInfos.data();
-    createInfo.pEnabledFeatures = nullptr; // ✓ 使用 pNext 时设为 nullptr
+    createInfo.pEnabledFeatures = nullptr; // OK 使用 pNext 时设为 nullptr
 
     /* // For macos */
     std::vector<const char *> localDeviceExtensions = DeviceExtensions;

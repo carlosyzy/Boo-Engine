@@ -6,6 +6,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <array>
 #include <cstdint>
 #include "../gfx-struct.h"
 
@@ -17,12 +18,12 @@
 
 struct UniformBufferObject
 {
-    // 视图矩阵
-    alignas(16) float viewMat[16];
-    // 投影矩阵
-    alignas(16) float projMat[16];
-    // 时间（全局）
-    alignas(4) float time;
+	// 视图矩阵
+	alignas(16) float viewMat[16];
+	// 投影矩阵
+	alignas(16) float projMat[16];
+	// 时间（全局）
+	alignas(4) float time;
 };
 
 class GfxRenderBatch;
@@ -30,19 +31,16 @@ class GfxRenderBatch;
 class GfxRenderQueue
 {
 protected:
-   std::array<float, 16> _viewMat;
-    std::array<float, 16> _projMat;
-
-   
-
-    // 渲染批次
-    std::vector<GfxRenderBatch*> _batches;
+	std::array<float, 16> _viewMat;
+	std::array<float, 16> _projMat;
+	// 渲染批次
+	std::vector<GfxRenderBatch*> _batches;
 
 public:
-    GfxRenderQueue();
-    void init(std::array<float, 16> &viewMat, std::array<float, 16> &projMat);
-    void submitObject(GfxMaterial &material, GfxMesh &mesh);
-    ~GfxRenderQueue();
+	GfxRenderQueue();
+	void init(std::array<float, 16>& viewMat, std::array<float, 16>& projMat);
+	void submitObject(GfxMaterial& material, GfxMesh& mesh);
+	~GfxRenderQueue();
 };
 
 //   // void create(GfxPass *pass);

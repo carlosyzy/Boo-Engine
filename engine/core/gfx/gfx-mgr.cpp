@@ -106,7 +106,7 @@ void GfxMgr::destroyTexture(std::string texture)
 }
 bool GfxMgr::isExistTexture(std::string texture)
 {
-    Gfx::renderer->isExistTexture(texture);
+   return Gfx::renderer->isExistTexture(texture);
 }
 void GfxMgr::createGlslShader(const std::string &shaderName, const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros)
 {

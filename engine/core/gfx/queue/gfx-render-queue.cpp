@@ -6,6 +6,8 @@
 
 GfxRenderQueue::GfxRenderQueue()
 {
+    this->_viewMat = {};
+    this->_projMat = {};
 }
 void GfxRenderQueue::init(std::array<float, 16> &viewMat, std::array<float, 16> &projMat)
 {
