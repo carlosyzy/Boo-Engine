@@ -186,8 +186,8 @@ void GfxRenderer::_initDescriptorSets()
  */
 void GfxRenderer::_initDefaultPasses()
 {
-    GfxPass *screenPass = new GfxPass("pass-built");
-    this->_passes["pass-built"] = screenPass;
+    GfxPass *screenPass = new GfxPass("default");
+    this->_passes["default"] = screenPass;
     // GfxPassBuiltUI *uiPass = new GfxPassBuiltUI("pass-built-ui");
     // this->_passes["pass-built-ui"] = uiPass;
 }
@@ -196,12 +196,12 @@ void GfxRenderer::_initDefaultPasses()
  */
 void GfxRenderer::_initDefaultShaders()
 {
-    std::string shaderVertName = "built.vert";
+    std::string shaderVertName = "default.vert";
     GfxShader *shader = new GfxShader(shaderVertName);
     shader->createShaderModule(GfxShaderBuiltVertSPV, GfxShaderBuiltVertSPVSize);
     this->_shaders[shaderVertName] = shader;
 
-    std::string shaderFragName = "built.frag";
+    std::string shaderFragName = "default.frag";
     shader = new GfxShader(shaderFragName);
     shader->createShaderModule(GfxShaderBuiltFragSPV, GfxShaderBuiltFragSPVSize);
     this->_shaders[shaderFragName] = shader;
@@ -222,9 +222,9 @@ void GfxRenderer::_initDefaultShaders()
 void GfxRenderer::_initDefaultPipeline()
 {
     GfxPipelineStruct screenPipelineStruct = {};
-    screenPipelineStruct.vert = "built.vert";
-    screenPipelineStruct.frag = "built.frag";
-    screenPipelineStruct.pass = "pass-built";
+    screenPipelineStruct.vert = "default.vert";
+    screenPipelineStruct.frag = "default.frag";
+    screenPipelineStruct.pass = "default";
 
     // 多边形模式 填充
     screenPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
@@ -245,7 +245,7 @@ void GfxRenderer::_initDefaultPipeline()
     screenPipelineStruct.alphaBlendOp = GfxPipelineColorBlendOp::Add;
     screenPipelineStruct.colorWriteMask = 4;
 
-    this->createPipeline("pipeline-built", screenPipelineStruct);
+    this->createPipeline("default", screenPipelineStruct);
 
     // GfxPipelineStruct uiPipelineStruct = {};
     // uiPipelineStruct.vert = "built-ui.vert";

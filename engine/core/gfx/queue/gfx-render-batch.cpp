@@ -122,12 +122,12 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
     // }
     // std::cout << "GfxRenderBatch::render() imageIndex:" << imageIndex << std::endl;
 
-    GfxPipeline *pipeline = Gfx::renderer->getPipeline("pipeline-built");
+    GfxPipeline *pipeline = Gfx::renderer->getPipeline("default");
     if (pipeline == nullptr)
     {
         throw std::runtime_error("GfxRenderBatch::render() pipeline not found!");
     }
-    GfxPass *pass = Gfx::renderer->getPass("pass-built");
+    GfxPass *pass = Gfx::renderer->getPass("default");
     if (pass == nullptr)
     {
         throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
@@ -215,7 +215,7 @@ void GfxRenderBatch::_createBuffers()
 }
 void GfxRenderBatch::_createFramebuffers()
 {
-    GfxPass *pass = Gfx::renderer->getPass("pass-built");
+    GfxPass *pass = Gfx::renderer->getPass("default");
     if (pass == nullptr)
     {
         throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
@@ -277,7 +277,7 @@ void GfxRenderBatch::_createVertexBuffers()
 void GfxRenderBatch::_beginBindRenderPass(uint32_t imageIndex)
 {
 
-    GfxPass *pass = Gfx::renderer->getPass("pass-built");
+    GfxPass *pass = Gfx::renderer->getPass("default");
     if (pass == nullptr)
     {
         std::cout << "GfxRenderBatch::_beginBindRenderPass() pass not found!" << std::endl;

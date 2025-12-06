@@ -9,7 +9,7 @@ GfxPass::GfxPass(std::string name)
 }
 void GfxPass::_create()
 {
-    std::cout << "GfxPass::_create" << std::endl;
+    std::cout << "Gfx : Pass :: _create" << std::endl;
     VkAttachmentDescription colorAttachment = {};
     colorAttachment.format = Gfx::context->getSwapChainImageFormat(); // 颜色缓冲附着(VkImageView)的格式
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;                  // 指定采样数，没有使用多重采样，设置为1
