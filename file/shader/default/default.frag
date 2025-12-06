@@ -1,15 +1,8 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-layout(location = 0) in vec2 fragTexCoord;  // 输入UV坐标
-
-
+layout(location = 0) in vec2 uv;  // 输入UV坐标
 layout(location = 0) out vec4 outColor;
-
-// // 正确的推送常量块声明
-// layout(push_constant) uniform PushConstants {
-//     vec4 defaultColor;  // 使用vec4而不是float
-// } PushConsts;
 
 void main() {
     // 使用推送常量块中的颜色
