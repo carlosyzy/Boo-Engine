@@ -36,6 +36,8 @@ protected:
 	// 渲染批次
 	std::vector<GfxRenderBatch*> _batches;
 
+
+	GfxRenderBatch *_testBatch = nullptr;
 public:
 	GfxRenderQueue();
 	void init(const std::array<float, 16>& viewMat,const std::array<float, 16>& projMat);

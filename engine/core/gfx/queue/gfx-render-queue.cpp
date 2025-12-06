@@ -8,50 +8,61 @@ GfxRenderQueue::GfxRenderQueue()
 {
     this->_viewMat = {};
     this->_projMat = {};
+    std::array<float, 16> identityMat1 = {1.0f};
+    std::array<float, 16> identityMat2 = {1.0f};
+    GfxMaterial material{};
+    GfxMesh mesh{};
+    material.pass = "pass-built";
+    material.pipeline = "pipeline-built";
+    this->_testBatch = new GfxRenderBatch(material, mesh);
 }
 void GfxRenderQueue::init(const std::array<float, 16> &viewMat, const std::array<float, 16> &projMat)
 {
     this->_viewMat = viewMat;
     this->_projMat = projMat;
 }
-void GfxRenderQueue::submitObject(const GfxMaterial &material,const GfxMesh &mesh)
+void GfxRenderQueue::submitObject(const GfxMaterial &material, const GfxMesh &mesh)
 {
-    if (this->_batches.empty())
-    {
-        GfxRenderBatch *batch = new GfxRenderBatch(material, mesh);
-        this->_batches.push_back(batch);
-        batch->addObject();
-    }
-    else
-    {
-        GfxRenderBatch *batch = this->_batches.back();
-        if (batch->material().uuid == material.uuid && batch->mesh().uuid == mesh.uuid)
-        {
-            batch->addObject();
-        }
-        else
-        {
-            GfxRenderBatch *batch = new GfxRenderBatch(material, mesh);
-            this->_batches.push_back(batch);
-            batch->addObject();
-        }
-    }
+    // if (this->_batches.empty())
+    // {
+    //     GfxRenderBatch *batch = new GfxRenderBatch(material, mesh);
+    //     this->_batches.push_back(batch);
+    //     batch->addObject();
+    // }
+    // else
+    // {
+    //     GfxRenderBatch *batch = this->_batches.back();
+    //     if (batch->material().uuid == material.uuid && batch->mesh().uuid == mesh.uuid)
+    //     {
+    //         batch->addObject();
+    //     }
+    //     else
+    //     {
+    //         GfxRenderBatch *batch = new GfxRenderBatch(material, mesh);
+    //         this->_batches.push_back(batch);
+    //         batch->addObject();
+    //     }
+    // }
 }
 void GfxRenderQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
+    this->_testBatch->render(imageIndex, commandBuffers);
     // std::cout << "GfxRenderQueue::render() imageIndex:" << imageIndex << " batches.size:" << this->_batches.size() << std::endl;
-    for (auto &batch : this->_batches)
-    {
-        batch->render(imageIndex, commandBuffers);
-    }
+    // for (auto &batch : this->_batches)
+    // {
+    //     batch->render(imageIndex, commandBuffers);
+    // }
+
+    // //// 渲染完成后清空批次，避免每次渲染都累积批次
+    // //for (auto batch : this->_batches)
+    // //{
+    // //    delete batch;
+    // //}
+    // this->_batches.clear();
 }
 GfxRenderQueue::~GfxRenderQueue()
 {
 }
-
-
-
-
 
 // void GfxQueue::updateUniformBuffer(uint32_t frame, std::array<float, 16> &viewMat, std::array<float, 16> &projMat, float time)
 // {

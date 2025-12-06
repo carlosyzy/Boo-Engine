@@ -482,10 +482,10 @@ void GfxRenderer::submitRenderObject(uint32_t renderId, GfxMaterial &material, G
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
     // 渲染默认队列
-    std::array<float, 16> viewMat = {1.0f};
-    std::array<float, 16> projMat = {1.0f};
-    this->_defaultQueue->init(viewMat, projMat);
-    this->_defaultQueue->submitObject(defaultMaterial, defaultMesh);
+    // std::array<float, 16> viewMat = {1.0f};
+    // std::array<float, 16> projMat = {1.0f};
+    // this->_defaultQueue->init(viewMat, projMat);
+    // this->_defaultQueue->submitObject(defaultMaterial, defaultMesh);
     this->_defaultQueue->render(imageIndex, commandBuffers);
 
     // for (auto &queue : this->_queues)

@@ -32,7 +32,6 @@ void GfxPipeline::_createPipeline()
     this->_initColorBlendState();
     this->_initPipelineLayout();
     this->_initPipeline();
-
 }
 
 void GfxPipeline::_initShaderState()
@@ -95,8 +94,8 @@ void GfxPipeline::_initInputAssemblyState()
 void GfxPipeline::_initDynamicState()
 {
     this->_dynamicStates = {
-        VK_DYNAMIC_STATE_VIEWPORT,
-        VK_DYNAMIC_STATE_SCISSOR,
+        // VK_DYNAMIC_STATE_VIEWPORT,
+        // VK_DYNAMIC_STATE_SCISSOR,
         VK_DYNAMIC_STATE_STENCIL_REFERENCE,
         VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK,
         VK_DYNAMIC_STATE_STENCIL_WRITE_MASK};
@@ -106,18 +105,33 @@ void GfxPipeline::_initDynamicState()
 }
 void GfxPipeline::_initViewportState()
 {
+    this->_viewport.x = 0.0f;
+    this->_viewport.y = 0.0f;
+    this->_viewport.width = (float)Gfx::context->getSwapChainExtent().width;
+    this->_viewport.height = (float)Gfx::context->getSwapChainExtent().height;
+    this->_viewport.minDepth = 0.0f;
+    this->_viewport.maxDepth = 1.0f;
+
+    // 裁剪定义哪一块区域的像素实际被存储在帧缓存中。任何位于裁剪范围之外都会被光栅化丢弃
+    this->_scissor.offset = {0, 0};
+    this->_scissor.extent = Gfx::context->getSwapChainExtent();
+
     this->_viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
     this->_viewportInfo.viewportCount = 1;
+    this->_viewportInfo.pViewports = &this->_viewport;
     this->_viewportInfo.scissorCount = 1;
+    this->_viewportInfo.pScissors = &this->_scissor;
 }
 void GfxPipeline::_initRasterizationState()
 {
     this->_rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     this->_rasterizationInfo.depthClampEnable = VK_FALSE;
     this->_rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
-    this->_rasterizationInfo.polygonMode = this->_getPolygonMode(this->_pipelineStruct.polygonMode);
+    // this->_rasterizationInfo.polygonMode = this->_getPolygonMode(this->_pipelineStruct.polygonMode);
+    this->_rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
     this->_rasterizationInfo.lineWidth = 1.0f;
-    this->_rasterizationInfo.cullMode = this->_getCullMode(this->_pipelineStruct.cullMode); // 背面剔除
+    // this->_rasterizationInfo.cullMode = this->_getCullMode(this->_pipelineStruct.cullMode); // 背面剔除
+    this->_rasterizationInfo.cullMode = VK_CULL_MODE_BACK_BIT; // 背面剔除
     this->_rasterizationInfo.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
     this->_rasterizationInfo.depthBiasEnable = VK_FALSE; // 禁用深度偏移
 }
@@ -168,28 +182,31 @@ void GfxPipeline::_initDepthStencilState()
     // 禁用深度测试（2D UI 不需要）
     // 2d 暂时这么处理，后边需要动态的设置 */
     this->_depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-    this->_depthStencilInfo.depthTestEnable = this->_pipelineStruct.depthTest != 0 ? VK_TRUE : VK_FALSE;   /* // 禁用深度测试 */
-    this->_depthStencilInfo.depthWriteEnable = this->_pipelineStruct.depthWrite != 0 ? VK_TRUE : VK_FALSE; /* // 禁止写入深度 */
-    this->_depthStencilInfo.depthCompareOp = this->_getCompareOp(this->_pipelineStruct.depthCompareOp);
+    this->_depthStencilInfo.depthTestEnable = VK_FALSE;  // 禁用深度测试
+    this->_depthStencilInfo.depthWriteEnable = VK_FALSE; // 禁止写入深度
 
-    this->_depthStencilInfo.stencilTestEnable = this->_pipelineStruct.stencilTest != 0 ? VK_TRUE : VK_FALSE;
-    if (this->_pipelineStruct.stencilTest != 0)
-    {
-        this->_depthStencilInfo.front.failOp = this->_getStencilOp(this->_pipelineStruct.stencilFrontFailOp);
-        this->_depthStencilInfo.front.depthFailOp = this->_getStencilOp(this->_pipelineStruct.stencilFrontDepthFailOp);
-        this->_depthStencilInfo.front.passOp = this->_getStencilOp(this->_pipelineStruct.stencilFrontPassOp);
-        this->_depthStencilInfo.front.compareOp = this->_getCompareOp(this->_pipelineStruct.stencilFrontCompareOp);
-        this->_depthStencilInfo.front.compareMask = 0xFF; // 比较所有位
-        this->_depthStencilInfo.front.writeMask = 0xFF;   // 写入所有位
-        this->_depthStencilInfo.front.reference = 1;      // 参考值（会被动态覆盖）
-        this->_depthStencilInfo.back.failOp = this->_getStencilOp(this->_pipelineStruct.stencilBackFailOp);
-        this->_depthStencilInfo.back.depthFailOp = this->_getStencilOp(this->_pipelineStruct.stencilBackDepthFailOp);
-        this->_depthStencilInfo.back.passOp = this->_getStencilOp(this->_pipelineStruct.stencilBackPassOp);
-        this->_depthStencilInfo.back.compareOp = this->_getCompareOp(this->_pipelineStruct.stencilBackCompareOp);
-        this->_depthStencilInfo.back.compareMask = 0xFF;
-        this->_depthStencilInfo.back.writeMask = 0xFF;
-        this->_depthStencilInfo.back.reference = 1;
-    }
+    // this->_depthStencilInfo.depthTestEnable = this->_pipelineStruct.depthTest != 0 ? VK_TRUE : VK_FALSE;   /* // 禁用深度测试 */
+    // this->_depthStencilInfo.depthWriteEnable = this->_pipelineStruct.depthWrite != 0 ? VK_TRUE : VK_FALSE; /* // 禁止写入深度 */
+    // this->_depthStencilInfo.depthCompareOp = this->_getCompareOp(this->_pipelineStruct.depthCompareOp);
+
+    // this->_depthStencilInfo.stencilTestEnable = this->_pipelineStruct.stencilTest != 0 ? VK_TRUE : VK_FALSE;
+    // if (this->_pipelineStruct.stencilTest != 0)
+    // {
+    //     this->_depthStencilInfo.front.failOp = this->_getStencilOp(this->_pipelineStruct.stencilFrontFailOp);
+    //     this->_depthStencilInfo.front.depthFailOp = this->_getStencilOp(this->_pipelineStruct.stencilFrontDepthFailOp);
+    //     this->_depthStencilInfo.front.passOp = this->_getStencilOp(this->_pipelineStruct.stencilFrontPassOp);
+    //     this->_depthStencilInfo.front.compareOp = this->_getCompareOp(this->_pipelineStruct.stencilFrontCompareOp);
+    //     this->_depthStencilInfo.front.compareMask = 0xFF; // 比较所有位
+    //     this->_depthStencilInfo.front.writeMask = 0xFF;   // 写入所有位
+    //     this->_depthStencilInfo.front.reference = 1;      // 参考值（会被动态覆盖）
+    //     this->_depthStencilInfo.back.failOp = this->_getStencilOp(this->_pipelineStruct.stencilBackFailOp);
+    //     this->_depthStencilInfo.back.depthFailOp = this->_getStencilOp(this->_pipelineStruct.stencilBackDepthFailOp);
+    //     this->_depthStencilInfo.back.passOp = this->_getStencilOp(this->_pipelineStruct.stencilBackPassOp);
+    //     this->_depthStencilInfo.back.compareOp = this->_getCompareOp(this->_pipelineStruct.stencilBackCompareOp);
+    //     this->_depthStencilInfo.back.compareMask = 0xFF;
+    //     this->_depthStencilInfo.back.writeMask = 0xFF;
+    //     this->_depthStencilInfo.back.reference = 1;
+    // }
 }
 VkCompareOp GfxPipeline::_getCompareOp(GfxPipelineCompareOp compareOp)
 {
@@ -248,31 +265,39 @@ VkStencilOp GfxPipeline::_getStencilOp(GfxPipelineStencilOp stencilOp)
 }
 void GfxPipeline::_initColorBlendState()
 {
-    this->_colorBlendAttachment.blendEnable = this->_pipelineStruct.colorBlend != 0 ? VK_TRUE : VK_FALSE;
-    if (this->_pipelineStruct.colorBlend != 0)
-    {
-        this->_colorBlendAttachment.srcColorBlendFactor = this->_getBlendFactor(this->_pipelineStruct.srcColorBlendFactor); // VK_BLEND_FACTOR_ONE;
-        this->_colorBlendAttachment.dstColorBlendFactor = this->_getBlendFactor(this->_pipelineStruct.dstColorBlendFactor); // VK_BLEND_FACTOR_ZERO;
-        this->_colorBlendAttachment.colorBlendOp = this->_getBlendOp(this->_pipelineStruct.colorBlendOp);                   // VK_BLEND_OP_ADD;
-        this->_colorBlendAttachment.srcAlphaBlendFactor = this->_getBlendFactor(this->_pipelineStruct.srcAlphaBlendFactor); // VK_BLEND_FACTOR_ONE;
-        this->_colorBlendAttachment.dstAlphaBlendFactor = this->_getBlendFactor(this->_pipelineStruct.dstAlphaBlendFactor); // VK_BLEND_FACTOR_ZERO;
-        this->_colorBlendAttachment.alphaBlendOp = this->_getBlendOp(this->_pipelineStruct.alphaBlendOp);                   // VK_BLEND_OP_ADD;
-        this->_colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-    }
-    else
-    {
-        // 禁用颜色写入（用于只写Stencil的遮罩管线）
-        this->_colorBlendAttachment.colorWriteMask = 0; // 不写入任何颜色通道
-    }
+    // this->_colorBlendAttachment.blendEnable = this->_pipelineStruct.colorBlend != 0 ? VK_TRUE : VK_FALSE;
+    // if (this->_pipelineStruct.colorBlend != 0)
+    // {
+    //     this->_colorBlendAttachment.srcColorBlendFactor = this->_getBlendFactor(this->_pipelineStruct.srcColorBlendFactor); // VK_BLEND_FACTOR_ONE;
+    //     this->_colorBlendAttachment.dstColorBlendFactor = this->_getBlendFactor(this->_pipelineStruct.dstColorBlendFactor); // VK_BLEND_FACTOR_ZERO;
+    //     this->_colorBlendAttachment.colorBlendOp = this->_getBlendOp(this->_pipelineStruct.colorBlendOp);                   // VK_BLEND_OP_ADD;
+    //     this->_colorBlendAttachment.srcAlphaBlendFactor = this->_getBlendFactor(this->_pipelineStruct.srcAlphaBlendFactor); // VK_BLEND_FACTOR_ONE;
+    //     this->_colorBlendAttachment.dstAlphaBlendFactor = this->_getBlendFactor(this->_pipelineStruct.dstAlphaBlendFactor); // VK_BLEND_FACTOR_ZERO;
+    //     this->_colorBlendAttachment.alphaBlendOp = this->_getBlendOp(this->_pipelineStruct.alphaBlendOp);                   // VK_BLEND_OP_ADD;
+    //     this->_colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    // }
+    // else
+    // {
+    //     // 禁用颜色写入（用于只写Stencil的遮罩管线）
+    //     this->_colorBlendAttachment.colorWriteMask = 0; // 不写入任何颜色通道
+    // }
+    this->_colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    this->_colorBlendAttachment.blendEnable = VK_TRUE;
+    this->_colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    this->_colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    this->_colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+    this->_colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    this->_colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
     this->_colorBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
     this->_colorBlendInfo.logicOpEnable = VK_FALSE;
     this->_colorBlendInfo.attachmentCount = 1;
     this->_colorBlendInfo.pAttachments = &this->_colorBlendAttachment;
-    this->_colorBlendInfo.logicOp = VK_LOGIC_OP_COPY;
-    this->_colorBlendInfo.blendConstants[0] = 0.0f;
-    this->_colorBlendInfo.blendConstants[1] = 0.0f;
-    this->_colorBlendInfo.blendConstants[2] = 0.0f;
-    this->_colorBlendInfo.blendConstants[3] = 0.0f;
+    // this->_colorBlendInfo.logicOp = VK_LOGIC_OP_COPY;
+    // this->_colorBlendInfo.blendConstants[0] = 0.0f;
+    // this->_colorBlendInfo.blendConstants[1] = 0.0f;
+    // this->_colorBlendInfo.blendConstants[2] = 0.0f;
+    // this->_colorBlendInfo.blendConstants[3] = 0.0f;
 }
 VkBlendFactor GfxPipeline::_getBlendFactor(GfxPipelineColorBlendFactor blendFactor)
 {
@@ -329,11 +354,15 @@ VkBlendOp GfxPipeline::_getBlendOp(GfxPipelineColorBlendOp blendOp)
 void GfxPipeline::_initPipelineLayout()
 {
     this->_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    this->_setLayouts.push_back(Gfx::renderer->descriptorSetLayout());
-    this->_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(this->_setLayouts.size());
-    this->_pipelineLayoutInfo.pSetLayouts = this->_setLayouts.data();
-    // 绑定推送常量 默认没有推送常量
+    this->_pipelineLayoutInfo.setLayoutCount = 0;
     this->_pipelineLayoutInfo.pushConstantRangeCount = 0;
+
+    // this->_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    // this->_setLayouts.push_back(Gfx::renderer->descriptorSetLayout());
+    // this->_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(this->_setLayouts.size());
+    // this->_pipelineLayoutInfo.pSetLayouts = this->_setLayouts.data();
+    // // 绑定推送常量 默认没有推送常量
+    // this->_pipelineLayoutInfo.pushConstantRangeCount = 0;
     // 第八步：管线布局
     if (vkCreatePipelineLayout(Gfx::context->vkDevice(), &this->_pipelineLayoutInfo, nullptr, &this->_vkPipelineLayout) != VK_SUCCESS)
     {
@@ -349,7 +378,7 @@ void GfxPipeline::_initPipeline()
     this->_pipelineInfo.pVertexInputState = &this->_vertexInputInfo;
     this->_pipelineInfo.pInputAssemblyState = &this->_inputAssemblyInfo;
     this->_pipelineInfo.pViewportState = &this->_viewportInfo;
-    this->_pipelineInfo.pDynamicState = &this->_dynamicStateInfo; // 关键：设置动态状态
+    // this->_pipelineInfo.pDynamicState = &this->_dynamicStateInfo; // 关键：设置动态状态
     this->_pipelineInfo.pRasterizationState = &this->_rasterizationInfo;
     this->_pipelineInfo.pMultisampleState = &this->_multisampleInfo;
     this->_pipelineInfo.pColorBlendState = &this->_colorBlendInfo;
@@ -390,10 +419,6 @@ void GfxPipeline::reset()
 GfxPipeline::~GfxPipeline()
 {
 }
-
-
-
-
 
 // /**
 //  * @brief 初始化描述符集布局

@@ -71,6 +71,8 @@ protected:
     VkPipelineDynamicStateCreateInfo _dynamicStateInfo;
     virtual void _initDynamicState();
 
+    VkViewport _viewport;
+    VkRect2D _scissor;
     //  视图端口状态描述
     VkPipelineViewportStateCreateInfo _viewportInfo;
     virtual void _initViewportState();

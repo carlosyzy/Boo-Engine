@@ -25,8 +25,8 @@ void Window::init()
 	height = height < MIN_HEIGHT ? MIN_HEIGHT : height;
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	const int C_GLFW_TRANSPARENT_FRAMEBUFFER = 131082;
-	glfwWindowHint(C_GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
+	// const int C_GLFW_TRANSPARENT_FRAMEBUFFER = 131082;
+	// glfwWindowHint(C_GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
 
 	// 创建窗口
 	this->_window = glfwCreateWindow(width, height, "", nullptr, nullptr);

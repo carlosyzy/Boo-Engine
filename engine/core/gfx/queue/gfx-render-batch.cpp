@@ -8,23 +8,15 @@
 
 GfxRenderBatch::GfxRenderBatch(const GfxMaterial &material, const GfxMesh &mesh) : _material(material), _mesh(mesh), _objectCount(0)
 {
+    std::cout << "material uuid: " << this->_material.uuid << std::endl;
+    std::cout << "material pass : " << "pass-built" << std::endl;
+    std::cout << "material pipeline : " << "pipeline-built" << std::endl;
+    std::cout << "mesh uuid: " << this->_mesh.uuid << std::endl;
 
     std::vector<float> vertices{
-        -0.5f,
-        0.5f,
-        0.0f,
-        0.0f,
-        0.0f,
-        -0.5f,
-        -0.5f,
-        0.0f,
-        0.0f,
-        1.0f,
-        0.5f,
-        -0.5f,
-        0.0f,
-        1.0f,
-        1.0f,
+        -0.5f,0.5f, 0.0f,0.0f,   0.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f,0.0f,    0.0f,1.0f,
+        0.5f, -0.5f,0.0f,0.0f,    1.0f, 1.0f
     };
 
     std::vector<float> indices{
@@ -32,9 +24,8 @@ GfxRenderBatch::GfxRenderBatch(const GfxMaterial &material, const GfxMesh &mesh)
         1,
         2,
     };
-    // 等待设备空闲
-    vkDeviceWaitIdle(Gfx::context->vkDevice());
-    /*  // 清理旧缓冲区 */
+
+    // 清理旧缓冲区
     if (this->_vertexBuffer != VK_NULL_HANDLE)
     {
         vkDestroyBuffer(Gfx::context->vkDevice(), this->_vertexBuffer, nullptr);
@@ -56,6 +47,7 @@ GfxRenderBatch::GfxRenderBatch(const GfxMaterial &material, const GfxMesh &mesh)
         this->_indexMemory = VK_NULL_HANDLE;
     }
 
+    // 使用传入的mesh数据创建缓冲区
     // 顶点缓冲区
     GfxMgr::getInstance()->createBuffer(
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -64,7 +56,8 @@ GfxRenderBatch::GfxRenderBatch(const GfxMaterial &material, const GfxMesh &mesh)
         &this->_vertexMemory,
         vertices.size() * sizeof(float),
         vertices.data());
-    /*  // 索引缓冲区（不变） */
+
+    // 索引缓冲区（使用正确的uint32_t类型）
     GfxMgr::getInstance()->createBuffer(
         VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -72,9 +65,8 @@ GfxRenderBatch::GfxRenderBatch(const GfxMaterial &material, const GfxMesh &mesh)
         &this->_indexMemory,
         indices.size() * sizeof(uint32_t),
         indices.data());
+
     this->_indexSize = indices.size();
-    std::cout << "``````1..." << this->_vertexBuffer << std::endl;
-    std::cout << "``````2..." << this->_indexBuffer << std::endl;
 
     this->_createBuffers();
 }
@@ -88,11 +80,11 @@ void GfxRenderBatch::addObject()
 }
 void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
-    if (this->_objectCount == 0)
-    {
-        return;
-    }
-    std::cout << "GfxRenderBatch::render() imageIndex:" << imageIndex << std::endl;
+    // if (this->_objectCount == 0)
+    // {
+    //     return;
+    // }
+    // std::cout << "GfxRenderBatch::render() imageIndex:" << imageIndex << std::endl;
 
     vkResetCommandBuffer(this->_commandBuffers[imageIndex], 0);
 
@@ -107,7 +99,7 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
 
     // this->_createVertexBuffers();
 
-    GfxPipeline *pipeline = Gfx::renderer->getPipeline(this->_material.pipeline);
+    GfxPipeline *pipeline = Gfx::renderer->getPipeline("pipeline-built");
     if (pipeline == nullptr)
     {
         throw std::runtime_error("GfxRenderBatch::render() pipeline not found!");
@@ -118,23 +110,24 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
     vkCmdBindVertexBuffers(this->_commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
     vkCmdBindIndexBuffer(this->_commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-    VkDescriptorSet descriptorSet = Gfx::renderer->getDescriptorSet(imageIndex);
-    vkCmdBindDescriptorSets(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipelineLayout(), 0, 1, &descriptorSet, 0, nullptr);
+    // VkDescriptorSet descriptorSet = Gfx::renderer->getDescriptorSet(imageIndex);
+    // vkCmdBindDescriptorSets(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipelineLayout(), 0, 1, &descriptorSet, 0, nullptr);
 
-    VkViewport viewport{};
-    viewport.x = 0.0f;        // 距离左边 10 像素
-    viewport.y = 0.0f;        // 距离顶部 10 像素
-    viewport.width = 300.0f;  // 宽度 300 像素
-    viewport.height = 200.0f; // 高度 200 像素
-    viewport.minDepth = 0.0f;
-    viewport.maxDepth = 1.0f;
-    vkCmdSetViewport(this->_commandBuffers[imageIndex], 0, 1, &viewport);
+    // // 设置正确的视口尺寸，使用交换链的实际尺寸
+    // VkViewport viewport{};
+    // viewport.x = 0.0f;
+    // viewport.y = 0.0f;
+    // viewport.width = static_cast<float>(Gfx::context->getSwapChainExtent().width);
+    // viewport.height = static_cast<float>(Gfx::context->getSwapChainExtent().height);
+    // viewport.minDepth = 0.0f;
+    // viewport.maxDepth = 1.0f;
+    // vkCmdSetViewport(this->_commandBuffers[imageIndex], 0, 1, &viewport);
 
-    // 使用相同的区域进行裁剪（确保不超出）
-    VkRect2D scissor{};
-    scissor.offset = {0, 0};
-    scissor.extent = {300, 200};
-    vkCmdSetScissor(this->_commandBuffers[imageIndex], 0, 1, &scissor);
+    // // 使用相同的区域进行裁剪
+    // VkRect2D scissor{};
+    // scissor.offset = {0, 0};
+    // scissor.extent = Gfx::context->getSwapChainExtent();
+    // vkCmdSetScissor(this->_commandBuffers[imageIndex], 0, 1, &scissor);
 
     vkCmdDrawIndexed(
         this->_commandBuffers[imageIndex],
@@ -160,7 +153,7 @@ void GfxRenderBatch::_createBuffers()
 }
 void GfxRenderBatch::_createFramebuffers()
 {
-    GfxPass *pass = Gfx::renderer->getPass(this->_material.pass);
+    GfxPass *pass = Gfx::renderer->getPass("pass-built");
     if (pass == nullptr)
     {
         throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
@@ -173,13 +166,13 @@ void GfxRenderBatch::_createFramebuffers()
     for (size_t i = 0; i < swapChainImageViews.size(); i++)
     {
         VkImageView attachments[] = {swapChainImageViews[i]};
-        
+
         VkFramebufferCreateInfo framebufferInfo = {};
         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         framebufferInfo.renderPass = pass->vkRenderPass();
 
         framebufferInfo.attachmentCount = 1;
-        framebufferInfo.pAttachments = attachments;             // 渲染流程对象用于描述附着信息的pAttachment数组
+        framebufferInfo.pAttachments = attachments;                         // 渲染流程对象用于描述附着信息的pAttachment数组
         framebufferInfo.width = Gfx::context->getSwapChainExtent().width;   // width和height用于指定帧缓冲的大小
         framebufferInfo.height = Gfx::context->getSwapChainExtent().height; // 交换链图像都是单层，layers设置为1
         framebufferInfo.layers = 1;
@@ -213,7 +206,8 @@ void GfxRenderBatch::_createVertexBuffers()
 
 void GfxRenderBatch::_beginBindRenderPass(uint32_t imageIndex)
 {
-    GfxPass *pass = Gfx::renderer->getPass(this->_material.pass);
+
+    GfxPass *pass = Gfx::renderer->getPass("pass-built");
     if (pass == nullptr)
     {
         std::cout << "GfxRenderBatch::_beginBindRenderPass() pass not found!" << std::endl;
@@ -228,34 +222,15 @@ void GfxRenderBatch::_beginBindRenderPass(uint32_t imageIndex)
     renderPassInfo.renderArea.offset = {0, 0};
     renderPassInfo.renderArea.extent = Gfx::context->getSwapChainExtent();
 
-    // std::array<VkClearValue, 3> clearValues = { }; // 至少4个，因为最高索引是3
-    // // 设置颜色附件的清除值（索引0）
-    // clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}}; // 黑色
-    // // 设置其他颜色附件的清除值（如果有，索引1、2等）
-    // clearValues[1].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
-    // // 设置深度模板附件的清除值（索引3）
-    // clearValues[2].depthStencil = {1.0f, 0}; // 深度=1.0f，模板=0
-    // renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-    // renderPassInfo.pClearValues = clearValues.data();
-
+    // 设置清除颜色为黑色
     VkClearValue clearColor{};
-    clearColor.color = {1.0f, 1.0f, 1.0f, 1.0f};
+    clearColor.color = {{1.0f, 1.0f, 1.0f, 1.0f}};
     renderPassInfo.clearValueCount = 1;
     renderPassInfo.pClearValues = &clearColor;
-    // std::cout << "GfxRenderBatch::_beginBindRenderPass() imageIndex:" << imageIndex << " pass:" << pass->name() << " commandBuffer:" << this->_commandBuffers[imageIndex] << std::endl;
+
+    std::cout << "GfxRenderBatch::_beginBindRenderPass() clearColor:" << std::endl;
+
     vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-    // 清除颜色
-    VkClearAttachment clearAtt{};
-    clearAtt.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    clearAtt.clearValue.color = {{0.0f, 0.0f, 1.0f, 1.0f}}; // 红色，Alpha=0（透明）
-    clearAtt.colorAttachment = 0;                           // 第0个颜色附件
-    VkClearRect clearRect{};
-    clearRect.rect = renderPassInfo.renderArea; // 与 RenderPass 范围一致
-    clearRect.baseArrayLayer = 0;
-    clearRect.layerCount = 1;
-
-    vkCmdClearAttachments(this->_commandBuffers[imageIndex], 1, &clearAtt, 1, &clearRect);
 }
 
 GfxRenderBatch::~GfxRenderBatch()
