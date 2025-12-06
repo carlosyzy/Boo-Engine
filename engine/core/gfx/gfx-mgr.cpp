@@ -36,8 +36,6 @@ void GfxMgr::init()
 
 void GfxMgr::update()
 {
-    return;
-
     // Gfx::renderer->clearDestroyObjects();
     std::cout << "renderer update" << std::endl;
     Gfx::context->frameFencesPrepare(this->_currentFrame);
@@ -117,8 +115,8 @@ void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<
 {
     Gfx::renderer->createSpirvShader(shaderName, data);
 }
-void GfxMgr:: initRenderQueue(uint32_t renderId, uint32_t renderType, std::array<float, 16> &viewMat, std::array<float, 16> &projMat){
-    Gfx::renderer->initRenderQueue(renderId, renderType, viewMat, projMat);
+void GfxMgr:: initRenderQueue(uint32_t renderId, std::array<float, 16> &viewMat, std::array<float, 16> &projMat){
+    Gfx::renderer->initRenderQueue(renderId,viewMat, projMat);
 }
 void GfxMgr:: submitRenderObject(uint32_t renderId, GfxMaterial &material, GfxMesh &mesh){
     Gfx::renderer->submitRenderObject(renderId, material, mesh);

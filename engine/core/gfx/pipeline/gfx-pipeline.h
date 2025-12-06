@@ -114,6 +114,9 @@ protected:
 public:
     GfxPipeline(const std::string &name);
     const std::string &getName();
+     VkPipeline vkPipeline() { return _vkPipeline; }
+     VkPipelineLayout vkPipelineLayout() { return _vkPipelineLayout; }
+    
     void create(GfxPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, GfxPipelineStruct pipelineStruct);
     void clear();
     void reset();

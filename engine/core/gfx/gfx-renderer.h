@@ -22,7 +22,8 @@ class GfxPass;
 class GfxShader;
 class GfxPipeline;
 class GfxRenderQueue;
-class GfxBuffer;
+class GfxBufferUBO;
+class GfxBufferSSBO;
 
 class GfxRenderer
 {
@@ -30,17 +31,16 @@ private:
 	float _time;
 
 	VkDescriptorPool _descriptorPool;
-    /**
-     * @brief 描述符集布局
-     * 绑定ubo和采样器
-     */
-    VkDescriptorSetLayout _descriptorSetLayout;
+	/**
+	 * @brief 描述符集布局
+	 * 绑定ubo和采样器
+	 */
+	VkDescriptorSetLayout _descriptorSetLayout;
 	/**
 	 * @brief 描述符集
 	 * 描述符集
 	 */
 	std::vector<VkDescriptorSet> _descriptorSets;
-
 
 	std::map<std::string, GfxTexture *> _textures;
 	/**
@@ -63,22 +63,23 @@ private:
 	 * 渲染队列-一个摄像机一个队列
 	 * uint32_t 摄像机的可见id
 	 */
+	GfxRenderQueue *_defaultQueue;
 	std::map<uint32_t, GfxRenderQueue *> _queues;
 
 	/**
 	 * @brief 渲染缓冲区
 	 * 渲染缓冲区
 	 */
-	std::map<VkDeviceSize, std::vector<GfxBuffer *>> _buffers;
-
+	std::map<VkDeviceSize, std::vector<GfxBufferUBO *>> _uboBuffers;
+	std::map<VkDeviceSize, std::vector<GfxBufferSSBO *>> _ssboBuffers;
 
 	/**
 	 * 描述符相关
 	 */
 	void _initDescriptor();
-    void _initDescriptorPool();
-    void _initDescriptorSetLayout();
-    void _initDescriptorSets();
+	void _initDescriptorPool();
+	void _initDescriptorSetLayout();
+	void _initDescriptorSets();
 
 	/**
 	 * @brief 初始化默认通道
@@ -87,11 +88,15 @@ private:
 	void _initDefaultShaders();
 	void _initDefaultPipeline();
 	// void _initDefaultUIMaskPipeline();
+	// 初始化默认渲染队列
+	void _initDefaultRenderQueue();
 
 public:
 	GfxRenderer();
 	void init();
-
+	GfxPass *getPass(std::string name) const { return this->_passes.at(name); }
+	GfxPipeline *getPipeline(std::string name) const { return this->_pipelines.at(name); }
+	VkDescriptorSet getDescriptorSet(uint32_t index) const { return this->_descriptorSets[index]; }
 	/**
 	 * @brief 获取描述符集布局
 	 *
@@ -135,7 +140,7 @@ public:
 	 * @param viewMat 视图矩阵
 	 * @param projMat 投影矩阵
 	 */
-	void initRenderQueue(uint32_t renderId, uint32_t renderType, std::array<float, 16> &viewMat, std::array<float, 16> &projMat);
+	void initRenderQueue(uint32_t renderId, std::array<float, 16> &viewMat, std::array<float, 16> &projMat);
 	/**
 	 * @brief 提交渲染对象
 	 *

@@ -38,8 +38,9 @@ protected:
 
 public:
 	GfxRenderQueue();
-	void init(std::array<float, 16>& viewMat, std::array<float, 16>& projMat);
-	void submitObject(GfxMaterial& material, GfxMesh& mesh);
+	void init(const std::array<float, 16>& viewMat,const std::array<float, 16>& projMat);
+	void submitObject(const GfxMaterial& material, const GfxMesh& mesh);
+	void render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
 	~GfxRenderQueue();
 };
 

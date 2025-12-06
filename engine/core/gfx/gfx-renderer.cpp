@@ -30,6 +30,7 @@ void GfxRenderer::init()
     this->_initDefaultPasses();
     this->_initDefaultShaders();
     this->_initDefaultPipeline();
+    this->_initDefaultRenderQueue();
     // this->_initDefaultUIMaskPipeline();
 }
 void GfxRenderer::_initDescriptor()
@@ -184,8 +185,8 @@ void GfxRenderer::_initDescriptorSets()
  */
 void GfxRenderer::_initDefaultPasses()
 {
-    GfxPassBuiltScreen *screenPass = new GfxPassBuiltScreen("pass-built-screen");
-    this->_passes["pass-built-screen"] = screenPass;
+    GfxPassBuiltScreen *screenPass = new GfxPassBuiltScreen("pass-built");
+    this->_passes["pass-built"] = screenPass;
     GfxPassBuiltUI *uiPass = new GfxPassBuiltUI("pass-built-ui");
     this->_passes["pass-built-ui"] = uiPass;
 }
@@ -194,14 +195,14 @@ void GfxRenderer::_initDefaultPasses()
  */
 void GfxRenderer::_initDefaultShaders()
 {
-    std::string shaderVertName = "built-ui.vert";
+    std::string shaderVertName = "built.vert";
     GfxShader *shader = new GfxShader(shaderVertName);
-    shader->createShaderModule(GfxShaderUIVertSPV, GfxShaderUIVertSPVSize);
+    shader->createShaderModule(GfxShaderBuiltVertSPV, GfxShaderBuiltVertSPVSize);
     this->_shaders[shaderVertName] = shader;
 
-    std::string shaderFragName = "built-ui.frag";
+    std::string shaderFragName = "built.frag";
     shader = new GfxShader(shaderFragName);
-    shader->createShaderModule(GfxShaderUIFragSPV, GfxShaderUIFragSPVSize);
+    shader->createShaderModule(GfxShaderBuiltFragSPV, GfxShaderBuiltFragSPVSize);
     this->_shaders[shaderFragName] = shader;
 
     // std::string shaderMaskVertName = "built-ui-mask.vert";
@@ -221,8 +222,8 @@ void GfxRenderer::_initDefaultPipeline()
 {
     GfxPipelineStruct screenPipelineStruct = {};
     screenPipelineStruct.vert = "built-ui.vert";
-    screenPipelineStruct.frag = "built-ui.frag";
-    screenPipelineStruct.pass = "pass-built-screen";
+    screenPipelineStruct.frag = "built.frag";
+    screenPipelineStruct.pass = "pass-built";
     screenPipelineStruct.depthTest = 0;
     screenPipelineStruct.depthWrite = 0;
     screenPipelineStruct.depthCompareOp = GfxPipelineCompareOp::Always;
@@ -239,39 +240,43 @@ void GfxRenderer::_initDefaultPipeline()
     screenPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
     // 剔除模式 背面
     screenPipelineStruct.cullMode = GfxPipelineCullMode::Back;
-    this->createUIPipeline("pass-built-screen", screenPipelineStruct);
+    this->createUIPipeline("pipeline-built", screenPipelineStruct);
 
-    GfxPipelineStruct uiPipelineStruct = {};
-    uiPipelineStruct.vert = "built-ui.vert";
-    uiPipelineStruct.frag = "built-ui.frag";
-    uiPipelineStruct.pass = "pass-built-ui";
-    uiPipelineStruct.depthTest = 0;
-    uiPipelineStruct.depthWrite = 0;
-    uiPipelineStruct.depthCompareOp = GfxPipelineCompareOp::Always;
-    // 模版测试 启用（用于UI遮罩）
-    uiPipelineStruct.stencilTest = 1;
-    uiPipelineStruct.stencilFrontCompareOp = GfxPipelineCompareOp::Equal;  // 只在模板值相等时绘制
-    uiPipelineStruct.stencilFrontFailOp = GfxPipelineStencilOp::Keep;      // 测试失败：保持
-    uiPipelineStruct.stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep; // 深度失败：保持
-    uiPipelineStruct.stencilFrontPassOp = GfxPipelineStencilOp::Keep;      // 测试通过：保持（不修改模板值）
-    uiPipelineStruct.stencilBackCompareOp = GfxPipelineCompareOp::Equal;
-    uiPipelineStruct.stencilBackFailOp = GfxPipelineStencilOp::Keep;
-    uiPipelineStruct.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
-    uiPipelineStruct.stencilBackPassOp = GfxPipelineStencilOp::Keep;
-    // 颜色混合 开启
-    uiPipelineStruct.colorBlend = 1;
-    uiPipelineStruct.srcColorBlendFactor = GfxPipelineColorBlendFactor::SrcAlpha;
-    uiPipelineStruct.dstColorBlendFactor = GfxPipelineColorBlendFactor::OneMinusSrcAlpha;
-    uiPipelineStruct.colorBlendOp = GfxPipelineColorBlendOp::Add;
-    uiPipelineStruct.srcAlphaBlendFactor = GfxPipelineColorBlendFactor::One;
-    uiPipelineStruct.dstAlphaBlendFactor = GfxPipelineColorBlendFactor::OneMinusSrcAlpha;
-    uiPipelineStruct.alphaBlendOp = GfxPipelineColorBlendOp::Add;
-    uiPipelineStruct.colorWriteMask = 4;
-    // 多边形模式 填充
-    uiPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
-    // 剔除模式 背面
-    uiPipelineStruct.cullMode = GfxPipelineCullMode::Back;
-    this->createUIPipeline("pass-built-ui", uiPipelineStruct);
+    // GfxPipelineStruct uiPipelineStruct = {};
+    // uiPipelineStruct.vert = "built-ui.vert";
+    // uiPipelineStruct.frag = "built-ui.frag";
+    // uiPipelineStruct.pass = "pass-built-ui";
+    // uiPipelineStruct.depthTest = 0;
+    // uiPipelineStruct.depthWrite = 0;
+    // uiPipelineStruct.depthCompareOp = GfxPipelineCompareOp::Always;
+    // // 模版测试 启用（用于UI遮罩）
+    // uiPipelineStruct.stencilTest = 1;
+    // uiPipelineStruct.stencilFrontCompareOp = GfxPipelineCompareOp::Equal;  // 只在模板值相等时绘制
+    // uiPipelineStruct.stencilFrontFailOp = GfxPipelineStencilOp::Keep;      // 测试失败：保持
+    // uiPipelineStruct.stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep; // 深度失败：保持
+    // uiPipelineStruct.stencilFrontPassOp = GfxPipelineStencilOp::Keep;      // 测试通过：保持（不修改模板值）
+    // uiPipelineStruct.stencilBackCompareOp = GfxPipelineCompareOp::Equal;
+    // uiPipelineStruct.stencilBackFailOp = GfxPipelineStencilOp::Keep;
+    // uiPipelineStruct.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
+    // uiPipelineStruct.stencilBackPassOp = GfxPipelineStencilOp::Keep;
+    // // 颜色混合 开启
+    // uiPipelineStruct.colorBlend = 1;
+    // uiPipelineStruct.srcColorBlendFactor = GfxPipelineColorBlendFactor::SrcAlpha;
+    // uiPipelineStruct.dstColorBlendFactor = GfxPipelineColorBlendFactor::OneMinusSrcAlpha;
+    // uiPipelineStruct.colorBlendOp = GfxPipelineColorBlendOp::Add;
+    // uiPipelineStruct.srcAlphaBlendFactor = GfxPipelineColorBlendFactor::One;
+    // uiPipelineStruct.dstAlphaBlendFactor = GfxPipelineColorBlendFactor::OneMinusSrcAlpha;
+    // uiPipelineStruct.alphaBlendOp = GfxPipelineColorBlendOp::Add;
+    // uiPipelineStruct.colorWriteMask = 4;
+    // // 多边形模式 填充
+    // uiPipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
+    // // 剔除模式 背面
+    // uiPipelineStruct.cullMode = GfxPipelineCullMode::Back;
+    // this->createUIPipeline("pass-built-ui", uiPipelineStruct);
+}
+void GfxRenderer::_initDefaultRenderQueue()
+{
+    this->_defaultQueue = new GfxRenderQueue();
 }
 
 void GfxRenderer::createPipeline(std::string name, GfxPipelineStruct pipelineStruct)
@@ -456,7 +461,7 @@ std::vector<uint32_t> GfxRenderer::compileShaderGlslToSpirv(const std::string &t
     return spirvCode;
 }
 
-void GfxRenderer::initRenderQueue(uint32_t renderId, uint32_t renderType, std::array<float, 16> &viewMat, std::array<float, 16> &projMat)
+void GfxRenderer::initRenderQueue(uint32_t renderId, std::array<float, 16> &viewMat, std::array<float, 16> &projMat)
 {
     if (this->_queues.find(renderId) == this->_queues.end())
     {
@@ -477,10 +482,17 @@ void GfxRenderer::submitRenderObject(uint32_t renderId, GfxMaterial &material, G
 
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
-    for (auto &queue : this->_queues)
-    {
-        // queue.second->render(imageIndex, commandBuffers);
-    }
+    // 渲染默认队列
+    std::array<float, 16> viewMat = {1.0f};
+    std::array<float, 16> projMat = {1.0f};
+    this->_defaultQueue->init(viewMat, projMat);
+    this->_defaultQueue->submitObject(defaultMaterial, defaultMesh);
+    this->_defaultQueue->render(imageIndex, commandBuffers);
+
+    // for (auto &queue : this->_queues)
+    // {
+    //     // queue.second->render(imageIndex, commandBuffers);
+    // }
 }
 
 void GfxRenderer::cleanRendererState()

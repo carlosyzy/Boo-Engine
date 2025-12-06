@@ -19,7 +19,7 @@ public:
 	{
 		return this->_name;
 	}
-	const VkRenderPass vkRenderPass()
+	VkRenderPass vkRenderPass()
 	{
 		return this->_vkRenderPass;
 	}

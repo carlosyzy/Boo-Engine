@@ -9,12 +9,12 @@ GfxRenderQueue::GfxRenderQueue()
     this->_viewMat = {};
     this->_projMat = {};
 }
-void GfxRenderQueue::init(std::array<float, 16> &viewMat, std::array<float, 16> &projMat)
+void GfxRenderQueue::init(const std::array<float, 16> &viewMat, const std::array<float, 16> &projMat)
 {
     this->_viewMat = viewMat;
     this->_projMat = projMat;
 }
-void GfxRenderQueue::submitObject(GfxMaterial &material, GfxMesh &mesh)
+void GfxRenderQueue::submitObject(const GfxMaterial &material,const GfxMesh &mesh)
 {
     if (this->_batches.empty())
     {
@@ -35,6 +35,13 @@ void GfxRenderQueue::submitObject(GfxMaterial &material, GfxMesh &mesh)
             this->_batches.push_back(batch);
             batch->addObject();
         }
+    }
+}
+void GfxRenderQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
+{
+    for (auto &batch : this->_batches)
+    {
+        batch->render(imageIndex, commandBuffers);
     }
 }
 GfxRenderQueue::~GfxRenderQueue()
