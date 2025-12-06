@@ -60,4 +60,4 @@ public:
     ~UIText() override;
 };
 // 注册宏调用
-REGISTER_COMPONENT(UIText, "UI文本组件")
+REGISTER_COMPONENT(UIText, "UI Text Component")

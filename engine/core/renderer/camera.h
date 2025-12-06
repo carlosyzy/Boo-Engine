@@ -59,4 +59,4 @@ public:
     void destroy() override;
     ~Camera();
 };
-REGISTER_COMPONENT(Camera, "相机组件");
+REGISTER_COMPONENT(Camera, "Camera Component");

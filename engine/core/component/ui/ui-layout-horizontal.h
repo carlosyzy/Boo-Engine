@@ -39,4 +39,4 @@ public:
     void destroy() override;
     ~UILayoutHorizontal();
 };
-REGISTER_COMPONENT(UILayoutHorizontal,  "UI水平布局组件")
+REGISTER_COMPONENT(UILayoutHorizontal,  "UI Horizontal Layout Component")

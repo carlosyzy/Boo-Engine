@@ -11,7 +11,7 @@ ComponentFactory &ComponentFactory::getInstance()
 }
 bool ComponentFactory::registerComponent(const std::string &name, std::function<Component *(std::string name, Node *node, std::string uuid)> creator,std::string description) {
     if (name.empty()) {
-        std::cerr << "❌ 组件类型名称不能为空" << std::endl;
+        std::cerr << "❌ Component type name cannot be empty" << std::endl;
         return false;
     }
     
@@ -22,7 +22,7 @@ bool ComponentFactory::registerComponent(const std::string &name, std::function<
     
     this->_creators[name] = creator;
     this->_descriptions[name] = description;
-    std::cout << "✅ 注册组件: " << name;
+    std::cout << "OK: register component " << name;
     if (!description.empty()) {
         std::cout << " - " << description;
     }
@@ -41,7 +41,7 @@ Component* ComponentFactory::createComponent(const std::string &name, Node *node
         Component* component = it->second(name, node, uuid);
         return component;
     }
-    std::cerr << "❌ 未知组件类型: " << name << std::endl;
+    std::cerr << "Error: component type '" << name << "' is not registered" << std::endl;
     return nullptr;
 }
 bool ComponentFactory::isComponentRegistered(const std::string& typeName) const {

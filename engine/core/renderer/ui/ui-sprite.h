@@ -69,4 +69,4 @@ public:
     void destroy() override;
     ~UISprite() override;
 };
-REGISTER_COMPONENT(UISprite, "UI精灵组件")
+REGISTER_COMPONENT(UISprite, "UI Sprite Component")
