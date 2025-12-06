@@ -175,20 +175,26 @@ void GfxPipeline::_createPipeline()
     // colorBlending.blendConstants[2] = 0.0f;
     // colorBlending.blendConstants[3] = 0.0f;
 
+    // VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+    // pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    // pipelineLayoutInfo.pNext = nullptr;  // ✅ 如果没有扩展结构，设为nullptr
+    // pipelineLayoutInfo.flags = 0;  // ✅ 通常为0
+    // pipelineLayoutInfo.setLayoutCount = 0;
+    // pipelineLayoutInfo.pushConstantRangeCount = 0;
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutInfo.setLayoutCount = 0;
-    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pushConstantRangeCount = 0;
 
-    // 第七步：推送常量，用于在着色器中传递数据
-    VkPushConstantRange pushConstantRange{};
-    pushConstantRange.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    pushConstantRange.offset = 0;
-    pushConstantRange.size = sizeof(PushConstants);
-    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+    // // 第七步：推送常量，用于在着色器中传递数据
+    // VkPushConstantRange pushConstantRange{};
+    // pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    // pushConstantRange.offset = 0;
+    // pushConstantRange.size = sizeof(PushConstants);
+    // pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
     // 第八步：管线布局，
-    if (vkCreatePipelineLayout(Gfx::context->getVkDevice(), &this->_pipelineLayoutInfo, nullptr, &this->_vkPipelineLayout) != VK_SUCCESS)
+    if (vkCreatePipelineLayout(Gfx::context->getVkDevice(), &pipelineLayoutInfo, nullptr, &this->_vkPipelineLayout) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create pipeline layout!");
     }

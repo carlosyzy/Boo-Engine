@@ -122,18 +122,16 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
     // }
     // std::cout << "GfxRenderBatch::render() imageIndex:" << imageIndex << std::endl;
 
-    
     GfxPipeline *pipeline = Gfx::renderer->getPipeline("pipeline-built");
     if (pipeline == nullptr)
     {
         throw std::runtime_error("GfxRenderBatch::render() pipeline not found!");
     }
-     GfxPass *pass = Gfx::renderer->getPass("pass-built");
+    GfxPass *pass = Gfx::renderer->getPass("pass-built");
     if (pass == nullptr)
     {
         throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
     }
-
 
     vkResetCommandBuffer(this->_commandBuffers[imageIndex], 0);
 
@@ -158,7 +156,6 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
     renderPassInfo.pClearValues = &clearColor;
 
     vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-    
 
     // this->_createVertexBuffers();
 
@@ -187,13 +184,20 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
     // scissor.extent = Gfx::context->getSwapChainExtent();
     // vkCmdSetScissor(this->_commandBuffers[imageIndex], 0, 1, &scissor);
 
+    // PushConstants pushConstants{};
+    // pushConstants.defaultColor[0] = 1.0f;
+    // pushConstants.defaultColor[1] = 0.0f;
+    // pushConstants.defaultColor[2] = 0.0f;
+    // pushConstants.defaultColor[3] = 1.0f;
+    // vkCmdPushConstants(commandBuffers[imageIndex], pipeline->vkPipelineLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstants), &pushConstants);
+
     vkCmdDrawIndexed(
         this->_commandBuffers[imageIndex],
-       3, // 只绘制3个索引（第一个三角形）
-        1,                // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
-        0,                // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
-        0,                // 第一个实例的索引 从第 0 个实例开始绘制
-        0                 // 实例偏移
+        3, // 只绘制3个索引（第一个三角形）
+        1, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
+        0, // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
+        0, // 第一个实例的索引 从第 0 个实例开始绘制
+        0  // 实例偏移
     );
     // 渲染结束
     vkCmdEndRenderPass(this->_commandBuffers[imageIndex]);

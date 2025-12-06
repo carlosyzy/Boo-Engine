@@ -187,7 +187,7 @@ void GfxRenderer::_initDescriptorSets()
  */
 void GfxRenderer::_initDefaultPasses()
 {
-    GfxPassBuilt *screenPass = new GfxPassBuilt("pass-built");
+    GfxPass *screenPass = new GfxPass("pass-built");
     this->_passes["pass-built"] = screenPass;
     // GfxPassBuiltUI *uiPass = new GfxPassBuiltUI("pass-built-ui");
     // this->_passes["pass-built-ui"] = uiPass;
