@@ -14,7 +14,7 @@ void GfxPass::clear()
 {
     if (this->_vkRenderPass != VK_NULL_HANDLE)
     {
-        vkDestroyRenderPass(Gfx::context->vkDevice(), this->_vkRenderPass, nullptr);
+        vkDestroyRenderPass(Gfx::context->getVkDevice(), this->_vkRenderPass, nullptr);
         this->_vkRenderPass = VK_NULL_HANDLE;
     }
 }
@@ -110,7 +110,7 @@ GfxPass::~GfxPass()
 //     renderPassInfo.pDependencies = &dependency;
 
 //     /*  // 创建渲染流程 */
-//     if (vkCreateRenderPass(Gfx::context->vkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
+//     if (vkCreateRenderPass(Gfx::context->getVkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
 //     {
 //         // throw std::runtime_error("failed to create render pass!");
 //         std::cout << "GfxPass :create render pass failed " << this->_name << std::endl;

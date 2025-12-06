@@ -12,18 +12,72 @@ GfxPassBuilt::GfxPassBuilt(std::string name) : GfxPass(name)
 }
 void GfxPassBuilt::_create()
 {
-    GfxPass::_create();
+    // GfxPass::_create();
+    // VkAttachmentDescription colorAttachment = {};
+    // colorAttachment.format = Gfx::context->getSwapChainImageFormat(); // 颜色缓冲附着(VkImageView)的格式
+    // colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;                  // 指定采样数，没有使用多重采样，设置为1
+    // colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD; //; // 重要！VK_ATTACHMENT_LOAD_OP_CLEAR
+    // colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    // colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    // colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    // colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    // colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+
+    // VkAttachmentReference colorAttachmentRef = {};
+    // colorAttachmentRef.attachment = 0;
+    // colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    // VkSubpassDescription subpass = {};
+    // subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    // subpass.colorAttachmentCount = 1;
+    // subpass.pColorAttachments = &colorAttachmentRef;
+
+    // VkSubpassDependency dependency = {};
+    // dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    // dependency.dstSubpass = 0;
+    // dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    // dependency.srcAccessMask = 0;
+    // dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    // dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+    // VkClearValue clearColor = {{0.0f, 0.0f, 0.0f, 0.0f}}; // RGBA = (0,0,0,0)
+    // VkRenderPassCreateInfo renderPassInfo = {};
+    // renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    // renderPassInfo.attachmentCount = 1;
+    // renderPassInfo.pAttachments = &colorAttachment;
+    // renderPassInfo.subpassCount = 1;
+    // renderPassInfo.pSubpasses = &subpass;
+    // renderPassInfo.dependencyCount = 1;
+    // renderPassInfo.pDependencies = &dependency;
+
+    // // 多重采样
+    // /*  // 创建渲染流程 */
+    // if (vkCreateRenderPass(Gfx::context->getVkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
+    // {
+    //     // throw std::runtime_error("failed to create render pass!");
+    //     std::cout << "Gfx : Pass :: create render pass failed " << this->_name << std::endl;
+    //     return;
+    // }
+    // std::cout << "Gfx : Pass :: create render pass success " << this->_name << std::endl;
+    std::cout << "create render pass start..." << std::endl;
     VkAttachmentDescription colorAttachment = {};
-    colorAttachment.format = Gfx::context->getSwapChainImageFormat(); // 颜色缓冲附着(VkImageView)的格式
-    colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;                  // 指定采样数，没有使用多重采样，设置为1
-    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD; //; // 重要！VK_ATTACHMENT_LOAD_OP_CLEAR
+    colorAttachment.format =Gfx::context->getSwapChainImageFormat(); // 颜色缓冲附着(VkImageView)的格式
+    colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;                           // 指定采样数，没有使用多重采样，设置为1
+
+    /**
+     * loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR	每帧清除背景	透明背景有效，但会清除所有三角形
+     * loadOp = VK_ATTACHMENT_LOAD_OP_LOAD	保留上一帧内容	首次渲染时可能加载垃圾数据
+     * VK_ATTACHMENT_LOAD_OP_DONT_CARE	不加载上一帧内容	性能优化
+     */
+    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD; //; // 重要！
     colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
     colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-
+    // 一个渲染流程包含多个子流程，子流程依赖上一流程处理后的帧缓冲内容
     VkAttachmentReference colorAttachmentRef = {};
     colorAttachmentRef.attachment = 0;
     colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
@@ -51,15 +105,12 @@ void GfxPassBuilt::_create()
     renderPassInfo.dependencyCount = 1;
     renderPassInfo.pDependencies = &dependency;
 
-    // 多重采样
-    /*  // 创建渲染流程 */
-    if (vkCreateRenderPass(Gfx::context->vkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
+    // 创建渲染流程
+    if (vkCreateRenderPass(Gfx::context->getVkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
     {
-        // throw std::runtime_error("failed to create render pass!");
-        std::cout << "Gfx : Pass :: create render pass failed " << this->_name << std::endl;
-        return;
+        throw std::runtime_error("failed to create render pass!");
     }
-    std::cout << "Gfx : Pass :: create render pass success " << this->_name << std::endl;
+    std::cout << "create render pass success..." << std::endl;
 }
 
 GfxPassBuilt::~GfxPassBuilt()

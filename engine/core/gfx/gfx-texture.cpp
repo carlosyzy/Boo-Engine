@@ -35,9 +35,9 @@ void GfxTexture::_createTextureImage()
         this->_imageSize, nullptr);
     /* // 复制数据到暂存缓冲区 */
     void *data;
-    vkMapMemory(Gfx::context->vkDevice(), stagingBufferMemory, 0, this->_imageSize, 0, &data);
+    vkMapMemory(Gfx::context->getVkDevice(), stagingBufferMemory, 0, this->_imageSize, 0, &data);
     memcpy(data, this->_pixels->data(), static_cast<size_t>(this->_imageSize));
-    vkUnmapMemory(Gfx::context->vkDevice(), stagingBufferMemory);
+    vkUnmapMemory(Gfx::context->getVkDevice(), stagingBufferMemory);
     /* // 计算格式 */
     VkFormat format = VK_FORMAT_R8G8B8A8_UNORM;
     if (this->_channels == 1)
@@ -56,8 +56,8 @@ void GfxTexture::_createTextureImage()
     this->_transitionImageLayout(this->_textureImage, format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
    /*  // 清理暂存资源 */
-    vkDestroyBuffer(Gfx::context->vkDevice(), stagingBuffer, nullptr);
-    vkFreeMemory(Gfx::context->vkDevice(), stagingBufferMemory, nullptr);
+    vkDestroyBuffer(Gfx::context->getVkDevice(), stagingBuffer, nullptr);
+    vkFreeMemory(Gfx::context->getVkDevice(), stagingBufferMemory, nullptr);
 }
 void GfxTexture::_createTextureImageView()
 {
@@ -87,7 +87,7 @@ void GfxTexture::_createTextureSampler()
     samplerInfo.maxLod = 0.0f;
     samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
-    if (vkCreateSampler(Gfx::context->vkDevice(), &samplerInfo, nullptr, &this->_textureSampler) != VK_SUCCESS)
+    if (vkCreateSampler(Gfx::context->getVkDevice(), &samplerInfo, nullptr, &this->_textureSampler) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create texture sampler!");
     }
@@ -116,25 +116,25 @@ void GfxTexture::createImage(uint32_t width, uint32_t height, VkFormat format,
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     imageInfo.flags = 0;
 
-    if (vkCreateImage(Gfx::context->vkDevice(), &imageInfo, nullptr, &image) != VK_SUCCESS)
+    if (vkCreateImage(Gfx::context->getVkDevice(), &imageInfo, nullptr, &image) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create image!");
     }
 
     VkMemoryRequirements memRequirements;
-    vkGetImageMemoryRequirements(Gfx::context->vkDevice(), image, &memRequirements);
+    vkGetImageMemoryRequirements(Gfx::context->getVkDevice(), image, &memRequirements);
 
     VkMemoryAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     allocInfo.allocationSize = memRequirements.size;
     allocInfo.memoryTypeIndex = GfxMgr::getInstance()->getMemoryTypeIndex(memRequirements.memoryTypeBits, properties);
 
-    if (vkAllocateMemory(Gfx::context->vkDevice(), &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
+    if (vkAllocateMemory(Gfx::context->getVkDevice(), &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to allocate image memory!");
     }
 
-    vkBindImageMemory(Gfx::context->vkDevice(), image, imageMemory, 0);
+    vkBindImageMemory(Gfx::context->getVkDevice(), image, imageMemory, 0);
 }
 void GfxTexture::createImage(uint32_t width, uint32_t height, VkFormat format,
                              VkImageTiling tiling, VkImageUsageFlags usage,
@@ -164,7 +164,7 @@ void GfxTexture::createImageView(VkImage image, VkFormat format, VkImageAspectFl
         viewInfo.components.a = VK_COMPONENT_SWIZZLE_ONE;
     }
 
-    if (vkCreateImageView(Gfx::context->vkDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS)
+    if (vkCreateImageView(Gfx::context->getVkDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create texture image view!");
     }
@@ -254,7 +254,7 @@ VkCommandBuffer GfxTexture::_beginSingleTimeCommands()
     allocInfo.commandBufferCount = 1;
 
     VkCommandBuffer commandBuffer;
-    vkAllocateCommandBuffers(Gfx::context->vkDevice(), &allocInfo, &commandBuffer);
+    vkAllocateCommandBuffers(Gfx::context->getVkDevice(), &allocInfo, &commandBuffer);
 
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -276,7 +276,7 @@ void GfxTexture::_endSingleTimeCommands(VkCommandBuffer commandBuffer)
     vkQueueSubmit(Gfx::context->getGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
     vkQueueWaitIdle(Gfx::context->getGraphicsQueue());
 
-    vkFreeCommandBuffers(Gfx::context->vkDevice(), Gfx::context->getCommandPool(), 1, &commandBuffer);
+    vkFreeCommandBuffers(Gfx::context->getVkDevice(), Gfx::context->getCommandPool(), 1, &commandBuffer);
 }
 bool GfxTexture::_hasStencilComponent(VkFormat format)
 {
@@ -336,28 +336,28 @@ GfxTexture::~GfxTexture()
    /*  // 销毁采样器 */
     if (this->_textureSampler != VK_NULL_HANDLE)
     {
-        vkDestroySampler(Gfx::context->vkDevice(), this->_textureSampler, nullptr);
+        vkDestroySampler(Gfx::context->getVkDevice(), this->_textureSampler, nullptr);
         this->_textureSampler = VK_NULL_HANDLE;
     }
 
     /* // 销毁图像视图 */
     if (this->_textureImageView != VK_NULL_HANDLE)
     {
-        vkDestroyImageView(Gfx::context->vkDevice(), this->_textureImageView, nullptr);
+        vkDestroyImageView(Gfx::context->getVkDevice(), this->_textureImageView, nullptr);
         this->_textureImageView = VK_NULL_HANDLE;
     }
 
    /*  // 销毁图像 */
     if (this->_textureImage != VK_NULL_HANDLE)
     {
-        vkDestroyImage(Gfx::context->vkDevice(), this->_textureImage, nullptr);
+        vkDestroyImage(Gfx::context->getVkDevice(), this->_textureImage, nullptr);
         this->_textureImage = VK_NULL_HANDLE;
     }
 
    /*  // 释放图像内存 */
     if (this->_textureImageMemory != VK_NULL_HANDLE)
     {
-        vkFreeMemory(Gfx::context->vkDevice(), this->_textureImageMemory, nullptr);
+        vkFreeMemory(Gfx::context->getVkDevice(), this->_textureImageMemory, nullptr);
         this->_textureImageMemory = VK_NULL_HANDLE;
     }
 }

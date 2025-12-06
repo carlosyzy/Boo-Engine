@@ -78,17 +78,17 @@ GfxRenderQueue::~GfxRenderQueue()
 //     {
 //         if (this->_uniformBuffersMapped[i])
 //         {
-//             vkUnmapMemory(Gfx::context->vkDevice(), this->_uniformBuffersMemory[i]);
+//             vkUnmapMemory(Gfx::context->getVkDevice(), this->_uniformBuffersMemory[i]);
 //             this->_uniformBuffersMapped[i] = nullptr;
 //         }
 //         if (this->_uniformBuffers[i] != VK_NULL_HANDLE)
 //         {
-//             vkDestroyBuffer(Gfx::context->vkDevice(), this->_uniformBuffers[i], nullptr);
+//             vkDestroyBuffer(Gfx::context->getVkDevice(), this->_uniformBuffers[i], nullptr);
 //             this->_uniformBuffers[i] = VK_NULL_HANDLE;
 //         }
 //         if (this->_uniformBuffersMemory[i] != VK_NULL_HANDLE)
 //         {
-//             vkFreeMemory(Gfx::context->vkDevice(), this->_uniformBuffersMemory[i], nullptr);
+//             vkFreeMemory(Gfx::context->getVkDevice(), this->_uniformBuffersMemory[i], nullptr);
 //             this->_uniformBuffersMemory[i] = VK_NULL_HANDLE;
 //         }
 //     }
@@ -190,7 +190,7 @@ GfxRenderQueue::~GfxRenderQueue()
 //         framebufferInfo.width = this->_context->getSwapChainExtent().width;   /*  // width和height用于指定帧缓冲的大小 */
 //         framebufferInfo.height = this->_context->getSwapChainExtent().height; /* // 交换链图像都是单层，layers设置为1 */
 //         framebufferInfo.layers = 1;
-//         if (vkCreateFramebuffer(Gfx::context->vkDevice(), &framebufferInfo, nullptr, &this->_queueFramebuffers[i]) != VK_SUCCESS)
+//         if (vkCreateFramebuffer(Gfx::context->getVkDevice(), &framebufferInfo, nullptr, &this->_queueFramebuffers[i]) != VK_SUCCESS)
 //         {
 //             throw std::runtime_error("Failed to create framebuffer!");
 //         }
@@ -206,7 +206,7 @@ GfxRenderQueue::~GfxRenderQueue()
 //     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 //     allocInfo.commandBufferCount = (uint32_t)this->_queueCommandBuffers.size();
 
-//     if (vkAllocateCommandBuffers(Gfx::context->vkDevice(), &allocInfo, this->_queueCommandBuffers.data()) != VK_SUCCESS)
+//     if (vkAllocateCommandBuffers(Gfx::context->getVkDevice(), &allocInfo, this->_queueCommandBuffers.data()) != VK_SUCCESS)
 //     {
 //         throw std::runtime_error("Failed to allocate command buffers!");
 //     }
@@ -411,7 +411,7 @@ GfxRenderQueue::~GfxRenderQueue()
 //     /*  // 销毁帧缓冲（Framebuffers） */
 //     for (auto framebuffer : this->_queueFramebuffers)
 //     {
-//         vkDestroyFramebuffer(Gfx::context->vkDevice(), framebuffer, nullptr);
+//         vkDestroyFramebuffer(Gfx::context->getVkDevice(), framebuffer, nullptr);
 //     }
 //     this->_queueFramebuffers.clear();
 // }
@@ -421,7 +421,7 @@ GfxRenderQueue::~GfxRenderQueue()
 //     if (!this->_queueCommandBuffers.empty())
 
 //     {
-//         vkFreeCommandBuffers(Gfx::context->vkDevice(), this->_context->getCommandPool(), static_cast<uint32_t>(_queueCommandBuffers.size()), _queueCommandBuffers.data());
+//         vkFreeCommandBuffers(Gfx::context->getVkDevice(), this->_context->getCommandPool(), static_cast<uint32_t>(_queueCommandBuffers.size()), _queueCommandBuffers.data());
 //         this->_queueCommandBuffers.clear();
 //     }
 // }

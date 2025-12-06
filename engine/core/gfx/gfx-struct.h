@@ -4,6 +4,12 @@
 #include <fstream>
 #include <cstring>
 
+struct PushConstants
+{
+	float defaultColor[4];
+};
+
+
 struct GfxMaterial
 {
     std::string name;

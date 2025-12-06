@@ -85,7 +85,7 @@ void GfxMgr::update()
 }
 void GfxMgr::resetSwapChain()
 {
-    vkDeviceWaitIdle(Gfx::context->vkDevice()); /*  // 等待所有操作完成 */
+    vkDeviceWaitIdle(Gfx::context->getVkDevice()); /*  // 等待所有操作完成 */
                                                 /*  // 线清除， */
     Gfx::renderer->cleanRendererState();
     Gfx::context->cleanSwapChain();
@@ -303,31 +303,31 @@ VkResult GfxMgr::createBuffer(VkBufferUsageFlags usageFlags, VkMemoryPropertyFla
     bufferCreateInfo.usage = usageFlags;
     bufferCreateInfo.size = size;
     bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    vkCreateBuffer(Gfx::context->vkDevice(), &bufferCreateInfo, nullptr, buffer);
+    vkCreateBuffer(Gfx::context->getVkDevice(), &bufferCreateInfo, nullptr, buffer);
 
     VkMemoryRequirements memReqs;
     VkMemoryAllocateInfo memAlloc{};
     memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    vkGetBufferMemoryRequirements(Gfx::context->vkDevice(), *buffer, &memReqs);
+    vkGetBufferMemoryRequirements(Gfx::context->getVkDevice(), *buffer, &memReqs);
     memAlloc.allocationSize = memReqs.size;
     memAlloc.memoryTypeIndex = getMemoryTypeIndex(memReqs.memoryTypeBits, memoryPropertyFlags);
-    vkAllocateMemory(Gfx::context->vkDevice(), &memAlloc, nullptr, memory);
+    vkAllocateMemory(Gfx::context->getVkDevice(), &memAlloc, nullptr, memory);
 
     if (data != nullptr)
     {
         void *mapped;
-        vkMapMemory(Gfx::context->vkDevice(), *memory, 0, size, 0, &mapped);
+        vkMapMemory(Gfx::context->getVkDevice(), *memory, 0, size, 0, &mapped);
         memcpy(mapped, data, size);
-        vkUnmapMemory(Gfx::context->vkDevice(), *memory);
+        vkUnmapMemory(Gfx::context->getVkDevice(), *memory);
     }
 
-    vkBindBufferMemory(Gfx::context->vkDevice(), *buffer, *memory, 0);
+    vkBindBufferMemory(Gfx::context->getVkDevice(), *buffer, *memory, 0);
     return VK_SUCCESS;
 }
 uint32_t GfxMgr::getMemoryTypeIndex(uint32_t typeBits, VkMemoryPropertyFlags properties)
 {
     VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
-    vkGetPhysicalDeviceMemoryProperties(Gfx::context->physicalDevice(), &deviceMemoryProperties);
+    vkGetPhysicalDeviceMemoryProperties(Gfx::context->getPhysicalDevice(), &deviceMemoryProperties);
     for (uint32_t i = 0; i < deviceMemoryProperties.memoryTypeCount; i++)
     {
         if ((typeBits & 1) == 1)

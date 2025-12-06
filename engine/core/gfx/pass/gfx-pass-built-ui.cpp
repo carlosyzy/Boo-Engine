@@ -66,7 +66,7 @@ void GfxPassBuiltUI::_create()
     renderPassInfo.pDependencies = &dependency;
 
     /*  // 创建渲染流程 */
-    if (vkCreateRenderPass(Gfx::context->vkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
+    if (vkCreateRenderPass(Gfx::context->getVkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
     {
         std::cout << "GfxPass :create render pass failed " << this->_name << std::endl;
         return;

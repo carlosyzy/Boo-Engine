@@ -8,56 +8,94 @@
 
 GfxRenderBatch::GfxRenderBatch(const GfxMaterial &material, const GfxMesh &mesh) : _material(material), _mesh(mesh), _objectCount(0)
 {
-    std::cout << "material uuid: " << this->_material.uuid << std::endl;
-    std::cout << "material pass : " << "pass-built" << std::endl;
-    std::cout << "material pipeline : " << "pipeline-built" << std::endl;
-    std::cout << "mesh uuid: " << this->_mesh.uuid << std::endl;
-
-    std::vector<float> vertices{
-        -0.5f,0.5f, 0.0f,0.0f,   0.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f,0.0f,    0.0f,1.0f,
-        0.5f, -0.5f,0.0f,0.0f,    1.0f, 1.0f
+    std::vector<float> positions = {
+        -1.0f, 1.0f, 0.0f, 0.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f,
+        1.0f, -1.0f, 0.0f, 0.0f,
+        1.0f, 1.0f, 1.0f, 0.0f};
+    std::vector<float> colors = {
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
     };
-
-    std::vector<float> indices{
-        0,
-        1,
-        2,
+    std::vector<float> normals = {
+        0.0f,
+        0.0f,
+        0.0f,
+        0.0f,
+        0.0f,
+        0.0f,
+        0.0f,
+        0.0f,
+        0.0f,
+        0.0f,
+        0.0f,
+        0.0f};
+    std::vector<float> uvs = {
+        0.0f,
+        0.0f,
+        0.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
+        0.0f,
     };
+    std::vector<uint32_t> indices = {
+        0, 1, 2,
+        0, 2, 3};
+    this->_indexSize = indices.size();
+    size_t vertexCount = positions.size() / 4; // 每个顶点4个float (x,y,z,w)
+    std::vector<float> interleavedVertices;
+    interleavedVertices.reserve(vertexCount * (4 + 4 + 3 + 2)); // position + color + normal + uv
 
-    // 清理旧缓冲区
-    if (this->_vertexBuffer != VK_NULL_HANDLE)
+    for (size_t i = 0; i < vertexCount; ++i)
     {
-        vkDestroyBuffer(Gfx::context->vkDevice(), this->_vertexBuffer, nullptr);
-        this->_vertexBuffer = VK_NULL_HANDLE;
-    }
-    if (_vertexMemory != VK_NULL_HANDLE)
-    {
-        vkFreeMemory(Gfx::context->vkDevice(), this->_vertexMemory, nullptr);
-        this->_vertexMemory = VK_NULL_HANDLE;
-    }
-    if (this->_indexBuffer != VK_NULL_HANDLE)
-    {
-        vkDestroyBuffer(Gfx::context->vkDevice(), this->_indexBuffer, nullptr);
-        this->_indexBuffer = VK_NULL_HANDLE;
-    }
-    if (this->_indexMemory != VK_NULL_HANDLE)
-    {
-        vkFreeMemory(Gfx::context->vkDevice(), this->_indexMemory, nullptr);
-        this->_indexMemory = VK_NULL_HANDLE;
+        // 添加位置 (4 floats)
+        interleavedVertices.insert(interleavedVertices.end(),
+                                   positions.begin() + i * 4,
+                                   positions.begin() + (i + 1) * 4);
+
+        // 添加颜色 (4 floats)
+        interleavedVertices.insert(interleavedVertices.end(),
+                                   colors.begin() + i * 4,
+                                   colors.begin() + (i + 1) * 4);
+
+        // 添加法线 (3 floats)
+        interleavedVertices.insert(interleavedVertices.end(),
+                                   normals.begin() + i * 3,
+                                   normals.begin() + (i + 1) * 3);
+
+        // 添加UV (2 floats)
+        interleavedVertices.insert(interleavedVertices.end(),
+                                   uvs.begin() + i * 2,
+                                   uvs.begin() + (i + 1) * 2);
     }
 
-    // 使用传入的mesh数据创建缓冲区
     // 顶点缓冲区
     GfxMgr::getInstance()->createBuffer(
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
         &this->_vertexBuffer,
         &this->_vertexMemory,
-        vertices.size() * sizeof(float),
-        vertices.data());
+        interleavedVertices.size() * sizeof(float), // 总字节数
+        interleavedVertices.data()                  // 数据指针
+    );
 
-    // 索引缓冲区（使用正确的uint32_t类型）
+    // 索引缓冲区（不变）
     GfxMgr::getInstance()->createBuffer(
         VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -65,8 +103,6 @@ GfxRenderBatch::GfxRenderBatch(const GfxMaterial &material, const GfxMesh &mesh)
         &this->_indexMemory,
         indices.size() * sizeof(uint32_t),
         indices.data());
-
-    this->_indexSize = indices.size();
 
     this->_createBuffers();
 }
@@ -86,6 +122,19 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
     // }
     // std::cout << "GfxRenderBatch::render() imageIndex:" << imageIndex << std::endl;
 
+    
+    GfxPipeline *pipeline = Gfx::renderer->getPipeline("pipeline-built");
+    if (pipeline == nullptr)
+    {
+        throw std::runtime_error("GfxRenderBatch::render() pipeline not found!");
+    }
+     GfxPass *pass = Gfx::renderer->getPass("pass-built");
+    if (pass == nullptr)
+    {
+        throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
+    }
+
+
     vkResetCommandBuffer(this->_commandBuffers[imageIndex], 0);
 
     VkCommandBufferBeginInfo beginInfo{};
@@ -95,15 +144,24 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
         throw std::runtime_error("Failed to begin recording command buffer!");
     }
 
-    this->_beginBindRenderPass(imageIndex);
+    VkRenderPassBeginInfo renderPassInfo{};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderPassInfo.renderPass = pass->vkRenderPass();
+    renderPassInfo.framebuffer = this->_framebuffers[imageIndex];
+
+    renderPassInfo.renderArea.offset = {0, 0};
+    renderPassInfo.renderArea.extent = Gfx::context->getSwapChainExtent();
+
+    VkClearValue clearColor{};
+    renderPassInfo.clearValueCount = 1;
+    clearColor.color = {{0.0f, 0.0f, 0.0f, 0.0f}};
+    renderPassInfo.pClearValues = &clearColor;
+
+    vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+    
 
     // this->_createVertexBuffers();
 
-    GfxPipeline *pipeline = Gfx::renderer->getPipeline("pipeline-built");
-    if (pipeline == nullptr)
-    {
-        throw std::runtime_error("GfxRenderBatch::render() pipeline not found!");
-    }
     vkCmdBindPipeline(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipeline());
 
     VkDeviceSize offsets[1] = {0};
@@ -131,7 +189,7 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
 
     vkCmdDrawIndexed(
         this->_commandBuffers[imageIndex],
-        this->_indexSize, // 只绘制3个索引（第一个三角形）
+       3, // 只绘制3个索引（第一个三角形）
         1,                // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
         0,                // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
         0,                // 第一个实例的索引 从第 0 个实例开始绘制
@@ -167,17 +225,25 @@ void GfxRenderBatch::_createFramebuffers()
     {
         VkImageView attachments[] = {swapChainImageViews[i]};
 
+        // VkFramebufferCreateInfo framebufferInfo = {};
+        // framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        // framebufferInfo.renderPass = pass->vkRenderPass();
+
+        // framebufferInfo.attachmentCount = 1;
+        // framebufferInfo.pAttachments = attachments;                         // 渲染流程对象用于描述附着信息的pAttachment数组
+        // framebufferInfo.width = Gfx::context->getSwapChainExtent().width;   // width和height用于指定帧缓冲的大小
+        // framebufferInfo.height = Gfx::context->getSwapChainExtent().height; // 交换链图像都是单层，layers设置为1
+        // framebufferInfo.layers = 1;
         VkFramebufferCreateInfo framebufferInfo = {};
         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         framebufferInfo.renderPass = pass->vkRenderPass();
-
-        framebufferInfo.attachmentCount = 1;
+        framebufferInfo.attachmentCount = 1;                                // 指定附着的个数
         framebufferInfo.pAttachments = attachments;                         // 渲染流程对象用于描述附着信息的pAttachment数组
         framebufferInfo.width = Gfx::context->getSwapChainExtent().width;   // width和height用于指定帧缓冲的大小
         framebufferInfo.height = Gfx::context->getSwapChainExtent().height; // 交换链图像都是单层，layers设置为1
         framebufferInfo.layers = 1;
 
-        if (vkCreateFramebuffer(Gfx::context->vkDevice(), &framebufferInfo, nullptr, &this->_framebuffers[i]) != VK_SUCCESS)
+        if (vkCreateFramebuffer(Gfx::context->getVkDevice(), &framebufferInfo, nullptr, &this->_framebuffers[i]) != VK_SUCCESS)
 
         {
             throw std::runtime_error("Failed to create framebuffer!");
@@ -194,7 +260,7 @@ void GfxRenderBatch::_createCommandBuffers()
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocInfo.commandBufferCount = (uint32_t)this->_commandBuffers.size();
 
-    if (vkAllocateCommandBuffers(Gfx::context->vkDevice(), &allocInfo, this->_commandBuffers.data()) != VK_SUCCESS)
+    if (vkAllocateCommandBuffers(Gfx::context->getVkDevice(), &allocInfo, this->_commandBuffers.data()) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to allocate command buffers!");
     }
@@ -251,13 +317,13 @@ GfxRenderBatch::~GfxRenderBatch()
 //         bufferInfo.size = bufferSize;
 //         bufferInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 //         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-//         if (vkCreateBuffer(Gfx::context->vkDevice(), &bufferInfo, nullptr, &this->_storageBuffers[i]) != VK_SUCCESS)
+//         if (vkCreateBuffer(Gfx::context->getVkDevice(), &bufferInfo, nullptr, &this->_storageBuffers[i]) != VK_SUCCESS)
 //         {
 //             throw std::runtime_error("Failed to create uniform buffer!");
 //         }
 //         // 获取内存需求
 //         VkMemoryRequirements memRequirements;
-//         vkGetBufferMemoryRequirements(Gfx::context->vkDevice(), this->_storageBuffers[i], &memRequirements);
+//         vkGetBufferMemoryRequirements(Gfx::context->getVkDevice(), this->_storageBuffers[i], &memRequirements);
 //         // 分配内存
 //         VkMemoryAllocateInfo allocInfo{};
 //         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -266,20 +332,20 @@ GfxRenderBatch::~GfxRenderBatch()
 //             memRequirements.memoryTypeBits,
 //             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-//         if (vkAllocateMemory(Gfx::context->vkDevice(), &allocInfo, nullptr, &this->_storageBuffersMemory[i]) != VK_SUCCESS)
+//         if (vkAllocateMemory(Gfx::context->getVkDevice(), &allocInfo, nullptr, &this->_storageBuffersMemory[i]) != VK_SUCCESS)
 //         {
 //             throw std::runtime_error("Failed to allocate uniform buffer memory!");
 //         }
 //         // 绑定内存
-//         vkBindBufferMemory(Gfx::context->vkDevice(), this->_storageBuffers[i], this->_storageBuffersMemory[i], 0);
+//         vkBindBufferMemory(Gfx::context->getVkDevice(), this->_storageBuffers[i], this->_storageBuffersMemory[i], 0);
 //         // 映射内存
-//         vkMapMemory(Gfx::context->vkDevice(), this->_storageBuffersMemory[i], 0, bufferSize, 0, &this->_storageBuffersMapped[i]);
+//         vkMapMemory(Gfx::context->getVkDevice(), this->_storageBuffersMemory[i], 0, bufferSize, 0, &this->_storageBuffersMapped[i]);
 //     }
 // }
 // uint32_t GfxRenderBatch::_findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
 // {
 //     VkPhysicalDeviceMemoryProperties memProperties;
-//     vkGetPhysicalDeviceMemoryProperties(Gfx::context->physicalDevice(), &memProperties);
+//     vkGetPhysicalDeviceMemoryProperties(Gfx::context->getPhysicalDevice(), &memProperties);
 
 //     for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
 //     {

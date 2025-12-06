@@ -15,7 +15,7 @@ void GfxShader::createShaderModule(const std::vector<uint32_t> &code)
     createInfo.codeSize = code.size() * sizeof(uint32_t);
     createInfo.pCode = code.data();
     /*VkShaderModule shaderModule;*/
-    if (vkCreateShaderModule(Gfx::context->vkDevice(), &createInfo, nullptr, &this->_shaderModule) != VK_SUCCESS)
+    if (vkCreateShaderModule(Gfx::context->getVkDevice(), &createInfo, nullptr, &this->_shaderModule) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create shader module!");
     }
@@ -28,7 +28,7 @@ void GfxShader::createShaderModule(const std::vector<char> &code)
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createInfo.codeSize = code.size();
     createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
-    if (vkCreateShaderModule(Gfx::context->vkDevice(), &createInfo, nullptr, &this->_shaderModule) != VK_SUCCESS)
+    if (vkCreateShaderModule(Gfx::context->getVkDevice(), &createInfo, nullptr, &this->_shaderModule) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create shader module!");
     }
@@ -40,7 +40,7 @@ void GfxShader::createShaderModule(const uint32_t *data, const uint32_t size)
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createInfo.codeSize = size;
     createInfo.pCode = data;
-    if (vkCreateShaderModule(Gfx::context->vkDevice(), &createInfo, nullptr, &this->_shaderModule) != VK_SUCCESS)
+    if (vkCreateShaderModule(Gfx::context->getVkDevice(), &createInfo, nullptr, &this->_shaderModule) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create shader module!");
     }
@@ -54,7 +54,7 @@ GfxShader::~GfxShader()
 {
     if (this->_shaderModule != VK_NULL_HANDLE)
     {
-        vkDestroyShaderModule(Gfx::context->vkDevice(), this->_shaderModule, nullptr);
+        vkDestroyShaderModule(Gfx::context->getVkDevice(), this->_shaderModule, nullptr);
         this->_shaderModule = VK_NULL_HANDLE;
     }
 }

@@ -7,7 +7,7 @@
 #include <vector>
 #include <set>
 #include <map>
-
+#include "gfx-texture.h"
 
 // 查询并记录交换链支持的细节
 struct SwapChainSupportDetails
@@ -31,7 +31,6 @@ struct QueueFamilyIndices
 	}
 };
 const int MAX_FRAMES_IN_FLIGHT = 2;
-
 class GfxContext
 {
 private:
@@ -91,7 +90,12 @@ private:
      */
     VkCommandPool _commandPool;
     void _createCommandPool();
-    
+    /**
+     * @brief 描述符池
+     */
+    VkDescriptorPool _descriptorPool;
+    void _createDescriptorPool();
+
     /**
      * @brief 交换链
      * 本质上是一个等待被呈现在屏幕上的图像队列
@@ -149,6 +153,13 @@ private:
     void _createSyncObjects();
     void _cleanSyncObjects();
 
+    // /**
+    //  * 多重采样-颜色附件贴图和深度附件贴图
+    //  */
+    // GfxTexture *_colorMsaaTexture;
+    // GfxTexture *_depthMsaaTexture;
+    // void _createMsaaAttachmentTexture();
+    // void _cleanMsaaAttachmentTexture();
     
 
     QueueFamilyIndices _findQueueFamilies(VkPhysicalDevice device);
@@ -165,11 +176,12 @@ public:
     void frameSubmitCommands(uint32_t imageIndex, const std::vector<VkCommandBuffer> &commandBuffers, size_t currentFrame);
     VkResult framePresentFrame(uint32_t imageIndex, size_t currentFrame);
     
-    VkDevice vkDevice() const
+
+    VkDevice getVkDevice() const
     {
         return this->_vkdevice;
     }
-    VkPhysicalDevice physicalDevice() const
+    VkPhysicalDevice getPhysicalDevice() const
     {
         return this->_physicalDevice;
     }
@@ -201,6 +213,18 @@ public:
     {
         return this->_swapChainImages;
     }
+    VkDescriptorPool getDescriptorPool() const
+    {
+        return this->_descriptorPool;
+    }
+    // GfxTexture *getColorMsaaTexture() const
+    // {
+    //     return this->_colorMsaaTexture;
+    // }
+    // GfxTexture *getDepthMsaaTexture() const
+    // {
+    //     return this->_depthMsaaTexture;
+    // }
 
     ~GfxContext();
 };
