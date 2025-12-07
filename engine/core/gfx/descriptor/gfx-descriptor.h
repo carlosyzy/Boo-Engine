@@ -3,18 +3,9 @@
 #include <algorithm>
 #include <vector>
 
-// struct DescriptorSetInstance
-// {
-//     /**
-//      * @brief 描述符集
-//      * 描述符集
-//      */
-//     std::vector<VkDescriptorSet> descriptorSets;
-// };
-
 class GfxDescriptor
 {
-private:
+protected:
     /**
      * @brief 采样器数量
      */
@@ -33,15 +24,8 @@ private:
      */
     VkDescriptorSetLayout _descriptorSetLayout;
 
-    // /**
-    //  * @brief 描述符集实例
-    //  * 描述符集实例
-    //  */
-    // std::vector<DescriptorSetInstance> _descriptorSetInstances;
-
     virtual void _createDescriptorPool();
     virtual void _createDescriptorSetLayout();
-    virtual void _createDescriptorSets();
 
 public:
     GfxDescriptor(uint32_t samplerCount, uint32_t maxObject);

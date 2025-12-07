@@ -2,17 +2,20 @@
 #include "gfx.h"
 #include "gfx-context.h"
 #include "pass/gfx-pass.h"
-#include "pass/gfx-pass-built.h"
-#include "pass/gfx-pass-built-ui.h"
+#include "pass/gfx-pass-ui.h"
+#include "pass/gfx-pass-ui.h"
 #include "pipeline/gfx-pipeline.h"
 #include "pipeline/gfx-pipeline-ui.h"
 #include "pipeline/gfx-pipeline-struct.h"
-#include "queue/gfx-render-queue.h"
 #include "descriptor/gfx-descriptor.h"
+#include "descriptor/gfx-descriptor-ui.h"
+
+#include "queue/gfx-render-queue.h"
 
 #include "gfx-shader.h"
 #include "gfx-shader-struct.h"
 #include "gfx-texture.h"
+#include "gfx-render-texture.h"
 
 #include "../math/mat4.h"
 
@@ -22,23 +25,29 @@ GfxRenderer::GfxRenderer()
 void GfxRenderer::init()
 {
     std::cout << "Gfx : Renderer :: init" << std::endl;
-    // GfxShaderCompile::getInstance()->init();
-    // this->_descriptor = new GfxDescriptor();
     this->_textTexture = new TextureAsset("default-texture");
-    this->_textTexture->create("F:/worksapces/Boo-Engine/x64/Debug/res/private/ic-2d.png");
-
+    // this->_textTexture->create("F:/worksapces/Boo-Engine/x64/Debug/res/private/ic-2d.png");
+    this->_textTexture->create("/Users/yangzongyuan/personal/project/Boo-Engine/build/res/private/ic-2d.png");
 
     this->_initDescriptor();
     this->_initDefaultPasses();
     this->_initDefaultShaders();
     this->_initDefaultPipeline();
     this->_initDefaultRenderQueue();
-    // this->_initDefaultUIMaskPipeline();
 }
 void GfxRenderer::_initDescriptor()
 {
-    GfxDescriptor *descriptor = new GfxDescriptor(1,10);
+    GfxDescriptor *descriptor = new GfxDescriptor(1, 10);
     this->_descriptors["default"] = descriptor;
+
+    GfxDescriptorUI *uiDescriptor1 = new GfxDescriptorUI(1, 300);
+    this->_descriptors["ui1"] = uiDescriptor1;
+    GfxDescriptorUI *uiDescriptor2 = new GfxDescriptorUI(2, 200);
+    this->_descriptors["ui2"] = uiDescriptor2;
+    GfxDescriptorUI *uiDescriptor3 = new GfxDescriptorUI(3, 100);
+    this->_descriptors["ui3"] = uiDescriptor3;
+    GfxDescriptorUI *uiDescriptor4 = new GfxDescriptorUI(4, 200);
+    this->_descriptors["ui4"] = uiDescriptor4;
 }
 
 /**
@@ -48,6 +57,10 @@ void GfxRenderer::_initDefaultPasses()
 {
     GfxPass *screenPass = new GfxPass("default");
     this->_passes["default"] = screenPass;
+
+    GfxPassUI *uiPass = new GfxPassUI("ui");
+    this->_passes["ui"] = uiPass;
+
     // GfxPassBuiltUI *uiPass = new GfxPassBuiltUI("pass-built-ui");
     // this->_passes["pass-built-ui"] = uiPass;
 }
@@ -331,7 +344,7 @@ std::vector<uint32_t> GfxRenderer::compileShaderGlslToSpirv(const std::string &t
     return spirvCode;
 }
 
-void GfxRenderer::initRenderQueue(uint32_t renderId, std::array<float, 16> &viewMat, std::array<float, 16> &projMat)
+void GfxRenderer::initRenderQueue(GfxRenderTexture *renderTexture, uint32_t renderId, std::array<float, 16> &viewMat, std::array<float, 16> &projMat)
 {
     if (this->_queues.find(renderId) == this->_queues.end())
     {

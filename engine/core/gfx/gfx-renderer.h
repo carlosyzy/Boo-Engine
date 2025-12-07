@@ -19,7 +19,7 @@
 
 class GfxContext;
 class GfxDescriptor;
-
+class GfxRenderTexture;
 class GfxTexture;
 class GfxPass;
 class GfxShader;
@@ -154,7 +154,7 @@ public:
 	 * @param viewMat 视图矩阵
 	 * @param projMat 投影矩阵
 	 */
-	void initRenderQueue(uint32_t renderId, std::array<float, 16> &viewMat, std::array<float, 16> &projMat);
+	void initRenderQueue(GfxRenderTexture *renderTexture, uint32_t renderId, std::array<float, 16> &viewMat, std::array<float, 16> &projMat);
 	/**
 	 * @brief 提交渲染对象
 	 *

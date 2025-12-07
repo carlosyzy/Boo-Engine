@@ -1,26 +1,25 @@
 
-#include "gfx-descriptor.h"
+#include "gfx-descriptor-ui.h"
 #include "../gfx.h"
 #include "../gfx-context.h"
 #include "../gfx-struct.h"
-GfxDescriptor::GfxDescriptor(uint32_t samplerCount, uint32_t maxObject)
+GfxDescriptorUI::GfxDescriptorUI(uint32_t samplerCount, uint32_t maxObject)
+    : GfxDescriptor(samplerCount, maxObject)
 {
-    this->_samplerCount = samplerCount;
-    this->_currentObjectCount = 0;
-    this->_maxObjectCount = maxObject;
-
-    this->_createDescriptorPool();
-    this->_createDescriptorSetLayout();
 }
-void GfxDescriptor::_createDescriptorPool()
+void GfxDescriptorUI::_createDescriptorPool()
 {
     std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
     uint32_t swapChainImageCount = swapChainImageViews.size();
 
-    std::vector<VkDescriptorPoolSize> poolSizes(1);
-    poolSizes[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    std::vector<VkDescriptorPoolSize> poolSizes(2);
+
+    poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    poolSizes[0].descriptorCount = MAX_FRAMES_IN_FLIGHT * (this->_maxObjectCount + 3); // 支持更多
+
+    poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     // 总采样器数量 = 每个集的采样器数 × 集的数量
-    poolSizes[0].descriptorCount = swapChainImageCount * (this->_maxObjectCount + 3) * this->_samplerCount; // 单个描述符集3
+    poolSizes[1].descriptorCount = swapChainImageCount * (this->_maxObjectCount + 3) * this->_samplerCount; // 单个描述符集3
 
     VkDescriptorPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -34,12 +33,19 @@ void GfxDescriptor::_createDescriptorPool()
     }
     std::cout << "Gfx : Descriptor ::create descriptor pool success " << std::endl;
 }
-void GfxDescriptor::_createDescriptorSetLayout()
+void GfxDescriptorUI::_createDescriptorSetLayout()
 {
     std::vector<VkDescriptorSetLayoutBinding> bindings;
-    // 采样器绑定
+    VkDescriptorSetLayoutBinding uboLayoutBinding{};
+    uboLayoutBinding.binding = 0;
+    uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    uboLayoutBinding.descriptorCount = 1;
+    uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    bindings.push_back(uboLayoutBinding);
+
+    // 纹理采样器绑定
     VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-    samplerLayoutBinding.binding = 0;
+    samplerLayoutBinding.binding = 1;
     samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     samplerLayoutBinding.descriptorCount = this->_samplerCount;
     samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
@@ -58,7 +64,7 @@ void GfxDescriptor::_createDescriptorSetLayout()
     }
     std::cout << "Gfx : Descriptor ::create descriptor set layout success " << std::endl;
 }
-std::vector<VkDescriptorSet> GfxDescriptor::getDescriptorSets()
+std::vector<VkDescriptorSet> GfxDescriptorUI::getDescriptorSets()
 {
     if (this->_currentObjectCount >= this->_maxObjectCount)
     {
@@ -85,7 +91,7 @@ std::vector<VkDescriptorSet> GfxDescriptor::getDescriptorSets()
     return descriptorSets;
 }
 
-void GfxDescriptor::reset()
+void GfxDescriptorUI::reset()
 {
     this->_currentObjectCount = 0;
     vkDestroyDescriptorSetLayout(Gfx::context->getVkDevice(), this->_descriptorSetLayout, nullptr);
@@ -93,7 +99,7 @@ void GfxDescriptor::reset()
     this->_createDescriptorPool();
     this->_createDescriptorSetLayout();
 }
-GfxDescriptor::~GfxDescriptor()
+GfxDescriptorUI::~GfxDescriptorUI()
 {
 }
 

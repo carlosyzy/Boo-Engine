@@ -1,4 +1,4 @@
-#include "gfx-pass-built-ui.h"
+#include "gfx-pass-ui.h"
 #include "../gfx.h"
 #include "../gfx-context.h"
 /**
@@ -6,15 +6,14 @@
  * 只有一个颜色附件
  * 保留上一帧的内容
  */
-GfxPassBuiltUI::GfxPassBuiltUI(std::string name) : GfxPass(name)
+GfxPassUI::GfxPassUI(std::string name) : GfxPass(name)
 {
 }
-void GfxPassBuiltUI::_create()
+void GfxPassUI::_create()
 {
     std::vector<VkAttachmentDescription> attachments;
     attachments.resize(2);
-
-    /* // 1. 颜色附件 */
+    // 1. 颜色附件
     attachments[0].format = Gfx::context->getSwapChainImageFormat();
     attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
     attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -23,12 +22,7 @@ void GfxPassBuiltUI::_create()
     attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-
-    VkAttachmentReference colorAttachmentRef{};
-    colorAttachmentRef.attachment = 0;
-    colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-    /* // 2. 深度附件 */
+    // 2. 深度附件
     attachments[1].format = VK_FORMAT_D32_SFLOAT;
     attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -37,6 +31,10 @@ void GfxPassBuiltUI::_create()
     attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+    VkAttachmentReference colorAttachmentRef{};
+    colorAttachmentRef.attachment = 0;
+    colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
     VkAttachmentReference depthAttachmentRef{};
     depthAttachmentRef.attachment = 1;
@@ -64,8 +62,6 @@ void GfxPassBuiltUI::_create()
     renderPassInfo.pSubpasses = &subpass;
     renderPassInfo.dependencyCount = 1;
     renderPassInfo.pDependencies = &dependency;
-
-    /*  // 创建渲染流程 */
     if (vkCreateRenderPass(Gfx::context->getVkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
     {
         std::cout << "GfxPass :create render pass failed " << this->_name << std::endl;
@@ -74,6 +70,6 @@ void GfxPassBuiltUI::_create()
     std::cout << "GfxPass :create render pass success " << this->_name << std::endl;
 }
 
-GfxPassBuiltUI::~GfxPassBuiltUI()
+GfxPassUI::~GfxPassUI()
 {
 }
