@@ -186,8 +186,9 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\event\event.cpp" />
     <ClCompile Include="engine\core\font\freetype-mgr.cpp" />
     <ClCompile Include="engine\core\game.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-buffer\gfx-buffer-ssbo.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-buffer\gfx-buffer-ubo.cpp" />
+    <ClCompile Include="engine\core\gfx\buffer\gfx-buffer-ssbo.cpp" />
+    <ClCompile Include="engine\core\gfx\buffer\gfx-buffer-ubo.cpp" />
+    <ClCompile Include="engine\core\gfx\descriptor\gfx-descriptor.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-context.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-mgr.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-render-texture.cpp" />
@@ -277,8 +278,9 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\event\event.h" />
     <ClInclude Include="engine\core\font\freetype-mgr.h" />
     <ClInclude Include="engine\core\game.h" />
-    <ClInclude Include="engine\core\gfx\gfx-buffer\gfx-buffer-ssbo.h" />
-    <ClInclude Include="engine\core\gfx\gfx-buffer\gfx-buffer-ubo.h" />
+    <ClInclude Include="engine\core\gfx\buffer\gfx-buffer-ssbo.h" />
+    <ClInclude Include="engine\core\gfx\buffer\gfx-buffer-ubo.h" />
+    <ClInclude Include="engine\core\gfx\descriptor\gfx-descriptor.h" />
     <ClInclude Include="engine\core\gfx\gfx-context.h" />
     <ClInclude Include="engine\core\gfx\gfx-mgr.h" />
     <ClInclude Include="engine\core\gfx\gfx-render-texture.h" />

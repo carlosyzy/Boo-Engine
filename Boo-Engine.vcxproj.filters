@@ -231,12 +231,6 @@
     <ClCompile Include="engine\core\gfx\pipeline\gfx-pipeline-ui.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-buffer\gfx-buffer-ssbo.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-buffer\gfx-buffer-ubo.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\gfx\queue\gfx-render-batch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -244,6 +238,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\renderer\camera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\buffer\gfx-buffer-ssbo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\buffer\gfx-buffer-ubo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\descriptor\gfx-descriptor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -692,12 +695,6 @@
     <ClInclude Include="engine\core\gfx\pipeline\gfx-pipeline-ui.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-buffer\gfx-buffer-ssbo.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-buffer\gfx-buffer-ubo.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="engine\core\gfx\queue\gfx-render-batch.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -705,6 +702,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\renderer\camera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\buffer\gfx-buffer-ssbo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\buffer\gfx-buffer-ubo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\descriptor\gfx-descriptor.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
