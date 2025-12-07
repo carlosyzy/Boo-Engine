@@ -389,8 +389,20 @@ void GfxPipeline::_initPipelineLayout()
     this->_pipelineLayoutInfo = {};
     this->_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     this->_pipelineLayoutInfo.setLayoutCount = 0;
-    this->_pipelineLayoutInfo.pushConstantRangeCount = 0;
-
+    // 绑定推送常量 默认没有推送常量
+    if (this->_pipelineStruct.pushConstantSize > 0)
+    {
+        this->_pushConstantRange = {};
+        this->_pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT; //顶点和片元都可以访问
+        this->_pushConstantRange.offset = 0;
+        this->_pushConstantRange.size = this->_pipelineStruct.pushConstantSize;
+        this->_pipelineLayoutInfo.pushConstantRangeCount = 1;
+        this->_pipelineLayoutInfo.pPushConstantRanges = &this->_pushConstantRange;
+    }
+    else
+    {
+        this->_pipelineLayoutInfo.pushConstantRangeCount = 0;
+    }
     // this->_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     // this->_setLayouts.push_back(Gfx::renderer->descriptorSetLayout());
     // this->_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(this->_setLayouts.size());

@@ -102,6 +102,7 @@ protected:
     /**
      * @brief Vulkan 管道布局
      */
+    VkPushConstantRange _pushConstantRange;
     std::vector<VkDescriptorSetLayout> _setLayouts;
     VkPipelineLayoutCreateInfo _pipelineLayoutInfo;
     VkPipelineLayout _vkPipelineLayout;

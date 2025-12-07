@@ -4,10 +4,10 @@
 #include <fstream>
 #include <cstring>
 
-struct PushConstants
-{
-	float defaultColor[4];
-};
+// struct PushConstants
+// {
+// 	float defaultColor[4];
+// };
 
 
 struct GfxMaterial

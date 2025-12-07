@@ -168,6 +168,16 @@ struct GfxPipelineStruct
     std::string geom = "";
     std::string frag = "";
     std::string pass = "";
+
+    /**
+     * 多边形模式
+     */
+    GfxPipelinePolygonMode polygonMode = GfxPipelinePolygonMode::Fill;
+    /**
+     * 剔除模式
+     */
+    GfxPipelineCullMode cullMode = GfxPipelineCullMode::Back;
+
     /**
      * 深度测试
      * 开关
@@ -251,14 +261,10 @@ struct GfxPipelineStruct
      */
     uint32_t colorWriteMask = 0;
 
-    /**
-     * 多边形模式
-     */
-    GfxPipelinePolygonMode polygonMode = GfxPipelinePolygonMode::Fill;
-    /**
-     * 剔除模式
-     */
-    GfxPipelineCullMode cullMode = GfxPipelineCullMode::Back;
+    VkDeviceSize pushConstantSize = 0;
+
+    int descriptor = 0;
+    std::string descriptorSet = "";
 };
 
 // 后期方案确定
@@ -306,15 +312,11 @@ struct GfxPipelineStruct
 //   // ...
 //   vkCmdEndRendering(commandBuffer);
 
-
-
-
-
 /**
  * Blend:1
  * DepthTest:0  深度测试
  *      UI:不启用深度测试
- *      Mask:不启用深度测试  
+ *      Mask:不启用深度测试
  * DepthWrite:0  深度写入
  *      UI:不启用深度测试
  *      Mask:不启用深度测试
@@ -346,7 +348,7 @@ struct GfxPipelineStruct
  *      compareMask: 0xFF  比较所有位
  *      writeMask: 0xFF  写入所有位
  *      reference: 1  参考值（会被动态覆盖）
- * DepthCompareOp    
+ * DepthCompareOp
  *      VK_COMPARE_OP_NEVER 永远不通过深度测试
  *      VK_COMPARE_OP_LESS  当前深度 < 缓冲区深度 → 通过  标准深度测试，近处物体遮挡远处物体
  *      VK_COMPARE_OP_EQUAL  当前深度 = 缓冲区深度 → 通过  特殊效果，如深度相等高亮
@@ -355,7 +357,7 @@ struct GfxPipelineStruct
  *      VK_COMPARE_OP_NOT_EQUAL  当前深度 ≠ 缓冲区深度 → 通过  轮廓效果、剔除特定深度
  *      VK_COMPARE_OP_GREATER_OR_EQUAL  当前深度 ≥ 缓冲区深度 → 通过  反射、门户效果
  *      VK_COMPARE_OP_ALWAYS  永远通过深度测试  UI渲染、天空盒、透明物体
- * 
+ *
  * vert:"resources/shader/ui/ui-mask.vert.spv"
  * frag:"resources/shader/ui/ui-mask.frag.spv"
  * rasterizerDiscardEnable:0   // 启用光栅化丢弃，将所有片段都丢弃

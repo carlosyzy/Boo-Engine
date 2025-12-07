@@ -3,7 +3,7 @@
 
 ## history 历史
 - 2025 12.7
- 1. 交换链重置影响必须重置对象:renderpass,pipeline,   
+ 1. 交换链重置影响必须重置对象:renderpass,pipeline,descriptor
 
 - 2025 12.5 重新设计结构
  1. gfx-context 图形上下文保持不变
