@@ -12,7 +12,6 @@
 
 #include "gfx-shader.h"
 #include "gfx-shader-struct.h"
-#include "gfx-shader-compile.h"
 #include "gfx-texture.h"
 
 #include "../math/mat4.h"
@@ -38,7 +37,7 @@ void GfxRenderer::init()
 }
 void GfxRenderer::_initDescriptor()
 {
-    GfxDescriptor *descriptor = new GfxDescriptor(3);
+    GfxDescriptor *descriptor = new GfxDescriptor(1,10);
     this->_descriptors["default"] = descriptor;
 }
 

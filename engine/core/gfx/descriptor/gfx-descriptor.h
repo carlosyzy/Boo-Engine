@@ -11,13 +11,11 @@ private:
      * @brief 采样器数量
      */
     uint32_t _samplerCount;
-
-     /**
-     * @brief 交换链图像数量
+    /**
+     * @brief 最大对象数量
      */
-    uint32_t _descriptorCount;
-
-
+    uint32_t _maxObjectCount;
+    
 
     VkDescriptorPool _descriptorPool;
     /**
@@ -36,7 +34,7 @@ private:
     virtual void _createDescriptorSets();
 
 public:
-    GfxDescriptor(uint32_t samplerCount);
+    GfxDescriptor(uint32_t samplerCount,uint32_t maxObject);
 
     VkDescriptorSetLayout getDescriptorSetLayout() const
     {

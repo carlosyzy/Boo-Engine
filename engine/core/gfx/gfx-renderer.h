@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <sstream>
 #include <vulkan/vulkan_core.h>
+#include <shaderc/shaderc.hpp>
 
 #include "gfx-struct.h"
 #include "pipeline/gfx-pipeline-struct.h"
