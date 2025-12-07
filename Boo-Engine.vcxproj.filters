@@ -102,9 +102,6 @@
     <ClCompile Include="engine\core\assets\asset.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-shader-compile.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\alpha\alpha.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -202,9 +199,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\gfx\gfx-render-texture.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-texture-bindless.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\gfx\gfx.cpp">
@@ -411,9 +405,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\libs\stb\stb_voxel_render.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-shader-compile.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\assets\material.h">
@@ -663,9 +654,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\gfx\gfx-render-texture.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-texture-bindless.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\gfx\gfx.h">

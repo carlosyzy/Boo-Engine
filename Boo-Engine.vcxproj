@@ -193,9 +193,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\gfx\gfx-mgr.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-render-texture.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-renderer.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-shader-compile.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-shader.cpp" />
-    <ClCompile Include="engine\core\gfx\gfx-texture-bindless.cpp" />
     <ClCompile Include="engine\core\gfx\gfx-texture.cpp" />
     <ClCompile Include="engine\core\gfx\gfx.cpp" />
     <ClCompile Include="engine\core\gfx\pass\gfx-pass-built-ui.cpp" />
@@ -285,11 +283,9 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\gfx\gfx-mgr.h" />
     <ClInclude Include="engine\core\gfx\gfx-render-texture.h" />
     <ClInclude Include="engine\core\gfx\gfx-renderer.h" />
-    <ClInclude Include="engine\core\gfx\gfx-shader-compile.h" />
     <ClInclude Include="engine\core\gfx\gfx-shader-struct.h" />
     <ClInclude Include="engine\core\gfx\gfx-shader.h" />
     <ClInclude Include="engine\core\gfx\gfx-struct.h" />
-    <ClInclude Include="engine\core\gfx\gfx-texture-bindless.h" />
     <ClInclude Include="engine\core\gfx\gfx-texture.h" />
     <ClInclude Include="engine\core\gfx\gfx.h" />
     <ClInclude Include="engine\core\gfx\pass\gfx-pass-built-ui.h" />
