@@ -3,6 +3,7 @@
 #include "../gfx-context.h"
 #include "../gfx-renderer.h"
 #include "../pass/gfx-pass.h"
+#include "../descriptor/gfx-descriptor.h"
 #include "../gfx-shader.h"
 
 GfxPipeline::GfxPipeline(const std::string &name)
@@ -388,12 +389,12 @@ void GfxPipeline::_initPipelineLayout()
 {
     this->_pipelineLayoutInfo = {};
     this->_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    this->_pipelineLayoutInfo.setLayoutCount = 0;
+
     // 绑定推送常量 默认没有推送常量
-    if (this->_pipelineStruct.pushConstantSize > 0)
+    if (this->_pipelineStruct.pushConstant == 1 && this->_pipelineStruct.pushConstantSize > 0)
     {
         this->_pushConstantRange = {};
-        this->_pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT; //顶点和片元都可以访问
+        this->_pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT; // 顶点和片元都可以访问
         this->_pushConstantRange.offset = 0;
         this->_pushConstantRange.size = this->_pipelineStruct.pushConstantSize;
         this->_pipelineLayoutInfo.pushConstantRangeCount = 1;
@@ -403,6 +404,31 @@ void GfxPipeline::_initPipelineLayout()
     {
         this->_pipelineLayoutInfo.pushConstantRangeCount = 0;
     }
+
+    // 绑定描述符集布局
+    if (this->_pipelineStruct.descriptor == 1)
+    {
+        this->_descriptor = Gfx::renderer->getDescriptor(this->_pipelineStruct.descriptorSet);
+        if (this->_descriptor && this->_descriptor->getDescriptorSetLayout() != VK_NULL_HANDLE)
+        {
+            this->_setLayouts.push_back(this->_descriptor->getDescriptorSetLayout());
+            this->_pipelineLayoutInfo.setLayoutCount = this->_setLayouts.size();
+            this->_pipelineLayoutInfo.pSetLayouts = this->_setLayouts.data();
+        }
+        else
+        {
+            this->_pipelineLayoutInfo.setLayoutCount = 0;
+        }
+    }
+    else
+    {
+        this->_pipelineLayoutInfo.setLayoutCount = 0;
+    }
+
+    // this->_setLayouts.push_back(Gfx::renderer->descriptorSetLayout());
+    // this->_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(this->_setLayouts.size());
+    // this->_pipelineLayoutInfo.pSetLayouts = this->_setLayouts.data();
+
     // this->_pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     // this->_setLayouts.push_back(Gfx::renderer->descriptorSetLayout());
     // this->_pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(this->_setLayouts.size());

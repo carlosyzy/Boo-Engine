@@ -1,9 +1,24 @@
 #pragma once
 #include <vulkan/vulkan_core.h>
+#include <algorithm>
 #include <vector>
+
+
 class GfxDescriptor
 {
 private:
+    /**
+     * @brief 采样器数量
+     */
+    uint32_t _samplerCount;
+
+     /**
+     * @brief 交换链图像数量
+     */
+    uint32_t _descriptorCount;
+
+
+
     VkDescriptorPool _descriptorPool;
     /**
      * @brief 描述符集布局
@@ -21,20 +36,18 @@ private:
     virtual void _createDescriptorSets();
 
 public:
-    GfxDescriptor();
+    GfxDescriptor(uint32_t samplerCount);
 
-    VkDescriptorPool descriptorPool() const
-    {
-        return this->_descriptorPool;
-    }
-    VkDescriptorSetLayout descriptorSetLayout() const
+    VkDescriptorSetLayout getDescriptorSetLayout() const
     {
         return this->_descriptorSetLayout;
     }
-    std::vector<VkDescriptorSet> descriptorSets() const
+    std::vector<VkDescriptorSet> getDescriptorSets() const
     {
         return this->_descriptorSets;
     }
+
+    void reset();
 
     ~GfxDescriptor();
 };

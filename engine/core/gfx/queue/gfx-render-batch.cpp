@@ -5,6 +5,7 @@
 #include "../gfx-renderer.h"
 #include "../pass/gfx-pass.h"
 #include "../pipeline/gfx-pipeline.h"
+#include "../descriptor/gfx-descriptor.h"
 
 GfxRenderBatch::GfxRenderBatch(const GfxMaterial &material, const GfxMesh &mesh) : _material(material), _mesh(mesh), _objectCount(0)
 {
@@ -160,6 +161,34 @@ void GfxRenderBatch::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
     // this->_createVertexBuffers();
 
     vkCmdBindPipeline(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipeline());
+
+    GfxDescriptor *descriptor = pipeline->getDescriptor();
+
+    if (descriptor != nullptr)
+    {
+        std::vector<VkDescriptorSet> descriptorSets = descriptor->getDescriptorSets();
+
+        GfxTexture *texture = Gfx::renderer->getTexture("default-texture");
+
+
+        VkDescriptorImageInfo imageInfo{};
+        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        imageInfo.imageView = texture->getImageView();
+        imageInfo.sampler = texture->getSampler();
+
+        std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
+        descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptorWrites[0].dstSet = descriptorSets[imageIndex];
+        descriptorWrites[0].dstBinding = 0;
+        descriptorWrites[0].dstArrayElement = 0;
+        descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        descriptorWrites[0].descriptorCount = 1;
+        descriptorWrites[0].pImageInfo = &imageInfo;
+        vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+
+        vkCmdBindDescriptorSets(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &(descriptorSets[imageIndex]), 0, nullptr);
+    }
+    //     vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipelineLayout(), 0, 1, &this->_descriptorSets[imageIndex], 0, nullptr);
 
     VkDeviceSize offsets[1] = {0};
     vkCmdBindVertexBuffers(this->_commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);

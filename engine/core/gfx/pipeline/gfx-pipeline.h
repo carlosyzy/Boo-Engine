@@ -8,6 +8,7 @@
 class GfxContext;
 class GfxPass;
 class GfxShader;
+class GfxDescriptor;
 
 class GfxPipeline
 {
@@ -28,11 +29,7 @@ protected:
      * @brief 片段着色器
      */
     GfxShader *_fragmentShader;
-    // /**
-    //  * @brief 描述符集布局
-    //  * 绑定ubo和采样器
-    //  */
-    // VkDescriptorSetLayout _descriptorSetLayout;
+
     //  管道状态描述
     GfxPipelineStruct _pipelineStruct;
 
@@ -94,7 +91,7 @@ protected:
     virtual void _initDepthStencilState();
 
     //  颜色混合状态描述
-     VkPipelineColorBlendAttachmentState _colorBlendAttachment;
+    VkPipelineColorBlendAttachmentState _colorBlendAttachment;
     VkPipelineColorBlendStateCreateInfo _colorBlendInfo;
     VkBlendFactor _getBlendFactor(GfxPipelineColorBlendFactor blendFactor);
     VkBlendOp _getBlendOp(GfxPipelineColorBlendOp blendOp);
@@ -103,6 +100,7 @@ protected:
      * @brief Vulkan 管道布局
      */
     VkPushConstantRange _pushConstantRange;
+    GfxDescriptor *_descriptor;
     std::vector<VkDescriptorSetLayout> _setLayouts;
     VkPipelineLayoutCreateInfo _pipelineLayoutInfo;
     VkPipelineLayout _vkPipelineLayout;
@@ -117,12 +115,15 @@ protected:
     virtual void _initPipeline();
 
     void _createPipeline();
+
 public:
     GfxPipeline(const std::string &name);
     const std::string &getName();
-     VkPipeline vkPipeline() { return _vkPipeline; }
-     VkPipelineLayout vkPipelineLayout() { return _vkPipelineLayout; }
-    
+    VkPipeline vkPipeline() { return _vkPipeline; }
+    VkPipelineLayout getVKPipelineLayout() { return _vkPipelineLayout; }
+
+    GfxDescriptor *getDescriptor() { return _descriptor; }
+
     void create(GfxPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, GfxPipelineStruct pipelineStruct);
     void clear();
     void reset();

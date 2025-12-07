@@ -14,6 +14,8 @@
 #include "gfx-struct.h"
 #include "pipeline/gfx-pipeline-struct.h"
 
+#include "../assets/texture-asset.h"
+
 class GfxContext;
 class GfxDescriptor;
 
@@ -30,17 +32,19 @@ class GfxRenderer
 private:
 	float _time;
 
-	VkDescriptorPool _descriptorPool;
-	/**
-	 * @brief 描述符集布局
-	 * 绑定ubo和采样器
-	 */
-	VkDescriptorSetLayout _descriptorSetLayout;
-	/**
-	 * @brief 描述符集
-	 * 描述符集
-	 */
-	std::vector<VkDescriptorSet> _descriptorSets;
+	// VkDescriptorPool _descriptorPool;
+	// /**
+	//  * @brief 描述符集布局
+	//  * 绑定ubo和采样器
+	//  */
+	// VkDescriptorSetLayout _descriptorSetLayout;
+	// /**
+	//  * @brief 描述符集
+	//  * 描述符集
+	//  */
+	// std::vector<VkDescriptorSet> _descriptorSets;
+
+	std::map<std::string, GfxDescriptor *> _descriptors;
 
 	std::map<std::string, GfxTexture *> _textures;
 	/**
@@ -73,6 +77,9 @@ private:
 	std::map<VkDeviceSize, std::vector<GfxBufferUBO *>> _uboBuffers;
 	std::map<VkDeviceSize, std::vector<GfxBufferSSBO *>> _ssboBuffers;
 
+
+	TextureAsset *_textTexture;
+
 	/**
 	 * 描述符相关
 	 */
@@ -94,15 +101,21 @@ private:
 public:
 	GfxRenderer();
 	void init();
+
+	GfxDescriptor *getDescriptor(std::string name) const { return this->_descriptors.at(name); }
 	GfxPass *getPass(std::string name) const { return this->_passes.at(name); }
+
 	GfxPipeline *getPipeline(std::string name) const { return this->_pipelines.at(name); }
-	VkDescriptorSet getDescriptorSet(uint32_t index) const { return this->_descriptorSets[index]; }
-	/**
-	 * @brief 获取描述符集布局
-	 *
-	 * @return VkDescriptorSetLayout
-	 */
-	VkDescriptorSetLayout descriptorSetLayout() const { return this->_descriptorSetLayout; }
+
+	GfxTexture *getTexture(std::string uuid) const { return this->_textures.at(uuid); }
+
+	// VkDescriptorSet getDescriptorSet(uint32_t index) const { return this->_descriptorSets[index]; }
+	// /**
+	//  * @brief 获取描述符集布局
+	//  *
+	//  * @return VkDescriptorSetLayout
+	//  */
+	// VkDescriptorSetLayout descriptorSetLayout() const { return this->_descriptorSetLayout; }
 
 	void createPipeline(std::string name, GfxPipelineStruct pipelineStruct);
 	void createUIPipeline(std::string name, GfxPipelineStruct pipelineStruct);

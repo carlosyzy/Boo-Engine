@@ -18,7 +18,7 @@ GfxTexture::GfxTexture( const std::vector<uint8_t> *pixels, uint32_t width, uint
     this->_createTextureImage();
     this->_createTextureImageView();
     this->_createTextureSampler();
-    // std::cout << "GfxTexture:id:" <<  " width:" << this->_width << " height:" << this->_height << " channels:" << this->_channels << std::endl;
+    std::cout << "Gfx : Texture :: create success" << std::endl;
 }
 
 void GfxTexture::_createTextureImage()

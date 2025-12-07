@@ -7,6 +7,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <algorithm>
 #include "gfx-texture.h"
 
 // 查询并记录交换链支持的细节
@@ -30,7 +31,7 @@ struct QueueFamilyIndices
 		return (graphicsFamily >= 0) && (presentFamily >= 0);
 	}
 };
-const int MAX_FRAMES_IN_FLIGHT = 2;
+const uint32_t MAX_FRAMES_IN_FLIGHT = 2;
 class GfxContext
 {
 private:
@@ -90,11 +91,11 @@ private:
      */
     VkCommandPool _commandPool;
     void _createCommandPool();
-    /**
-     * @brief 描述符池
-     */
-    VkDescriptorPool _descriptorPool;
-    void _createDescriptorPool();
+    // /**
+    //  * @brief 描述符池
+    //  */
+    // VkDescriptorPool _descriptorPool;
+    // void _createDescriptorPool();
 
     /**
      * @brief 交换链
@@ -213,10 +214,10 @@ public:
     {
         return this->_swapChainImages;
     }
-    VkDescriptorPool getDescriptorPool() const
-    {
-        return this->_descriptorPool;
-    }
+    // VkDescriptorPool getDescriptorPool() const
+    // {
+    //     return this->_descriptorPool;
+    // }
     // GfxTexture *getColorMsaaTexture() const
     // {
     //     return this->_colorMsaaTexture;

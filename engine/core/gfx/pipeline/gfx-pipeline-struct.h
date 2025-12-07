@@ -261,6 +261,7 @@ struct GfxPipelineStruct
      */
     uint32_t colorWriteMask = 0;
 
+    int pushConstant = 0;
     VkDeviceSize pushConstantSize = 0;
 
     int descriptor = 0;

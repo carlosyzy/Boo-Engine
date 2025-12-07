@@ -3,18 +3,19 @@
 
 ## history 历史
 - 2025 12.7
- 1. 交换链重置影响必须重置对象:renderpass,pipeline,descriptor
+ 1. 交换链重置影响必须重置对象:renderpass,pipeline,descriptor  ⚠️ 部分
+ 2. descriptor 必须搞清楚并行帧数量和交换链数量的区别，决定了是否需要重制对象  ⚠️ 部分
 
 - 2025 12.5 重新设计结构
- 1. gfx-context 图形上下文保持不变
- 2. renderpass 全局统一
-    - Default: 清除颜色附件和深度附件
-    - UI: renderpass1: 离屏渲染,双通道,颜色附件,深度附件  renderpass2: 屏幕渲染,单通道,颜色附件
-    - 3D: renderpass1: 离屏渲染,双通道,颜色附件,深度附件  renderpass2: 屏幕渲染,单通道,颜色附件
+ 1. gfx-context 图形上下文保持不变   ⚠️ 部分
+ 2. renderpass 全局统一         
+    - Default: 清除颜色附件和深度附件       ⚠️ 部分
+    - UI: renderpass1: 离屏渲染,双通道,颜色附件,深度附件  renderpass2: 屏幕渲染,单通道,颜色附件     ⚠️ 部分
+    - 3D: renderpass1: 离屏渲染,双通道,颜色附件,深度附件  renderpass2: 屏幕渲染,单通道,颜色附件     ⚠️ 部分
  3. pipeline:
-    - Default: 顶点输入只包含顶点和uv
-    - UI: 顶点输入只包顶点和uv
-    - 3D: 顶点输入包含顶点，uv，法线，切线，位法向量, 颜色,可能还有多套uv,
+    - Default: 顶点输入只包含顶点和uv       ⚠️ 部分
+    - UI: 顶点输入只包顶点和uv              ⚠️ 部分
+    - 3D: 顶点输入包含顶点，uv，法线，切线，位法向量, 颜色,可能还有多套uv,      ⚠️ 部分
     
 
  2. 取消gfx-object的这个类，不需要存储渲染物体，在camera的过程中直接整理渲染数据，提交渲染
