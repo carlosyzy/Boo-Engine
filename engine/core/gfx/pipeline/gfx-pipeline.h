@@ -101,6 +101,7 @@ protected:
      */
     VkPushConstantRange _pushConstantRange;
     GfxDescriptor *_descriptor;
+    std::vector<VkDescriptorSet> _descriptorSets;
     std::vector<VkDescriptorSetLayout> _setLayouts;
     VkPipelineLayoutCreateInfo _pipelineLayoutInfo;
     VkPipelineLayout _vkPipelineLayout;
@@ -121,6 +122,7 @@ public:
     const std::string &getName();
     VkPipeline vkPipeline() { return _vkPipeline; }
     VkPipelineLayout getVKPipelineLayout() { return _vkPipelineLayout; }
+    std::vector<VkDescriptorSet> getDescriptorSets() { return _descriptorSets; }
 
     GfxDescriptor *getDescriptor() { return _descriptor; }
 

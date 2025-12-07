@@ -46,5 +46,6 @@ const GfxMaterial defaultMaterial = {
     .uuid = "defaultMaterial",
     .pass = "pass-built",
     .pipeline = "pipeline-built",
-    .ssboSize = 0,
+    // pushConstant
+    // 纹理
 };

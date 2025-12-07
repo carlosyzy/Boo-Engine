@@ -409,9 +409,11 @@ void GfxPipeline::_initPipelineLayout()
     if (this->_pipelineStruct.descriptor == 1)
     {
         this->_descriptor = Gfx::renderer->getDescriptor(this->_pipelineStruct.descriptorSet);
-        if (this->_descriptor && this->_descriptor->getDescriptorSetLayout() != VK_NULL_HANDLE)
+        VkDescriptorSetLayout descriptorSetLayout = this->_descriptor->getDescriptorSetLayout();
+        if (this->_descriptor && descriptorSetLayout != VK_NULL_HANDLE)
         {
-            this->_setLayouts.push_back(this->_descriptor->getDescriptorSetLayout());
+            this->_descriptorSets = this->_descriptor->getDescriptorSets();
+            this->_setLayouts.push_back(descriptorSetLayout);
             this->_pipelineLayoutInfo.setLayoutCount = this->_setLayouts.size();
             this->_pipelineLayoutInfo.pSetLayouts = this->_setLayouts.data();
         }
