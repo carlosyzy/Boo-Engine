@@ -160,10 +160,12 @@ void GfxRenderer::_initDefaultPipeline()
 }
 void GfxRenderer::_initDefaultRenderQueue()
 {
+    // 初始化默认渲染队列
+    // 渲染目标为 nullptr 表示直接渲染到交换链图像
+    // this->_renderTexture = new GfxRenderTexture();
+    // this->_renderTexture->resize(Gfx::context->getSwapChainExtent().width, Gfx::context->getSwapChainExtent().height);
     this->_defaultQueue = new GfxRenderQueue();
-    this->_renderTexture = new GfxRenderTexture();
-    this->_renderTexture->resize(Gfx::context->getSwapChainExtent().width, Gfx::context->getSwapChainExtent().height);
-    this->_defaultQueue->init(this->_renderTexture, {}, {});
+    this->_defaultQueue->init(nullptr);
 }
 
 void GfxRenderer::createPipeline(std::string name, GfxPipelineStruct pipelineStruct)
@@ -214,9 +216,18 @@ void GfxRenderer::createTexture(std::string textureUuid, uint32_t width, uint32_
     if (this->_textures.find(textureUuid) == this->_textures.end())
     {
         std::cout << "Gfx : Renderer :: createTexture:uuid:" << textureUuid << " width:" << width << " height:" << height << " channels:" << channels << std::endl;
-        GfxTexture *texture = new GfxTexture(pixels, width, height, channels);
+        GfxTexture *texture = new GfxTexture(textureUuid, pixels, width, height, channels);
         this->_textures[textureUuid] = texture;
     }
+}
+void GfxRenderer::insertTexture(std::string textureUuid, GfxTexture *texture)
+{
+    if (this->_textures.find(textureUuid) != this->_textures.end())
+    {
+        std::cout << "Gfx : Renderer :: insertTexture:uuid:" << textureUuid << " already exists" << std::endl;
+        return;
+    }
+    this->_textures[textureUuid] = texture;
 }
 void GfxRenderer::destroyTexture(std::string textureUuid)
 {
@@ -345,14 +356,14 @@ std::vector<uint32_t> GfxRenderer::compileShaderGlslToSpirv(const std::string &t
     return spirvCode;
 }
 
-void GfxRenderer::initRenderQueue(GfxRenderTexture *renderTexture, uint32_t renderId, std::array<float, 16> &viewMat, std::array<float, 16> &projMat)
+void GfxRenderer::initRenderQueue(uint32_t renderId, GfxRenderTexture *renderTexture)
 {
     if (this->_queues.find(renderId) == this->_queues.end())
     {
         GfxRenderQueue *queue = new GfxRenderQueue();
         this->_queues[renderId] = queue;
     }
-    this->_queues[renderId]->init(renderTexture, viewMat, projMat);
+    this->_queues[renderId]->init(renderTexture);
 }
 void GfxRenderer::submitRenderObject(uint32_t renderId, GfxMaterial &material, GfxMesh &mesh)
 {
@@ -381,26 +392,38 @@ void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer
 
 void GfxRenderer::cleanRendererState()
 {
+    this->_defaultQueue->_clear();
+    // 渲染队列清除
+    for (auto &[name, queue] : this->_queues)
+    {
+        queue->_clear();
+    }
     // 渲染管线清除
     for (auto &[name, pipeline] : this->_pipelines)
     {
-        pipeline->clear();
+        pipeline->_clear();
     }
     /*  // 渲染pass清除 */
     for (auto &[name, pass] : this->_passes)
     {
-        pass->clear();
+        pass->_clear();
     }
 }
 void GfxRenderer::resetRendererState()
 {
     for (auto &[name, pass] : this->_passes)
     {
-        pass->reset();
+        pass->_reset();
     }
     for (auto &[name, pipeline] : this->_pipelines)
     {
-        pipeline->reset();
+        pipeline->_reset();
+    }
+    this->_defaultQueue->_reset();
+    // 渲染队列重置
+    for (auto &[name, queue] : this->_queues)
+    {
+        queue->_reset();
     }
 }
 // void GfxRenderer::_initDescriptor()

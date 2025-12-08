@@ -35,16 +35,29 @@ protected:
 	GfxRenderTexture *_renderTexture;
 	std::array<float, 16> _viewMat;
 	std::array<float, 16> _projMat;
-	// 渲染批次
-	std::vector<GfxRenderBatch*> _batches;
 
+	// 帧缓冲区:它连接了渲染通道（Render Pass） 和交换链图像（Swap Chain Images）
+	std::vector<VkFramebuffer> _framebuffers;
+	// 命令缓冲区是用于记录和执行 GPU 命令的内存块。在 Vulkan 中，几乎所有渲染操作都需要通过命令缓冲区来执行。
+	std::vector<VkCommandBuffer> _commandBuffers;
+	void _createBuffers();
+	void _createFramebuffers();
+	void _createCommandBuffers();
+
+	// 渲染批次
+	std::vector<GfxRenderBatch *> _batches;
 
 	GfxRenderBatch *_testBatch = nullptr;
+
+	
 public:
 	GfxRenderQueue();
-	void init(GfxRenderTexture *renderTexture, const std::array<float, 16>& viewMat,const std::array<float, 16>& projMat);
-	void submitObject(const GfxMaterial& material, const GfxMesh& mesh);
+	void init(GfxRenderTexture *renderTexture);
+	void submitObject(const GfxMaterial &material, const GfxMesh &mesh);
 	void render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
+	void _clear();
+	void _reset();
+
 	~GfxRenderQueue();
 };
 

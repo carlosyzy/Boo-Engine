@@ -2,6 +2,8 @@
 #include "../gfx.h"
 #include "../gfx-mgr.h"
 #include "../gfx-context.h"
+#include "../gfx-renderer.h"
+#include "../pass/gfx-pass.h"
 #include "../gfx-render-texture.h"
 #include "gfx-render-batch.h"
 
@@ -18,12 +20,63 @@ GfxRenderQueue::GfxRenderQueue()
     material.pipeline = "pipeline-built";
     this->_testBatch = new GfxRenderBatch(material, mesh);
 }
-void GfxRenderQueue::init(GfxRenderTexture *renderTexture, const std::array<float, 16> &viewMat, const std::array<float, 16> &projMat)
+void GfxRenderQueue::init(GfxRenderTexture *renderTexture)
 {
     this->_renderTexture = renderTexture;
-    this->_viewMat = viewMat;
-    this->_projMat = projMat;
+    if (this->_renderTexture == nullptr)
+    {
+        this->_createBuffers();
+    }
 }
+void GfxRenderQueue::_createBuffers()
+{
+    this->_createFramebuffers();
+    this->_createCommandBuffers();
+}
+void GfxRenderQueue::_createFramebuffers()
+{
+    GfxPass *pass = Gfx::renderer->getPass("default");
+    if (pass == nullptr)
+    {
+        throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
+    }
+    this->_framebuffers.clear();
+    std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
+
+    this->_framebuffers.resize(swapChainImageViews.size());
+    for (size_t i = 0; i < swapChainImageViews.size(); i++)
+    {
+        VkImageView attachments[] = {swapChainImageViews[i]};
+        VkFramebufferCreateInfo framebufferInfo = {};
+        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferInfo.renderPass = pass->vkRenderPass();
+        framebufferInfo.attachmentCount = 1;                                // 指定附着的个数
+        framebufferInfo.pAttachments = attachments;                         // 渲染流程对象用于描述附着信息的pAttachment数组
+        framebufferInfo.width = Gfx::context->getSwapChainExtent().width;   // width和height用于指定帧缓冲的大小
+        framebufferInfo.height = Gfx::context->getSwapChainExtent().height; // 交换链图像都是单层，layers设置为1
+        framebufferInfo.layers = 1;
+        if (vkCreateFramebuffer(Gfx::context->getVkDevice(), &framebufferInfo, nullptr, &this->_framebuffers[i]) != VK_SUCCESS)
+        {
+            throw std::runtime_error("Gfx : RenderQueue :: Failed to create framebuffer!");
+        }
+    }
+}
+void GfxRenderQueue::_createCommandBuffers()
+{
+
+    this->_commandBuffers.resize(this->_framebuffers.size());
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = Gfx::context->getCommandPool();
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = (uint32_t)this->_commandBuffers.size();
+
+    if (vkAllocateCommandBuffers(Gfx::context->getVkDevice(), &allocInfo, this->_commandBuffers.data()) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Gfx : RenderQueue :: Failed to allocate command buffers!");
+    }
+}
+
 void GfxRenderQueue::submitObject(const GfxMaterial &material, const GfxMesh &mesh)
 {
     // if (this->_batches.empty())
@@ -50,10 +103,8 @@ void GfxRenderQueue::submitObject(const GfxMaterial &material, const GfxMesh &me
 void GfxRenderQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
 
-
-
-    this->_testBatch->render(this->_renderTexture, imageIndex, commandBuffers);
-    this->_renderTexture->saveToFile1("test.png");
+    // this->_testBatch->render(this->_renderTexture, imageIndex, commandBuffers);
+    // this->_renderTexture->saveToFile1("test.png");
     // std::cout << "GfxRenderQueue::render() imageIndex:" << imageIndex << " batches.size:" << this->_batches.size() << std::endl;
     // for (auto &batch : this->_batches)
     // {
@@ -67,6 +118,41 @@ void GfxRenderQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
     // //}
     // this->_batches.clear();
 }
+
+void GfxRenderQueue::_clear()
+{
+    if (this->_renderTexture != nullptr)
+    {
+        this->_renderTexture->_reset();
+    }
+    else
+    {
+        // 销毁帧缓冲（Framebuffers）
+        for (auto framebuffer : this->_framebuffers)
+        {
+            vkDestroyFramebuffer(Gfx::context->getVkDevice(), framebuffer, nullptr);
+        }
+        this->_framebuffers.clear();
+        // 销毁命令缓冲（Command Buffers）
+        if (!this->_commandBuffers.empty())
+        {
+            vkFreeCommandBuffers(Gfx::context->getVkDevice(), Gfx::context->getCommandPool(), static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
+            this->_commandBuffers.clear();
+        }
+    }
+}
+void GfxRenderQueue::_reset()
+{
+    if (this->_renderTexture != nullptr)
+    {
+        this->_renderTexture->_reset();
+    }
+    else
+    {
+        this->_createBuffers();
+    }
+}
+
 GfxRenderQueue::~GfxRenderQueue()
 {
 }

@@ -56,7 +56,7 @@ void GfxPass::_create()
     }
     std::cout << "Gfx : Pass :: create render pass success " << this->_name << std::endl;
 }
-void GfxPass::clear()
+void GfxPass::_clear()
 {
     if (this->_vkRenderPass != VK_NULL_HANDLE)
     {
@@ -64,13 +64,13 @@ void GfxPass::clear()
         this->_vkRenderPass = VK_NULL_HANDLE;
     }
 }
-void GfxPass::reset()
+void GfxPass::_reset()
 {
     this->_create();
 }
 GfxPass::~GfxPass()
 {
-    this->clear();
+    this->_clear();
 }
 
 // void GfxPass::_createVkRenderPass()

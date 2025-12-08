@@ -468,7 +468,7 @@ void GfxPipeline::_initPipeline()
     }
     std::cout << "Gfx : Pipeline :: create pipeline success " << this->_name << std::endl;
 }
-void GfxPipeline::clear()
+void GfxPipeline::_clear()
 {
     /* // 销毁图形管线（Pipeline） */
     if (this->_vkPipeline != VK_NULL_HANDLE)
@@ -483,7 +483,7 @@ void GfxPipeline::clear()
         this->_vkPipelineLayout = VK_NULL_HANDLE;
     }
 }
-void GfxPipeline::reset()
+void GfxPipeline::_reset()
 {
     this->_initPipelineLayout();
     this->_initPipeline();

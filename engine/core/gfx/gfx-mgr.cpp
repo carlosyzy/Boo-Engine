@@ -88,7 +88,6 @@ void GfxMgr::update()
 void GfxMgr::resetSwapChain()
 {
     vkDeviceWaitIdle(Gfx::context->getVkDevice()); /*  // 等待所有操作完成 */
-                                                /*  // 线清除， */
     Gfx::renderer->cleanRendererState();
     Gfx::context->cleanSwapChain();
     /*  // 后重置 */
@@ -117,8 +116,8 @@ void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<
 {
     Gfx::renderer->createSpirvShader(shaderName, data);
 }
-void GfxMgr:: initRenderQueue(GfxRenderTexture *renderTexture, uint32_t renderId, std::array<float, 16> &viewMat, std::array<float, 16> &projMat){
-    Gfx::renderer->initRenderQueue(renderTexture, renderId, viewMat, projMat);
+void GfxMgr:: initRenderQueue(uint32_t renderId,GfxRenderTexture *renderTexture ){
+    Gfx::renderer->initRenderQueue(renderId, renderTexture);
 }
 void GfxMgr:: submitRenderObject(uint32_t renderId, GfxMaterial &material, GfxMesh &mesh){
     Gfx::renderer->submitRenderObject(renderId, material, mesh);

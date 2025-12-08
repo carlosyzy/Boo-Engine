@@ -7,11 +7,13 @@
 #include "../../libs/stb/stb_image_write.h"
 
 /* // 主要用于创建附件贴图 */
-GfxTexture::GfxTexture()
+GfxTexture::GfxTexture(std::string uuid)
 {
+    this->_uuid = uuid;
 }
-GfxTexture::GfxTexture( const std::vector<uint8_t> *pixels, uint32_t width, uint32_t height, uint32_t channels)
+GfxTexture::GfxTexture(std::string uuid, const std::vector<uint8_t> *pixels, uint32_t width, uint32_t height, uint32_t channels)
 {
+    this->_uuid = uuid;
     this->_width = width;
     this->_height = height;
     this->_channels = channels;

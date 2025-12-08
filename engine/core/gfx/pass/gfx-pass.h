@@ -22,7 +22,7 @@ public:
 	{
 		return this->_vkRenderPass;
 	}
-	void clear();
-	void reset();
+	void _clear();
+	void _reset();
 	virtual ~GfxPass();
 };

@@ -127,7 +127,7 @@ public:
     GfxDescriptor *getDescriptor() { return _descriptor; }
 
     void create(GfxPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, GfxPipelineStruct pipelineStruct);
-    void clear();
-    void reset();
+    void _clear();
+    void _reset();
     virtual ~GfxPipeline();
 };

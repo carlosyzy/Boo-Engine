@@ -246,68 +246,7 @@ void GfxRenderBatch::render(GfxRenderTexture *renderTexture, uint32_t imageIndex
     commandBuffers.push_back(renderTexture->getCommandBuffer());
     std::cout << "GfxRenderBatch::_beginBindRenderPass() commandBuffers.size():"  << std::endl;
 }
-// void GfxRenderBatch::_createBuffers()
-// {
-//     this->_createFramebuffers();
-//     this->_createCommandBuffers();
-// }
-// void GfxRenderBatch::_createFramebuffers()
-// {
-//     GfxPass *pass = Gfx::renderer->getPass("default");
-//     if (pass == nullptr)
-//     {
-//         throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
-//     }
 
-//     this->_framebuffers.clear();
-//     std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
-
-//     this->_framebuffers.resize(swapChainImageViews.size());
-//     for (size_t i = 0; i < swapChainImageViews.size(); i++)
-//     {
-//         VkImageView attachments[] = {swapChainImageViews[i]};
-
-//         // VkFramebufferCreateInfo framebufferInfo = {};
-//         // framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-//         // framebufferInfo.renderPass = pass->vkRenderPass();
-
-//         // framebufferInfo.attachmentCount = 1;
-//         // framebufferInfo.pAttachments = attachments;                         // 渲染流程对象用于描述附着信息的pAttachment数组
-//         // framebufferInfo.width = Gfx::context->getSwapChainExtent().width;   // width和height用于指定帧缓冲的大小
-//         // framebufferInfo.height = Gfx::context->getSwapChainExtent().height; // 交换链图像都是单层，layers设置为1
-//         // framebufferInfo.layers = 1;
-//         VkFramebufferCreateInfo framebufferInfo = {};
-//         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-//         framebufferInfo.renderPass = pass->vkRenderPass();
-//         framebufferInfo.attachmentCount = 1;                                // 指定附着的个数
-//         framebufferInfo.pAttachments = attachments;                         // 渲染流程对象用于描述附着信息的pAttachment数组
-//         framebufferInfo.width = Gfx::context->getSwapChainExtent().width;   // width和height用于指定帧缓冲的大小
-//         framebufferInfo.height = Gfx::context->getSwapChainExtent().height; // 交换链图像都是单层，layers设置为1
-//         framebufferInfo.layers = 1;
-
-//         if (vkCreateFramebuffer(Gfx::context->getVkDevice(), &framebufferInfo, nullptr, &this->_framebuffers[i]) != VK_SUCCESS)
-
-//         {
-//             throw std::runtime_error("Failed to create framebuffer!");
-//         }
-//     }
-// }
-// void GfxRenderBatch::_createCommandBuffers()
-// {
-
-//     this->_commandBuffers.resize(this->_framebuffers.size());
-//     VkCommandBufferAllocateInfo allocInfo{};
-//     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-//     allocInfo.commandPool = Gfx::context->getCommandPool();
-//     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-//     allocInfo.commandBufferCount = (uint32_t)this->_commandBuffers.size();
-
-//     if (vkAllocateCommandBuffers(Gfx::context->getVkDevice(), &allocInfo, this->_commandBuffers.data()) != VK_SUCCESS)
-//     {
-//         throw std::runtime_error("Failed to allocate command buffers!");
-//     }
-//     // this->_Log("create commandBuffers success...");
-// }
 void GfxRenderBatch::_createVertexBuffers()
 {
 }

@@ -33,18 +33,6 @@ class GfxRenderer
 private:
 	float _time;
 
-	// VkDescriptorPool _descriptorPool;
-	// /**
-	//  * @brief 描述符集布局
-	//  * 绑定ubo和采样器
-	//  */
-	// VkDescriptorSetLayout _descriptorSetLayout;
-	// /**
-	//  * @brief 描述符集
-	//  * 描述符集
-	//  */
-	// std::vector<VkDescriptorSet> _descriptorSets;
-
 	std::map<std::string, GfxDescriptor *> _descriptors;
 
 	std::map<std::string, GfxTexture *> _textures;
@@ -69,11 +57,6 @@ private:
 	 * uint32_t 摄像机的可见id
 	 */
 	GfxRenderQueue *_defaultQueue;
-	/**
-	 * @brief 渲染纹理
-	 * 渲染纹理
-	 */
-	GfxRenderTexture *_renderTexture;
 	std::map<uint32_t, GfxRenderQueue *> _queues;
 
 	/**
@@ -82,7 +65,6 @@ private:
 	 */
 	std::map<VkDeviceSize, std::vector<GfxBufferUBO *>> _uboBuffers;
 	std::map<VkDeviceSize, std::vector<GfxBufferSSBO *>> _ssboBuffers;
-
 
 	TextureAsset *_textTexture;
 
@@ -101,8 +83,15 @@ private:
 	void _initDefaultShaders();
 	void _initDefaultPipeline();
 	// void _initDefaultUIMaskPipeline();
-	// 初始化默认渲染队列
+	// // 初始化默认渲染队列
 	void _initDefaultRenderQueue();
+	// // 帧缓冲区:它连接了渲染通道（Render Pass） 和交换链图像（Swap Chain Images）
+	// std::vector<VkFramebuffer> _framebuffers;
+	// // 命令缓冲区是用于记录和执行 GPU 命令的内存块。在 Vulkan 中，几乎所有渲染操作都需要通过命令缓冲区来执行。
+	// std::vector<VkCommandBuffer> _commandBuffers;
+	// void _createBuffers();
+	// void _createFramebuffers();
+	// void _createCommandBuffers();
 
 public:
 	GfxRenderer();
@@ -110,9 +99,7 @@ public:
 
 	GfxDescriptor *getDescriptor(std::string name) const { return this->_descriptors.at(name); }
 	GfxPass *getPass(std::string name) const { return this->_passes.at(name); }
-
 	GfxPipeline *getPipeline(std::string name) const { return this->_pipelines.at(name); }
-
 	GfxTexture *getTexture(std::string uuid) const { return this->_textures.at(uuid); }
 
 	// VkDescriptorSet getDescriptorSet(uint32_t index) const { return this->_descriptorSets[index]; }
@@ -129,6 +116,7 @@ public:
 	 * 创建 or 销毁渲染纹理
 	 */
 	void createTexture(std::string textureUuid, uint32_t width, uint32_t height, uint32_t channels, const std::vector<uint8_t> *pixels);
+	void insertTexture(std::string uuid, GfxTexture *texture);
 	void destroyTexture(std::string textureUuid);
 	bool isExistTexture(std::string textureUuid);
 	/**
@@ -159,7 +147,7 @@ public:
 	 * @param viewMat 视图矩阵
 	 * @param projMat 投影矩阵
 	 */
-	void initRenderQueue(GfxRenderTexture *renderTexture, uint32_t renderId, std::array<float, 16> &viewMat, std::array<float, 16> &projMat);
+	void initRenderQueue(uint32_t renderId, GfxRenderTexture *renderTexture);
 	/**
 	 * @brief 提交渲染对象
 	 *

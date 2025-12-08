@@ -4,14 +4,13 @@
 #include "gfx-renderer.h"
 #include "gfx-texture.h"
 #include "pass/gfx-pass.h"
-#include "pass/gfx-pass-target.h"
-
-
 
 GfxRenderTexture::GfxRenderTexture()
 {
     this->_width = 0;
     this->_height = 0;
+    this->_colorUuid = this->_generateUUID();
+    this->_depthUuid = this->_generateUUID();
     this->_colorTexture = nullptr;
     this->_depthTexture = nullptr;
 }
@@ -40,7 +39,7 @@ void GfxRenderTexture::_createTextures()
         this->_depthTexture = nullptr;
     }
 
-    this->_colorTexture = new GfxTexture();
+    this->_colorTexture = new GfxTexture(this->_colorUuid);
     this->_colorTexture->createImage(
         this->_width, this->_height,
         Gfx::context->getSwapChainImageFormat(),
@@ -52,7 +51,7 @@ void GfxRenderTexture::_createTextures()
         Gfx::context->getSwapChainImageFormat(),
         VK_IMAGE_ASPECT_COLOR_BIT);
 
-    this->_depthTexture = new GfxTexture();
+    this->_depthTexture = new GfxTexture(this->_depthUuid);
     this->_depthTexture->createImage(
         this->_width, this->_height,
         VK_FORMAT_D32_SFLOAT,
@@ -63,6 +62,8 @@ void GfxRenderTexture::_createTextures()
     this->_depthTexture->createImageView(
         VK_FORMAT_D32_SFLOAT,
         VK_IMAGE_ASPECT_DEPTH_BIT);
+    Gfx::renderer->insertTexture(this->_colorUuid, this->_colorTexture);
+    Gfx::renderer->insertTexture(this->_depthUuid, this->_depthTexture);
 }
 
 void GfxRenderTexture::_createFramebuffer()
@@ -90,7 +91,8 @@ void GfxRenderTexture::_createFramebuffer()
         throw std::runtime_error("failed to create framebuffer!");
     }
 }
-void GfxRenderTexture::_createCommandBuffer(){
+void GfxRenderTexture::_createCommandBuffer()
+{
     if (this->_commandBuffer)
     {
         vkFreeCommandBuffers(Gfx::context->getVkDevice(), Gfx::context->getCommandPool(), 1, &this->_commandBuffer);
@@ -106,6 +108,46 @@ void GfxRenderTexture::_createCommandBuffer(){
         throw std::runtime_error("Failed to allocate command buffers!");
     }
 }
+void GfxRenderTexture::_clear()
+{
+    if (this->_framebuffer)
+    {
+        vkDestroyFramebuffer(Gfx::context->getVkDevice(), this->_framebuffer, nullptr);
+        this->_framebuffer = VK_NULL_HANDLE;
+    }
+    if (this->_commandBuffer)
+    {
+        vkFreeCommandBuffers(Gfx::context->getVkDevice(), Gfx::context->getCommandPool(), 1, &this->_commandBuffer);
+        this->_commandBuffer = VK_NULL_HANDLE;
+    }
+}
+void GfxRenderTexture::_reset()
+{
+    this->_createFramebuffer();
+    this->_createCommandBuffer();
+}
+
+std::string GfxRenderTexture::_generateUUID()
+{
+    static std::random_device rd;
+    static std::mt19937_64 gen(rd());
+    static std::uniform_int_distribution<uint64_t> dis;
+
+    uint64_t part1 = dis(gen);
+    uint64_t part2 = dis(gen);
+
+    std::ostringstream oss;
+    oss << std::hex << std::setfill('0')
+        << std::setw(8) << (part1 & 0xFFFFFFFF) << "-"
+        << std::setw(4) << ((part1 >> 32) & 0xFFFF) << "-"
+        << std::setw(4) << (((part2 >> 48) & 0x0FFF) | 0x4000) << "-" // 版本4
+        << std::setw(4) << (((part2 >> 32) & 0x3FFF) | 0x8000) << "-" // 变体
+        << std::setw(8) << (part2 & 0xFFFFFFFF)
+        << std::setw(4) << ((part1 >> 48) & 0xFFFF);
+
+    return oss.str();
+}
+
 bool GfxRenderTexture::saveToFile1(std::string filePath)
 {
     if (this->_colorTexture == nullptr)
