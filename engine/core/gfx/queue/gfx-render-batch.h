@@ -24,6 +24,7 @@ struct StorageBufferObject
 
 class GfxPass;
 class GfxPipeline;
+class GfxRenderTexture;
 
 class GfxRenderBatch
 {
@@ -42,15 +43,15 @@ private:
     int _indexSize;
     void _createVertexBuffers();
 
-    // 帧缓冲区:它连接了渲染通道（Render Pass） 和交换链图像（Swap Chain Images）
-    std::vector<VkFramebuffer> _framebuffers;
-    // 命令缓冲区是用于记录和执行 GPU 命令的内存块。在 Vulkan 中，几乎所有渲染操作都需要通过命令缓冲区来执行。
-    std::vector<VkCommandBuffer> _commandBuffers;
-    void _createBuffers();
-    void _createFramebuffers();
-    void _createCommandBuffers();
+    // // 帧缓冲区:它连接了渲染通道（Render Pass） 和交换链图像（Swap Chain Images）
+    // std::vector<VkFramebuffer> _framebuffers;
+    // // 命令缓冲区是用于记录和执行 GPU 命令的内存块。在 Vulkan 中，几乎所有渲染操作都需要通过命令缓冲区来执行。
+    // std::vector<VkCommandBuffer> _commandBuffers;
+    // void _createBuffers();
+    // void _createFramebuffers();
+    // void _createCommandBuffers();
 
-    void _beginBindRenderPass(uint32_t imageIndex);
+    // void _beginBindRenderPass(GfxRenderTexture *renderTexture);
     // uint32_t _findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 public:
@@ -58,6 +59,6 @@ public:
     const GfxMaterial &material() const { return _material; }
     const GfxMesh &mesh() const { return _mesh; }
     void addObject();
-    void render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
+    void render(GfxRenderTexture *renderTexture, uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
     ~GfxRenderBatch();
 };

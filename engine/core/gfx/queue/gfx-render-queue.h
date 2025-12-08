@@ -27,10 +27,12 @@ struct UniformBufferObject
 };
 
 class GfxRenderBatch;
+class GfxRenderTexture;
 
 class GfxRenderQueue
 {
 protected:
+	GfxRenderTexture *_renderTexture;
 	std::array<float, 16> _viewMat;
 	std::array<float, 16> _projMat;
 	// 渲染批次
@@ -40,7 +42,7 @@ protected:
 	GfxRenderBatch *_testBatch = nullptr;
 public:
 	GfxRenderQueue();
-	void init(const std::array<float, 16>& viewMat,const std::array<float, 16>& projMat);
+	void init(GfxRenderTexture *renderTexture, const std::array<float, 16>& viewMat,const std::array<float, 16>& projMat);
 	void submitObject(const GfxMaterial& material, const GfxMesh& mesh);
 	void render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
 	~GfxRenderQueue();

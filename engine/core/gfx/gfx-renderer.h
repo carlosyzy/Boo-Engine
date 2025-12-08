@@ -69,6 +69,11 @@ private:
 	 * uint32_t 摄像机的可见id
 	 */
 	GfxRenderQueue *_defaultQueue;
+	/**
+	 * @brief 渲染纹理
+	 * 渲染纹理
+	 */
+	GfxRenderTexture *_renderTexture;
 	std::map<uint32_t, GfxRenderQueue *> _queues;
 
 	/**

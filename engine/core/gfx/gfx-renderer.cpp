@@ -2,8 +2,7 @@
 #include "gfx.h"
 #include "gfx-context.h"
 #include "pass/gfx-pass.h"
-#include "pass/gfx-pass-ui.h"
-#include "pass/gfx-pass-ui.h"
+#include "pass/gfx-pass-target.h"
 #include "pipeline/gfx-pipeline.h"
 #include "pipeline/gfx-pipeline-ui.h"
 #include "pipeline/gfx-pipeline-struct.h"
@@ -39,7 +38,6 @@ void GfxRenderer::_initDescriptor()
 {
     GfxDescriptor *descriptor = new GfxDescriptor(1, 10);
     this->_descriptors["default"] = descriptor;
-
     GfxDescriptorUI *uiDescriptor1 = new GfxDescriptorUI(1, 300);
     this->_descriptors["ui1"] = uiDescriptor1;
     GfxDescriptorUI *uiDescriptor2 = new GfxDescriptorUI(2, 200);
@@ -58,8 +56,8 @@ void GfxRenderer::_initDefaultPasses()
     GfxPass *screenPass = new GfxPass("default");
     this->_passes["default"] = screenPass;
 
-    GfxPassUI *uiPass = new GfxPassUI("ui");
-    this->_passes["ui"] = uiPass;
+    GfxPassTarget *targetPass = new GfxPassTarget("target");
+    this->_passes["target"] = targetPass;
 
     // GfxPassBuiltUI *uiPass = new GfxPassBuiltUI("pass-built-ui");
     // this->_passes["pass-built-ui"] = uiPass;
@@ -163,6 +161,9 @@ void GfxRenderer::_initDefaultPipeline()
 void GfxRenderer::_initDefaultRenderQueue()
 {
     this->_defaultQueue = new GfxRenderQueue();
+    this->_renderTexture = new GfxRenderTexture();
+    this->_renderTexture->resize(Gfx::context->getSwapChainExtent().width, Gfx::context->getSwapChainExtent().height);
+    this->_defaultQueue->init(this->_renderTexture, {}, {});
 }
 
 void GfxRenderer::createPipeline(std::string name, GfxPipelineStruct pipelineStruct)
@@ -351,7 +352,7 @@ void GfxRenderer::initRenderQueue(GfxRenderTexture *renderTexture, uint32_t rend
         GfxRenderQueue *queue = new GfxRenderQueue();
         this->_queues[renderId] = queue;
     }
-    this->_queues[renderId]->init(viewMat, projMat);
+    this->_queues[renderId]->init(renderTexture, viewMat, projMat);
 }
 void GfxRenderer::submitRenderObject(uint32_t renderId, GfxMaterial &material, GfxMesh &mesh)
 {

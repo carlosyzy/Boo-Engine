@@ -2,10 +2,12 @@
 #include "../gfx.h"
 #include "../gfx-mgr.h"
 #include "../gfx-context.h"
+#include "../gfx-render-texture.h"
 #include "gfx-render-batch.h"
 
 GfxRenderQueue::GfxRenderQueue()
 {
+    this->_renderTexture = nullptr;
     this->_viewMat = {};
     this->_projMat = {};
     std::array<float, 16> identityMat1 = {1.0f};
@@ -16,8 +18,9 @@ GfxRenderQueue::GfxRenderQueue()
     material.pipeline = "pipeline-built";
     this->_testBatch = new GfxRenderBatch(material, mesh);
 }
-void GfxRenderQueue::init(const std::array<float, 16> &viewMat, const std::array<float, 16> &projMat)
+void GfxRenderQueue::init(GfxRenderTexture *renderTexture, const std::array<float, 16> &viewMat, const std::array<float, 16> &projMat)
 {
+    this->_renderTexture = renderTexture;
     this->_viewMat = viewMat;
     this->_projMat = projMat;
 }
@@ -46,7 +49,11 @@ void GfxRenderQueue::submitObject(const GfxMaterial &material, const GfxMesh &me
 }
 void GfxRenderQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
-    this->_testBatch->render(imageIndex, commandBuffers);
+
+
+
+    this->_testBatch->render(this->_renderTexture, imageIndex, commandBuffers);
+    this->_renderTexture->saveToFile1("test.png");
     // std::cout << "GfxRenderQueue::render() imageIndex:" << imageIndex << " batches.size:" << this->_batches.size() << std::endl;
     // for (auto &batch : this->_batches)
     // {

@@ -4,6 +4,8 @@
 #include "gfx-struct.h"
 #include "gfx-mgr.h"
 
+#include "../../libs/stb/stb_image_write.h"
+
 /* // 主要用于创建附件贴图 */
 GfxTexture::GfxTexture()
 {
@@ -91,7 +93,8 @@ void GfxTexture::_createTextureSampler()
     {
         throw std::runtime_error("failed to create texture sampler!");
     }
-    this->_Log("create texture sampler success...");
+    // this->_Log("create texture sampler success...");
+    
 }
 /* 
 // 以下实现辅助方法... */
@@ -324,11 +327,131 @@ void GfxTexture::setBindlessIndex(uint32_t index)
     this->_bindlessIndex = index;
 }
 
-
-
-void GfxTexture::_Log(std::string msg)
+bool GfxTexture::saveToFile(std::string filePath, uint32_t width, uint32_t height)
 {
-   /*  // std::cout << "GfxTexture: " << msg << std::endl; */
+    /* // 1. 创建 staging buffer 用于从 GPU 复制数据到 CPU */
+    VkDeviceSize imageSize = width * height * 4; /* // RGBA 格式 */
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingBufferMemory;
+
+    GfxMgr::getInstance()->createBuffer(
+        VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+        &stagingBuffer,
+        &stagingBufferMemory,
+        imageSize, nullptr);
+
+    /* // 2. 开始命令缓冲区 */
+    VkCommandBuffer commandBuffer = this->_beginSingleTimeCommands();
+
+    /* // 3. 将图像布局从 SHADER_READ_ONLY_OPTIMAL 转换到 TRANSFER_SRC_OPTIMAL */
+    VkImageMemoryBarrier barrier{};
+    barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrier.oldLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+    barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier.image = this->_textureImage;
+    barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    barrier.subresourceRange.baseMipLevel = 0;
+    barrier.subresourceRange.levelCount = 1;
+    barrier.subresourceRange.baseArrayLayer = 0;
+    barrier.subresourceRange.layerCount = 1;
+    barrier.srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
+    barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+
+    vkCmdPipelineBarrier(
+        commandBuffer,
+        VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+        VK_PIPELINE_STAGE_TRANSFER_BIT,
+        0,
+        0, nullptr,
+        0, nullptr,
+        1, &barrier);
+
+    /* // 4. 复制图像到 staging buffer */
+    VkBufferImageCopy region{};
+    region.bufferOffset = 0;
+    region.bufferRowLength = 0;
+    region.bufferImageHeight = 0;
+    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount = 1;
+    region.imageOffset = {0, 0, 0};
+    region.imageExtent = {width, height, 1};
+
+    vkCmdCopyImageToBuffer(
+        commandBuffer,
+        this->_textureImage,
+        VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+        stagingBuffer,
+        1,
+        &region);
+
+    /* // 5. 将布局转换回 SHADER_READ_ONLY_OPTIMAL */
+    barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+    barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    barrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+    barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+    vkCmdPipelineBarrier(
+        commandBuffer,
+        VK_PIPELINE_STAGE_TRANSFER_BIT,
+        VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+        0,
+        0, nullptr,
+        0, nullptr,
+        1, &barrier);
+
+    this->_endSingleTimeCommands(commandBuffer);
+
+    /* // 6. 映射内存并读取数据 */
+    void* data;
+    vkMapMemory(Gfx::context->getVkDevice(), stagingBufferMemory, 0, imageSize, 0, &data);
+
+    /* // 7. 保存为图片文件 */
+    bool success = false;
+    std::string extension = filePath.substr(filePath.find_last_of(".") + 1);
+
+    // /* // 使用 stb_image_write 保存 */
+    // #define STB_IMAGE_WRITE_IMPLEMENTATION
+    // #include <stb_image_write.h>
+
+    if (extension == "png" || extension == "PNG")
+    {
+        success = stbi_write_png(filePath.c_str(), width, height, 4, data, width * 4);
+    }
+    else if (extension == "jpg" || extension == "JPG" || extension == "jpeg" || extension == "JPEG")
+    {
+        success = stbi_write_jpg(filePath.c_str(), width, height, 4, data, 90);
+    }
+    else if (extension == "bmp" || extension == "BMP")
+    {
+        success = stbi_write_bmp(filePath.c_str(), width, height, 4, data);
+    }
+    else
+    {
+        std::cerr << "Unsupported image format: " << extension << std::endl;
+    }
+
+    /* // 8. 解除内存映射 */
+    vkUnmapMemory(Gfx::context->getVkDevice(), stagingBufferMemory);
+
+    /* // 9. 清理 staging buffer */
+    vkDestroyBuffer(Gfx::context->getVkDevice(), stagingBuffer, nullptr);
+    vkFreeMemory(Gfx::context->getVkDevice(), stagingBufferMemory, nullptr);
+
+    if (success)
+    {
+        std::cout << "GfxTexture: Saved to " << filePath << std::endl;
+    }
+    else
+    {
+        std::cerr << "GfxTexture: Failed to save to " << filePath << std::endl;
+    }
+
+    return success;
 }
 
 GfxTexture::~GfxTexture()

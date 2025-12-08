@@ -62,9 +62,16 @@ public:
     VkImageView getImageView();
     VkSampler getSampler();
 
+    
+    bool saveToFile(std::string filePath, uint32_t width, uint32_t height);
+
+
+
     // 绑定less 索引
     uint32_t getBindlessIndex();
     void setBindlessIndex(uint32_t index);
+
+    
 
     ~GfxTexture();
 };

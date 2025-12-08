@@ -1,8 +1,142 @@
 #include "gfx-render-texture.h"
+#include "gfx.h"
+#include "gfx-context.h"
+#include "gfx-renderer.h"
+#include "gfx-texture.h"
+#include "pass/gfx-pass.h"
+#include "pass/gfx-pass-target.h"
+
+
 
 GfxRenderTexture::GfxRenderTexture()
 {
+    this->_width = 0;
+    this->_height = 0;
+    this->_colorTexture = nullptr;
+    this->_depthTexture = nullptr;
 }
+void GfxRenderTexture::resize(uint32_t width, uint32_t height)
+{
+    this->_width = width;
+    this->_height = height;
+    this->_createTextures();
+    this->_createFramebuffer();
+    this->_createCommandBuffer();
+}
+/**
+ * @brief 创建渲染纹理的颜色贴图和深度贴图
+ *
+ */
+void GfxRenderTexture::_createTextures()
+{
+    if (this->_colorTexture)
+    {
+        delete this->_colorTexture;
+        this->_colorTexture = nullptr;
+    }
+    if (this->_depthTexture)
+    {
+        delete this->_depthTexture;
+        this->_depthTexture = nullptr;
+    }
+
+    this->_colorTexture = new GfxTexture();
+    this->_colorTexture->createImage(
+        this->_width, this->_height,
+        Gfx::context->getSwapChainImageFormat(),
+        VK_IMAGE_TILING_OPTIMAL,
+        VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, /* // 可作为纹理采样 */
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+        VK_SAMPLE_COUNT_1_BIT);
+    this->_colorTexture->createImageView(
+        Gfx::context->getSwapChainImageFormat(),
+        VK_IMAGE_ASPECT_COLOR_BIT);
+
+    this->_depthTexture = new GfxTexture();
+    this->_depthTexture->createImage(
+        this->_width, this->_height,
+        VK_FORMAT_D32_SFLOAT,
+        VK_IMAGE_TILING_OPTIMAL,
+        VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+        VK_SAMPLE_COUNT_1_BIT);
+    this->_depthTexture->createImageView(
+        VK_FORMAT_D32_SFLOAT,
+        VK_IMAGE_ASPECT_DEPTH_BIT);
+}
+
+void GfxRenderTexture::_createFramebuffer()
+{
+    if (this->_framebuffer)
+    {
+        vkDestroyFramebuffer(Gfx::context->getVkDevice(), this->_framebuffer, nullptr);
+        this->_framebuffer = VK_NULL_HANDLE;
+    }
+    std::vector<VkImageView> attachments = {
+        this->_colorTexture->getImageView(),
+        this->_depthTexture->getImageView()};
+    VkFramebufferCreateInfo framebufferInfo = {};
+    framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+    GfxPass *pass = Gfx::renderer->getPass("target");
+    framebufferInfo.renderPass = pass->vkRenderPass();
+    framebufferInfo.attachmentCount = attachments.size();
+    framebufferInfo.pAttachments = attachments.data();
+    framebufferInfo.width = this->_width;
+    framebufferInfo.height = this->_height;
+    framebufferInfo.layers = 1;
+
+    if (vkCreateFramebuffer(Gfx::context->getVkDevice(), &framebufferInfo, nullptr, &this->_framebuffer) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create framebuffer!");
+    }
+}
+void GfxRenderTexture::_createCommandBuffer(){
+    if (this->_commandBuffer)
+    {
+        vkFreeCommandBuffers(Gfx::context->getVkDevice(), Gfx::context->getCommandPool(), 1, &this->_commandBuffer);
+        this->_commandBuffer = VK_NULL_HANDLE;
+    }
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = Gfx::context->getCommandPool();
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = 1;
+    if (vkAllocateCommandBuffers(Gfx::context->getVkDevice(), &allocInfo, &this->_commandBuffer) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to allocate command buffers!");
+    }
+}
+bool GfxRenderTexture::saveToFile1(std::string filePath)
+{
+    if (this->_colorTexture == nullptr)
+    {
+        std::cerr << "GfxRenderTexture : Cannot save, color texture is null" << std::endl;
+        return false;
+    }
+    return this->_colorTexture->saveToFile(filePath, this->_width, this->_height);
+}
+// /**
+//  * @brief 创建渲染纹理的命令缓冲区
+//  *
+//  */
+// void GfxRenderTexture::_createCommandBuffer()
+// {
+//     if (this->_commandBuffer)
+//     {
+//         vkFreeCommandBuffers(Gfx::context->getVkDevice(), Gfx::context->getCommandPool(), 1, &this->_commandBuffer);
+//         this->_commandBuffer = VK_NULL_HANDLE;
+//     }
+//     VkCommandBufferAllocateInfo allocInfo = {};
+//     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+//     allocInfo.commandPool = Gfx::context->getCommandPool();
+//     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+//     allocInfo.commandBufferCount = 1;
+
+//     if (vkAllocateCommandBuffers(Gfx::context->getVkDevice(), &allocInfo, &this->_commandBuffer) != VK_SUCCESS)
+//     {
+//         throw std::runtime_error("failed to allocate command buffers!");
+//     }
+// }
 
 GfxRenderTexture::~GfxRenderTexture()
 {
