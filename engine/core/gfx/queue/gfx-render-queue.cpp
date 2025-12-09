@@ -4,6 +4,7 @@
 #include "../gfx-context.h"
 #include "../gfx-renderer.h"
 #include "../pass/gfx-pass.h"
+#include "../pipeline/gfx-pipeline.h"
 #include "../gfx-render-texture.h"
 #include "gfx-render-batch.h"
 
@@ -12,13 +13,6 @@ GfxRenderQueue::GfxRenderQueue()
     this->_renderTexture = nullptr;
     this->_viewMat = {};
     this->_projMat = {};
-    std::array<float, 16> identityMat1 = {1.0f};
-    std::array<float, 16> identityMat2 = {1.0f};
-    GfxMaterial material{};
-    GfxMesh mesh{};
-    material.pass = "pass-built";
-    material.pipeline = "pipeline-built";
-    this->_testBatch = new GfxRenderBatch(material, mesh);
 }
 void GfxRenderQueue::init(GfxRenderTexture *renderTexture)
 {
@@ -35,7 +29,7 @@ void GfxRenderQueue::_createBuffers()
 }
 void GfxRenderQueue::_createFramebuffers()
 {
-    GfxPass *pass = Gfx::renderer->getPass("default");
+    GfxPass *pass = Gfx::renderer->getPass("scene");
     if (pass == nullptr)
     {
         throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
@@ -63,7 +57,6 @@ void GfxRenderQueue::_createFramebuffers()
 }
 void GfxRenderQueue::_createCommandBuffers()
 {
-
     this->_commandBuffers.resize(this->_framebuffers.size());
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -79,29 +72,63 @@ void GfxRenderQueue::_createCommandBuffers()
 
 void GfxRenderQueue::submitObject(const GfxMaterial &material, const GfxMesh &mesh)
 {
-    // if (this->_batches.empty())
-    // {
-    //     GfxRenderBatch *batch = new GfxRenderBatch(material, mesh);
-    //     this->_batches.push_back(batch);
-    //     batch->addObject();
-    // }
-    // else
-    // {
-    //     GfxRenderBatch *batch = this->_batches.back();
-    //     if (batch->material().uuid == material.uuid && batch->mesh().uuid == mesh.uuid)
-    //     {
-    //         batch->addObject();
-    //     }
-    //     else
-    //     {
-    //         GfxRenderBatch *batch = new GfxRenderBatch(material, mesh);
-    //         this->_batches.push_back(batch);
-    //         batch->addObject();
-    //     }
-    // }
+    if (this->_batches.empty())
+    {
+        GfxRenderBatch *batch = new GfxRenderBatch(material, mesh);
+        this->_batches.push_back(batch);
+        batch->addObject();
+    }
+    else
+    {
+        GfxRenderBatch *batch = this->_batches.back();
+        if (batch->material().uuid == material.uuid && batch->mesh().uuid == mesh.uuid)
+        {
+            // 后续还要判断材质中的push constant是否一致和纹理是否一致
+            batch->addObject();
+        }
+        else
+        {
+            GfxRenderBatch *batch = new GfxRenderBatch(material, mesh);
+            this->_batches.push_back(batch);
+            batch->addObject();
+        }
+    }
 }
 void GfxRenderQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
+    GfxPipeline *pipeline = nullptr;
+    VkCommandBuffer queueCommandBuffer = VK_NULL_HANDLE;
+
+    this->_resetCommandBuffer(imageIndex);
+    this->_beginCommandBuffer(imageIndex);
+    this->_beginRenderPass(imageIndex);
+    if (this->_renderTexture == nullptr)
+    {
+        queueCommandBuffer = this->_commandBuffers[imageIndex];
+    }
+    else
+    {
+        queueCommandBuffer = this->_renderTexture->getCommandBuffer();
+    }
+    for (auto &batch : this->_batches)
+    {
+        if (pipeline == nullptr || pipeline->getName() != batch->material().pipeline)
+        {
+            pipeline = Gfx::renderer->getPipeline(batch->material().pipeline);
+            this->_bindPipeline(imageIndex, pipeline);
+        }
+        VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+        if (this->_renderTexture == nullptr)
+        {
+            descriptorSet = pipeline->getDescriptorSets()[0];
+        }
+        else
+        {
+            descriptorSet = pipeline->getDescriptorSets()[imageIndex];
+        }
+        batch->render(queueCommandBuffer, descriptorSet);
+    }
+    commandBuffers.push_back(queueCommandBuffer);
 
     // this->_testBatch->render(this->_renderTexture, imageIndex, commandBuffers);
     // this->_renderTexture->saveToFile1("test.png");
@@ -117,6 +144,79 @@ void GfxRenderQueue::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &c
     // //    delete batch;
     // //}
     // this->_batches.clear();
+}
+void GfxRenderQueue::_resetCommandBuffer(uint32_t imageIndex)
+{
+    if (this->_renderTexture == nullptr)
+    {
+        vkResetCommandBuffer(this->_commandBuffers[imageIndex], 0);
+    }
+    else
+    {
+        vkResetCommandBuffer(this->_renderTexture->getCommandBuffer(), 0);
+    }
+}
+void GfxRenderQueue::_beginCommandBuffer(uint32_t imageIndex)
+{
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    if (this->_renderTexture == nullptr)
+    {
+        if (vkBeginCommandBuffer(this->_commandBuffers[imageIndex], &beginInfo) != VK_SUCCESS)
+        {
+            throw std::runtime_error("Failed to begin recording command buffer!");
+        }
+    }
+    else
+    {
+        if (vkBeginCommandBuffer(this->_renderTexture->getCommandBuffer(), &beginInfo) != VK_SUCCESS)
+        {
+            throw std::runtime_error("Failed to begin recording command buffer!");
+        }
+    }
+}
+void GfxRenderQueue::_beginRenderPass(uint32_t imageIndex)
+{
+    VkRenderPassBeginInfo renderPassInfo{};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    GfxPass *pass = nullptr;
+    if (this->_renderTexture == nullptr)
+    {
+        pass = Gfx::renderer->getPass("scene");
+        renderPassInfo.framebuffer = this->_framebuffers[imageIndex];
+        renderPassInfo.renderArea.extent = Gfx::context->getSwapChainExtent();
+    }
+    else
+    {
+        pass = Gfx::renderer->getPass("default");
+        renderPassInfo.framebuffer = this->_renderTexture->getFramebuffer();
+        renderPassInfo.renderArea.extent = {this->_renderTexture->getWidth(), this->_renderTexture->getHeight()};
+    }
+    renderPassInfo.renderPass = pass->vkRenderPass();
+    renderPassInfo.renderArea.offset = {0, 0};
+    VkClearValue clearColor{};
+    renderPassInfo.clearValueCount = 1;
+    clearColor.color = {{0.0f, 0.0f, 0.0f, 0.0f}};
+    renderPassInfo.pClearValues = &clearColor;
+    if (this->_renderTexture == nullptr)
+    {
+        vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+    }
+    else
+    {
+        vkCmdBeginRenderPass(this->_renderTexture->getCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+    }
+}
+void GfxRenderQueue::_bindPipeline(uint32_t imageIndex, GfxPipeline *pipeline)
+{
+    if (this->_renderTexture == nullptr)
+    {
+        vkCmdBindPipeline(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipeline());
+    }
+    else
+    {
+        vkCmdBindPipeline(this->_renderTexture->getCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipeline());
+    }
 }
 
 void GfxRenderQueue::_clear()

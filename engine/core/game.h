@@ -13,6 +13,7 @@ class AssetsManager;
 class FreetypeMgr;
 class Input;
 class Camera;
+class GfxRenderTexture;
 
 struct View
 {
@@ -88,6 +89,9 @@ private:
      * @brief 相机系统
      */
     std::vector<Camera *> _cameras;
+
+    GfxMaterial _textMaterial;
+    GfxRenderTexture *_renderTexture;
 
     /**
      * @brief 初始化图形库

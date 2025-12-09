@@ -78,7 +78,7 @@ void GfxRenderTexture::_createFramebuffer()
         this->_depthTexture->getImageView()};
     VkFramebufferCreateInfo framebufferInfo = {};
     framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-    GfxPass *pass = Gfx::renderer->getPass("target");
+    GfxPass *pass = Gfx::renderer->getPass("default");
     framebufferInfo.renderPass = pass->vkRenderPass();
     framebufferInfo.attachmentCount = attachments.size();
     framebufferInfo.pAttachments = attachments.data();

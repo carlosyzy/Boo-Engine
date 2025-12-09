@@ -10,83 +10,84 @@
 
 GfxRenderBatch::GfxRenderBatch(const GfxMaterial &material, const GfxMesh &mesh) : _material(material), _mesh(mesh), _objectCount(0)
 {
-    std::vector<float> positions = {
-        -1.0f, 1.0f, 0.0f, 0.0f,
-        -1.0f, -1.0f, 0.0f, 0.0f,
-        1.0f, -1.0f, 0.0f, 0.0f,
-        1.0f, 1.0f, 1.0f, 0.0f};
-    std::vector<float> colors = {
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-    };
-    std::vector<float> normals = {
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f};
-    std::vector<float> uvs = {
-        0.0f,
-        0.0f,
-        0.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-        0.0f,
-    };
-    std::vector<uint32_t> indices = {
-        0, 1, 2,
-        0, 2, 3};
-    this->_indexSize = indices.size();
-    size_t vertexCount = positions.size() / 4; // 每个顶点4个float (x,y,z,w)
-    std::vector<float> interleavedVertices;
-    interleavedVertices.reserve(vertexCount * (4 + 4 + 3 + 2)); // position + color + normal + uv
+    // std::vector<float> positions = {
+    //     -1.0f, 1.0f, 0.0f, 0.0f,
+    //     -1.0f, -1.0f, 0.0f, 0.0f,
+    //     1.0f, -1.0f, 0.0f, 0.0f,
+    //     1.0f, 1.0f, 1.0f, 0.0f};
+    // std::vector<float> colors = {
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    // };
+    // std::vector<float> normals = {
+    //     0.0f,
+    //     0.0f,
+    //     0.0f,
+    //     0.0f,
+    //     0.0f,
+    //     0.0f,
+    //     0.0f,
+    //     0.0f,
+    //     0.0f,
+    //     0.0f,
+    //     0.0f,
+    //     0.0f};
+    // std::vector<float> uvs = {
+    //     0.0f,
+    //     0.0f,
+    //     0.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     1.0f,
+    //     0.0f,
+    // };
+    // std::vector<uint32_t> indices = {
+    //     0, 1, 2,
+    //     0, 2, 3};
+    // this->_indexSize = indices.size();
+    // size_t vertexCount = positions.size() / 4; // 每个顶点4个float (x,y,z,w)
+    // std::vector<float> interleavedVertices;
+    // interleavedVertices.reserve(vertexCount * (4 + 4 + 3 + 2)); // position + color + normal + uv
 
-    for (size_t i = 0; i < vertexCount; ++i)
-    {
-        // 添加位置 (4 floats)
-        interleavedVertices.insert(interleavedVertices.end(),
-                                   positions.begin() + i * 4,
-                                   positions.begin() + (i + 1) * 4);
+    // for (size_t i = 0; i < vertexCount; ++i)
+    // {
+    //     // 添加位置 (4 floats)
+    //     interleavedVertices.insert(interleavedVertices.end(),
+    //                                positions.begin() + i * 4,
+    //                                positions.begin() + (i + 1) * 4);
 
-        // 添加颜色 (4 floats)
-        interleavedVertices.insert(interleavedVertices.end(),
-                                   colors.begin() + i * 4,
-                                   colors.begin() + (i + 1) * 4);
+    //     // 添加颜色 (4 floats)
+    //     interleavedVertices.insert(interleavedVertices.end(),
+    //                                colors.begin() + i * 4,
+    //                                colors.begin() + (i + 1) * 4);
 
-        // 添加法线 (3 floats)
-        interleavedVertices.insert(interleavedVertices.end(),
-                                   normals.begin() + i * 3,
-                                   normals.begin() + (i + 1) * 3);
+    //     // 添加法线 (3 floats)
+    //     interleavedVertices.insert(interleavedVertices.end(),
+    //                                normals.begin() + i * 3,
+    //                                normals.begin() + (i + 1) * 3);
 
-        // 添加UV (2 floats)
-        interleavedVertices.insert(interleavedVertices.end(),
-                                   uvs.begin() + i * 2,
-                                   uvs.begin() + (i + 1) * 2);
-    }
-
+    //     // 添加UV (2 floats)
+    //     interleavedVertices.insert(interleavedVertices.end(),
+    //                                uvs.begin() + i * 2,
+    //                                uvs.begin() + (i + 1) * 2);
+    // }
+    std::vector<float> interleavedVertices = this->_mesh.vertices;
+    std::vector<uint32_t> indices = this->_mesh.indices;
     // 顶点缓冲区
     GfxMgr::getInstance()->createBuffer(
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -108,6 +109,7 @@ GfxRenderBatch::GfxRenderBatch(const GfxMaterial &material, const GfxMesh &mesh)
 
     // this->_createBuffers();
 }
+// 后续带上每个物体独有的数据
 void GfxRenderBatch::addObject()
 {
     if (this->_objectCount >= maxObjects)
@@ -116,91 +118,100 @@ void GfxRenderBatch::addObject()
     }
     this->_objectCount++;
 }
-void GfxRenderBatch::render(GfxRenderTexture *renderTexture, uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
+void GfxRenderBatch::render(VkCommandBuffer &queueCommandBuffer, VkDescriptorSet &descriptorSet)
 {
-    // if (this->_objectCount == 0)
-    // {
-    //     return;
-    // }
-    // std::cout << "GfxRenderBatch::render() imageIndex:" << imageIndex << std::endl;
-    if (renderTexture == nullptr)
-    {
-        // throw std::runtime_error("GfxRenderBatch::render() renderTexture is nullptr!");
-        if (imageIndex >= 2)
-        {
-            return;
-        }
-    }
-
-    GfxPipeline *pipeline = Gfx::renderer->getPipeline("default");
+    GfxPipeline *pipeline = Gfx::renderer->getPipeline(this->_material.pipeline);
     if (pipeline == nullptr)
     {
         throw std::runtime_error("GfxRenderBatch::render() pipeline not found!");
     }
-    GfxPass *pass = Gfx::renderer->getPass("default");
-    if (pass == nullptr)
-    {
-        throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
-    }
-
-    vkResetCommandBuffer(renderTexture->getCommandBuffer(), 0);
-
-    VkCommandBufferBeginInfo beginInfo{};
-    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    if (vkBeginCommandBuffer(renderTexture->getCommandBuffer(), &beginInfo) != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to begin recording command buffer!");
-    }
-
-    VkRenderPassBeginInfo renderPassInfo{};
-    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    renderPassInfo.renderPass = pass->vkRenderPass();
-    renderPassInfo.framebuffer = renderTexture->getFramebuffer();
-
-    renderPassInfo.renderArea.offset = {0, 0};
-    renderPassInfo.renderArea.extent = Gfx::context->getSwapChainExtent();
-
-    VkClearValue clearColor{};
-    renderPassInfo.clearValueCount = 1;
-    clearColor.color = {{0.0f, 0.0f, 0.0f, 0.0f}};
-    renderPassInfo.pClearValues = &clearColor;
-
-    vkCmdBeginRenderPass(renderTexture->getCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-    // this->_createVertexBuffers();
-
-    vkCmdBindPipeline(renderTexture->getCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipeline());
-
     GfxDescriptor *descriptor = pipeline->getDescriptor();
-
-    if (descriptor != nullptr)
+    if (descriptor == nullptr)
     {
-        std::vector<VkDescriptorSet> descriptorSets = pipeline->getDescriptorSets();
-
-        GfxTexture *texture = Gfx::renderer->getTexture("default-texture");
-
+        throw std::runtime_error("GfxRenderBatch::render() descriptor not found!");
+    }
+    std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
+    // 纹理绑定
+    std::vector<VkDescriptorImageInfo> imageInfos{};
+    uint32_t samplerCount = descriptor->samplerCount();
+    for (uint32_t i = 0; i < samplerCount; i++)
+    {
+        GfxTexture *texture = Gfx::renderer->getTexture(this->_material.textures[i]);
         VkDescriptorImageInfo imageInfo{};
         imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        imageInfo.imageView = texture->getImageView();
-        imageInfo.sampler = texture->getSampler();
-
-        std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
-        descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descriptorWrites[0].dstSet = descriptorSets[imageIndex];
-        descriptorWrites[0].dstBinding = 0;
-        descriptorWrites[0].dstArrayElement = 0;
-        descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        descriptorWrites[0].descriptorCount = 1;
-        descriptorWrites[0].pImageInfo = &imageInfo;
-        vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-
-        vkCmdBindDescriptorSets(renderTexture->getCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &(descriptorSets[imageIndex]), 0, nullptr);
+        if (texture != nullptr)
+        {
+            imageInfo.imageView = texture->getImageView();
+            imageInfo.sampler = texture->getSampler();
+        }
+        imageInfos.push_back(imageInfo);
     }
-    //     vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipelineLayout(), 0, 1, &this->_descriptorSets[imageIndex], 0, nullptr);
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSet;
+    descriptorWrites[0].dstBinding = 0;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = (uint32_t)imageInfos.size();
+    descriptorWrites[0].pImageInfo = imageInfos.data();
+    vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+    vkCmdBindDescriptorSets(queueCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptorSet, 0, nullptr);
 
     VkDeviceSize offsets[1] = {0};
-    vkCmdBindVertexBuffers(renderTexture->getCommandBuffer(), 0, 1, &this->_vertexBuffer, offsets);
-    vkCmdBindIndexBuffer(renderTexture->getCommandBuffer(), this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+    vkCmdBindVertexBuffers(queueCommandBuffer, 0, 1, &this->_vertexBuffer, offsets);
+    vkCmdBindIndexBuffer(queueCommandBuffer, this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+    vkCmdDrawIndexed(
+        queueCommandBuffer,
+        3, // 只绘制3个索引（第一个三角形）
+        1, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
+        0, // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
+        0, // 第一个实例的索引 从第 0 个实例开始绘制
+        0  // 实例偏移
+    );
+    // 渲染结束
+    vkCmdEndRenderPass(queueCommandBuffer);
+    // 结束渲染pass
+    if (vkEndCommandBuffer(queueCommandBuffer) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to record command buffer!");
+    }
+    // commandBuffers.push_back(renderTexture->getCommandBuffer());
+    // std::cout << "GfxRenderBatch::_beginBindRenderPass() commandBuffers.size():" << std::endl;
+
+    
+
+    // VkDescriptorImageInfo imageInfo{};
+    // imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    // imageInfo.imageView = texture->getImageView();
+    // imageInfo.sampler = texture->getSampler();
+
+    // GfxDescriptor *descriptor = pipeline->getDescriptor();
+    // if (descriptor != nullptr)
+    // {
+    //     std::vector<VkDescriptorSet> descriptorSets = pipeline->getDescriptorSets();
+    //     GfxTexture *texture = Gfx::renderer->getTexture("default-texture");
+    //     VkDescriptorImageInfo imageInfo{};
+    //     imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    //     imageInfo.imageView = texture->getImageView();
+    //     imageInfo.sampler = texture->getSampler();
+
+    //     std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
+    //     descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    //     descriptorWrites[0].dstSet = descriptorSets[imageIndex];
+    //     descriptorWrites[0].dstBinding = 0;
+    //     descriptorWrites[0].dstArrayElement = 0;
+    //     descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    //     descriptorWrites[0].descriptorCount = 1;
+    //     descriptorWrites[0].pImageInfo = &imageInfo;
+    //     vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+
+    //     vkCmdBindDescriptorSets(renderTexture->getCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &(descriptorSets[imageIndex]), 0, nullptr);
+    // }
+    //     vkCmdBindDescriptorSets(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline->getVKPipelineLayout(), 0, 1, &this->_descriptorSets[imageIndex], 0, nullptr);
+
+    // VkDeviceSize offsets[1] = {0};
+    // vkCmdBindVertexBuffers(renderTexture->getCommandBuffer(), 0, 1, &this->_vertexBuffer, offsets);
+    // vkCmdBindIndexBuffer(renderTexture->getCommandBuffer(), this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
     // VkDescriptorSet descriptorSet = Gfx::renderer->getDescriptorSet(imageIndex);
     // vkCmdBindDescriptorSets(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipelineLayout(), 0, 1, &descriptorSet, 0, nullptr);
@@ -228,23 +239,76 @@ void GfxRenderBatch::render(GfxRenderTexture *renderTexture, uint32_t imageIndex
     // pushConstants.defaultColor[3] = 1.0f;
     // vkCmdPushConstants(commandBuffers[imageIndex], pipeline->vkPipelineLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstants), &pushConstants);
 
-    vkCmdDrawIndexed(
-        renderTexture->getCommandBuffer(),
-        3, // 只绘制3个索引（第一个三角形）
-        1, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
-        0, // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
-        0, // 第一个实例的索引 从第 0 个实例开始绘制
-        0  // 实例偏移
-    );
-    // 渲染结束
-    vkCmdEndRenderPass(renderTexture->getCommandBuffer());
-    // 结束渲染pass
-    if (vkEndCommandBuffer(renderTexture->getCommandBuffer()) != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to record command buffer!");
-    }
-    commandBuffers.push_back(renderTexture->getCommandBuffer());
-    std::cout << "GfxRenderBatch::_beginBindRenderPass() commandBuffers.size():"  << std::endl;
+    // vkCmdDrawIndexed(
+    //     renderTexture->getCommandBuffer(),
+    //     3, // 只绘制3个索引（第一个三角形）
+    //     1, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
+    //     0, // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
+    //     0, // 第一个实例的索引 从第 0 个实例开始绘制
+    //     0  // 实例偏移
+    // );
+    // // 渲染结束
+    // vkCmdEndRenderPass(renderTexture->getCommandBuffer());
+    // // 结束渲染pass
+    // if (vkEndCommandBuffer(renderTexture->getCommandBuffer()) != VK_SUCCESS)
+    // {
+    //     throw std::runtime_error("Failed to record command buffer!");
+    // }
+    // commandBuffers.push_back(renderTexture->getCommandBuffer());
+    // std::cout << "GfxRenderBatch::_beginBindRenderPass() commandBuffers.size():" << std::endl;
+
+    // if (this->_objectCount == 0)
+    // {
+    //     return;
+    // }
+    // std::cout << "GfxRenderBatch::render() imageIndex:" << imageIndex << std::endl;
+    // if (renderTexture == nullptr)
+    // {
+    //     // throw std::runtime_error("GfxRenderBatch::render() renderTexture is nullptr!");
+    //     if (imageIndex >= 2)
+    //     {
+    //         return;
+    //     }
+    // }
+
+    // GfxPipeline *pipeline = Gfx::renderer->getPipeline("default");
+    // if (pipeline == nullptr)
+    // {
+    //     throw std::runtime_error("GfxRenderBatch::render() pipeline not found!");
+    // }
+    // GfxPass *pass = Gfx::renderer->getPass("default");
+    // if (pass == nullptr)
+    // {
+    //     throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
+    // }
+
+    // vkResetCommandBuffer(renderTexture->getCommandBuffer(), 0);
+
+    // VkCommandBufferBeginInfo beginInfo{};
+    // beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    // if (vkBeginCommandBuffer(renderTexture->getCommandBuffer(), &beginInfo) != VK_SUCCESS)
+    // {
+    //     throw std::runtime_error("Failed to begin recording command buffer!");
+    // }
+
+    // VkRenderPassBeginInfo renderPassInfo{};
+    // renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    // renderPassInfo.renderPass = pass->vkRenderPass();
+    // renderPassInfo.framebuffer = renderTexture->getFramebuffer();
+
+    // renderPassInfo.renderArea.offset = {0, 0};
+    // renderPassInfo.renderArea.extent = Gfx::context->getSwapChainExtent();
+
+    // VkClearValue clearColor{};
+    // renderPassInfo.clearValueCount = 1;
+    // clearColor.color = {{0.0f, 0.0f, 0.0f, 0.0f}};
+    // renderPassInfo.pClearValues = &clearColor;
+
+    // vkCmdBeginRenderPass(renderTexture->getCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+    // this->_createVertexBuffers();
+
+    // vkCmdBindPipeline(renderTexture->getCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipeline());
 }
 
 void GfxRenderBatch::_createVertexBuffers()
@@ -283,25 +347,6 @@ void GfxRenderBatch::_createVertexBuffers()
 GfxRenderBatch::~GfxRenderBatch()
 {
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // void GfxRenderBatch::_createStorageBuffers()
 // {

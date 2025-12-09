@@ -53,6 +53,6 @@ public:
     const GfxMaterial &material() const { return _material; }
     const GfxMesh &mesh() const { return _mesh; }
     void addObject();
-    void render(GfxRenderTexture *renderTexture, uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
+    void render(VkCommandBuffer &queueCommandBuffer, VkDescriptorSet &descriptorSet);
     ~GfxRenderBatch();
 };

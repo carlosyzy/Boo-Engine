@@ -9,6 +9,8 @@
 #include "event/event.h"
 #include "scene/scene.h"
 #include "gfx/gfx-mgr.h"
+#include "gfx/gfx-render-texture.h"
+#include "gfx/gfx-struct.h"
 #include "alpha/alpha.h"
 #include "font/freetype-mgr.h"
 #include "input/input.h"
@@ -30,17 +32,16 @@ void Game::init()
 	this->_initView();
 	this->_initFont();
 	this->_initAssets();
-	/*this->_initAlpha();*/
-	// json scene;
-
-	// scene["data"] = {
-	// 	{"type", "Scene"},
-	// 	{"children", json::array()}};
-	// scene["data"]["children"].push_back({{{{"type", "Node"},
-	// 									   {"name", "3D"}}},
-	// 									 {{{"type", "Node"},
-	// 									   {"name", "2D"}}}});
-	// FileUtil::saveJsonToBinary(scene, "resources/scene.json");
+	this->_renderTexture = new GfxRenderTexture();
+	GfxMgr::getInstance()->initRenderQueue(0, this->_renderTexture);
+	this->_textMaterial = {
+		.name = "Text-Material",
+		.uuid = "Text-Material-UUID",
+		.pass = "target",
+		.pipeline = "default",
+		.textures = {
+			"default-texture"},
+	};
 }
 void Game::_initGFX()
 {
@@ -141,9 +142,6 @@ void Game::extractCamera(Camera *camera)
 	this->_cameras.push_back(camera);
 	camera->resize(this->_view->width, this->_view->height);
 }
-
-
-
 void Game::addCompClearCaches(Component *comp)
 {
 	// std::cout << "Game::addCompClearCaches: comp: " << comp->getNode()->getName() << std::endl;
@@ -200,6 +198,8 @@ void Game::_render(float dt)
 	// {
 	// 	camera->Render();
 	// }
+	GfxMgr::getInstance()->submitRenderObject(0, this->_textMaterial, defaultMesh);
+
 	// // 更新渲染器
 	GfxMgr::getInstance()->update();
 }
@@ -216,14 +216,14 @@ void Game::_clear()
 void Game::_updateSchedules(float dt)
 {
 	// 待修复
-	for (auto it = this->_schedules.begin(); it != this->_schedules.end();++it)
+	for (auto it = this->_schedules.begin(); it != this->_schedules.end(); ++it)
 	{
 		if (it->second.clearFlag)
 		{
 			// 已经标记清除，跳过
 			continue;
 		}
-		ScheduleInfo &info = it->second; 
+		ScheduleInfo &info = it->second;
 		if (info.instance == nullptr || info.func == nullptr)
 		{
 			// 实例或函数为空，标记清除

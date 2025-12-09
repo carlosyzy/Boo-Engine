@@ -36,6 +36,8 @@ public:
     GfxRenderTexture();
     VkFramebuffer getFramebuffer() { return _framebuffer; }
     VkCommandBuffer getCommandBuffer() { return _commandBuffer; }
+    uint32_t getWidth() { return _width; }
+    uint32_t getHeight() { return _height; }
 
     void resize(uint32_t width, uint32_t height);
     void _clear();

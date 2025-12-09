@@ -97,10 +97,10 @@ public:
 	GfxRenderer();
 	void init();
 
-	GfxDescriptor *getDescriptor(std::string name) const { return this->_descriptors.at(name); }
-	GfxPass *getPass(std::string name) const { return this->_passes.at(name); }
-	GfxPipeline *getPipeline(std::string name) const { return this->_pipelines.at(name); }
-	GfxTexture *getTexture(std::string uuid) const { return this->_textures.at(uuid); }
+	GfxDescriptor *getDescriptor(std::string name); //{ return this->_descriptors.at(name); }
+	GfxPass *getPass(std::string name);				// const { return this->_passes.at(name); }
+	GfxPipeline *getPipeline(std::string name);		// const { return this->_pipelines.at(name); }
+	GfxTexture *getTexture(std::string uuid);		// const { return this->_textures.at(uuid); }
 
 	// VkDescriptorSet getDescriptorSet(uint32_t index) const { return this->_descriptorSets[index]; }
 	// /**

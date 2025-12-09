@@ -29,13 +29,15 @@ protected:
 
 public:
     GfxDescriptor(uint32_t samplerCount, uint32_t maxObject);
-
-    VkDescriptorSetLayout getDescriptorSetLayout() const
-    {
-        return this->_descriptorSetLayout;
-    }
-    std::vector<VkDescriptorSet> getDescriptorSets();
-    void reset();
+    /**
+     * @brief 获取采样器数量
+     * 
+     * @return const uint32_t& 
+     */
+    const uint32_t &samplerCount() const { return _samplerCount; }
+    VkDescriptorSetLayout getDescriptorSetLayout();
+    virtual std::vector<VkDescriptorSet> getDescriptorSets();
+    virtual void reset();
 
     ~GfxDescriptor();
 };

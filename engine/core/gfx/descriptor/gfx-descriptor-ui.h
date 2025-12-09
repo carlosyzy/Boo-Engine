@@ -13,11 +13,7 @@ protected:
 public:
     GfxDescriptorUI(uint32_t samplerCount, uint32_t maxObject);
 
-    VkDescriptorSetLayout getDescriptorSetLayout() const
-    {
-        return this->_descriptorSetLayout;
-    }
-    std::vector<VkDescriptorSet> getDescriptorSets();
+    std::vector<VkDescriptorSet> getDescriptorSets() override;
     void reset();
 
      ~GfxDescriptorUI();

@@ -13,8 +13,6 @@
 
 class GfxRenderTexture;
 
-
-
 class GfxMgr
 {
 private:
@@ -79,7 +77,7 @@ public:
 	 * @param viewMat 视图矩阵
 	 * @param projMat 投影矩阵
 	 */
-	void initRenderQueue(uint32_t renderId,GfxRenderTexture *renderTexture );
+	void initRenderQueue(uint32_t renderId, GfxRenderTexture *renderTexture);
 	/**
 	 * @brief 提交渲染对象
 	 *
@@ -89,7 +87,7 @@ public:
 	 * @param vertices 顶点数据
 	 * @param indices 索引数据
 	 */
-	void submitRenderObject(uint32_t renderId, GfxMaterial &material,GfxMesh &mesh);
+	void submitRenderObject(uint32_t renderId, GfxMaterial &material, GfxMesh &mesh);
 
 	// void initTestInfo();
 	// /*  // 采样次数 */

@@ -5,7 +5,7 @@ GfxPipelineUI::GfxPipelineUI(const std::string &name) : GfxPipeline(name) {
 }
 void GfxPipelineUI::_initVertexInputState()
 {
-   // 初始化顶点位置输入属性描述
+    // 初始化顶点位置输入属性描述
     this->_vInputAttribDescriptionPos.location = 0;
     this->_vInputAttribDescriptionPos.binding = 0;
     this->_vInputAttribDescriptionPos.format = VK_FORMAT_R32G32B32_SFLOAT;

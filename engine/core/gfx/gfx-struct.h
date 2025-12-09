@@ -3,12 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-
-// struct PushConstants
-// {
-// 	float defaultColor[4];
-// };
-
+#include <vector>
 
 struct GfxMaterial
 {
@@ -16,7 +11,7 @@ struct GfxMaterial
     std::string uuid;
     std::string pass;
     std::string pipeline;
-    uint32_t ssboSize;
+    std::vector<std::string> textures;
 };
 struct GfxMesh
 {
@@ -27,25 +22,24 @@ struct GfxMesh
     // 后续可以加入网格哈希
 };
 
-const GfxMesh defaultMesh = {
+GfxMesh defaultMesh = {
     .name = "defaultMesh",
     .uuid = "defaultMesh",
     .vertices = {
-        -0.5f, 0.5f, 0.0f,0.0f,     0.0,0.0,0.0,0.0,   0.0,0.0,0.0,   0.0f, 0.0f,   /** @brief 左上 */ 
-        -0.5f, -0.5f, 0.0f,0.0f,    0.0,0.0,0.0,0.0,   0.0,0.0,0.0,   0.0f, 1.0f,   /** @brief 左下 */ 
-        0.5f, -0.5f, 0.0f,0.0f,     0.0,0.0,0.0,0.0,   0.0,0.0,0.0,   1.0f, 1.0f,   /** @brief 右下 */ 
+        -0.5f, 0.5f, 0.0f, 0.0f, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0f, 0.0f,  /** @brief 左上 */
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0f, 1.0f, /** @brief 左下 */
+        0.5f, -0.5f, 0.0f, 0.0f, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0f, 1.0f,  /** @brief 右下 */
         // 0.5f, 0.5f, 0.0f    /** @brief 右上 */  ,1.0f, 0.0f
     },
     .indices = {
-        0, 1, 2,  /** @brief 左上-坐下-右下 */
+        0, 1, 2, /** @brief 左上-坐下-右下 */
         // 0, 2, 3   /** @brief 左上-右下-右上 */
     },
 };
-const GfxMaterial defaultMaterial = {
-    .name = "defaultMaterial",
-    .uuid = "defaultMaterial",
-    .pass = "pass-built",
-    .pipeline = "pipeline-built",
-    // pushConstant
-    // 纹理
+GfxMaterial defaultMaterial = {
+    .name = "",
+    .uuid = "",
+    .pass = "",
+    .pipeline = "",
+    .textures = {},
 };

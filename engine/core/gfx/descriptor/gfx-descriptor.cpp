@@ -58,6 +58,10 @@ void GfxDescriptor::_createDescriptorSetLayout()
     }
     std::cout << "Gfx : Descriptor ::create descriptor set layout success " << std::endl;
 }
+VkDescriptorSetLayout GfxDescriptor::getDescriptorSetLayout()
+{
+    return this->_descriptorSetLayout;
+}
 std::vector<VkDescriptorSet> GfxDescriptor::getDescriptorSets()
 {
     if (this->_currentObjectCount >= this->_maxObjectCount)

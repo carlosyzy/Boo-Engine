@@ -38,14 +38,18 @@ void GfxRenderer::_initDescriptor()
 {
     GfxDescriptor *descriptor = new GfxDescriptor(1, 10);
     this->_descriptors["default"] = descriptor;
-    GfxDescriptorUI *uiDescriptor1 = new GfxDescriptorUI(1, 300);
-    this->_descriptors["ui1"] = uiDescriptor1;
-    GfxDescriptorUI *uiDescriptor2 = new GfxDescriptorUI(2, 200);
-    this->_descriptors["ui2"] = uiDescriptor2;
-    GfxDescriptorUI *uiDescriptor3 = new GfxDescriptorUI(3, 100);
-    this->_descriptors["ui3"] = uiDescriptor3;
-    GfxDescriptorUI *uiDescriptor4 = new GfxDescriptorUI(4, 200);
-    this->_descriptors["ui4"] = uiDescriptor4;
+
+    GfxDescriptorUI *uiDescriptor = new GfxDescriptorUI(4, 2048);
+    this->_descriptors["ui"] = uiDescriptor;
+
+    // GfxDescriptorUI *uiDescriptor1 = new GfxDescriptorUI(1, 300);
+    // this->_descriptors["ui1"] = uiDescriptor1;
+    // GfxDescriptorUI *uiDescriptor2 = new GfxDescriptorUI(2, 200);
+    // this->_descriptors["ui2"] = uiDescriptor2;
+    // GfxDescriptorUI *uiDescriptor3 = new GfxDescriptorUI(3, 100);
+    // this->_descriptors["ui3"] = uiDescriptor3;
+    // GfxDescriptorUI *uiDescriptor4 = new GfxDescriptorUI(4, 200);
+    // this->_descriptors["ui4"] = uiDescriptor4;
 }
 
 /**
@@ -53,11 +57,10 @@ void GfxRenderer::_initDescriptor()
  */
 void GfxRenderer::_initDefaultPasses()
 {
-    GfxPass *screenPass = new GfxPass("default");
-    this->_passes["default"] = screenPass;
-
-    GfxPassTarget *targetPass = new GfxPassTarget("target");
-    this->_passes["target"] = targetPass;
+    GfxPass *screenPass = new GfxPass("scene");
+    this->_passes["scene"] = screenPass;
+    GfxPassTarget *targetPass = new GfxPassTarget("default");
+    this->_passes["default"] = targetPass;
 
     // GfxPassBuiltUI *uiPass = new GfxPassBuiltUI("pass-built-ui");
     // this->_passes["pass-built-ui"] = uiPass;
@@ -96,12 +99,10 @@ void GfxRenderer::_initDefaultPipeline()
     pipelineStruct.vert = "default.vert";
     pipelineStruct.frag = "default.frag";
     pipelineStruct.pass = "default";
-
     // 多边形模式 填充
     pipelineStruct.polygonMode = GfxPipelinePolygonMode::Fill;
     // 剔除模式 背面
     pipelineStruct.cullMode = GfxPipelineCullMode::Back;
-
     pipelineStruct.depthTest = 0;
     pipelineStruct.depthWrite = 0;
     pipelineStruct.depthCompareOp = GfxPipelineCompareOp::Always;
@@ -123,7 +124,6 @@ void GfxRenderer::_initDefaultPipeline()
     // 描述符集 开启
     pipelineStruct.descriptor = 1;
     pipelineStruct.descriptorSet = "default";
-
     this->createPipeline("default", pipelineStruct);
 
     // GfxPipelineStruct uiPipelineStruct = {};
@@ -354,6 +354,42 @@ std::vector<uint32_t> GfxRenderer::compileShaderGlslToSpirv(const std::string &t
     std::cout << "Gfx : Renderer :: Successfully compiled " << cacheKey
               << " (" << spirvCode.size() << " SPIR-V words)" << std::endl;
     return spirvCode;
+}
+GfxDescriptor *GfxRenderer::getDescriptor(std::string name)
+{
+    if (this->_descriptors.find(name) == this->_descriptors.end())
+    {
+        std::cout << "Gfx : Renderer :: Descriptor not found:" << name << std::endl;
+        return nullptr;
+    }
+    return this->_descriptors.at(name);
+}
+GfxPass *GfxRenderer::getPass(std::string name)
+{
+    if (this->_passes.find(name) == this->_passes.end())
+    {
+        std::cout << "Gfx : Renderer :: Pass not found:" << name << std::endl;
+        return nullptr;
+    }
+    return this->_passes.at(name);
+}
+GfxPipeline *GfxRenderer::getPipeline(std::string name)
+{
+    if (this->_pipelines.find(name) == this->_pipelines.end())
+    {
+        std::cout << "Gfx : Renderer :: Pipeline not found:" << name << std::endl;
+        return nullptr;
+    }
+    return this->_pipelines.at(name);
+}
+GfxTexture *GfxRenderer::getTexture(std::string uuid)
+{
+    if (this->_textures.find(uuid) == this->_textures.end())
+    {
+        std::cout << "Gfx : Renderer :: Texture not found:" << uuid << std::endl;
+        return nullptr;
+    }
+    return this->_textures.at(uuid);
 }
 
 void GfxRenderer::initRenderQueue(uint32_t renderId, GfxRenderTexture *renderTexture)

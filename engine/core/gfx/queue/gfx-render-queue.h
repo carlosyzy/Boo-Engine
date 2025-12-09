@@ -46,8 +46,28 @@ protected:
 
 	// 渲染批次
 	std::vector<GfxRenderBatch *> _batches;
+	/**
+	 * @brief 重置命令缓冲区
+	 * 渲染第一步
+	 */
+	void _resetCommandBuffer(uint32_t imageIndex);
+	/**
+	 * @brief 开始命令缓冲区
+	 * 渲染第二步
+	 */
+	void _beginCommandBuffer(uint32_t imageIndex);
+	/**
+	 * @brief 开始渲染传递
+	 * 渲染第三步
+	 */
+	void _beginRenderPass(uint32_t imageIndex);
+	/**
+	 * @brief 绑定渲染管线
+	 * 渲染第四步
+	 */
+	void _bindPipeline(uint32_t imageIndex, GfxPipeline *pipeline);
 
-	GfxRenderBatch *_testBatch = nullptr;
+	// GfxRenderBatch *_testBatch = nullptr;
 
 	
 public:
