@@ -4,25 +4,25 @@
 #include <unordered_map>
 #include <vulkan/vulkan_core.h>
 
-// struct GfxPipelineType{
-//     const std::string UI = "UI";
-//     const std::string MODEL = "MODEL";
+// // struct GfxPipelineType{
+// //     const std::string UI = "UI";
+// //     const std::string MODEL = "MODEL";
+// // };
+// enum class GfxPipelineType
+// {
+//     /**
+//      * UI 渲染管线
+//      */
+//     UI = 0,
+//     /**
+//      * 模型渲染管线
+//      */
+//     MODEL = 1,
 // };
-enum class GfxPipelineType
-{
-    /**
-     * UI 渲染管线
-     */
-    UI = 0,
-    /**
-     * 模型渲染管线
-     */
-    MODEL = 1,
-};
-const std::unordered_map<GfxPipelineType, std::string> GfxPipelineTypeNames = {
-    {GfxPipelineType::UI, "UI"},
-    {GfxPipelineType::MODEL, "MODEL"},
-};
+// const std::unordered_map<GfxPipelineType, std::string> GfxPipelineTypeNames = {
+//     {GfxPipelineType::UI, "UI"},
+//     {GfxPipelineType::MODEL, "MODEL"},
+// };
 
 /**
  * 深度比较操作
@@ -267,6 +267,10 @@ struct GfxPipelineStruct
     int descriptor = 0;
     std::string descriptorSet = "";
 };
+
+
+
+
 
 // 后期方案确定
 // 方案 3: 动态渲染（最佳，Vulkan 1.3+）
