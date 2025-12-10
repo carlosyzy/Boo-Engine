@@ -116,11 +116,11 @@ void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<
 {
     Gfx::renderer->createSpirvShader(shaderName, data);
 }
-void GfxMgr:: initRenderQueue(uint32_t renderId,GfxRenderTexture *renderTexture ){
-    Gfx::renderer->initRenderQueue(renderId, renderTexture);
+void GfxMgr:: initRenderQueue(std::string pipelineName, uint32_t renderId){
+    Gfx::renderer->initRenderQueue(pipelineName, renderId);
 }
-void GfxMgr:: submitRenderObject(uint32_t renderId, GfxMaterial &material, GfxMesh &mesh){
-    Gfx::renderer->submitRenderObject(renderId, material, mesh);
+void GfxMgr:: submitRenderObject(std::string pipelineName, uint32_t renderId, GfxMaterial &material, GfxMesh &mesh){
+    Gfx::renderer->submitRenderObject(pipelineName, renderId, material, mesh);
 }
 
 // void GfxMgr::initTestInfo()

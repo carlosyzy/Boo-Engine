@@ -32,16 +32,16 @@ void Game::init()
 	this->_initView();
 	this->_initFont();
 	this->_initAssets();
-	this->_renderTexture = new GfxRenderTexture();
-	GfxMgr::getInstance()->initRenderQueue(0, this->_renderTexture);
-	this->_textMaterial = {
-		.name = "Text-Material",
-		.uuid = "Text-Material-UUID",
-		.pass = "target",
-		.pipeline = "default",
-		.textures = {
-			"default-texture"},
-	};
+	// this->_renderTexture = new GfxRenderTexture();
+	// GfxMgr::getInstance()->initRenderQueue(0, this->_renderTexture);
+	// this->_textMaterial = {
+	// 	.name = "Text-Material",
+	// 	.uuid = "Text-Material-UUID",
+	// 	.pass = "target",
+	// 	.pipeline = "default",
+	// 	.textures = {
+	// 		"default-texture"},
+	// };
 }
 void Game::_initGFX()
 {
@@ -198,7 +198,7 @@ void Game::_render(float dt)
 	// {
 	// 	camera->Render();
 	// }
-	GfxMgr::getInstance()->submitRenderObject(0, this->_textMaterial, defaultMesh);
+	// GfxMgr::getInstance()->submitRenderObject(0, this->_textMaterial, defaultMesh);
 
 	// // 更新渲染器
 	GfxMgr::getInstance()->update();

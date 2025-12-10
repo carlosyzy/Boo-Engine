@@ -90,8 +90,8 @@ private:
      */
     std::vector<Camera *> _cameras;
 
-    GfxMaterial _textMaterial;
-    GfxRenderTexture *_renderTexture;
+    // GfxMaterial _textMaterial;
+    // GfxRenderTexture *_renderTexture;
 
     /**
      * @brief 初始化图形库

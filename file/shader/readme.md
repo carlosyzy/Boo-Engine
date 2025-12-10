@@ -17,5 +17,5 @@ glslangValidator -V -S frag ui-mask.frag -o ui-mask.frag.spv
 # 自定义名称输出
 
 
-glslangValidator -V -S vert default.vert -o default.vert.spv
-glslangValidator -V -S frag default.frag -o default.frag.spv
+glslangValidator -V -S vert built.vert -o built.vert.spv
+glslangValidator -V -S frag built.frag -o built.frag.spv
