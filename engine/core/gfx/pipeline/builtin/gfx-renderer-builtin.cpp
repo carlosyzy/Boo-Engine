@@ -23,6 +23,7 @@ void GfxRendererBuiltin::init()
 
     this->_initDefaultDescriptor();
     this->_initDefaultRenderPasse();
+    this->_initDefaultShader();
     this->_initDefaultPipelines();
     this->_initDefaultRenderQueue();
 }

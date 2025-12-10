@@ -196,7 +196,7 @@ void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer
     //
     // }
 
-    this->_renderPipelineBuiltin->frameRenderer(imageIndex, commandBuffers);
+    // this->_renderPipelineBuiltin->frameRenderer(imageIndex, commandBuffers);
 }
 
 // void GfxRenderer::submitRenderObject(uint32_t renderId, GfxMaterial &material, GfxMesh &mesh)

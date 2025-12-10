@@ -125,6 +125,7 @@ void GfxPipelineBuiltin::_initPipelineLayout()
         std::cout << "Gfx : Pipeline :: create pipeline layout failed " << this->_name << std::endl;
         return;
     }
+    std::cout << "Gfx : Pipeline :: create pipeline layout success " << this->_name << std::endl;
 }
 void GfxPipelineBuiltin::_initPipeline()
 {
@@ -140,6 +141,7 @@ void GfxPipelineBuiltin::_initPipeline()
     this->_pipelineInfo.pColorBlendState = &this->_colorBlendInfo;
     this->_pipelineInfo.pDepthStencilState = &this->_depthStencilInfo;
     this->_pipelineInfo.layout = this->_vkPipelineLayout;
+    std::cout << "Gfx : Pipeline :: create pipeline layout " << this->_pass->getVKRenderPass() << std::endl;
     this->_pipelineInfo.renderPass = this->_pass->getVKRenderPass();
     this->_pipelineInfo.subpass = 0;
     this->_pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;

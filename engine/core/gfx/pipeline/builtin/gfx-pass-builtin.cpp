@@ -52,7 +52,7 @@ void GfxPassBuiltin::_create()
         std::cout << "Gfx : Pass :: create render pass failed " << this->_name << std::endl;
         return;
     }
-    std::cout << "Gfx : Pass :: create render pass success " << this->_name << std::endl;
+    std::cout << "Gfx : Pass :: create render pass success " << this->_name << " " << this->_vkRenderPass << std::endl;
 }
 
 GfxPassBuiltin::~GfxPassBuiltin()
