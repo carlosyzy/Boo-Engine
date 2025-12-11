@@ -22,7 +22,7 @@ void GfxPipeline::create(GfxPass *pass, GfxShader *vertexShader, GfxShader *frag
 }
 void GfxPipeline::_createPipeline()
 {
-    std::cout << "Gfx : Pipeline :: create pipeline " << this->_name << " start..." << std::endl;
+    
     this->_initShaderState();
     this->_initVertexInputState();
     this->_initInputAssemblyState();
@@ -213,7 +213,7 @@ void GfxPipeline::_initColorBlendState()
 {
     this->_colorBlendAttachment = {};
     this->_colorBlendAttachment.blendEnable = VK_FALSE;
-    this->_colorBlendAttachment.colorWriteMask = 0;
+    this->_colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 
     this->_colorBlendInfo = {};
     this->_colorBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;

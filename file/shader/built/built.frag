@@ -8,7 +8,7 @@ layout(location = 0) out vec4 outColor;
 
 void main() {
     // 使用推送常量块中的颜色
-    vec4 color = vec4(0.2,1.0,0.2,1.0);
-    // color *= texture(texSampler, uv);
+    vec4 color = vec4(1.0,1.0,1.0,1.0);
+    color *= texture(texSampler, uv);
     outColor = color;
 }

@@ -74,10 +74,11 @@ void GfxQueueBuiltin::_createVertexBuffers()
         -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,  /** @brief 左上 */
         -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, /** @brief 坐下 */
         0.5f, -0.5f, 0.0f, 1.0f, 1.0f,  /** @brief 右下 */
-        // 0.5f, 0.5f, 0.0f, 1.0f, 0.0f    /** @brief 右上 */
+        0.5f, 0.5f, 0.0f, 1.0f, 0.0f    /** @brief 右上 */
     };
     std::vector<uint32_t> indices = {
-        0, 1, 2};
+        0, 1, 2,
+        0, 2, 3};
     // 顶点缓冲区
     GfxMgr::getInstance()->createBuffer(
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -108,7 +109,7 @@ void GfxQueueBuiltin::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
     this->_resetCommandBuffer(imageIndex);
     this->_beginCommandBuffer(imageIndex);
     this->_beginRenderPass(imageIndex);
-    this->_bindPipeline(imageIndex);
+    this->_bindPipeline(imageIndex,pipeline);
 
     for (size_t i = 0; i < this->_renderTextures.size(); i++)
     {
@@ -119,32 +120,32 @@ void GfxQueueBuiltin::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
             std::cout << "render: texture not found:" << textureUuid << std::endl;
             continue;
         }
-        std::cout << "render: texture found:" << textureUuid << "  ptr :" << texture << std::endl;
+        std::cout << "render: texture found:" << textureUuid << "  ptr :" << texture  << " imageIndex:" << imageIndex << std::endl;
 
         // 进行一次顶点绑定
         VkDeviceSize offsets[1] = {0};
         vkCmdBindVertexBuffers(this->_commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
         vkCmdBindIndexBuffer(this->_commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-        // std::vector<VkDescriptorSet> descriptorSets = this->_renderer->getDescriptorSets();
-        // VkDescriptorImageInfo imageInfo{};
-        // imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        // imageInfo.imageView = texture->getImageView();
-        // imageInfo.sampler = texture->getSampler();
-        // std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
-        // descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        // descriptorWrites[0].dstSet = descriptorSets[imageIndex];
-        // descriptorWrites[0].dstBinding = 0;
-        // descriptorWrites[0].dstArrayElement = 0;
-        // descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        // descriptorWrites[0].descriptorCount = 1;
-        // descriptorWrites[0].pImageInfo = &imageInfo;
-        // vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-        // vkCmdBindDescriptorSets(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptorSets[imageIndex], 0, nullptr);
+        std::vector<VkDescriptorSet> descriptorSets = this->_renderer->getDescriptorSets();
+        VkDescriptorImageInfo imageInfo{};
+        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        imageInfo.imageView = texture->getImageView();
+        imageInfo.sampler = texture->getSampler();
+        std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
+        descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptorWrites[0].dstSet = descriptorSets[imageIndex];
+        descriptorWrites[0].dstBinding = 0;
+        descriptorWrites[0].dstArrayElement = 0;
+        descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        descriptorWrites[0].descriptorCount = 1;
+        descriptorWrites[0].pImageInfo = &imageInfo;
+        vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+        vkCmdBindDescriptorSets(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptorSets[imageIndex], 0, nullptr);
 
         vkCmdDrawIndexed(
             this->_commandBuffers[imageIndex],
-            3, // 只绘制3个索引（第一个三角形）
+            6, // 只绘制3个索引（第一个三角形）
             1, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
             0, // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
             0, // 第一个实例的索引 从第 0 个实例开始绘制
@@ -184,13 +185,12 @@ void GfxQueueBuiltin::_beginRenderPass(uint32_t imageIndex)
     renderPassInfo.renderArea.offset = {0, 0};
     VkClearValue clearColor{};
     renderPassInfo.clearValueCount = 1;
-    clearColor.color = {{0.0f, 0.0f, 0.0f, 0.0f}};
+    clearColor.color = {{0.5f, 0.1f, 0.1f, 1.0f}};  // 深蓝色背景，Alpha = 1.0
     renderPassInfo.pClearValues = &clearColor;
     vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
-void GfxQueueBuiltin::_bindPipeline(uint32_t imageIndex)
+void GfxQueueBuiltin::_bindPipeline(uint32_t imageIndex, GfxPipelineBuiltin *pipeline)
 {
-    GfxPipelineBuiltin *pipeline = this->_renderer->getPipeline();
     vkCmdBindPipeline(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipeline());
 }
 

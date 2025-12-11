@@ -58,7 +58,7 @@ private :
 	 * @brief 绑定渲染管线
 	 * 渲染第四步
 	 */
-	void _bindPipeline(uint32_t imageIndex);
+	void _bindPipeline(uint32_t imageIndex, GfxPipelineBuiltin *pipeline);
 
 	
 public:

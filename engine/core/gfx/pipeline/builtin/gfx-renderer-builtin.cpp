@@ -141,7 +141,6 @@ void GfxRendererBuiltin::_initDefaultPipeline()
     pipelineStruct.srcAlphaBlendFactor = GfxPipelineColorBlendFactor::One;
     pipelineStruct.dstAlphaBlendFactor = GfxPipelineColorBlendFactor::OneMinusSrcAlpha;
     pipelineStruct.alphaBlendOp = GfxPipelineColorBlendOp::Add;
-    pipelineStruct.colorWriteMask = 4;
     // 推送常量 开启
     pipelineStruct.pushConstant = 0;
     pipelineStruct.pushConstantSize = 0;

@@ -234,15 +234,6 @@ struct GfxPipelineStruct
      * alpha混合操作
      */
     GfxPipelineColorBlendOp alphaBlendOp = GfxPipelineColorBlendOp::Add;
-    /**
-     * 颜色写入掩码
-     * 1:R
-     * 1:G
-     * 2:B
-     * 3:A
-     * 暂时统一按照RGBA顺序
-     */
-    uint32_t colorWriteMask = 0;
 
     int pushConstant = 0;
     VkDeviceSize pushConstantSize = 0;
@@ -282,7 +273,6 @@ struct GfxPipelineStruct
         ss << "SrcAlphaBlendFactor:" << static_cast<uint32_t>(srcAlphaBlendFactor) << "|";
         ss << "DstAlphaBlendFactor:" << static_cast<uint32_t>(dstAlphaBlendFactor) << "|";
         ss << "AlphaBlendOp:" << static_cast<uint32_t>(alphaBlendOp) << "|";
-        ss << "ColorWriteMask:" << colorWriteMask << "|";
         ss << "PushConstant:" << pushConstant << "|";
         ss << "PushConstantSize:" << pushConstantSize;
         return ss.str();
