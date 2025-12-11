@@ -212,7 +212,7 @@ VkStencilOp GfxPipeline::_getStencilOp(GfxPipelineStencilOp stencilOp)
 void GfxPipeline::_initColorBlendState()
 {
     this->_colorBlendAttachment = {};
-    this->_colorBlendAttachment.blendEnable = VK_FALSE;
+    this->_colorBlendAttachment.blendEnable = VK_TRUE;
     this->_colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 
     this->_colorBlendInfo = {};

@@ -18,7 +18,7 @@ void GfxRenderer::init()
 {
     TextureAsset *textTexture = new TextureAsset("default-texture");
     // this->_textTexture->create("F:/worksapces/Boo-Engine/x64/Debug/res/private/ic-2d.png");
-    textTexture->create("/Users/yangzongyuan/personal/project/Boo-Engine/build/res/private/ic-2d.png");
+    textTexture->create("/Users/yangzongyuan/personal/project/Boo-Engine/build/res/private/ic-3d.png");
     this->_renderPipelineBuiltin = new GfxRendererBuiltin("built");
     this->_renderPipelineBuiltin->init();
 }

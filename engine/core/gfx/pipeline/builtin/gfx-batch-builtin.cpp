@@ -23,42 +23,42 @@ void GfxBatchBuiltin::addObject()
 }
 void GfxBatchBuiltin::render(GfxPipelineBuiltin *pipeline, VkCommandBuffer &queueCommandBuffer, VkDescriptorSet &descriptorSet)
 {
-    std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
-    GfxTexture *texture = Gfx::renderer->getTexture(this->_material.textures[0]);
-    VkDescriptorImageInfo imageInfo{};
-    imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    if (texture != nullptr)
-    {
-        imageInfo.imageView = texture->getImageView();
-        imageInfo.sampler = texture->getSampler();
-    }
-    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    descriptorWrites[0].dstSet = descriptorSet;
-    descriptorWrites[0].dstBinding = 0;
-    descriptorWrites[0].dstArrayElement = 0;
-    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    descriptorWrites[0].descriptorCount = 1;
-    descriptorWrites[0].pImageInfo = &imageInfo;
+    // std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
+    // GfxTexture *texture = Gfx::renderer->getTexture(this->_material.textures[0]);
+    // VkDescriptorImageInfo imageInfo{};
+    // imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    // if (texture != nullptr)
+    // {
+    //     imageInfo.imageView = texture->getImageView();
+    //     imageInfo.sampler = texture->getSampler();
+    // }
+    // descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    // descriptorWrites[0].dstSet = descriptorSet;
+    // descriptorWrites[0].dstBinding = 0;
+    // descriptorWrites[0].dstArrayElement = 0;
+    // descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    // descriptorWrites[0].descriptorCount = 1;
+    // descriptorWrites[0].pImageInfo = &imageInfo;
 
-    vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-    vkCmdBindDescriptorSets(queueCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptorSet, 0, nullptr);
+    // vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+    // vkCmdBindDescriptorSets(queueCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptorSet, 0, nullptr);
 
    
-    vkCmdDrawIndexed(
-        queueCommandBuffer,
-        3, // 只绘制3个索引（第一个三角形）
-        1, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
-        0, // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
-        0, // 第一个实例的索引 从第 0 个实例开始绘制
-        0  // 实例偏移
-    );
-    // 渲染结束
-    vkCmdEndRenderPass(queueCommandBuffer);
-    // 结束渲染pass
-    if (vkEndCommandBuffer(queueCommandBuffer) != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to record command buffer!");
-    }
+    // vkCmdDrawIndexed(
+    //     queueCommandBuffer,
+    //     3, // 只绘制3个索引（第一个三角形）
+    //     1, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
+    //     0, // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
+    //     0, // 第一个实例的索引 从第 0 个实例开始绘制
+    //     0  // 实例偏移
+    // );
+    // // 渲染结束
+    // vkCmdEndRenderPass(queueCommandBuffer);
+    // // 结束渲染pass
+    // if (vkEndCommandBuffer(queueCommandBuffer) != VK_SUCCESS)
+    // {
+    //     throw std::runtime_error("Failed to record command buffer!");
+    // }
 }
 void GfxBatchBuiltin::clear()
 {

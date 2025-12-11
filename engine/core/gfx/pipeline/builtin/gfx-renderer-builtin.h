@@ -62,7 +62,7 @@ public:
 	void init();
 	GfxPassBuiltin *getPass();
 	GfxPipelineBuiltin *getPipeline();
-	std::vector<VkDescriptorSet> getDescriptorSets();
+	std::vector<VkDescriptorSet> &getDescriptorSets();
 
 	void createPipeline(std::string name, GfxPipelineStruct pipelineStruct);
 	void submitRenderObject(const std::string textureUuid);

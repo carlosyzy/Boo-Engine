@@ -70,11 +70,11 @@ void GfxQueueBuiltin::_createCommandBuffers()
 void GfxQueueBuiltin::_createVertexBuffers()
 {
     std::vector<float> interleavedVertices = {
-        // 位置               uv
-        -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,  /** @brief 左上 */
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, /** @brief 坐下 */
-        0.5f, -0.5f, 0.0f, 1.0f, 1.0f,  /** @brief 右下 */
-        0.5f, 0.5f, 0.0f, 1.0f, 0.0f    /** @brief 右上 */
+        // 位置                uv
+        -1.0f, 1.0f, 0.0f, 0.0f, 0.0f,  /** @brief 左上 */
+        -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, /** @brief 坐下 */
+        1.0f, -1.0f, 0.0f, 1.0f, 1.0f,  /** @brief 右下 */
+        1.0f, 1.0f, 1.0f, 1.0f, 0.0f    /** @brief 右上 */
     };
     std::vector<uint32_t> indices = {
         0, 1, 2,
@@ -109,7 +109,12 @@ void GfxQueueBuiltin::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
     this->_resetCommandBuffer(imageIndex);
     this->_beginCommandBuffer(imageIndex);
     this->_beginRenderPass(imageIndex);
-    this->_bindPipeline(imageIndex,pipeline);
+    this->_bindPipeline(imageIndex, pipeline);
+
+    // 进行一次顶点绑定
+    VkDeviceSize offsets[1] = {0};
+    vkCmdBindVertexBuffers(this->_commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
+    vkCmdBindIndexBuffer(this->_commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
     for (size_t i = 0; i < this->_renderTextures.size(); i++)
     {
@@ -120,12 +125,7 @@ void GfxQueueBuiltin::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
             std::cout << "render: texture not found:" << textureUuid << std::endl;
             continue;
         }
-        std::cout << "render: texture found:" << textureUuid << "  ptr :" << texture  << " imageIndex:" << imageIndex << std::endl;
-
-        // 进行一次顶点绑定
-        VkDeviceSize offsets[1] = {0};
-        vkCmdBindVertexBuffers(this->_commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
-        vkCmdBindIndexBuffer(this->_commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+        std::cout << "render: texture found:" << textureUuid << "  ptr :" << texture << " imageIndex:" << imageIndex << std::endl;
 
         std::vector<VkDescriptorSet> descriptorSets = this->_renderer->getDescriptorSets();
         VkDescriptorImageInfo imageInfo{};
@@ -145,7 +145,7 @@ void GfxQueueBuiltin::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
 
         vkCmdDrawIndexed(
             this->_commandBuffers[imageIndex],
-            6, // 只绘制3个索引（第一个三角形）
+            3, // 只绘制3个索引（第一个三角形）
             1, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
             0, // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
             0, // 第一个实例的索引 从第 0 个实例开始绘制
@@ -185,7 +185,7 @@ void GfxQueueBuiltin::_beginRenderPass(uint32_t imageIndex)
     renderPassInfo.renderArea.offset = {0, 0};
     VkClearValue clearColor{};
     renderPassInfo.clearValueCount = 1;
-    clearColor.color = {{0.5f, 0.1f, 0.1f, 1.0f}};  // 深蓝色背景，Alpha = 1.0
+    clearColor.color = {{0.0f, 0.0f, 0.0f, 1.0f}}; // 深蓝色背景，Alpha = 1.0
     renderPassInfo.pClearValues = &clearColor;
     vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 }

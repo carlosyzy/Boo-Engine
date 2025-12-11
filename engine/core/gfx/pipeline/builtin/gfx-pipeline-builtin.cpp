@@ -107,7 +107,28 @@ void GfxPipelineBuiltin::_initDepthStencilState()
 }
 void GfxPipelineBuiltin::_initColorBlendState()
 {
-    GfxPipeline::_initColorBlendState();
+    this->_colorBlendAttachment = {};
+    this->_colorBlendAttachment.blendEnable = this->_pipelineStruct.colorBlend != 0 ? VK_TRUE : VK_FALSE;
+    if (this->_pipelineStruct.colorBlend != 0)
+    {
+        this->_colorBlendAttachment.srcColorBlendFactor = this->_getBlendFactor(this->_pipelineStruct.srcColorBlendFactor); // VK_BLEND_FACTOR_ONE;
+        this->_colorBlendAttachment.dstColorBlendFactor = this->_getBlendFactor(this->_pipelineStruct.dstColorBlendFactor); // VK_BLEND_FACTOR_ZERO;
+        this->_colorBlendAttachment.colorBlendOp = this->_getBlendOp(this->_pipelineStruct.colorBlendOp);                   // VK_BLEND_OP_ADD;
+        this->_colorBlendAttachment.srcAlphaBlendFactor = this->_getBlendFactor(this->_pipelineStruct.srcAlphaBlendFactor); // VK_BLEND_FACTOR_ONE;
+        this->_colorBlendAttachment.dstAlphaBlendFactor = this->_getBlendFactor(this->_pipelineStruct.dstAlphaBlendFactor); // VK_BLEND_FACTOR_ZERO;
+        this->_colorBlendAttachment.alphaBlendOp = this->_getBlendOp(this->_pipelineStruct.alphaBlendOp);                   // VK_BLEND_OP_ADD;
+        this->_colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    }
+    this->_colorBlendInfo = {};
+    this->_colorBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    this->_colorBlendInfo.logicOpEnable = VK_FALSE;
+    this->_colorBlendInfo.attachmentCount = 1;
+    this->_colorBlendInfo.pAttachments = &this->_colorBlendAttachment;
+    this->_colorBlendInfo.logicOp = VK_LOGIC_OP_COPY;
+    this->_colorBlendInfo.blendConstants[0] = 0.0f;
+    this->_colorBlendInfo.blendConstants[1] = 0.0f;
+    this->_colorBlendInfo.blendConstants[2] = 0.0f;
+    this->_colorBlendInfo.blendConstants[3] = 0.0f;
 }
 void GfxPipelineBuiltin::_initPipelineLayout()
 {
@@ -156,9 +177,6 @@ void GfxPipelineBuiltin::_initPipeline()
 GfxPipelineBuiltin::~GfxPipelineBuiltin()
 {
 }
-
-
-
 
 /**
  * 要实际使用Shader，我们需要通过 VkPipelineShaderStageCreateInfo 结构将它们分配给特定的管道阶段，作为实际管道创建过程的一部分。

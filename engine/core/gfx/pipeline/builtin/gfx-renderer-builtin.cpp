@@ -183,7 +183,7 @@ GfxPipelineBuiltin *GfxRendererBuiltin::getPipeline()
     }
     return this->_pipeline;
 }
-std::vector<VkDescriptorSet> GfxRendererBuiltin::getDescriptorSets()
+std::vector<VkDescriptorSet> &GfxRendererBuiltin::getDescriptorSets()
 {
     for (auto &renderxDescriptorSets : this->_descriptorSets)
     {
@@ -193,7 +193,7 @@ std::vector<VkDescriptorSet> GfxRendererBuiltin::getDescriptorSets()
             return renderxDescriptorSets.descriptorSets;
         }
     }
-    return {VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE};
+    return this->_descriptorSets[0].descriptorSets;
 }
 
 void GfxRendererBuiltin::submitRenderObject(const std::string textureUuid)
