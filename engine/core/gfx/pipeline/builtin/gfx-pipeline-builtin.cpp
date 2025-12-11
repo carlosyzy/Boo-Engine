@@ -118,6 +118,8 @@ void GfxPipelineBuiltin::_initColorBlendState()
         this->_colorBlendAttachment.dstAlphaBlendFactor = this->_getBlendFactor(this->_pipelineStruct.dstAlphaBlendFactor); // VK_BLEND_FACTOR_ZERO;
         this->_colorBlendAttachment.alphaBlendOp = this->_getBlendOp(this->_pipelineStruct.alphaBlendOp);                   // VK_BLEND_OP_ADD;
         this->_colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    }else{
+        this->_colorBlendAttachment.colorWriteMask = 0; // 不写入任何颜色通道
     }
     this->_colorBlendInfo = {};
     this->_colorBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;

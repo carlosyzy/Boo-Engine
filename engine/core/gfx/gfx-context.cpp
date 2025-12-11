@@ -438,11 +438,13 @@ void GfxContext::_createSwapChainKHR()
     createInfo.imageExtent = extent;
     createInfo.imageArrayLayers = 1;                             /* // 用于指定每个图像所包含的层次。除了VR场景外，一般都是1. */
     createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; /*  // 指定我们在图像上的操作，此处我们将图像作为颜色来使用 */
-    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    // 使用 pre-multiplied alpha 来支持窗口透明
+    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR;
     /**
-     * VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR
-     * VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR
-     * VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR
+     * VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR - 不透明（之前的设置）
+     * VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR - 预乘 Alpha（用于透明窗口）
+     * VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR - 后乘 Alpha
+     * VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR - 继承
      */
 
     QueueFamilyIndices indices = this->_findQueueFamilies(this->_physicalDevice);

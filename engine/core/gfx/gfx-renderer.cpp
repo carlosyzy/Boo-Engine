@@ -194,7 +194,7 @@ void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer
     //         "default-texture",
     //     },
     // };
-    // const GfxMesh mesh = {};
+    const GfxMesh mesh = {};
     std::cout << "Gfx : Renderer :: frameRenderer" << std::endl;
     this->_renderPipelineBuiltin->submitRenderObject("default-texture");
 

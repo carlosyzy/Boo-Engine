@@ -183,10 +183,15 @@ void GfxQueueBuiltin::_beginRenderPass(uint32_t imageIndex)
     renderPassInfo.renderArea.extent = Gfx::context->getSwapChainExtent();
     renderPassInfo.renderPass = this->_renderer->getPass()->getVKRenderPass();
     renderPassInfo.renderArea.offset = {0, 0};
+
+    
     VkClearValue clearColor{};
-    renderPassInfo.clearValueCount = 1;
-    clearColor.color = {{0.0f, 0.0f, 0.0f, 1.0f}}; // 深蓝色背景，Alpha = 1.0
+    clearColor.color = {{0.0f, 0.0f, 0.0f, 0.0f}};
     renderPassInfo.pClearValues = &clearColor;
+    renderPassInfo.clearValueCount = 1;
+
+
+
     vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 void GfxQueueBuiltin::_bindPipeline(uint32_t imageIndex, GfxPipelineBuiltin *pipeline)

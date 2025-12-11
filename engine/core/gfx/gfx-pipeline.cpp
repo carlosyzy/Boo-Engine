@@ -22,7 +22,6 @@ void GfxPipeline::create(GfxPass *pass, GfxShader *vertexShader, GfxShader *frag
 }
 void GfxPipeline::_createPipeline()
 {
-    
     this->_initShaderState();
     this->_initVertexInputState();
     this->_initInputAssemblyState();
