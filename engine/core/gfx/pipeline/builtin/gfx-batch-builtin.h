@@ -30,27 +30,20 @@ class GfxBatchBuiltin
 {
 private:
     // 最大对象数量
-    static const uint32_t maxObjects = 1024;
+    static const uint32_t maxObjects = 10;
     // 当前对象数量
     uint32_t _objectCount = 0;
     GfxMaterial _material;
     GfxMesh _mesh;
-
-    VkBuffer _vertexBuffer = VK_NULL_HANDLE; /* // 顶点数据Buffer */
-    VkBuffer _indexBuffer = VK_NULL_HANDLE;  /* // 顶点index数据buffer */
-    VkDeviceMemory _vertexMemory = VK_NULL_HANDLE;
-    VkDeviceMemory _indexMemory = VK_NULL_HANDLE;
-    int _indexSize;
-    void _createVertexBuffers();
-
     // void _beginBindRenderPass(GfxRenderTexture *renderTexture);
     // uint32_t _findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 public:
-    GfxBatchBuiltin(GfxMaterial material, GfxMesh mesh);
+    GfxBatchBuiltin(const GfxMaterial &material, const GfxMesh &mesh);
     GfxMaterial &material() { return _material; }
     GfxMesh &mesh() { return _mesh; }
     void addObject();
     void render(GfxPipelineBuiltin *pipeline, VkCommandBuffer &queueCommandBuffer, VkDescriptorSet &descriptorSet);
+    void clear();
     ~GfxBatchBuiltin();
 };

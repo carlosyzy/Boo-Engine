@@ -8,106 +8,9 @@
 #include "../../gfx-pipeline.h"
 #include "gfx-pipeline-builtin.h"
 
-GfxBatchBuiltin::GfxBatchBuiltin(GfxMaterial material, GfxMesh mesh) : _material(material), _mesh(mesh), _objectCount(0)
+GfxBatchBuiltin::GfxBatchBuiltin(const GfxMaterial &material, const GfxMesh &mesh) : _material(material), _mesh(mesh), _objectCount(0)
 {
-    // std::vector<float> positions = {
-    //     -1.0f, 1.0f, 0.0f, 0.0f,
-    //     -1.0f, -1.0f, 0.0f, 0.0f,
-    //     1.0f, -1.0f, 0.0f, 0.0f,
-    //     1.0f, 1.0f, 1.0f, 0.0f};
-    // std::vector<float> colors = {
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    // };
-    // std::vector<float> normals = {
-    //     0.0f,
-    //     0.0f,
-    //     0.0f,
-    //     0.0f,
-    //     0.0f,
-    //     0.0f,
-    //     0.0f,
-    //     0.0f,
-    //     0.0f,
-    //     0.0f,
-    //     0.0f,
-    //     0.0f};
-    // std::vector<float> uvs = {
-    //     0.0f,
-    //     0.0f,
-    //     0.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     1.0f,
-    //     0.0f,
-    // };
-    // std::vector<uint32_t> indices = {
-    //     0, 1, 2,
-    //     0, 2, 3};
-    // this->_indexSize = indices.size();
-    // size_t vertexCount = positions.size() / 4; // 每个顶点4个float (x,y,z,w)
-    // std::vector<float> interleavedVertices;
-    // interleavedVertices.reserve(vertexCount * (4 + 4 + 3 + 2)); // position + color + normal + uv
 
-    // for (size_t i = 0; i < vertexCount; ++i)
-    // {
-    //     // 添加位置 (4 floats)
-    //     interleavedVertices.insert(interleavedVertices.end(),
-    //                                positions.begin() + i * 4,
-    //                                positions.begin() + (i + 1) * 4);
-
-    //     // 添加颜色 (4 floats)
-    //     interleavedVertices.insert(interleavedVertices.end(),
-    //                                colors.begin() + i * 4,
-    //                                colors.begin() + (i + 1) * 4);
-
-    //     // 添加法线 (3 floats)
-    //     interleavedVertices.insert(interleavedVertices.end(),
-    //                                normals.begin() + i * 3,
-    //                                normals.begin() + (i + 1) * 3);
-
-    //     // 添加UV (2 floats)
-    //     interleavedVertices.insert(interleavedVertices.end(),
-    //                                uvs.begin() + i * 2,
-    //                                uvs.begin() + (i + 1) * 2);
-    // }
-    std::vector<float> interleavedVertices = this->_mesh.vertices;
-    std::vector<uint32_t> indices = this->_mesh.indices;
-    // 顶点缓冲区
-    GfxMgr::getInstance()->createBuffer(
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-        &this->_vertexBuffer,
-        &this->_vertexMemory,
-        interleavedVertices.size() * sizeof(float), // 总字节数
-        interleavedVertices.data()                  // 数据指针
-    );
-
-    // 索引缓冲区（不变）
-    GfxMgr::getInstance()->createBuffer(
-        VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-        &this->_indexBuffer,
-        &this->_indexMemory,
-        indices.size() * sizeof(uint32_t),
-        indices.data());
-
-    // this->_createBuffers();
 }
 // 后续带上每个物体独有的数据
 void GfxBatchBuiltin::addObject()
@@ -140,10 +43,7 @@ void GfxBatchBuiltin::render(GfxPipelineBuiltin *pipeline, VkCommandBuffer &queu
     vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
     vkCmdBindDescriptorSets(queueCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptorSet, 0, nullptr);
 
-    VkDeviceSize offsets[1] = {0};
-    vkCmdBindVertexBuffers(queueCommandBuffer, 0, 1, &this->_vertexBuffer, offsets);
-    vkCmdBindIndexBuffer(queueCommandBuffer, this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-
+   
     vkCmdDrawIndexed(
         queueCommandBuffer,
         3, // 只绘制3个索引（第一个三角形）
@@ -159,6 +59,11 @@ void GfxBatchBuiltin::render(GfxPipelineBuiltin *pipeline, VkCommandBuffer &queu
     {
         throw std::runtime_error("Failed to record command buffer!");
     }
+}
+void GfxBatchBuiltin::clear()
+{
+    this->_objectCount = 0;
+}
     // commandBuffers.push_back(renderTexture->getCommandBuffer());
     // std::cout << "GfxRenderBatch::_beginBindRenderPass() commandBuffers.size():" << std::endl;
 
@@ -291,7 +196,7 @@ void GfxBatchBuiltin::render(GfxPipelineBuiltin *pipeline, VkCommandBuffer &queu
     // this->_createVertexBuffers();
 
     // vkCmdBindPipeline(renderTexture->getCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->vkPipeline());
-}
+// }
 
 // void GfxRenderBatch::_createVertexBuffers()
 // {

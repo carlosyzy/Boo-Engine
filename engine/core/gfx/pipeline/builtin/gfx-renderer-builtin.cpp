@@ -24,7 +24,7 @@ void GfxRendererBuiltin::init()
     this->_initDefaultDescriptor();
     this->_initDefaultRenderPasse();
     this->_initDefaultShader();
-    this->_initDefaultPipelines();
+    this->_initDefaultPipeline();
     this->_initDefaultRenderQueue();
 }
 void GfxRendererBuiltin::_initDefaultDescriptor()
@@ -119,7 +119,7 @@ void GfxRendererBuiltin::_initDefaultShader()
 /**
  * 创建内置默认的ui pipeline
  */
-void GfxRendererBuiltin::_initDefaultPipelines()
+void GfxRendererBuiltin::_initDefaultPipeline()
 {
     GfxPipelineStruct pipelineStruct = {};
     pipelineStruct.pass = "built";
@@ -171,19 +171,18 @@ void GfxRendererBuiltin::createPipeline(std::string name, GfxPipelineStruct pipe
         std::cout << "createPipeline:pass not found:" << pipelineStruct.pass << std::endl;
         return;
     }
-    GfxPipelineBuiltin *pipeline = new GfxPipelineBuiltin(name);
-    pipeline->create(this->_pass, Gfx::shaders[pipelineStruct.vert], Gfx::shaders[pipelineStruct.frag], this->_descriptorSetLayout, pipelineStruct);
-    this->_pipelines[name] = pipeline;
+    this->_pipeline = new GfxPipelineBuiltin(name);
+    this->_pipeline->create(this->_pass, Gfx::shaders[pipelineStruct.vert], Gfx::shaders[pipelineStruct.frag], this->_descriptorSetLayout, pipelineStruct);
 }
 
-GfxPipelineBuiltin *GfxRendererBuiltin::getPipeline(std::string name)
+GfxPipelineBuiltin *GfxRendererBuiltin::getPipeline()
 {
-    if (this->_pipelines.find(name) == this->_pipelines.end())
+    if (this->_pipeline == nullptr)
     {
-        std::cout << "getPipeline:not found:" << name << std::endl;
+        std::cout << "getPipeline:not found:" << std::endl;
         return nullptr;
     }
-    return this->_pipelines[name];
+    return this->_pipeline;
 }
 std::vector<VkDescriptorSet> GfxRendererBuiltin::getDescriptorSets()
 {
@@ -198,12 +197,15 @@ std::vector<VkDescriptorSet> GfxRendererBuiltin::getDescriptorSets()
     return {VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE, VK_NULL_HANDLE};
 }
 
-void GfxRendererBuiltin::initRenderQueue(uint32_t renderId)
+void GfxRendererBuiltin::submitRenderObject(const std::string textureUuid)
 {
-}
-
-void GfxRendererBuiltin::submitRenderObject(uint32_t renderId, GfxMaterial &material, GfxMesh &mesh)
-{
+    if (this->_currentObjectCount >= this->_maxObjectCount)
+    {
+        std::cout << "submitRenderObject:max object count reached:" << this->_maxObjectCount << std::endl;
+        return;
+    }
+    this->_currentObjectCount++;
+    this->_queue->submitObject(textureUuid);
 }
 
 void GfxRendererBuiltin::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
@@ -214,6 +216,7 @@ void GfxRendererBuiltin::frameRenderer(uint32_t imageIndex, std::vector<VkComman
     {
         renderxDescriptorSets.isUsed = false;
     }
+    this->_currentObjectCount = 0;
 }
 
 void GfxRendererBuiltin::cleanRendererState()

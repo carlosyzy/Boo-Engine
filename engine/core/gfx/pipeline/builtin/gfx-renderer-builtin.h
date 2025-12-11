@@ -16,7 +16,7 @@
 class GfxContext;
 class GfxPassBuiltin;
 class GfxQueueBuiltin;
-class GfxPipelineBuiltin;	
+class GfxPipelineBuiltin;
 
 struct GfxRenderxDescriptorSets
 {
@@ -51,8 +51,8 @@ private:
 	 * @brief 渲染管线
 	 * 渲染管线
 	 */
-	std::map<std::string, GfxPipelineBuiltin *> _pipelines;
-	void _initDefaultPipelines();
+	GfxPipelineBuiltin *_pipeline;
+	void _initDefaultPipeline();
 
 	GfxQueueBuiltin *_queue;
 	void _initDefaultRenderQueue();
@@ -61,12 +61,11 @@ public:
 	GfxRendererBuiltin(std::string name);
 	void init();
 	GfxPassBuiltin *getPass();
-	GfxPipelineBuiltin *getPipeline(std::string name);
+	GfxPipelineBuiltin *getPipeline();
 	std::vector<VkDescriptorSet> getDescriptorSets();
 
 	void createPipeline(std::string name, GfxPipelineStruct pipelineStruct);
-	void initRenderQueue(uint32_t renderId);
-	void submitRenderObject(uint32_t renderId, GfxMaterial &material, GfxMesh &mesh);
+	void submitRenderObject(const std::string textureUuid);
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
 
 	void cleanRendererState();

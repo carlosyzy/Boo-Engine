@@ -8,6 +8,7 @@
 #include "pipeline/builtin/gfx-renderer-builtin.h"
 
 #include "../math/mat4.h"
+#include  "../assets/texture-asset.h"
 
 GfxRenderer::GfxRenderer()
 {
@@ -15,9 +16,9 @@ GfxRenderer::GfxRenderer()
 }
 void GfxRenderer::init()
 {
-    // this->_textTexture = new TextureAsset("default-texture");
-    // // this->_textTexture->create("F:/worksapces/Boo-Engine/x64/Debug/res/private/ic-2d.png");
-    // this->_textTexture->create("/Users/yangzongyuan/personal/project/Boo-Engine/build/res/private/ic-2d.png");
+    TextureAsset *textTexture = new TextureAsset("default-texture");
+    // this->_textTexture->create("F:/worksapces/Boo-Engine/x64/Debug/res/private/ic-2d.png");
+    textTexture->create("/Users/yangzongyuan/personal/project/Boo-Engine/build/res/private/ic-2d.png");
     this->_renderPipelineBuiltin = new GfxRendererBuiltin("built");
     this->_renderPipelineBuiltin->init();
 }
@@ -177,20 +178,28 @@ std::vector<uint32_t> GfxRenderer::compileShaderGlslToSpirv(const std::string &t
 }
 void GfxRenderer::initRenderQueue(std::string pipelineName, uint32_t renderId)
 {
-    if (pipelineName == "built")
-    {
-        this->_renderPipelineBuiltin->initRenderQueue(renderId);
-    }
 }
-void GfxRenderer::submitRenderObject(std::string pipelineName, uint32_t renderId, GfxMaterial &material, GfxMesh &mesh)
+void GfxRenderer::submitRenderObject(const std::string &pipelineName, uint32_t renderId, const GfxMaterial &material, const GfxMesh &mesh)
 {
-    if (pipelineName == "built")
-    {
-        this->_renderPipelineBuiltin->submitRenderObject(renderId, material, mesh);
-    }
+    // if (pipelineName == "built")
+    // {
+    //     this->_renderPipelineBuiltin->submitRenderObject(material, mesh);
+    // }
 }
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
+    // 将前几个对列渲染完毕的贴图,添加到默认队列,渲染到屏幕上
+    // const GfxMaterial material = {
+    //     .textures = {
+    //         "default-texture",
+    //     },
+    // };
+    // const GfxMesh mesh = {};
+    std::cout << "Gfx : Renderer :: frameRenderer" << std::endl;
+    this->_renderPipelineBuiltin->submitRenderObject("default-texture");
+
+    this->_renderPipelineBuiltin->frameRenderer(imageIndex, commandBuffers);
+
     // if (pipelineName == "built")
     // {
     //

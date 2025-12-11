@@ -16,7 +16,6 @@ const std::string GfxPass::name()
 }
 VkRenderPass GfxPass::getVKRenderPass()
 {
-    std::cout << "Gfx : Pass :: get render pass " << this->_name << std::endl;
     return this->_vkRenderPass;
 }
 void GfxPass::_clear()

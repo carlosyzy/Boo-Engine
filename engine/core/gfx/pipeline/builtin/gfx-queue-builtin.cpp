@@ -3,6 +3,7 @@
 #include "../../gfx-struct.h"
 #include "../../gfx-context.h"
 #include "../../gfx-pass.h"
+#include "../../gfx-mgr.h"
 #include "gfx-renderer-builtin.h"
 #include "gfx-pass-builtin.h"
 #include "gfx-batch-builtin.h"
@@ -15,6 +16,7 @@ GfxQueueBuiltin::GfxQueueBuiltin(GfxRendererBuiltin *renderer)
 void GfxQueueBuiltin::init()
 {
     this->_createBuffers();
+    this->_createVertexBuffers();
 }
 void GfxQueueBuiltin::_createBuffers()
 {
@@ -48,6 +50,7 @@ void GfxQueueBuiltin::_createFramebuffers()
             throw std::runtime_error("Gfx : RenderQueue :: Failed to create framebuffer!");
         }
     }
+    std::cout << "Gfx : RenderQueue :: Created " << this->_framebuffers.size() << " framebuffers." << std::endl;
 }
 void GfxQueueBuiltin::_createCommandBuffers()
 {
@@ -62,49 +65,101 @@ void GfxQueueBuiltin::_createCommandBuffers()
     {
         throw std::runtime_error("Gfx : RenderQueue :: Failed to allocate command buffers!");
     }
+    std::cout << "Gfx : RenderQueue :: Created " << this->_commandBuffers.size() << " command buffers." << std::endl;
 }
-
-void GfxQueueBuiltin::submitObject(const GfxMaterial &material, const GfxMesh &mesh)
+void GfxQueueBuiltin::_createVertexBuffers()
 {
-    if (this->_batches.empty())
-    {
-        GfxBatchBuiltin *batch = new GfxBatchBuiltin(material, mesh);
-        this->_batches.push_back(batch);
-        batch->addObject();
-    }
-    else
-    {
-        GfxBatchBuiltin *batch = this->_batches.back();
-        if (batch->material().uuid == material.uuid && batch->mesh().uuid == mesh.uuid)
-        {
-            // 后续还要判断材质中的push constant是否一致和纹理是否一致
-            batch->addObject();
-        }
-        else
-        {
-            GfxBatchBuiltin *batch = new GfxBatchBuiltin(material, mesh);
-            this->_batches.push_back(batch);
-            batch->addObject();
-        }
-    }
+    std::vector<float> interleavedVertices = {
+        // 位置               uv
+        -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,  /** @brief 左上 */
+        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, /** @brief 坐下 */
+        0.5f, -0.5f, 0.0f, 1.0f, 1.0f,  /** @brief 右下 */
+        // 0.5f, 0.5f, 0.0f, 1.0f, 0.0f    /** @brief 右上 */
+    };
+    std::vector<uint32_t> indices = {
+        0, 1, 2};
+    // 顶点缓冲区
+    GfxMgr::getInstance()->createBuffer(
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+        &this->_vertexBuffer,
+        &this->_vertexMemory,
+        interleavedVertices.size() * sizeof(float), // 总字节数
+        interleavedVertices.data()                  // 数据指针
+    );
+
+    // 索引缓冲区（不变）
+    GfxMgr::getInstance()->createBuffer(
+        VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+        &this->_indexBuffer,
+        &this->_indexMemory,
+        indices.size() * sizeof(uint32_t),
+        indices.data());
+    std::cout << "Gfx : RenderQueue :: Created vertex buffer with " << interleavedVertices.size() << " vertices." << std::endl;
+}
+void GfxQueueBuiltin::submitObject(const std::string textureUuid)
+{
+    this->_renderTextures.push_back(textureUuid);
 }
 void GfxQueueBuiltin::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
-    GfxPipelineBuiltin *pipeline = nullptr;
+    GfxPipelineBuiltin *pipeline = this->_renderer->getPipeline();
     this->_resetCommandBuffer(imageIndex);
     this->_beginCommandBuffer(imageIndex);
     this->_beginRenderPass(imageIndex);
-    for (auto &batch : this->_batches)
+    this->_bindPipeline(imageIndex);
+
+    for (size_t i = 0; i < this->_renderTextures.size(); i++)
     {
-        if (pipeline == nullptr || pipeline->getName() != batch->material().pipeline)
+        std::string textureUuid = this->_renderTextures[i];
+        GfxTexture *texture = Gfx::renderer->getTexture(textureUuid);
+        if (texture == nullptr)
         {
-            pipeline = this->_renderer->getPipeline(batch->material().pipeline);
-            this->_bindPipeline(imageIndex, pipeline);
+            std::cout << "render: texture not found:" << textureUuid << std::endl;
+            continue;
         }
-        std::vector<VkDescriptorSet> descriptorSets = this->_renderer->getDescriptorSets();
-        batch->render(pipeline,this->_commandBuffers[imageIndex], descriptorSets[imageIndex]);
+        std::cout << "render: texture found:" << textureUuid << "  ptr :" << texture << std::endl;
+
+        // 进行一次顶点绑定
+        VkDeviceSize offsets[1] = {0};
+        vkCmdBindVertexBuffers(this->_commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
+        vkCmdBindIndexBuffer(this->_commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+        // std::vector<VkDescriptorSet> descriptorSets = this->_renderer->getDescriptorSets();
+        // VkDescriptorImageInfo imageInfo{};
+        // imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        // imageInfo.imageView = texture->getImageView();
+        // imageInfo.sampler = texture->getSampler();
+        // std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
+        // descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        // descriptorWrites[0].dstSet = descriptorSets[imageIndex];
+        // descriptorWrites[0].dstBinding = 0;
+        // descriptorWrites[0].dstArrayElement = 0;
+        // descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        // descriptorWrites[0].descriptorCount = 1;
+        // descriptorWrites[0].pImageInfo = &imageInfo;
+        // vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+        // vkCmdBindDescriptorSets(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptorSets[imageIndex], 0, nullptr);
+
+        vkCmdDrawIndexed(
+            this->_commandBuffers[imageIndex],
+            3, // 只绘制3个索引（第一个三角形）
+            1, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
+            0, // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
+            0, // 第一个实例的索引 从第 0 个实例开始绘制
+            0  // 实例偏移
+        );
+    }
+    // 渲染结束
+    vkCmdEndRenderPass(this->_commandBuffers[imageIndex]);
+    // 结束渲染pass
+    if (vkEndCommandBuffer(this->_commandBuffers[imageIndex]) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to record command buffer!");
     }
     commandBuffers.push_back(this->_commandBuffers[imageIndex]);
+    this->_renderTextures.clear();
 }
 void GfxQueueBuiltin::_resetCommandBuffer(uint32_t imageIndex)
 {
@@ -133,8 +188,9 @@ void GfxQueueBuiltin::_beginRenderPass(uint32_t imageIndex)
     renderPassInfo.pClearValues = &clearColor;
     vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
-void GfxQueueBuiltin::_bindPipeline(uint32_t imageIndex, GfxPipelineBuiltin *pipeline)
+void GfxQueueBuiltin::_bindPipeline(uint32_t imageIndex)
 {
+    GfxPipelineBuiltin *pipeline = this->_renderer->getPipeline();
     vkCmdBindPipeline(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipeline());
 }
 

@@ -18,17 +18,27 @@ class GfxPipelineBuiltin;
 class GfxQueueBuiltin
 {
 private :
+	VkBuffer _vertexBuffer = VK_NULL_HANDLE; /* // 顶点数据Buffer */
+    VkBuffer _indexBuffer = VK_NULL_HANDLE;  /* // 顶点index数据buffer */
+    VkDeviceMemory _vertexMemory = VK_NULL_HANDLE;
+    VkDeviceMemory _indexMemory = VK_NULL_HANDLE;
+	void _createVertexBuffers();
+
     GfxRendererBuiltin *_renderer;
     // 帧缓冲区:它连接了渲染通道（Render Pass） 和交换链图像（Swap Chain Images）
 	std::vector<VkFramebuffer> _framebuffers;
 	// 命令缓冲区是用于记录和执行 GPU 命令的内存块。在 Vulkan 中，几乎所有渲染操作都需要通过命令缓冲区来执行。
 	std::vector<VkCommandBuffer> _commandBuffers;
+
+
 	void _createBuffers();
 	void _createFramebuffers();
 	void _createCommandBuffers();
+	
+	std::vector<std::string> _renderTextures;
 
-	// 渲染批次
-	std::vector<GfxBatchBuiltin *> _batches;
+	// // 渲染批次
+	// std::vector<GfxBatchBuiltin *> _batches;
 	/**
 	 * @brief 重置命令缓冲区
 	 * 渲染第一步
@@ -48,13 +58,13 @@ private :
 	 * @brief 绑定渲染管线
 	 * 渲染第四步
 	 */
-	void _bindPipeline(uint32_t imageIndex, GfxPipelineBuiltin *pipeline);
+	void _bindPipeline(uint32_t imageIndex);
 
 	
 public:
 	GfxQueueBuiltin(GfxRendererBuiltin *renderer);
 	void init();
-	void submitObject(const GfxMaterial &material, const GfxMesh &mesh);
+	void submitObject(const std::string textureUuid);
 	void render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
 	void _clear();
 	void _reset();
