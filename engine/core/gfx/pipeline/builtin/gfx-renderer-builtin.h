@@ -40,8 +40,8 @@ private:
 	 * 绑定ubo和采样器
 	 */
 	VkDescriptorSetLayout _descriptorSetLayout;
+	void _initDescriptorSetLayout();
 	std::vector<GfxRenderxDescriptorSets> _descriptorSets;
-
 	void _initDefaultDescriptor();
 
 	GfxPassBuiltin *_pass;
@@ -68,8 +68,8 @@ public:
 	void submitRenderObject(const std::string textureUuid);
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
 
-	void cleanRendererState();
-	void resetRendererState();
+	void _cleanRendererState();
+	void _resetRendererState();
 
 	// // GfxDescriptor *getDescriptor(std::string name); //{ return this->_descriptors.at(name); }
 	// // GfxPass *getPass(std::string name);				// const { return this->_passes.at(name); }

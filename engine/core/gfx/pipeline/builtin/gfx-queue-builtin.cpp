@@ -125,7 +125,6 @@ void GfxQueueBuiltin::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
             std::cout << "render: texture not found:" << textureUuid << std::endl;
             continue;
         }
-        std::cout << "render: texture found:" << textureUuid << "  ptr :" << texture << " imageIndex:" << imageIndex << std::endl;
 
         std::vector<VkDescriptorSet> descriptorSets = this->_renderer->getDescriptorSets();
         VkDescriptorImageInfo imageInfo{};
@@ -184,13 +183,10 @@ void GfxQueueBuiltin::_beginRenderPass(uint32_t imageIndex)
     renderPassInfo.renderPass = this->_renderer->getPass()->getVKRenderPass();
     renderPassInfo.renderArea.offset = {0, 0};
 
-    
     VkClearValue clearColor{};
-    clearColor.color = {{0.0f, 0.0f, 0.0f, 0.0f}};
+    clearColor.color = {{0.0f, 0.0f, 0.0f, 1.0f}};
     renderPassInfo.pClearValues = &clearColor;
     renderPassInfo.clearValueCount = 1;
-
-
 
     vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
@@ -198,8 +194,7 @@ void GfxQueueBuiltin::_bindPipeline(uint32_t imageIndex, GfxPipelineBuiltin *pip
 {
     vkCmdBindPipeline(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipeline());
 }
-
-void GfxQueueBuiltin::_clear()
+void GfxQueueBuiltin::_clean()
 {
     // 销毁帧缓冲（Framebuffers）
     for (auto framebuffer : this->_framebuffers)

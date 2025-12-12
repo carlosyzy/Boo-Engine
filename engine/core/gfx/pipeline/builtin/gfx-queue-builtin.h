@@ -66,7 +66,7 @@ public:
 	void init();
 	void submitObject(const std::string textureUuid);
 	void render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
-	void _clear();
+	void _clean();
 	void _reset();
 	~GfxQueueBuiltin();
 };

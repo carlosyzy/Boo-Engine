@@ -20,33 +20,15 @@ void GfxRendererBuiltin::init()
     // this->_textTexture = new TextureAsset("default-texture");
     // // this->_textTexture->create("F:/worksapces/Boo-Engine/x64/Debug/res/private/ic-2d.png");
     // this->_textTexture->create("/Users/yangzongyuan/personal/project/Boo-Engine/build/res/private/ic-2d.png");
-
+    this->_initDescriptorSetLayout();
     this->_initDefaultDescriptor();
     this->_initDefaultRenderPasse();
     this->_initDefaultShader();
     this->_initDefaultPipeline();
     this->_initDefaultRenderQueue();
 }
-void GfxRendererBuiltin::_initDefaultDescriptor()
+void GfxRendererBuiltin::_initDescriptorSetLayout()
 {
-    std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
-    uint32_t swapChainImageCount = swapChainImageViews.size();
-    std::vector<VkDescriptorPoolSize> poolSizes(1);
-    poolSizes[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    // 总采样器数量 = 每个集的采样器数 × 集的数量
-    poolSizes[0].descriptorCount = swapChainImageCount * (this->_maxObjectCount + 3) * this->_samplerCount; // 单个描述符集3
-    VkDescriptorPoolCreateInfo poolInfo{};
-    poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
-    poolInfo.pPoolSizes = poolSizes.data();
-    poolInfo.maxSets = swapChainImageCount * (this->_maxObjectCount + 3); // 描述符集的最大数量
-    if (vkCreateDescriptorPool(Gfx::context->getVkDevice(), &poolInfo, nullptr, &this->_descriptorPool) != VK_SUCCESS)
-    {
-        std::cout << "Gfx : Descriptor ::create descriptor pool failed " << std::endl;
-        return;
-    }
-    std::cout << "Gfx : Descriptor ::create descriptor pool success " << std::endl;
-
     std::vector<VkDescriptorSetLayoutBinding> bindings;
     // 采样器绑定
     VkDescriptorSetLayoutBinding samplerLayoutBinding{};
@@ -67,7 +49,26 @@ void GfxRendererBuiltin::_initDefaultDescriptor()
         return;
     }
     std::cout << "Gfx : Descriptor ::create descriptor set layout success " << std::endl;
-
+}
+void GfxRendererBuiltin::_initDefaultDescriptor()
+{
+    std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
+    uint32_t swapChainImageCount = swapChainImageViews.size();
+    std::vector<VkDescriptorPoolSize> poolSizes(1);
+    poolSizes[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    // 总采样器数量 = 每个集的采样器数 × 集的数量
+    poolSizes[0].descriptorCount = swapChainImageCount * (this->_maxObjectCount + 3) * this->_samplerCount; // 单个描述符集3
+    VkDescriptorPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+    poolInfo.pPoolSizes = poolSizes.data();
+    poolInfo.maxSets = swapChainImageCount * (this->_maxObjectCount + 3); // 描述符集的最大数量
+    if (vkCreateDescriptorPool(Gfx::context->getVkDevice(), &poolInfo, nullptr, &this->_descriptorPool) != VK_SUCCESS)
+    {
+        std::cout << "Gfx : Descriptor ::create descriptor pool failed " << std::endl;
+        return;
+    }
+    std::cout << "Gfx : Descriptor ::create descriptor pool success " << std::endl;
     for (uint32_t i = 0; i < this->_maxObjectCount; i++)
     {
         std::vector<VkDescriptorSet> descriptorSets;
@@ -218,41 +219,29 @@ void GfxRendererBuiltin::frameRenderer(uint32_t imageIndex, std::vector<VkComman
     this->_currentObjectCount = 0;
 }
 
-void GfxRendererBuiltin::cleanRendererState()
+void GfxRendererBuiltin::_cleanRendererState()
 {
-    // this->_defaultQueue->_clear();
-    // // 渲染队列清除
-    // for (auto &[name, queue] : this->_queues)
-    // {
-    //     queue->_clear();
-    // }
-    // // 渲染管线清除
-    // for (auto &[name, pipeline] : this->_pipelines)
-    // {
-    //     pipeline->_clear();
-    // }
-    // /*  // 渲染pass清除 */
-    // for (auto &[name, pass] : this->_passes)
-    // {
-    //     pass->_clear();
-    // }
+    // 清除渲染队列相关的状态
+    this->_queue->_clean();
+    //  渲染管线清除
+    this->_pipeline->_clear();
+    // 渲染pass清除
+    this->_pass->_clear();
+    // 描述符池清除
+    if (this->_descriptorPool != VK_NULL_HANDLE)
+    {
+        vkDestroyDescriptorPool(Gfx::context->getVkDevice(), this->_descriptorPool, nullptr);
+        this->_descriptorPool = nullptr;
+    }
+    this->_descriptorSets.clear();
 }
-void GfxRendererBuiltin::resetRendererState()
+void GfxRendererBuiltin::_resetRendererState()
 {
-    // for (auto &[name, pass] : this->_passes)
-    // {
-    //     pass->_reset();
-    // }
-    // for (auto &[name, pipeline] : this->_pipelines)
-    // {
-    //     pipeline->_reset();
-    // }
-    // this->_defaultQueue->_reset();
-    // // 渲染队列重置
-    // for (auto &[name, queue] : this->_queues)
-    // {
-    //     queue->_reset();
-    // }
+    this->_initDefaultDescriptor();
+    this->_pass->_reset();
+    this->_pipeline->_reset();
+    this->_queue->_reset();
+    
 }
 // void GfxRendererBuilt::_initDescriptor()
 // {

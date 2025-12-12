@@ -194,10 +194,7 @@ void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer
     //         "default-texture",
     //     },
     // };
-    const GfxMesh mesh = {};
-    std::cout << "Gfx : Renderer :: frameRenderer" << std::endl;
     this->_renderPipelineBuiltin->submitRenderObject("default-texture");
-
     this->_renderPipelineBuiltin->frameRenderer(imageIndex, commandBuffers);
 
     // if (pipelineName == "built")
@@ -227,11 +224,13 @@ void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer
 //     // // }
 // }
 
-void GfxRenderer::cleanRendererState()
+void GfxRenderer::_cleanRendererState()
 {
+    this->_renderPipelineBuiltin->_cleanRendererState();
 }
-void GfxRenderer::resetRendererState()
+void GfxRenderer::_resetRendererState()
 {
+    this->_renderPipelineBuiltin->_resetRendererState();
 }
 // void GfxRenderer::_initDescriptor()
 // {

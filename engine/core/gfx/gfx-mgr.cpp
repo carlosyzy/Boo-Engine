@@ -88,11 +88,11 @@ void GfxMgr::update()
 void GfxMgr::resetSwapChain()
 {
     vkDeviceWaitIdle(Gfx::context->getVkDevice()); /*  // 等待所有操作完成 */
-    Gfx::renderer->cleanRendererState();
+    Gfx::renderer->_cleanRendererState();
     Gfx::context->cleanSwapChain();
     /*  // 后重置 */
     Gfx::context->resetSwapChain();
-    Gfx::renderer->resetRendererState();
+    Gfx::renderer->_resetRendererState();
     std::cout << "GfxMgr :reset swap chain end..." << std::endl;
 }
 
