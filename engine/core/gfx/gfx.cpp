@@ -8,6 +8,7 @@ namespace Gfx
 {
     GfxContext *context = nullptr;
     GfxRenderer *renderer = nullptr;
+    float time = 0.0f;
     std::map<std::string, GfxShader *> shaders;
     std::map<std::string, GfxTexture *> textures;
 }

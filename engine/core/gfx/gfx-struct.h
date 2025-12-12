@@ -4,23 +4,10 @@
 #include <fstream>
 #include <cstring>
 #include <vector>
+#include <string>
+#include "gfx-push-constants.h"
 
-struct GfxMaterial
-{
-    std::string name;
-    std::string uuid;
-    std::string pass;
-    std::string pipeline;
-    std::vector<std::string> textures;
-};
-struct GfxMesh
-{
-    std::string name;
-    std::string uuid;
-    std::vector<float> vertices;
-    std::vector<uint32_t> indices;
-    // 后续可以加入网格哈希
-};
+
 
 // GfxMesh defaultMesh = {
 //     .name = "defaultMesh",

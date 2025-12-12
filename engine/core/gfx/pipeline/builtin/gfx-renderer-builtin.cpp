@@ -22,7 +22,7 @@ void GfxRendererBuiltin::init()
     // this->_textTexture->create("/Users/yangzongyuan/personal/project/Boo-Engine/build/res/private/ic-2d.png");
     this->_initDescriptorSetLayout();
     this->_initDefaultDescriptor();
-    this->_initDefaultRenderPasse();
+    this->_initDefaultRenderPass();
     this->_initDefaultShader();
     this->_initDefaultPipeline();
     this->_initDefaultRenderQueue();
@@ -94,11 +94,11 @@ void GfxRendererBuiltin::_initDefaultDescriptor()
 /**
  * @brief 创建内置默认的ui pass
  */
-void GfxRendererBuiltin::_initDefaultRenderPasse()
+void GfxRendererBuiltin::_initDefaultRenderPass()
 {
     this->_pass = new GfxPassBuiltin("built");
 }
-GfxPassBuiltin *GfxRendererBuiltin::getPass()
+GfxPassBuiltin *GfxRendererBuiltin::getRenderPass()
 {
     return this->_pass;
 }

@@ -5,7 +5,8 @@
 #include "gfx-context.h"
 #include "gfx-render-texture.h"
 #include "gfx-renderer.h"
-
+#include "gfx-material.h"
+#include "gfx-mesh.h"
 
 #include "../utils/time-util.h"
 
@@ -106,7 +107,7 @@ void GfxMgr::destroyTexture(std::string texture)
 }
 bool GfxMgr::isExistTexture(std::string texture)
 {
-   return Gfx::renderer->isExistTexture(texture);
+    return Gfx::renderer->isExistTexture(texture);
 }
 void GfxMgr::createGlslShader(const std::string &shaderName, const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros)
 {
@@ -116,10 +117,12 @@ void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<
 {
     Gfx::renderer->createSpirvShader(shaderName, data);
 }
-void GfxMgr:: initRenderQueue(std::string pipelineName, uint32_t renderId){
-    Gfx::renderer->initRenderQueue(pipelineName, renderId);
+void GfxMgr::initRenderQueue(std::string pipelineName, std::string renderId, GfxRenderTexture *renderTexture)
+{
+    Gfx::renderer->initRenderQueue(pipelineName, renderId, renderTexture);
 }
-void GfxMgr:: submitRenderObject(std::string pipelineName, uint32_t renderId, GfxMaterial &material, GfxMesh &mesh){
+void GfxMgr::submitRenderObject(std::string pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh)
+{
     Gfx::renderer->submitRenderObject(pipelineName, renderId, material, mesh);
 }
 

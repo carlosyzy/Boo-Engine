@@ -12,6 +12,7 @@
 #include <vulkan/vulkan_core.h>
 #include <shaderc/shaderc.hpp>
 
+
 #include "gfx-struct.h"
 #include "gfx-pipeline-struct.h"
 #include "../assets/texture-asset.h"
@@ -22,11 +23,15 @@ class GfxTexture;
 class GfxPass;
 class GfxShader;
 class GfxPipeline;
+class GfxRenderTexture;
+class GfxMaterial;
+class GfxMesh;
 
 class GfxRenderer
 {
 private:
 	GfxRendererBuiltin *_renderPipelineBuiltin;
+	GfxRendererUI *_renderPipelineUI;
 
 public:
 	GfxRenderer();
@@ -60,9 +65,9 @@ public:
 	 */
 	void createSpirvShader(const std::string &shaderName, const std::vector<char> &data);
 
-	void initRenderQueue(std::string pipelineName, uint32_t renderId);
-	void submitRenderObject(const std::string &pipelineName, uint32_t renderId, const GfxMaterial &material, const GfxMesh &mesh);
-	void frameRenderer( uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
+	void initRenderQueue(std::string pipelineName, std::string renderId, GfxRenderTexture *renderTexture);
+	void submitRenderObject(const std::string &pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh);
+	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
 
 	void _cleanRendererState();
 	void _resetRendererState();

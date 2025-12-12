@@ -19,3 +19,6 @@ glslangValidator -V -S frag ui-mask.frag -o ui-mask.frag.spv
 
 glslangValidator -V -S vert built.vert -o built.vert.spv
 glslangValidator -V -S frag built.frag -o built.frag.spv
+
+glslangValidator -V -S vert ui.vert -o ui.vert.spv
+glslangValidator -V -S frag ui.frag -o ui.frag.spv

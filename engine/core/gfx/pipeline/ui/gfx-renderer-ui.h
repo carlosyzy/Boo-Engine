@@ -13,18 +13,20 @@
 #include <shaderc/shaderc.hpp>
 #include "../../gfx-renderer.h"
 
-class GfxContext;
-class GfxPassBuiltin;
-class GfxQueueBuiltin;
-class GfxPipelineBuiltin;
 
-struct GfxRenderxDescriptorSets
+class GfxContext;
+class GfxPassUI;
+class GfxQueueUI;
+class GfxPipelineUI;
+class GfxBufferUBO;
+
+struct GfxRenderxDescriptorSet
 {
-	std::vector<VkDescriptorSet> descriptorSets;
+	VkDescriptorSet descriptorSet;
 	bool isUsed = false;
 };
 
-class GfxRendererBuiltin
+class GfxRendererUI
 {
 private:
 	/**
@@ -41,35 +43,52 @@ private:
 	 */
 	VkDescriptorSetLayout _descriptorSetLayout;
 	void _initDescriptorSetLayout();
-	std::vector<GfxRenderxDescriptorSets> _descriptorSets;
+	std::vector<GfxRenderxDescriptorSet> _gfxDescriptorSets;
 	void _initDefaultDescriptor();
 
-	GfxPassBuiltin *_pass;
+	GfxPassUI *_pass;
 	void _initDefaultRenderPass();
 	void _initDefaultShader();
 	/**
 	 * @brief 渲染管线
 	 * 渲染管线
 	 */
-	GfxPipelineBuiltin *_pipeline;
+	std::map<std::string, GfxPipelineUI *> _pipelines;
 	void _initDefaultPipeline();
 
-	GfxQueueBuiltin *_queue;
-	void _initDefaultRenderQueue();
+	std::vector<GfxBufferUBO *> _uniformBuffers;
+	void _initDefaultUniformBuffer();
+	
+
+	/**
+	 * @brief 渲染队列
+	 * 渲染队列
+	 */
+	std::map<std::string, GfxQueueUI *> _renderQueues;
+
+	GfxMesh *_uiMesh;
 
 public:
-	GfxRendererBuiltin(std::string name);
+	GfxRendererUI(std::string name);
 	void init();
-	GfxPassBuiltin *getRenderPass();
-	GfxPipelineBuiltin *getPipeline();
-	std::vector<VkDescriptorSet> &getDescriptorSets();
+	GfxPassUI *getRenderPass();
+	GfxPipelineUI *getPipeline(std::string name);
+	VkDescriptorSet &getDescriptorSet();
+	GfxBufferUBO *getUniformBuffer();
+
 
 	void createPipeline(std::string name, GfxPipelineStruct pipelineStruct);
-	void submitRenderObject(const std::string textureUuid);
+
+	void initRenderQueue(std::string renderId, GfxRenderTexture *renderTexture);
+
+	void submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh);
+
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
 
 	void _cleanRendererState();
 	void _resetRendererState();
+
+	~GfxRendererUI();
 
 	// // GfxDescriptor *getDescriptor(std::string name); //{ return this->_descriptors.at(name); }
 	// // GfxPass *getPass(std::string name);				// const { return this->_passes.at(name); }
@@ -203,6 +222,4 @@ public:
 	//  * @param id 物体ID
 	//  */
 	// void submitObjectRender(std::string id);
-
-	~GfxRendererBuiltin();
 };

@@ -9,10 +9,12 @@
 #include <vulkan/vulkan_core.h>
 
 class GfxTexture;
+class GfxPassUI;
 
 class GfxRenderTexture
 {
 private:
+    std::string _uuid;
     uint32_t _width;
     uint32_t _height;
 
@@ -21,6 +23,7 @@ private:
     GfxTexture *_colorTexture;
     GfxTexture *_depthTexture;
 
+    GfxPassUI *_pass;
     VkFramebuffer _framebuffer;
     VkCommandBuffer _commandBuffer;
     std::string _generateUUID();
@@ -29,11 +32,13 @@ private:
     virtual void _createCommandBuffer();
 
 public:
-    GfxRenderTexture();
-    VkFramebuffer getFramebuffer();
-    VkCommandBuffer getCommandBuffer();
-    uint32_t getWidth();
-    uint32_t getHeight();
+    GfxRenderTexture(std::string uuid);
+    VkFramebuffer &getFramebuffer();
+    VkCommandBuffer &getCommandBuffer();
+    const uint32_t &getWidth() const;
+    const uint32_t &getHeight() const;
+    void bindRenderPass(GfxPassUI *pass);
+
     void resize(uint32_t width, uint32_t height);
     void _clear();
     void _reset();

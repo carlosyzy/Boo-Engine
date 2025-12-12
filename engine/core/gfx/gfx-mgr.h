@@ -12,6 +12,8 @@
 #include "gfx-pipeline-struct.h"
 
 class GfxRenderTexture;
+class GfxMaterial;
+class GfxMesh;
 
 class GfxMgr
 {
@@ -77,7 +79,7 @@ public:
 	 * @param viewMat 视图矩阵
 	 * @param projMat 投影矩阵
 	 */
-	void initRenderQueue(std::string pipelineName, uint32_t renderId);
+	void initRenderQueue(std::string pipelineName, std::string renderId, GfxRenderTexture *renderTexture);
 	/**
 	 * @brief 提交渲染对象
 	 *
@@ -87,7 +89,7 @@ public:
 	 * @param vertices 顶点数据
 	 * @param indices 索引数据
 	 */
-	void submitRenderObject(std::string pipelineName, uint32_t renderId, GfxMaterial &material, GfxMesh &mesh);
+	void submitRenderObject(std::string pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh = nullptr);
 
 	// void initTestInfo();
 	// /*  // 采样次数 */

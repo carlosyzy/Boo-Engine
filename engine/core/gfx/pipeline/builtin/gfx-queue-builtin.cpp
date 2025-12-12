@@ -25,7 +25,7 @@ void GfxQueueBuiltin::_createBuffers()
 }
 void GfxQueueBuiltin::_createFramebuffers()
 {
-    GfxPassBuiltin *pass = this->_renderer->getPass();
+    GfxPassBuiltin *pass = this->_renderer->getRenderPass();
     if (pass == nullptr)
     {
         throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
@@ -196,7 +196,7 @@ void GfxQueueBuiltin::_beginRenderPass(uint32_t imageIndex)
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassInfo.framebuffer = this->_framebuffers[imageIndex];
     renderPassInfo.renderArea.extent = Gfx::context->getSwapChainExtent();
-    renderPassInfo.renderPass = this->_renderer->getPass()->getVKRenderPass();
+    renderPassInfo.renderPass = this->_renderer->getRenderPass()->getVKRenderPass();
     renderPassInfo.renderArea.offset = {0, 0};
 
     VkClearValue clearColor{};
