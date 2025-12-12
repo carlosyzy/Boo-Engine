@@ -61,7 +61,13 @@ void GfxPipelineBuiltin::_initInputAssemblyState()
 }
 void GfxPipelineBuiltin::_initDynamicState()
 {
-    GfxPipeline::_initDynamicState();
+    this->_dynamicStates = {
+        VK_DYNAMIC_STATE_VIEWPORT,
+        VK_DYNAMIC_STATE_SCISSOR,
+    };
+    this->_dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    this->_dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(this->_dynamicStates.size());
+    this->_dynamicStateInfo.pDynamicStates = this->_dynamicStates.data();
 }
 void GfxPipelineBuiltin::_initViewportState()
 {
@@ -81,9 +87,9 @@ void GfxPipelineBuiltin::_initViewportState()
     this->_viewportInfo = {};
     this->_viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
     this->_viewportInfo.viewportCount = 1;
-    this->_viewportInfo.pViewports = &this->_viewport;
+    // this->_viewportInfo.pViewports = &this->_viewport;
     this->_viewportInfo.scissorCount = 1;
-    this->_viewportInfo.pScissors = &this->_scissor;
+    // this->_viewportInfo.pScissors = &this->_scissor;
 }
 void GfxPipelineBuiltin::_initRasterizationState()
 {
@@ -159,7 +165,7 @@ void GfxPipelineBuiltin::_initPipeline()
     this->_pipelineInfo.pVertexInputState = &this->_vertexInputInfo;
     this->_pipelineInfo.pInputAssemblyState = &this->_inputAssemblyInfo;
     this->_pipelineInfo.pViewportState = &this->_viewportInfo;
-    // this->_pipelineInfo.pDynamicState = &this->_dynamicStateInfo; // 关键：设置动态状态
+    this->_pipelineInfo.pDynamicState = &this->_dynamicStateInfo; // 关键：设置动态状态
     this->_pipelineInfo.pRasterizationState = &this->_rasterizationInfo;
     this->_pipelineInfo.pMultisampleState = &this->_multisampleInfo;
     this->_pipelineInfo.pColorBlendState = &this->_colorBlendInfo;

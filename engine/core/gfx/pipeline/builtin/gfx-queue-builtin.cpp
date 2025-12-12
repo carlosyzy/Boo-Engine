@@ -142,6 +142,22 @@ void GfxQueueBuiltin::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
         vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
         vkCmdBindDescriptorSets(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptorSets[imageIndex], 0, nullptr);
 
+        // 设置视口
+        VkViewport _viewport{};
+        // 裁剪区域 原点左上角为(0,0)
+        VkRect2D _scissor{};
+        _viewport.x = 0.0f;
+        _viewport.y = 0.0f;
+        _viewport.width = (float)Gfx::context->getSwapChainExtent().width;
+        _viewport.height = (float)Gfx::context->getSwapChainExtent().height;
+        _viewport.minDepth = 0.0f;
+        _viewport.maxDepth = 1.0f;
+        _scissor.offset = {0, 0};
+        _scissor.extent = {(uint32_t)(Gfx::context->getSwapChainExtent().width), (uint32_t)(Gfx::context->getSwapChainExtent().height)};
+        vkCmdSetViewport(this->_commandBuffers[imageIndex], 0, 1, &_viewport);
+        // 设置裁剪区域
+        vkCmdSetScissor(this->_commandBuffers[imageIndex], 0, 1, &_scissor);
+
         vkCmdDrawIndexed(
             this->_commandBuffers[imageIndex],
             3, // 只绘制3个索引（第一个三角形）

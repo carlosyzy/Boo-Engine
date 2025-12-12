@@ -14,5 +14,5 @@ protected:
 	virtual void _create();
 public:
 	GfxPassBuiltin(std::string name);
-	virtual ~GfxPassBuiltin();
+	~GfxPassBuiltin() override;
 };

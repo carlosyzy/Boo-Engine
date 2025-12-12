@@ -1,15 +1,15 @@
-// #include "gfx-pass-target.h"
-// #include "../gfx.h"
-// #include "../gfx-context.h"
+// #include "gfx-pass-ui.h"
+// #include "../../gfx.h"
+// #include "../../gfx-context.h"
 // /**
-//  * 直接渲染到交换链图像
+//  * ui 渲染pass
 //  * 只有一个颜色附件
 //  * 保留上一帧的内容
 //  */
-// GfxPassTarget::GfxPassTarget(std::string name) : GfxPass(name)
+// GfxPassUI::GfxPassUI(std::string name) : GfxPass(name)
 // {
 // }
-// void GfxPassTarget::_create()
+// void GfxPassUI::_create()
 // {
 //     std::vector<VkAttachmentDescription> attachments;
 //     attachments.resize(2);
@@ -70,6 +70,6 @@
 //     std::cout << "GfxPass :create render pass success " << this->_name << std::endl;
 // }
 
-// GfxPassTarget::~GfxPassTarget()
+// GfxPassUI::~GfxPassUI()
 // {
 // }
