@@ -26,27 +26,72 @@ void GfxPipelineUI::_initShaderState()
  */
 void GfxPipelineUI::_initVertexInputState()
 {
-    // 初始化顶点位置输入属性描述
-    this->_vInputAttribDescriptionPos = {};
-    this->_vInputAttribDescriptionPos.location = 0;
-    this->_vInputAttribDescriptionPos.binding = 0;
-    this->_vInputAttribDescriptionPos.format = VK_FORMAT_R32G32B32_SFLOAT;
-    this->_vInputAttribDescriptionPos.offset = 0;
-    // 初始化顶点纹理坐标输入属性描述
-    this->_vInputAttribDescriptionTexCoord = {};
-    this->_vInputAttribDescriptionTexCoord.location = 1;
-    this->_vInputAttribDescriptionTexCoord.binding = 0;
-    this->_vInputAttribDescriptionTexCoord.format = VK_FORMAT_R32G32_SFLOAT;
-    this->_vInputAttribDescriptionTexCoord.offset = sizeof(float) * 3;
-
-    this->_vertexInputAttributes.push_back(this->_vInputAttribDescriptionPos);
-    this->_vertexInputAttributes.push_back(this->_vInputAttribDescriptionTexCoord);
-
+    // 初始化顶点输入属性描述
     this->_vInputBindDescription = {};
     this->_vInputBindDescription.binding = 0;
     this->_vInputBindDescription.stride = sizeof(float) * (3 + 2);
     this->_vInputBindDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    // 初始化实例输入属性描述
+    this->_vInputBindInstanceDescription = {};
+    this->_vInputBindInstanceDescription.binding = 1;
+    this->_vInputBindInstanceDescription.stride = sizeof(float) * (16 + 4); // 16个float(模型变换矩阵) + 4个float（颜色）
+    this->_vInputBindInstanceDescription.inputRate = VK_VERTEX_INPUT_RATE_INSTANCE;
+
+    this->_vertexInputAttributes = {
+        {
+            // 顶点坐标
+            .location = 0,
+            .binding = 0,
+            .format = VK_FORMAT_R32G32B32_SFLOAT,
+            .offset = 0,
+        },
+        {
+            // 顶点纹理坐标
+            .location = 1,
+            .binding = 0,
+            .format = VK_FORMAT_R32G32_SFLOAT,
+            .offset = sizeof(float) * 3,
+        },
+        //-----实例
+        // 矩阵第一行 (location 2)
+        {
+            .location = 2,
+            .binding = 1, // 从绑定1读取！
+            .format = VK_FORMAT_R32G32B32A32_SFLOAT,
+            .offset = 0,
+        },
+        // 矩阵第二行 (location 3)
+        {
+            .location = 3,
+            .binding = 1,
+            .format = VK_FORMAT_R32G32B32A32_SFLOAT,
+            .offset = sizeof(float) * 4,
+        },
+        // 矩阵第三行 (location 4)
+        {
+            .location = 4,
+            .binding = 1,
+            .format = VK_FORMAT_R32G32B32A32_SFLOAT,
+            .offset = sizeof(float) * 8,
+        },
+        // 矩阵第四行 (location 5)
+        {
+            .location = 5,
+            .binding = 1,
+            .format = VK_FORMAT_R32G32B32A32_SFLOAT,
+            .offset = sizeof(float) * 12,
+        },
+        // 颜色 (location 6)
+        {
+            .location = 6,
+            .binding = 1,
+            .format = VK_FORMAT_R32G32B32A32_SFLOAT,
+            .offset = sizeof(float) * 16,
+        },
+    };
+
     this->_vertexInputBindings.push_back(this->_vInputBindDescription);
+    this->_vertexInputBindings.push_back(this->_vInputBindInstanceDescription);
 
     this->_vertexInputInfo = {};
     this->_vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -54,6 +99,63 @@ void GfxPipelineUI::_initVertexInputState()
     this->_vertexInputInfo.pVertexBindingDescriptions = this->_vertexInputBindings.data();
     this->_vertexInputInfo.vertexAttributeDescriptionCount = (uint32_t)this->_vertexInputAttributes.size();
     this->_vertexInputInfo.pVertexAttributeDescriptions = this->_vertexInputAttributes.data();
+
+    // 顶点 位置输入属性描述
+    // this->_vInputAttribDescriptionPos = {};
+    // this->_vInputAttribDescriptionPos.location = 0;
+    // this->_vInputAttribDescriptionPos.binding = 0;
+    // this->_vInputAttribDescriptionPos.format = VK_FORMAT_R32G32B32_SFLOAT;
+    // this->_vInputAttribDescriptionPos.offset = 0;
+    // // 顶点 纹理坐标输入属性描述
+    // this->_vInputAttribDescriptionTexCoord = {};
+    // this->_vInputAttribDescriptionTexCoord.location = 1;
+    // this->_vInputAttribDescriptionTexCoord.binding = 0;
+    // this->_vInputAttribDescriptionTexCoord.format = VK_FORMAT_R32G32_SFLOAT;
+    // this->_vInputAttribDescriptionTexCoord.offset = sizeof(float) * 3;
+
+    // this->_vertexInputAttributes.push_back(this->_vInputAttribDescriptionPos);
+    // this->_vertexInputAttributes.push_back(this->_vInputAttribDescriptionTexCoord);
+    // 顶点 输入绑定描述
+    // this->_vertexInputBindings.push_back(this->_vInputBindDescription);
+
+    // // 初始化实例数据-模型矩阵-输入属性描述
+    // this->_vInputAttribDescriptionInstanceModel = {};
+    // this->_vInputAttribDescriptionInstanceModel.location = 2;
+    // this->_vInputAttribDescriptionInstanceModel.binding = 1;
+    // this->_vInputAttribDescriptionInstanceModel.format = VK_FORMAT_R32G32B32A32_SFLOAT;
+    // this->_vInputAttribDescriptionInstanceModel.offset = 0;
+    // this->_vertexInputAttributesInstanceModel.push_back(this->_vInputAttribDescriptionInstanceModel);
+
+    // // 初始化实例数据-模型矩阵-输入绑定描述
+    // this->_vInputBindDescriptionInstanceModel = {};
+    // this->_vInputBindDescriptionInstanceModel.binding = 1;
+    // this->_vInputBindDescriptionInstanceModel.stride = sizeof(float) * 4 * 4;
+    // this->_vInputBindDescriptionInstanceModel.inputRate = VK_VERTEX_INPUT_RATE_INSTANCE;
+    // this->_vertexInputBindings.push_back(this->_vInputBindDescriptionInstanceModel);
+
+    // this->_vertexInputInfo = {};
+    // this->_vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    // this->_vertexInputInfo.vertexBindingDescriptionCount = (uint32_t)this->_vertexInputBindings.size();
+    // this->_vertexInputInfo.pVertexBindingDescriptions = this->_vertexInputBindings.data();
+    // this->_vertexInputInfo.vertexAttributeDescriptionCount = (uint32_t)this->_vertexInputAttributes.size();
+    // this->_vertexInputInfo.pVertexAttributeDescriptions = this->_vertexInputAttributes.data();
+    // 顶点输入（来自绑定0）
+    // layout(location = 0) in vec3 inPosition;
+    // layout(location = 1) in vec2 inTexCoord;
+
+    // // 实例输入（来自绑定1）
+    // layout(location = 2) in vec4 inModelMatrix0;
+    // layout(location = 3) in vec4 inModelMatrix1;
+    // layout(location = 4) in vec4 inModelMatrix2;
+    // layout(location = 5) in vec4 inModelMatrix3;
+
+    // // 重建矩阵
+    // mat4 modelMatrix = mat4(
+    //     inModelMatrix0,
+    //     inModelMatrix1,
+    //     inModelMatrix2,
+    //     inModelMatrix3
+    // );
 }
 void GfxPipelineUI::_initInputAssemblyState()
 {
@@ -173,7 +275,7 @@ void GfxPipelineUI::_initPipeline()
     this->_pipelineInfo.pColorBlendState = &this->_colorBlendInfo;
     this->_pipelineInfo.pDepthStencilState = &this->_depthStencilInfo;
     this->_pipelineInfo.layout = this->_vkPipelineLayout;
-    std::cout << "Gfx : Pipeline :: create pipeline info success "  << this->_pass  <<"   "<<this->_pass->getVKRenderPass()<< std::endl;
+    std::cout << "Gfx : Pipeline :: create pipeline info success " << this->_pass << "   " << this->_pass->getVKRenderPass() << std::endl;
     this->_pipelineInfo.renderPass = this->_pass->getVKRenderPass();
     this->_pipelineInfo.subpass = 0;
     this->_pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;

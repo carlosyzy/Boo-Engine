@@ -37,6 +37,7 @@ private:
     GfxRenderTexture *_renderTexture;
     GfxMaterial *_material;
     GfxMesh *_mesh;
+    std::vector<float> _instanceDatas;
 
     /**
      * @brief 绑定渲染管线
@@ -48,7 +49,7 @@ public:
     GfxBatchUI(GfxRendererUI *renderer, GfxRenderTexture *renderTexture, GfxMaterial *material, GfxMesh *mesh);
     const GfxMaterial *getMaterial() const { return _material; }
     const GfxMesh *getMesh() const { return _mesh; }
-    void addObject();
+    void addObject(std::vector<float> &instanceData);
     void render(VkCommandBuffer &queueCommandBuffer);
     void destroy();
     ~GfxBatchUI();

@@ -29,7 +29,7 @@ class UIRenderer : public Component
 private:
 protected:
     MaterialAsset *_materialAsset;
-
+    std::vector<float> _instanceData;
     Color _color;
     /**
      * @brief 反序列化组件属性-配置

@@ -9,7 +9,7 @@
 #include "gfx-renderer-ui.h"
 #include "gfx-pipeline-ui.h"
 
-GfxBatchUI::GfxBatchUI(GfxRendererUI *renderer,GfxRenderTexture *renderTexture, GfxMaterial *material, GfxMesh *mesh)
+GfxBatchUI::GfxBatchUI(GfxRendererUI *renderer, GfxRenderTexture *renderTexture, GfxMaterial *material, GfxMesh *mesh)
 {
     this->_renderer = renderer;
     this->_renderTexture = renderTexture;
@@ -17,8 +17,17 @@ GfxBatchUI::GfxBatchUI(GfxRendererUI *renderer,GfxRenderTexture *renderTexture, 
     this->_mesh = mesh;
 }
 // 后续带上每个物体独有的数据
-void GfxBatchUI::addObject()
+void GfxBatchUI::addObject(std::vector<float> &instanceData)
 {
+    if (instanceData.size() == 0)
+    {
+        throw std::runtime_error("GfxBatchUI::addObject() instanceData size is 0!");
+    }
+    else if (instanceData.size() != (16 + 4))
+    {
+        throw std::runtime_error("GfxBatchUI::addObject() instanceData size is not multiple of vertex size!");
+    }
+    this->_instanceDatas.insert(this->_instanceDatas.end(), instanceData.begin(), instanceData.end());
 }
 void GfxBatchUI::render(VkCommandBuffer &queueCommandBuffer)
 {
@@ -59,7 +68,9 @@ void GfxBatchUI::render(VkCommandBuffer &queueCommandBuffer)
                 imageInfo.imageView = texture->getImageView();
                 imageInfo.sampler = texture->getSampler();
             }
-        }else{
+        }
+        else
+        {
             std::cout << "GfxBatchUI::render() texture not found! index: " << i << std::endl;
         }
         descriptorWrites[i + 1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -119,10 +130,6 @@ void GfxBatchUI::destroy()
 GfxBatchUI::~GfxBatchUI()
 {
 }
-
-
-
-
 
 // GfxPipeline *pipeline = Gfx::renderer->getPipeline(this->_material->_pipelineStruct.generateKey());
 // if (pipeline == nullptr)

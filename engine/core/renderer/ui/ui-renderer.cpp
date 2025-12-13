@@ -143,7 +143,18 @@ void UIRenderer::Render(Camera *camera)
 		return; // 节点不可见
 	}
 	// 提交渲染对象
-	GfxMgr::getInstance()->submitRenderObject("ui", camera->getUuid(), nullptr, nullptr);
+	this->_instanceData.clear();
+	this->_instanceData.reserve(16 + 4);
+	// 1. 先添加模型矩阵 (16个float)
+	const auto &matrix = node2D->uiWorldMatrix().data();
+	_instanceData.insert(_instanceData.end(), matrix.begin(), matrix.end());
+	// 2. 再添加颜色 (4个float)
+	_instanceData.push_back(_color.getR());
+	_instanceData.push_back(_color.getG());
+	_instanceData.push_back(_color.getB());
+	_instanceData.push_back(_color.getA());
+
+	GfxMgr::getInstance()->submitRenderObject("ui", camera->getUuid(), nullptr, nullptr, this->_instanceData);
 }
 
 void UIRenderer::Disable()

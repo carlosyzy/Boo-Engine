@@ -46,21 +46,37 @@ protected:
      * @brief 初始化着色器状态
      */
     virtual void _initShaderState();
-    //  顶点坐标输入属性描述
-    VkVertexInputAttributeDescription _vInputAttribDescriptionPos;
-    //  顶点颜色输入属性描述
-    VkVertexInputAttributeDescription _vInputAttribDescriptionColor;
-    //  顶点法线输入属性描述
-    VkVertexInputAttributeDescription _vInputAttribDescriptionNormal;
-    //  顶点纹理坐标输入属性描述
-    VkVertexInputAttributeDescription _vInputAttribDescriptionTexCoord;
-    //  顶点输入属性描述集合
+    // //  顶点坐标输入属性描述
+    // VkVertexInputAttributeDescription _vInputAttribDescriptionPos;
+    // //  顶点颜色输入属性描述
+    // VkVertexInputAttributeDescription _vInputAttribDescriptionColor;
+    // //  顶点法线输入属性描述
+    // VkVertexInputAttributeDescription _vInputAttribDescriptionNormal;
+    // //  顶点纹理坐标输入属性描述
+    // VkVertexInputAttributeDescription _vInputAttribDescriptionTexCoord;
+    // // 实例数据-模型矩阵-输入属性描述
+    // VkVertexInputAttributeDescription _vInputAttribDescriptionInstanceModel;
+
+    // //  顶点输入属性描述集合
+    // std::vector<VkVertexInputAttributeDescription> _vertexInputAttributes;
+    // //  实例数据-模型矩阵-输入属性描述
+    // std::vector<VkVertexInputAttributeDescription> _vertexInputAttributesInstanceModel;
+
+    // //  顶点输入绑定描述
+    // VkVertexInputBindingDescription _vInputBindDescription;
+    // //  实例数据-模型矩阵-输入绑定描述
+    // VkVertexInputBindingDescription _vInputBindDescriptionInstanceModel;
+    // 顶点输入- 逐顶点输入绑定描述
+    VkVertexInputBindingDescription _vInputBindDescription;
     std::vector<VkVertexInputAttributeDescription> _vertexInputAttributes;
 
-    //  顶点输入绑定描述
-    VkVertexInputBindingDescription _vInputBindDescription;
+    //  顶点输入- 逐实例输入绑定描述
+    VkVertexInputBindingDescription _vInputBindInstanceDescription;
+    std::vector<VkVertexInputAttributeDescription> _vertexInputInstanceAttributes;
+
     //  顶点输入绑定描述集合
     std::vector<VkVertexInputBindingDescription> _vertexInputBindings;
+
     //  顶点输入状态描述
     VkPipelineVertexInputStateCreateInfo _vertexInputInfo;
     virtual void _initVertexInputState();
@@ -119,12 +135,10 @@ protected:
     VkPipeline _vkPipeline;
     virtual void _initPipeline();
 
-   
-
 public:
     GfxPipeline(const std::string &name);
     const std::string &getName();
-    void create(GfxPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader,VkDescriptorSetLayout descriptorSetLayout,  GfxPipelineStruct pipelineStruct);
+    void create(GfxPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, VkDescriptorSetLayout descriptorSetLayout, GfxPipelineStruct pipelineStruct);
     VkPipeline getVKPipeline();
     VkPipelineLayout getVKPipelineLayout();
     std::vector<VkDescriptorSet> getDescriptorSets();

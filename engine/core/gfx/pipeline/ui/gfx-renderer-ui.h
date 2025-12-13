@@ -83,7 +83,7 @@ public:
 	void initRenderQueue(std::string renderId, GfxRenderTexture *renderTexture);
 	void delRenderQueue(std::string renderId);
 	void submitRenderMat(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
-	void submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh);
+	void submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData);
 
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers,std::vector<std::string> &pipelineOutds);
 

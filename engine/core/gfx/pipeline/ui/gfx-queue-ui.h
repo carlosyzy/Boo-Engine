@@ -20,14 +20,13 @@ class GfxMesh;
 
 class GfxQueueUI
 {
-private :
-    GfxRendererUI *_renderer;
-    GfxRenderTexture *_renderTexture;
+private:
+	GfxRendererUI *_renderer;
+	GfxRenderTexture *_renderTexture;
 	std::array<float, 16> _viewMatrix;
 	std::array<float, 16> _projMatrix;
-	
 
-    std::vector<GfxBatchUI *> _batches;
+	std::vector<GfxBatchUI *> _batches;
 
 	/**
 	 * @brief 重置命令缓冲区
@@ -44,15 +43,13 @@ private :
 	 * 渲染第三步
 	 */
 	void _beginRenderPass();
-	
 
-	
 public:
-	GfxQueueUI(GfxRendererUI *renderer,GfxRenderTexture *renderTexture);
+	GfxQueueUI(GfxRendererUI *renderer, GfxRenderTexture *renderTexture);
 	void init();
 	void submitMat(const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
-	void submitObject(GfxMaterial *material, GfxMesh *mesh);
-	void render(std::vector<VkCommandBuffer> &commandBuffers,std::vector<std::string> &pipelineOutds);
+	void submitObject(GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData);
+	void render(std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds);
 	GfxRenderTexture *getRenderTexture();
 	void _clean();
 	void _reset();
@@ -116,8 +113,6 @@ public:
 
 // void _beginBindRenderPass(uint32_t imageIndex);
 // void _renderObject(uint32_t imageIndex,GfxObject *object);
-
-
 
 // #pragma once
 // #include <vulkan/vulkan_core.h>
@@ -190,7 +185,6 @@ public:
 
 // 	// GfxRenderBatch *_testBatch = nullptr;
 
-	
 // public:
 // 	GfxRenderQueue();
 // 	void init(GfxRenderTexture *renderTexture);

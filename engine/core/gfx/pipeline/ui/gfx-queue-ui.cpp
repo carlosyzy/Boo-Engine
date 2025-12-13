@@ -26,13 +26,14 @@ void GfxQueueUI::submitMat(const std::array<float, 16> &viewMatrix, const std::a
     this->_viewMatrix = viewMatrix;
     this->_projMatrix = projMatrix;
 }
-void GfxQueueUI::submitObject(GfxMaterial *material, GfxMesh *mesh)
+void GfxQueueUI::submitObject(GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData)
 {
     if (material == nullptr || mesh == nullptr)
     {
         std::cout << "submitObject: material or mesh is nullptr" << std::endl;
         return;
     }
+
     if (this->_batches.empty())
     {
         GfxBatchUI *batch = new GfxBatchUI(this->_renderer, this->_renderTexture, material, mesh);
@@ -41,18 +42,16 @@ void GfxQueueUI::submitObject(GfxMaterial *material, GfxMesh *mesh)
     else
     {
         GfxBatchUI *batch = this->_batches.back();
-        if (material->equals(batch->getMaterial()) && mesh->equals(batch->getMesh()))
-        {
-            batch->addObject();
-        }
-        else
+        if (!material->equals(batch->getMaterial()) || !mesh->equals(batch->getMesh()))
         {
             GfxBatchUI *batch = new GfxBatchUI(this->_renderer, this->_renderTexture, material, mesh);
             this->_batches.push_back(batch);
         }
     }
+    GfxBatchUI *batch = this->_batches.back();
+    batch->addObject(instanceData);
 }
-void GfxQueueUI::render(std::vector<VkCommandBuffer> &commandBuffers,std::vector<std::string> &pipelineOutds)
+void GfxQueueUI::render(std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds)
 {
     this->_resetCommandBuffer();
     this->_beginCommandBuffer();
@@ -201,8 +200,8 @@ void GfxQueueUI::_reset()
 }
 void GfxQueueUI::destroy()
 {
-    this->_renderer=nullptr;
-    this->_renderTexture=nullptr;
+    this->_renderer = nullptr;
+    this->_renderTexture = nullptr;
     // 清空批次
     for (size_t i = 0; i < this->_batches.size(); i++)
     {

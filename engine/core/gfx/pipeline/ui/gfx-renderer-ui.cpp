@@ -315,7 +315,7 @@ void GfxRendererUI::submitRenderMat(std::string renderId, const std::array<float
     }
     this->_renderQueues[renderId]->submitMat(viewMatrix, projMatrix);
 }
-void GfxRendererUI::submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh)
+void GfxRendererUI::submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData)
 {
     if (this->_currentObjectCount >= this->_maxObjectCount)
     {
@@ -330,21 +330,21 @@ void GfxRendererUI::submitRenderObject(std::string renderId, GfxMaterial *materi
     }
     if (material == nullptr && mesh == nullptr)
     {
-        this->_renderQueues[renderId]->submitObject(this->_uiMaterial, this->_uiMesh);
+        this->_renderQueues[renderId]->submitObject(this->_uiMaterial, this->_uiMesh, instanceData);
     }
     else
     {
         if (material == nullptr)
         {
-            this->_renderQueues[renderId]->submitObject(this->_uiMaterial, mesh);
+            this->_renderQueues[renderId]->submitObject(this->_uiMaterial, mesh, instanceData);
         }
         else if (mesh == nullptr)
         {
-            this->_renderQueues[renderId]->submitObject(material, this->_uiMesh);
+            this->_renderQueues[renderId]->submitObject(material, this->_uiMesh, instanceData);
         }
         else
         {
-            this->_renderQueues[renderId]->submitObject(material, mesh);
+            this->_renderQueues[renderId]->submitObject(material, mesh, instanceData);
         }
     }
 }

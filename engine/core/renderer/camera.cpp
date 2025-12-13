@@ -106,7 +106,7 @@ void Camera::LateUpdate(float deltaTime)
 }
 void Camera::Render()
 {
-    GfxMgr::getInstance()->submitRenderMat(this->_pipeline, this->_uuid);
+    GfxMgr::getInstance()->submitRenderMat(this->_pipeline, this->_uuid, this->_matView.data(), this->_matProj.data());
 }
 void Camera::Disable()
 {
