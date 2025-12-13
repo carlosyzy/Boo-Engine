@@ -24,15 +24,15 @@ EditorMain::EditorMain()
 }
 void EditorMain::init()
 {
-    return;
-    // std::cout << "EditorMain::_startLoading" << std::endl;
-    // // 加载场景
-    // Scene *scene = new Scene("Editor-Loading-Scene");
-    // Node2D *node2d = scene->getRoot2D();
-    // EditorLoading *editorLoading = static_cast<EditorLoading *>(node2d->addComponent("EditorLoading"));
-    // Boo::game->openScene(scene);
-    // editorLoading->setOnLoadComplete([this]()
-    //                                  { this->_launchEditor(); });
+    std::cout << "EditorMain::_startLoading" << std::endl;
+    // 加载场景
+    Scene *scene = new Scene("Editor-Loading-Scene");
+    Node2D *node2d = scene->getRoot2D();
+    node2d->setVisibility(1 << 20);
+    EditorLoading *editorLoading = static_cast<EditorLoading *>(node2d->addComponent("EditorLoading"));
+    Boo::game->openScene(scene);
+    editorLoading->setOnLoadComplete([this]()
+                                     { this->_launchEditor(); });
 }
 void EditorMain::_launchEditor()
 {

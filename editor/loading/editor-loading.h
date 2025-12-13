@@ -8,6 +8,7 @@
 class Node2D;
 class UISprite;
 class TextureAsset;
+class Camera;
 
 class EditorLoading : public Component
 {
@@ -15,6 +16,10 @@ private:
 	float _width;
 	float _height;
 	TextureAsset* _textureDefault;
+	void _initDefaultTexture();
+
+	void _initCamera();
+	Camera* _uiCamera;
 
 	Node2D *_ndAlpha;
 	UISprite *_spriteAlpha;
@@ -61,7 +66,6 @@ public:
 	void Enable() override;
 	void Update(float deltaTime) override;
 	void LateUpdate(float deltaTime) override;
-	void Render() override;
 	void Disable() override;
 	void destroy() override;
 	~EditorLoading();

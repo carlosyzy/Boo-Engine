@@ -26,6 +26,7 @@ Node2D::Node2D(const std::string name, const std::string uuid)
 	this->_worldMatrix = Mat4::identity();
 	this->_worldTransformFlag = static_cast<uint32_t>(NodeTransformFlag::ALL_FLAG);
 	this->_frameTransformFlag = static_cast<uint32_t>(NodeTransformFlag::ALL_FLAG);
+	this->_visibility = uint32_t(NodeVisibility::Node2D);
 }
 
 /**

@@ -100,12 +100,6 @@ void UILayoutHorizontal::LateUpdate(float deltaTime)
     if (!this->_isEnabledInHierarchy)
 		return; // 组件未激活
 }
-void UILayoutHorizontal::Render()
-{
-    Component::Render();
-    if (!this->_isEnabledInHierarchy)
-		return; // 组件未激活
-}
 void UILayoutHorizontal::_clear()
 {
    

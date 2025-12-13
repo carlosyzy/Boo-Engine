@@ -81,7 +81,7 @@ public:
 	void createPipeline(std::string name, GfxPipelineStruct pipelineStruct);
 
 	void initRenderQueue(std::string renderId, GfxRenderTexture *renderTexture);
-
+	void delRenderQueue(std::string renderId);
 	void submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh);
 
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers,std::vector<std::string> &pipelineOutds);

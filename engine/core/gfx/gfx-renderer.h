@@ -67,6 +67,7 @@ public:
 	void createSpirvShader(const std::string &shaderName, const std::vector<char> &data);
 
 	void initRenderQueue(std::string pipelineName, std::string renderId, GfxRenderTexture *renderTexture);
+	void delRenderQueue(std::string pipelineName, std::string renderId);
 	void submitRenderObject(const std::string &pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh);
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
 

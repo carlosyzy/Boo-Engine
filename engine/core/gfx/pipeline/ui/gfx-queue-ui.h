@@ -53,6 +53,7 @@ public:
 	GfxRenderTexture *getRenderTexture();
 	void _clean();
 	void _reset();
+	void destroy();
 	~GfxQueueUI();
 };
 

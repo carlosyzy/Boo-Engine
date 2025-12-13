@@ -28,7 +28,7 @@ private:
 	VkCommandBuffer _commandBuffer;
 	std::string _generateUUID();
 	virtual void _createTextures();
-	virtual void _createFramebuffer();
+	virtual void _createFrameBuffer();
 	virtual void _createCommandBuffer();
 
 public:
@@ -44,5 +44,6 @@ public:
 	void _clear();
 	void _reset();
 	bool saveToFile1(std::string filePath);
+	void destroy();
 	~GfxRenderTexture();
 };

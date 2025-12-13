@@ -1,10 +1,6 @@
 #include "editor-loading.h"
 #include "../boo-editor.h"
 #include "../layout/editor-layout.h"
-// #include "../cache/editor-assets-cache.h"
-// #include "../cache/editor-config-cache.h"
-// #include "../cache/editor-project-cache.h"
-// #include "../cache/editor-scene-cache.h"
 
 #include "../../engine/boo.h"
 #include "../../engine/core/assets/assets-manager.h"
@@ -12,6 +8,7 @@
 #include "../../engine/core/scene/node-2d.h"
 #include "../../engine/core/scene/node.h"
 #include "../../engine/core/scene/scene.h"
+#include "../../engine/core/renderer/camera.h"
 
 #include "../../engine/core/utils/file-util.h"
 #include "../../engine/core/utils/json-util.h"
@@ -32,6 +29,20 @@ void EditorLoading::Awake()
 	this->_logoRatio = 0.35f;
 	this->_width = Boo::game->view()->width;
 	this->_height = Boo::game->view()->height;
+	this->_initDefaultTexture();
+	this->_initCamera();
+	this->_initBg();
+	this->_initLogo();
+	this->_initLoadUI();
+	// this->_initAssetsDB();
+}
+void EditorLoading::Enable() { Component::Enable(); }
+void EditorLoading::setOnLoadComplete(std::function<void()> onLoadComplete)
+{
+	this->_onLoadComplete = onLoadComplete;
+}
+void EditorLoading::_initDefaultTexture()
+{
 	this->_textureDefault = new TextureAsset("boo-default-texture");
 	std::filesystem::path defaultPath = (std::filesystem::path(BooEditor::editorPath) / "res/alpha/default.png").generic_string();
 	this->_textureDefault->create(defaultPath.string());
@@ -40,16 +51,20 @@ void EditorLoading::Awake()
 	this->_textureLogo->create(logoPath.string());
 	this->_logoTxWidth = this->_textureLogo->width();
 	this->_logoTxHeight = this->_textureLogo->height();
-
-	this->_initBg();
-	this->_initLogo();
-	this->_initLoadUI();
-	this->_initAssetsDB();
 }
-void EditorLoading::Enable() { Component::Enable(); }
-void EditorLoading::setOnLoadComplete(std::function<void()> onLoadComplete)
+void EditorLoading::_initCamera()
 {
-	this->_onLoadComplete = onLoadComplete;
+	Scene *scene = Boo::game->getScene();
+	if (scene == nullptr)
+	{
+		return;
+	}
+	Node2D *node2d = scene->getRoot2D();
+	Node2D *ndCamera = new Node2D("Editor-EditorLoading-Camera");
+	node2d->addChild(ndCamera);
+	ndCamera->setPosition(0.0f, 0.0f, -100.0f);
+	this->_uiCamera = dynamic_cast<Camera *>(ndCamera->addComponent("Camera"));
+	this->_uiCamera->setPipeline("ui");
 }
 
 void EditorLoading::_initBg()
@@ -178,17 +193,15 @@ void EditorLoading::Update(float deltaTime)
 		this->_height = height;
 		std::cout << "EditorLoading::update() width: " << width
 				  << " height: " << height << std::endl;
-		// Update logo size
-		this->_updateBgSize(width, height);
-		this->_updateLogoSize(width, height);
-		this->_updateLoadBarSize(width, height);
+		// this->_updateBgSize(width, height);
+		// this->_updateLogoSize(width, height);
+		// this->_updateLoadBarSize(width, height);
 	}
 }
 void EditorLoading::LateUpdate(float deltaTime)
 {
 	Component::LateUpdate(deltaTime);
 }
-void EditorLoading::Render() { Component::Render(); }
 
 void EditorLoading::_updateBgSize(float width, float height)
 {

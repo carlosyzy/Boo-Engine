@@ -13,7 +13,7 @@ class AssetsManager;
 class FreetypeMgr;
 class Input;
 class Camera;
-
+class UIRenderer;
 class GfxRenderTexture;
 class GfxMaterial;
 
@@ -52,7 +52,7 @@ private:
     // 调度器相关
     uint64_t _scheduleNextID_ = 0;
     std::unordered_map<int, ScheduleInfo> _schedules;
-   
+
     std::vector<int> _scheduleClearCaches;
     // 组件清理相关
     std::vector<Component *> _compClearCaches;
@@ -90,10 +90,11 @@ private:
     /**
      * @brief 相机系统
      */
-    std::vector<Camera *> _cameras;
-
-    // GfxMaterial *_textMaterial;
-    GfxRenderTexture *_renderTexture;
+    std::unordered_map<std::string, Camera *> _cameras;
+    /**
+     * @brief UI渲染组件
+     */
+    std::unordered_map<std::string, UIRenderer *> _uiRenderers;
 
     /**
      * @brief 初始化图形库
@@ -128,6 +129,9 @@ private:
     void _updateSchedules(float dt);
     void _lateUpdate(float dt);
     void _render(float dt);
+    void _renderCameras(Camera *camera);
+
+
     void _clear();
     void _updateClearCaches();
 
@@ -172,6 +176,24 @@ public:
      * @param camera 相机指针
      */
     void extractCamera(Camera *camera);
+    /**
+     * @brief 从游戏中移除相机
+     *
+     * @param camera 相机指针
+     */
+    void removeCamera(Camera *camera);
+    /**
+     * @brief 挂在UI渲染器到游戏中
+     *
+     * @param uiRenderer UI渲染器指针
+     */
+    void extractUIRenderer(UIRenderer *uiRenderer);
+    /**
+     * @brief 从游戏中移除UI渲染器
+     *
+     * @param uiRenderer UI渲染器指针
+     */
+    void removeUIRenderer(UIRenderer *uiRenderer);
 
     // typename T: 表示一个类型参数，通常指类的类型
     // typename Func: 表示另一个类型参数，通常指函数类型（函数指针、成员函数指针、函数对象等）
@@ -200,8 +222,6 @@ public:
         return id;
     }
     void unschedule(int scheduleID);
-
-    /* Scene *openScene(std::string sceneName);*/
 
     void addCompClearCaches(Component *comp);
     void addNodeClearCaches(Node *node);

@@ -50,11 +50,7 @@ public:
      * 当前节点组件以及子节点组件的update执行结束,lateUpdate更新函数开始
      */
     virtual void LateUpdate(float deltaTime) = 0;
-    /**
-     * @brief 组件渲染函数
-     * 当前节点组件以及子节点组件的lateUpdate执行结束,render渲染函数开始
-     */
-    virtual void Render() = 0;
+   
     /**
      * @brief 组件禁用函数
      * 当前节点组件以及子节点组件的disable禁用函数开始

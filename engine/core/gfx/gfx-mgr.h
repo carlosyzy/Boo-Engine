@@ -81,6 +81,12 @@ public:
 	 */
 	void initRenderQueue(std::string pipelineName, std::string renderId, GfxRenderTexture *renderTexture);
 	/**
+	 * @brief 销毁渲染队列
+	 *
+	 * @param renderId 渲染队列ID
+	 */
+	void delRenderQueue(std::string pipelineName, std::string renderId);
+	/**
 	 * @brief 提交渲染对象
 	 *
 	 * @param renderId 渲染队列ID

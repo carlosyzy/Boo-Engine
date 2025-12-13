@@ -176,10 +176,6 @@ void EditorLayout::LateUpdate(float dt)
 {
     Component::LateUpdate(dt);
 }
-void EditorLayout::Render()
-{
-    Component::Render();
-}
 
 
 void EditorLayout::_updateModuleSize()

@@ -24,7 +24,6 @@ public:
     void updateTree() override;
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
-    void Render() override;
     void destroy() override;
     ~UINodeTree();
 };

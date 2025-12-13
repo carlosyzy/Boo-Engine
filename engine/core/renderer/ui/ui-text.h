@@ -8,6 +8,11 @@
 #include "../../scene/node.h"
 #include "../../font/freetype-mgr.h"
 class TextureAsset;
+class Camera;
+
+
+
+
 class UIText : public UIRenderer
 {
 
@@ -30,18 +35,21 @@ protected:
      * 反序列化成功后，设置文本和材质
      */
     void _deserialized() override;
-    /**
-     * 更新渲染状态
-     */
-    virtual void _updateRendererState();
-    /**
-     * 更新模型矩阵
-     */
-    virtual void _updateModelMatrix();
-
+    // /**
+    //  * 更新渲染状态
+    //  */
+    // virtual void _updateRendererState();
+    // /**
+    //  * 更新模型矩阵
+    //  */
+    // virtual void _updateModelMatrix();
 
 public:
     UIText(std::string name, Node *node, std::string uuid = "");
+
+    void Awake() override;
+    void Enable() override;
+
     void setText(std::string text);
     void setSize(int fontSize);
     void setLineHeight(int lineHeight);
@@ -55,7 +63,8 @@ public:
 
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
-    void Render() override;
+    void Render(Camera *camera) override;
+    void Disable() override;
     void destroy() override;
     ~UIText() override;
 };

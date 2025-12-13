@@ -6,6 +6,7 @@
 #include "../../component/component-property-register.h"
 
 class Node;
+class Camera;
 
 class UISprite : public UIRenderer
 {
@@ -19,14 +20,6 @@ protected:
      * 反序列化成功
      */
     void _deserialized() override;
-    /**
-     * 更新渲染状态
-     */
-    void _updateRendererState() override;
-    /**
-     * 更新模型矩阵
-     */
-    void _updateModelMatrix() override;
 
 public:
     UISprite(std::string name, Node *node, std::string uuid = "");
@@ -65,7 +58,8 @@ public:
 
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
-    void Render() override;
+    void Render(Camera *camera) override;
+    void Disable() override;
     void destroy() override;
     ~UISprite() override;
 };

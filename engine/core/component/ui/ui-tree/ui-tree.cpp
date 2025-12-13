@@ -592,14 +592,6 @@ void UITree::hoverSelect()
         this->_isSelectHover = true;
     }
 }
-
-void UITree::Render()
-{
-    Component::Render();
-    if (!this->_isEnabledInHierarchy)
-        return; // 组件未激活
-}
-
 void UITree::Disable()
 {
     Component::Disable();

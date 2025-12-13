@@ -6,6 +6,7 @@
 #include "../../component/component-register.h"
 #include "../../scene/node.h"
 class TextureAsset;
+class Camera;
 
 /**
  * mask 组件继承与ui-renderer组件
@@ -24,14 +25,14 @@ protected:
      * 反序列化成功
      */
     void _deserialized() override;
-    /**
-     * 更新渲染状态
-     */
-    void _updateRendererState() override;
-    /**
-     * 更新模型矩阵
-     */
-    void _updateModelMatrix() override;
+    // /**
+    //  * 更新渲染状态
+    //  */
+    // void _updateRendererState() override;
+    // /**
+    //  * 更新模型矩阵
+    //  */
+    // void _updateModelMatrix() override;
 
 public:
     UIMask(std::string name, Node *node, std::string uuid = "");
@@ -42,7 +43,7 @@ public:
     void setMaterialAsset(MaterialAsset *mtl);
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
-    void Render() override;
+    void Render(Camera *camera) override;
     void lateRender();
     void Disable() override;
     void destroy() override;

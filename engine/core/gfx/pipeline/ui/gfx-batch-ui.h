@@ -50,5 +50,6 @@ public:
     const GfxMesh *getMesh() const { return _mesh; }
     void addObject();
     void render(VkCommandBuffer &queueCommandBuffer);
+    void destroy();
     ~GfxBatchUI();
 };

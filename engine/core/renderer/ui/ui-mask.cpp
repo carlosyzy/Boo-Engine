@@ -5,33 +5,33 @@
 #include "../../scene/node-2d.h"
 #include "../../assets/texture-asset.h"
 #include "../../assets/assets-manager.h"
-
+#include "../../renderer/camera.h"
 UIMask::UIMask(std::string name, Node *node, std::string uuid) : UIRenderer(name, node, uuid)
 {
-    this->_positions = {
-        -0.5f, 0.5f, 0.0f,  /** @brief 左上 */
-        -0.5f, -0.5f, 0.0f, /** @brief 坐下 */
-        0.5f, -0.5f, 0.0f,  /** @brief 右下 */
-        0.5f, 0.5f, 0.0f    /** @brief 右上 */
-    };
-    this->_colors = {
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f};
-    this->_normals = {
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f};
-    this->_uvs = {
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f};
-    this->_indices = {
-        0, 1, 2,
-        0, 2, 3};
+    // this->_positions = {
+    //     -0.5f, 0.5f, 0.0f,  /** @brief 左上 */
+    //     -0.5f, -0.5f, 0.0f, /** @brief 坐下 */
+    //     0.5f, -0.5f, 0.0f,  /** @brief 右下 */
+    //     0.5f, 0.5f, 0.0f    /** @brief 右上 */
+    // };
+    // this->_colors = {
+    //     1.0f, 1.0f, 1.0f, 1.0f,
+    //     1.0f, 1.0f, 1.0f, 1.0f,
+    //     1.0f, 1.0f, 1.0f, 1.0f,
+    //     1.0f, 1.0f, 1.0f, 1.0f};
+    // this->_normals = {
+    //     0.0f, 0.0f, 0.0f,
+    //     0.0f, 0.0f, 0.0f,
+    //     0.0f, 0.0f, 0.0f,
+    //     0.0f, 0.0f, 0.0f};
+    // this->_uvs = {
+    //     0.0f, 0.0f,
+    //     0.0f, 1.0f,
+    //     1.0f, 1.0f,
+    //     1.0f, 0.0f};
+    // this->_indices = {
+    //     0, 1, 2,
+    //     0, 2, 3};
     this->_addUuid = this->_uuid + "-add";
     this->_subUuid = this->_uuid + "-sub";
 
@@ -60,8 +60,8 @@ void UIMask::Enable()
     Component::Enable();
     // GfxMgr::getInstance()->createUIMaskObject(this->_addUuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
     // GfxMgr::getInstance()->createUIMaskObject(this->_subUuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
-    this->_updateRendererState();
-    this->_updateModelMatrix();
+    // this->_updateRendererState();
+    // this->_updateModelMatrix();
 }
 void UIMask::setMaterialAsset(std::string mtl)
 {
@@ -83,15 +83,15 @@ void UIMask::setMaterialAsset(MaterialAsset *mtl)
     this->_setMaterial(mtl);
 }
 
-void UIMask::_updateRendererState()
-{
-}
-void UIMask::_updateModelMatrix()
-{
-    Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
-    // GfxMgr::getInstance()->setObjectModelMatrix(this->_addUuid, node2D->uiWorldMatrix().data());
-    // GfxMgr::getInstance()->setObjectModelMatrix(this->_subUuid, node2D->uiWorldMatrix().data());
-}
+// void UIMask::_updateRendererState()
+// {
+// }
+// void UIMask::_updateModelMatrix()
+// {
+//     Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
+//     // GfxMgr::getInstance()->setObjectModelMatrix(this->_addUuid, node2D->uiWorldMatrix().data());
+//     // GfxMgr::getInstance()->setObjectModelMatrix(this->_subUuid, node2D->uiWorldMatrix().data());
+// }
 
 void UIMask::Update(float deltaTime)
 {
@@ -101,12 +101,12 @@ void UIMask::LateUpdate(float deltaTime)
 {
     Component::LateUpdate(deltaTime);
 }
-void UIMask::Render()
+void UIMask::Render(Camera *camera)
 {
-    if (this->_node->hasFrameTransformFlag())
-    {
-        this->_updateModelMatrix();
-    }
+    // if (this->_node->hasFrameTransformFlag())
+    // {
+    //     this->_updateModelMatrix();
+    // }
     // 提交遮罩状态到渲染器
     // GfxMgr::getInstance()->submitObjectRender(this->_addUuid);
 }

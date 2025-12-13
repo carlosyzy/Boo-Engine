@@ -16,7 +16,6 @@ protected:
 
 public:
     Scene(const std::string name, const std::string uuid = "");
-
     Node3D *getRoot3D() { return this->_root3D; }
     Node2D *getRoot2D() { return this->_root2D; }
     void setActive(bool active) override;

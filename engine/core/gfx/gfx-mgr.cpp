@@ -121,6 +121,10 @@ void GfxMgr::initRenderQueue(std::string pipelineName, std::string renderId, Gfx
 {
     Gfx::renderer->initRenderQueue(pipelineName, renderId, renderTexture);
 }
+void GfxMgr::delRenderQueue(std::string pipelineName, std::string renderId)
+{
+    Gfx::renderer->delRenderQueue(pipelineName, renderId);
+}
 void GfxMgr::submitRenderObject(std::string pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh)
 {
     Gfx::renderer->submitRenderObject(pipelineName, renderId, material, mesh);

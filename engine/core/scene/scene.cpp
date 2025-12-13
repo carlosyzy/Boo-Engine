@@ -6,6 +6,7 @@ Scene::Scene(const std::string name, const std::string uuid)
 {
 	this->_name = name;
 	this->_layer = NodeLayer::Scene;
+	this->_visibility = uint32_t(NodeVisibility::Default);
 	this->_uuid = uuid.empty() ? UuidUtil::generateUUID() : uuid;
 	this->_active = false;
 	this->_isActiveInHierarchy = false;
@@ -21,7 +22,11 @@ Scene::Scene(const std::string name, const std::string uuid)
 	this->_worldTransformFlag = static_cast<uint32_t>(NodeTransformFlag::ALL_FLAG);
 	this->_frameTransformFlag = static_cast<uint32_t>(NodeTransformFlag::ALL_FLAG);
 	this->_root3D = new Node3D("root3D");
+	this->_root3D->_isLocked = true;
+	this->_root3D->setVisibility(uint32_t(NodeVisibility::Node3D));
 	this->_root2D = new Node2D("root2D");
+	this->_root2D->_isLocked = true;
+	this->_root2D->setVisibility(uint32_t(NodeVisibility::Node2D));
 	this->addChild(this->_root3D);
 	this->addChild(this->_root2D);
 }

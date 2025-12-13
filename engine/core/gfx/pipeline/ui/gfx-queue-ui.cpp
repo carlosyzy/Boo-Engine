@@ -68,6 +68,15 @@ void GfxQueueUI::render(std::vector<VkCommandBuffer> &commandBuffers,std::vector
 
     pipelineOutds.push_back(this->_renderTexture->getColorTextureUuid());
 
+    // 清空批次
+    for (size_t i = 0; i < this->_batches.size(); i++)
+    {
+        GfxBatchUI *batch = this->_batches[i];
+        batch->destroy();
+        delete batch;
+        batch = nullptr;
+    }
+    this->_batches.clear();
     // this->_renderTexture->saveToFile1("ui.png");
 
     // this->_bindPipeline(pipeline);
@@ -184,6 +193,20 @@ void GfxQueueUI::_clean()
 }
 void GfxQueueUI::_reset()
 {
+}
+void GfxQueueUI::destroy()
+{
+    this->_renderer=nullptr;
+    this->_renderTexture=nullptr;
+    // 清空批次
+    for (size_t i = 0; i < this->_batches.size(); i++)
+    {
+        GfxBatchUI *batch = this->_batches[i];
+        batch->destroy();
+        delete batch;
+        batch = nullptr;
+    }
+    this->_batches.clear();
 }
 
 GfxQueueUI::~GfxQueueUI()

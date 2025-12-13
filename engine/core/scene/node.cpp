@@ -136,6 +136,7 @@ void Node::setParent(Node *parent)
 	}
 	this->_parent = parent;
 	this->_parent->_children.push_back(this);
+	this->_visibility = parent->_visibility;
 	// 更新节点结构激活状态
 	this->setActive(this->_active);
 }

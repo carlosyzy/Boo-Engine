@@ -17,6 +17,8 @@
 #include "font/freetype-mgr.h"
 #include "input/input.h"
 #include "renderer/camera.h"
+#include "renderer/ui/ui-renderer.h"
+
 #include "utils/time-util.h"
 #include "utils/json-util.h"
 #include "utils/file-util.h"
@@ -34,38 +36,11 @@ void Game::init()
 	this->_initView();
 	this->_initFont();
 	this->_initAssets();
-	this->_renderTexture = new GfxRenderTexture("text-render-texture");
-	this->_renderTexture->resize(this->_view->width, this->_view->height);
-	GfxMgr::getInstance()->initRenderQueue("ui", "text-render-texture", this->_renderTexture);
-	
-	// this->_textMaterial = new GfxMaterial();
-	// this->_textMaterial->setRenderPass("ui");
-	// const GfxPipelineStruct pipeline = {
-	// 	.pass = "ui",
-	// 	.vert = "ui.vert",
-	// 	.frag = "ui.frag",
-	// 	.depthTest = 1,
-	// 	.depthWrite = 1,
-	// 	.stencilTest = 1,
-	// 	.colorBlend = 1,
-	// 	.pushConstant = 1,
-	// };
-	// this->_textMaterial->setPipelineStruct(pipeline);
-	// this->_textMaterial->setTextures({"default-texture"});
-	// this->_textMaterial = {
-	// 	.name = "Text-Material",
-	// 	.uuid = "Text-Material-UUID",
-	// 	.pass = "target",
-	// 	.pipeline = "default",
-	// 	.textures = {
-	// 		"default-texture"},
-	// };
 }
 void Game::_initGFX()
 {
 	std::cout << "INIT GFX" << std::endl;
 	GfxMgr::getInstance()->init();
-	// GfxMgr::getInstance()->createRenderPass("ui");
 }
 void Game::_initEvent()
 {
@@ -92,13 +67,6 @@ void Game::_initAssets()
 	std::cout << "INIT ASSETS MGR" << std::endl;
 	this->_assetsManager = new AssetsManager();
 	this->_assetsManager->init();
-	// 加载必加资源
-	// this->_assetsManager->load("resources/texture/logo.png");
-	// this->_assetsManager->load("resources/texture/ic-default.png");
-	// this->_assetsManager->load("resources/shader/ui/ui.vert.spv");
-	// this->_assetsManager->load("resources/shader/ui/ui.frag.spv");
-	// this->_assetsManager->load("resources/shader/ui/ui-mask.vert.spv");
-	// this->_assetsManager->load("resources/shader/ui/ui-mask.frag.spv");
 }
 void Game::_initAlpha()
 {
@@ -117,9 +85,9 @@ void Game::setView(const int width, const int height)
 	this->_view->isFlag = true;
 	this->_view->width = width;
 	this->_view->height = height;
-	for (auto camera : this->_cameras)
+	for (auto &camera : this->_cameras)
 	{
-		camera->resize(width, height);
+		camera.second->resize(width, height);
 	}
 }
 /**
@@ -157,9 +125,46 @@ void Game::destroyScene()
  */
 void Game::extractCamera(Camera *camera)
 {
-	this->_cameras.push_back(camera);
+	// this->_cameras.push_back(camera);
+	if (this->_cameras.find(camera->getUuid()) != this->_cameras.end())
+	{
+		return;
+	}
+	this->_cameras[camera->getUuid()] = camera;
 	camera->resize(this->_view->width, this->_view->height);
 }
+/**
+ * @brief 从游戏中移除相机
+ *
+ * @param camera 相机指针
+ */
+void Game::removeCamera(Camera *camera)
+{
+	this->_cameras.erase(camera->getUuid());
+}
+/**
+ * @brief 挂在UI渲染器到游戏中
+ *
+ * @param uiRenderer UI渲染器指针
+ */
+void Game::extractUIRenderer(UIRenderer *uiRenderer)
+{
+	if (this->_uiRenderers.find(uiRenderer->getUuid()) != this->_uiRenderers.end())
+	{
+		return;
+	}
+	this->_uiRenderers[uiRenderer->getUuid()] = uiRenderer;
+}
+/**
+ * @brief 从游戏中移除UI渲染器
+ *
+ * @param uiRenderer UI渲染器指针
+ */
+void Game::removeUIRenderer(UIRenderer *uiRenderer)
+{
+	this->_uiRenderers.erase(uiRenderer->getUuid());
+}
+
 void Game::addCompClearCaches(Component *comp)
 {
 	// std::cout << "Game::addCompClearCaches: comp: " << comp->getNode()->getName() << std::endl;
@@ -185,30 +190,40 @@ void Game::tick(float dt)
 }
 void Game::_update(float dt)
 {
-	// if (this->_curScene)
-	// {
-	// 	this->_curScene->update(dt);
-	// }
-	// this->_updateSchedules(dt);
-	// if (this->_assetsManager)
-	// {
-	// 	this->_assetsManager->update(dt);
-	// }
+	if (this->_curScene)
+	{
+		this->_curScene->update(dt);
+	}
+	this->_updateSchedules(dt);
+	if (this->_assetsManager)
+	{
+		this->_assetsManager->update(dt);
+	}
 }
 void Game::_lateUpdate(float dt)
 {
-	// if (this->_curScene)
-	// {
-	// 	this->_curScene->lateUpdate(dt);
-	// }
+	if (this->_curScene)
+	{
+		this->_curScene->lateUpdate(dt);
+	}
 }
 void Game::_render(float dt)
 {
-	// // if (this->_curScene)
-	// // {
-	// // 	this->_curScene->render();
-	// // }
-	// // 相机排序 按照从小到大优先级
+	// 相机排序 按照从小到大优先级
+	std::vector<Camera *> sortedCameras;
+	for (auto &camera : this->_cameras)
+	{
+		sortedCameras.push_back(camera.second);
+	}
+	std::sort(sortedCameras.begin(), sortedCameras.end(), [](Camera *a, Camera *b)
+			  { return a->getPriority() < b->getPriority(); });
+
+	// 渲染相机
+	for (auto camera : sortedCameras)
+	{
+		this->_renderCameras(camera);
+	}
+
 	// std::sort(this->_cameras.begin(), this->_cameras.end(), [](Camera *a, Camera *b)
 	// 		  { return a->priority < b->priority; });
 	// // 渲染相机
@@ -217,11 +232,31 @@ void Game::_render(float dt)
 	// 	camera->Render();
 	// }
 
-	GfxMgr::getInstance()->submitRenderObject("ui", "text-render-texture", nullptr, nullptr);
+	// GfxMgr::getInstance()->submitRenderObject("ui", "text-render-texture", nullptr, nullptr);
 
 	// // 更新渲染器
 	GfxMgr::getInstance()->update();
 }
+void Game::_renderCameras(Camera *camera)
+{
+	// if (camera->getVisibility() | uint32_t(NodeVisibility::Node2D))
+	// {
+	// 	camera->Render();
+	// }
+	for (auto uiRenderer : this->_uiRenderers)
+	{
+		// uiRenderer.second->Render();
+		if (!uiRenderer.second->isEnabled())
+		{
+			continue;
+		}
+		if (uiRenderer.second->getVisibility() | camera->getVisibility())
+		{
+			uiRenderer.second->Render(camera);
+		}
+	}
+}
+
 void Game::_clear()
 {
 	if (this->_curScene)

@@ -6,33 +6,10 @@
 #include "../../assets/assets-manager.h"
 #include "../../assets/texture-asset.h"
 #include "../../assets/material-asset.h"
+#include "../../renderer/camera.h"
 
 UISprite::UISprite(std::string name, Node *node, std::string uuid) : UIRenderer(name, node, uuid)
 {
-    this->_positions = {
-        -0.5f, 0.5f, 0.0f,  /** @brief 左上 */
-        -0.5f, -0.5f, 0.0f, /** @brief 坐下 */
-        0.5f, -0.5f, 0.0f,  /** @brief 右下 */
-        0.5f, 0.5f, 0.0f    /** @brief 右上 */
-    };
-    this->_colors = {
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f};
-    this->_normals = {
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f};
-    this->_uvs = {
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f};
-    this->_indices = {
-        0, 1, 2,
-        0, 2, 3};
     // 纹理路径
     this->_texture = "";
     // 材质路径
@@ -57,6 +34,7 @@ void UISprite::Awake()
 void UISprite::Enable()
 {
     UIRenderer::Enable();
+    Boo::game->extractUIRenderer(this);
 }
 
 void UISprite::setColor(Color &color)
@@ -141,14 +119,14 @@ void UISprite::setMaterialAsset(MaterialAsset *mtl)
 }
 
 
-void UISprite::_updateRendererState()
-{
-    UIRenderer::_updateRendererState();
-}
-void UISprite::_updateModelMatrix()
-{
-    UIRenderer::_updateModelMatrix();
-}
+// void UISprite::_updateRendererState()
+// {
+//     UIRenderer::_updateRendererState();
+// }
+// void UISprite::_updateModelMatrix()
+// {
+//     UIRenderer::_updateModelMatrix();
+// }
 
 void UISprite::Update(float deltaTime)
 {
@@ -158,10 +136,16 @@ void UISprite::LateUpdate(float deltaTime)
 {
     UIRenderer::LateUpdate(deltaTime);
 }
-void UISprite::Render()
+void UISprite::Render(Camera *camera)
 {
-    UIRenderer::Render();
+    UIRenderer::Render(camera);
 }
+void UISprite::Disable()
+{
+    UIRenderer::Disable();
+    Boo::game->removeUIRenderer(this);
+}
+
 void UISprite::destroy()
 {
     UIRenderer::destroy();

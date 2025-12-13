@@ -5,6 +5,7 @@
 #include <functional>
 #include <iostream>
 #include <unordered_map>
+#include "node-struct.h"
 #include "../math/quat.h"
 #include "../math/vec3.h"
 #include "../math/mat4.h"
@@ -24,7 +25,6 @@ enum NodeTransformFlag : uint32_t
 	ANCHOR_FLAG = 1 << 4,
 	ALL_FLAG = POSITION_FLAG | ROTATION_FLAG | SCALE_FLAG | SIZE_FLAG | ANCHOR_FLAG,
 };
-
 enum class NodeLayer
 {
 	Default = 0,
@@ -32,6 +32,7 @@ enum class NodeLayer
 	Node3D,
 	Scene,
 };
+
 
 class Component;
 
@@ -53,7 +54,7 @@ private:
 	std::vector<TransformListener> _transformListeners;
 
 protected:
-	int visibility = 1;  //后续与摄像机的Visibility对应
+	int _visibility = 0;  //后续与摄像机的Visibility对应
 	/**
 	 * 当前节点类型
 	 * 固定不变的,在创建时就已经确定了
@@ -148,6 +149,7 @@ protected:
 	virtual void _updateWorldTransform();
 
 public:
+	bool _isLocked = false;
 	/**
 	 *
 	 */
@@ -157,7 +159,8 @@ public:
 	 * @param nodeData 节点数据
 	 */
 	void _deserialize(json &nodeData);
-
+	int getVisibility() const { return this->_visibility; }
+	void setVisibility(int visibility) { this->_visibility = visibility; }
 	// 基础属性
 	void setName(const std::string &name);
 	std::string getName() const;

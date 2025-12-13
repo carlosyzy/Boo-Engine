@@ -192,6 +192,13 @@ void GfxRenderer::initRenderQueue(std::string pipelineName, std::string renderId
         this->_renderPipelineUI->initRenderQueue(renderId, renderTexture);
     }
 }
+void GfxRenderer::delRenderQueue(std::string pipelineName, std::string renderId)
+{
+    if (pipelineName == "ui")
+    {
+        this->_renderPipelineUI->delRenderQueue(renderId);
+    }
+}
 void GfxRenderer::submitRenderObject(const std::string &pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh)
 {
     if (pipelineName == "ui")
@@ -210,7 +217,7 @@ void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer
     // 渲染默认队列屏幕输出
     for (auto &out : this->_pipelineOutds)
     {
-        std::cout << "Gfx : Renderer :: Rendering builtin pipeline output: " << out << std::endl;
+        // std::cout << "Gfx : Renderer :: Rendering builtin pipeline output: " << out << std::endl;
         this->_renderPipelineBuiltin->submitRenderObject(out);
     }
     // this->_renderPipelineBuiltin->submitRenderObject("default-texture");

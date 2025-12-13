@@ -76,10 +76,6 @@ void Component::LateUpdate(float deltaTime)
 {
    
 }
-void Component::Render()
-{
-   
-}
 /**
  * @brief 组件禁用函数
  * 组件被禁用后,会调用Disable函数

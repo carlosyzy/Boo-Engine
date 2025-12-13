@@ -109,6 +109,13 @@ void GfxBatchUI::_bindPipeline(VkCommandBuffer &queueCommandBuffer, GfxPipelineU
 {
     vkCmdBindPipeline(queueCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipeline());
 }
+void GfxBatchUI::destroy()
+{
+    this->_renderer = nullptr;
+    this->_renderTexture = nullptr;
+    this->_material = nullptr;
+    this->_mesh = nullptr;
+}
 GfxBatchUI::~GfxBatchUI()
 {
 }

@@ -71,10 +71,6 @@ void UINodeTree::LateUpdate(float deltaTime)
 {
     UITree::LateUpdate(deltaTime);
 }
-void UINodeTree::Render()
-{
-    UITree::Render();
-}
 void UINodeTree::destroy()
 {
     UITree::destroy();

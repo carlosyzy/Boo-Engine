@@ -295,6 +295,17 @@ void GfxRendererUI::initRenderQueue(std::string renderId, GfxRenderTexture *rend
     queue->init();
     this->_renderQueues[renderId] = queue;
 }
+void GfxRendererUI::delRenderQueue(std::string renderId)
+{
+    if (this->_renderQueues.find(renderId) == this->_renderQueues.end())
+    {
+        std::cout << "delRenderQueue:renderId not found:" << renderId << std::endl;
+        return;
+    }
+    this->_renderQueues[renderId]->destroy();;
+    delete this->_renderQueues[renderId];
+    this->_renderQueues.erase(renderId);
+}
 void GfxRendererUI::submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh)
 {
     if (this->_currentObjectCount >= this->_maxObjectCount)

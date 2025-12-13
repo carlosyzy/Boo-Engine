@@ -8,6 +8,7 @@
 #include "../../assets/asset.h"
 #include "../../assets/assets-manager.h"
 #include "../../assets/texture-asset.h"
+#include "../../renderer/camera.h"
 
 UIRenderer::UIRenderer(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
 {
@@ -31,8 +32,12 @@ void UIRenderer::Enable()
 	Component::Enable();
 	// 激活的时候创建渲染物体
 	// GfxMgr::getInstance()->createUIObject(this->_uuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
-	this->_updateRendererState();
-	this->_updateModelMatrix();
+	// this->_updateRendererState();
+	// this->_updateModelMatrix();
+}
+const int UIRenderer::getVisibility()
+{
+	return this->_node->getVisibility();
 }
 void UIRenderer::_setColor(float r, float g, float b, float a)
 {
@@ -65,42 +70,42 @@ void UIRenderer::_setMaterial(MaterialAsset *mtl)
 }
 void UIRenderer::_setTexture(TextureAsset *texture)
 {
-	if (texture == nullptr)
-	{
-		std::cout << "UIRenderer::setTexture: texture is nullptr" << std::endl;
-		return;
-	}
-	if (this->_textureAsset == texture)
-	{
-		return;
-	}
-	this->_textureAsset = texture;
-	if (!this->_isEnabledInHierarchy)
-		return;
-	// GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_textureAsset->getUuid());
+	// if (texture == nullptr)
+	// {
+	// 	std::cout << "UIRenderer::setTexture: texture is nullptr" << std::endl;
+	// 	return;
+	// }
+	// if (this->_textureAsset == texture)
+	// {
+	// 	return;
+	// }
+	// this->_textureAsset = texture;
+	// if (!this->_isEnabledInHierarchy)
+	// 	return;
+	// // GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_textureAsset->getUuid());
 }
 
-void UIRenderer::_updateRendererState()
-{
-	// 更新颜色状态
-	// GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getR(), this->_color.getG(), this->_color.getB(), this->_color.getA());
-	// 更新纹理状态
-	if (this->_textureAsset)
-	{
-		// GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_textureAsset->getUuid());
-	}
-	//
-	if (this->_materialAsset)
-	{
-		// GfxMgr::getInstance()->setObjectPass(this->_uuid, this->_materialAsset->getPass());
-		// GfxMgr::getInstance()->setObjectPipeline(this->_uuid, this->_materialAsset->getPipeline());
-	}
-}
-void UIRenderer::_updateModelMatrix()
-{
-	Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
-	// GfxMgr::getInstance()->setObjectModelMatrix(this->_uuid, node2D->uiWorldMatrix().data());
-}
+// void UIRenderer::_updateRendererState()
+// {
+// 	// // 更新颜色状态
+// 	// // GfxMgr::getInstance()->setObjectColor(this->_uuid, this->_color.getR(), this->_color.getG(), this->_color.getB(), this->_color.getA());
+// 	// // 更新纹理状态
+// 	// if (this->_textureAsset)
+// 	// {
+// 	// 	// GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_textureAsset->getUuid());
+// 	// }
+// 	// //
+// 	// if (this->_materialAsset)
+// 	// {
+// 	// 	// GfxMgr::getInstance()->setObjectPass(this->_uuid, this->_materialAsset->getPass());
+// 	// 	// GfxMgr::getInstance()->setObjectPipeline(this->_uuid, this->_materialAsset->getPipeline());
+// 	// }
+// }
+// void UIRenderer::_updateModelMatrix()
+// {
+// 	// Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
+// 	// GfxMgr::getInstance()->setObjectModelMatrix(this->_uuid, node2D->uiWorldMatrix().data());
+// }
 
 void UIRenderer::Update(float deltaTime)
 {
@@ -110,21 +115,17 @@ void UIRenderer::LateUpdate(float deltaTime)
 {
 	Component::LateUpdate(deltaTime);
 }
-void UIRenderer::Render()
+void UIRenderer::Render(Camera *camera)
 {
-	Component::Render();
-	if (this->_node->hasFrameTransformFlag())
-	{
-		this->_updateModelMatrix();
-	}
-	if (this->_textureAsset == nullptr)
-	{
-		return;
-	}
+	// if (this->_node->hasFrameTransformFlag())
+	// {
+	// 	this->_updateModelMatrix();
+	// }
 	if (this->_color.getA() <= 0)
 	{
 		return; // 颜色透明
 	}
+	Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
 	// 提交渲染对象
 	// GfxMgr::getInstance()->submitObjectRender(this->_uuid);
 }
