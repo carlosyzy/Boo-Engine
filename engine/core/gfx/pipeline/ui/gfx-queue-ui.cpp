@@ -21,6 +21,11 @@ GfxQueueUI::GfxQueueUI(GfxRendererUI *renderer, GfxRenderTexture *renderTexture)
 void GfxQueueUI::init()
 {
 }
+void GfxQueueUI::submitMat(const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix)
+{
+    this->_viewMatrix = viewMatrix;
+    this->_projMatrix = projMatrix;
+}
 void GfxQueueUI::submitObject(GfxMaterial *material, GfxMesh *mesh)
 {
     if (material == nullptr || mesh == nullptr)

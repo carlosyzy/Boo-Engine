@@ -306,6 +306,15 @@ void GfxRendererUI::delRenderQueue(std::string renderId)
     delete this->_renderQueues[renderId];
     this->_renderQueues.erase(renderId);
 }
+void GfxRendererUI::submitRenderMat(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix)
+{
+    if (this->_renderQueues.find(renderId) == this->_renderQueues.end())
+    {
+        std::cout << "submitRenderMat:renderId not found:" << renderId << std::endl;
+        return;
+    }
+    this->_renderQueues[renderId]->submitMat(viewMatrix, projMatrix);
+}
 void GfxRendererUI::submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh)
 {
     if (this->_currentObjectCount >= this->_maxObjectCount)

@@ -104,6 +104,10 @@ void Camera::LateUpdate(float deltaTime)
 {
     Component::LateUpdate(deltaTime);
 }
+void Camera::Render()
+{
+    GfxMgr::getInstance()->submitRenderMat(this->_pipeline, this->_uuid);
+}
 void Camera::Disable()
 {
     Component::Disable();

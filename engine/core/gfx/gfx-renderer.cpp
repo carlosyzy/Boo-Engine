@@ -199,6 +199,13 @@ void GfxRenderer::delRenderQueue(std::string pipelineName, std::string renderId)
         this->_renderPipelineUI->delRenderQueue(renderId);
     }
 }
+void GfxRenderer::submitRenderMat(std::string pipelineName, std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix)
+{
+    if (pipelineName == "ui")
+    {
+        this->_renderPipelineUI->submitRenderMat(renderId, viewMatrix, projMatrix);
+    }
+}
 void GfxRenderer::submitRenderObject(const std::string &pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh)
 {
     if (pipelineName == "ui")

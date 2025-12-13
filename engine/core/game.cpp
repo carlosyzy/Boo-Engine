@@ -243,6 +243,7 @@ void Game::_renderCameras(Camera *camera)
 	// {
 	// 	camera->Render();
 	// }
+	camera->Render();
 	for (auto uiRenderer : this->_uiRenderers)
 	{
 		// uiRenderer.second->Render();

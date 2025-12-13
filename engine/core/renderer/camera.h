@@ -65,10 +65,10 @@ public:
     int getVisibility();
     int getWidth();
     int getHeight();
-   
     void resize(int width, int height);
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
+    void Render();
     void Disable() override;
     void destroy() override;
     ~Camera();

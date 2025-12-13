@@ -121,13 +121,29 @@ void UIRenderer::Render(Camera *camera)
 	// {
 	// 	this->_updateModelMatrix();
 	// }
+	if (camera == nullptr)
+	{
+		return; // 相机为空
+	}
 	if (this->_color.getA() <= 0)
 	{
 		return; // 颜色透明
 	}
 	Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
+	if (node2D == nullptr)
+	{
+		return; // 节点不是Node2D类型
+	}
+	if (node2D->getSize().getHeight() <= 0 || node2D->getSize().getWidth() <= 0)
+	{
+		return; // 节点不可见
+	}
+	if (node2D->getScale().getX() <= 0 || node2D->getScale().getY() <= 0)
+	{
+		return; // 节点不可见
+	}
 	// 提交渲染对象
-	// GfxMgr::getInstance()->submitObjectRender(this->_uuid);
+	GfxMgr::getInstance()->submitRenderObject("ui", camera->getUuid(), nullptr, nullptr);
 }
 
 void UIRenderer::Disable()

@@ -23,6 +23,8 @@ class GfxQueueUI
 private :
     GfxRendererUI *_renderer;
     GfxRenderTexture *_renderTexture;
+	std::array<float, 16> _viewMatrix;
+	std::array<float, 16> _projMatrix;
 	
 
     std::vector<GfxBatchUI *> _batches;
@@ -48,6 +50,7 @@ private :
 public:
 	GfxQueueUI(GfxRendererUI *renderer,GfxRenderTexture *renderTexture);
 	void init();
+	void submitMat(const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
 	void submitObject(GfxMaterial *material, GfxMesh *mesh);
 	void render(std::vector<VkCommandBuffer> &commandBuffers,std::vector<std::string> &pipelineOutds);
 	GfxRenderTexture *getRenderTexture();

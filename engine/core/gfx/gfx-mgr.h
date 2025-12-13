@@ -86,6 +86,8 @@ public:
 	 * @param renderId 渲染队列ID
 	 */
 	void delRenderQueue(std::string pipelineName, std::string renderId);
+	
+	void submitRenderMat(std::string pipelineName, std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
 	/**
 	 * @brief 提交渲染对象
 	 *
