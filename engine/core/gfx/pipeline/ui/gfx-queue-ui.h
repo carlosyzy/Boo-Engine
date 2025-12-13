@@ -49,7 +49,8 @@ public:
 	GfxQueueUI(GfxRendererUI *renderer,GfxRenderTexture *renderTexture);
 	void init();
 	void submitObject(GfxMaterial *material, GfxMesh *mesh);
-	void render(std::vector<VkCommandBuffer> &commandBuffers);
+	void render(std::vector<VkCommandBuffer> &commandBuffers,std::vector<std::string> &pipelineOutds);
+	GfxRenderTexture *getRenderTexture();
 	void _clean();
 	void _reset();
 	~GfxQueueUI();

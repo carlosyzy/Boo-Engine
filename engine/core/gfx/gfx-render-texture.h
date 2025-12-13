@@ -37,6 +37,7 @@ public:
 	VkCommandBuffer& getCommandBuffer();
 	const uint32_t& getWidth() const;
 	const uint32_t& getHeight() const;
+	const std::string& getColorTextureUuid() const;
 	void bindRenderPass(GfxPass* pass);
 
 	void resize(uint32_t width, uint32_t height);

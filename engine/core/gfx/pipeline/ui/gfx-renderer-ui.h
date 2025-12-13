@@ -84,7 +84,7 @@ public:
 
 	void submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh);
 
-	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
+	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers,std::vector<std::string> &pipelineOutds);
 
 	void _cleanRendererState();
 	void _resetRendererState();

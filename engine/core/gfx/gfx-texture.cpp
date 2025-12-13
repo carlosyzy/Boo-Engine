@@ -82,7 +82,7 @@ void GfxTexture::_createTextureSampler()
     samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
     samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
     samplerInfo.anisotropyEnable = VK_FALSE;
-    samplerInfo.maxAnisotropy = 16.0f;
+    samplerInfo.maxAnisotropy = 1.0f;
     samplerInfo.borderColor = VK_BORDER_COLOR_INT_TRANSPARENT_BLACK;
     samplerInfo.unnormalizedCoordinates = VK_FALSE;
     samplerInfo.compareEnable = VK_FALSE;
@@ -177,6 +177,10 @@ void GfxTexture::createImageView(VkImage image, VkFormat format, VkImageAspectFl
 void GfxTexture::createImageView(VkFormat format, VkImageAspectFlags aspectFlags)
 {
     this->createImageView(this->_textureImage, format, aspectFlags, this->_textureImageView);
+}
+void GfxTexture::crateImageSampler()
+{
+    this->_createTextureSampler();
 }
 
 void GfxTexture::_transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels)

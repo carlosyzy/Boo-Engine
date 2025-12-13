@@ -59,6 +59,8 @@ public:
     void createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkImageView &imageView);
     void createImageView(VkFormat format, VkImageAspectFlags aspectFlags);
 
+    void crateImageSampler();
+
     VkImageView getImageView();
     VkSampler getSampler();
 

@@ -13,7 +13,7 @@
 #include "pipeline/ui/gfx-renderer-ui.h"
 
 #include "../math/mat4.h"
-#include  "../assets/texture-asset.h"
+#include "../assets/texture-asset.h"
 
 GfxRenderer::GfxRenderer()
 {
@@ -185,13 +185,12 @@ std::vector<uint32_t> GfxRenderer::compileShaderGlslToSpirv(const std::string &t
               << " (" << spirvCode.size() << " SPIR-V words)" << std::endl;
     return spirvCode;
 }
-void GfxRenderer::initRenderQueue(std::string pipelineName, std::string renderId,GfxRenderTexture *renderTexture)
+void GfxRenderer::initRenderQueue(std::string pipelineName, std::string renderId, GfxRenderTexture *renderTexture)
 {
     if (pipelineName == "ui")
     {
         this->_renderPipelineUI->initRenderQueue(renderId, renderTexture);
     }
-
 }
 void GfxRenderer::submitRenderObject(const std::string &pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh)
 {
@@ -202,8 +201,20 @@ void GfxRenderer::submitRenderObject(const std::string &pipelineName, std::strin
 }
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
+    this->_pipelineOutds.clear();
+    // 渲染3d队列
     // 渲染ui队列
-    this->_renderPipelineUI->frameRenderer(imageIndex, commandBuffers);
+    this->_renderPipelineUI->frameRenderer(imageIndex, commandBuffers, this->_pipelineOutds);
+
+
+    // 渲染默认队列屏幕输出
+    for (auto &out : this->_pipelineOutds)
+    {
+        std::cout << "Gfx : Renderer :: Rendering builtin pipeline output: " << out << std::endl;
+        this->_renderPipelineBuiltin->submitRenderObject(out);
+    }
+    // this->_renderPipelineBuiltin->submitRenderObject("default-texture");
+    this->_renderPipelineBuiltin->frameRenderer(imageIndex, commandBuffers);
 
     // 将前几个对列渲染完毕的贴图,添加到默认队列,渲染到屏幕上
     // const GfxMaterial material = {

@@ -120,6 +120,7 @@ void GfxRenderTexture::_createTextures()
     this->_colorTexture->createImageView(
         Gfx::context->getSwapChainImageFormat(),
         VK_IMAGE_ASPECT_COLOR_BIT);
+    this->_colorTexture->crateImageSampler();
 
     this->_depthTexture = new GfxTexture(this->_depthUuid);
     this->_depthTexture->createImage(
@@ -132,8 +133,13 @@ void GfxRenderTexture::_createTextures()
     this->_depthTexture->createImageView(
         VK_FORMAT_D32_SFLOAT,
         VK_IMAGE_ASPECT_DEPTH_BIT);
+    this->_depthTexture->crateImageSampler();
     Gfx::renderer->insertTexture(this->_colorUuid, this->_colorTexture);
     Gfx::renderer->insertTexture(this->_depthUuid, this->_depthTexture);
+}
+const std::string &GfxRenderTexture::getColorTextureUuid() const
+{
+    return this->_colorUuid;
 }
 
 void GfxRenderTexture::_clear()

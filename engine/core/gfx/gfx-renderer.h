@@ -33,7 +33,7 @@ class GfxRenderer
 private:
 	GfxRendererBuiltin *_renderPipelineBuiltin;
 	GfxRendererUI *_renderPipelineUI;
-
+	std::vector<std::string> _pipelineOutds;
 public:
 	GfxRenderer();
 	void init();

@@ -47,7 +47,7 @@ void GfxQueueUI::submitObject(GfxMaterial *material, GfxMesh *mesh)
         }
     }
 }
-void GfxQueueUI::render(std::vector<VkCommandBuffer> &commandBuffers)
+void GfxQueueUI::render(std::vector<VkCommandBuffer> &commandBuffers,std::vector<std::string> &pipelineOutds)
 {
     this->_resetCommandBuffer();
     this->_beginCommandBuffer();
@@ -65,6 +65,8 @@ void GfxQueueUI::render(std::vector<VkCommandBuffer> &commandBuffers)
         throw std::runtime_error("Failed to record command buffer!");
     }
     commandBuffers.push_back(this->_renderTexture->getCommandBuffer());
+
+    pipelineOutds.push_back(this->_renderTexture->getColorTextureUuid());
 
     // this->_renderTexture->saveToFile1("ui.png");
 
@@ -171,6 +173,10 @@ void GfxQueueUI::_beginRenderPass()
     renderPassInfo.pClearValues = clearValues.data();
 
     vkCmdBeginRenderPass(this->_renderTexture->getCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+}
+GfxRenderTexture *GfxQueueUI::getRenderTexture()
+{
+    return this->_renderTexture;
 }
 
 void GfxQueueUI::_clean()

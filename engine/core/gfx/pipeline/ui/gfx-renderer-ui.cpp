@@ -311,23 +311,29 @@ void GfxRendererUI::submitRenderObject(std::string renderId, GfxMaterial *materi
     if (material == nullptr && mesh == nullptr)
     {
         this->_renderQueues[renderId]->submitObject(this->_uiMaterial, this->_uiMesh);
-    }else{
-        if(material == nullptr){
+    }
+    else
+    {
+        if (material == nullptr)
+        {
             this->_renderQueues[renderId]->submitObject(this->_uiMaterial, mesh);
-        }else if(mesh == nullptr){
+        }
+        else if (mesh == nullptr)
+        {
             this->_renderQueues[renderId]->submitObject(material, this->_uiMesh);
-        }else{
+        }
+        else
+        {
             this->_renderQueues[renderId]->submitObject(material, mesh);
         }
     }
-    
 }
 
-void GfxRendererUI::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
+void GfxRendererUI::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds)
 {
     for (auto &renderQueue : this->_renderQueues)
     {
-        renderQueue.second->render(commandBuffers);
+        renderQueue.second->render(commandBuffers, pipelineOutds);
     }
 
     // 渲染完成后，重置描述符集状态
