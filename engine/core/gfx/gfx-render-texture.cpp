@@ -91,6 +91,8 @@ void GfxRenderTexture::resize(uint32_t width, uint32_t height)
 {
     this->_width = width;
     this->_height = height;
+     this->_width = Gfx::context->getSwapChainExtent().width;
+    this->_height = Gfx::context->getSwapChainExtent().height;
     this->_createTextures();
 }
 const uint32_t &GfxRenderTexture::getWidth() const

@@ -20,10 +20,10 @@ GfxRendererUI::GfxRendererUI(std::string name)
     this->_samplerCount = 4;
     this->_maxObjectCount = 2048;
     this->_uiMesh = new GfxMesh("ui");
-    this->_uiMesh->setInputVertices({-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-                                     0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-                                     0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-                                     -0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
+    this->_uiMesh->setInputVertices({-0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+                                     -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+                                     0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+                                     0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
                                     {0, 1, 2, 0, 2, 3});
 }
 void GfxRendererUI::init()

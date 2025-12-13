@@ -34,9 +34,9 @@ void GfxBatchUI::render(VkCommandBuffer &queueCommandBuffer)
     std::array<VkWriteDescriptorSet, 5> descriptorWrites{};
     // 绑定ubo
     VkDescriptorBufferInfo bufferInfo{};
-    bufferInfo.buffer = VK_NULL_HANDLE;
-    bufferInfo.offset = 0;
-    bufferInfo.range = 0;
+    // bufferInfo.buffer = VK_NULL_HANDLE;
+    // bufferInfo.offset = 0;
+    // bufferInfo.range = 0;
     descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[0].dstSet = descriptor;
     descriptorWrites[0].dstBinding = 0;

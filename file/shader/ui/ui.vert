@@ -31,4 +31,5 @@ void main() {
 
     //临时测试代码
     gl_Position=vec4(inPos.xyz, 1.0);
+    gl_Position.y = -gl_Position.y;
 }

@@ -66,7 +66,7 @@ void GfxQueueUI::render(std::vector<VkCommandBuffer> &commandBuffers)
     }
     commandBuffers.push_back(this->_renderTexture->getCommandBuffer());
 
-    this->_renderTexture->saveToFile1("ui.png");
+    // this->_renderTexture->saveToFile1("ui.png");
 
     // this->_bindPipeline(pipeline);
 
@@ -155,7 +155,7 @@ void GfxQueueUI::_beginRenderPass()
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassInfo.framebuffer = this->_renderTexture->getFramebuffer();
-    renderPassInfo.renderArea.extent = Gfx::context->getSwapChainExtent();
+    renderPassInfo.renderArea.extent = {this->_renderTexture->getWidth(), this->_renderTexture->getHeight()};
     renderPassInfo.renderPass = pass->getVKRenderPass();
     renderPassInfo.renderArea.offset = {0, 0};
 
