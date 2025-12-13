@@ -89,7 +89,7 @@ public:
 	 * @param vertices 顶点数据
 	 * @param indices 索引数据
 	 */
-	void submitRenderObject(std::string pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh = nullptr);
+	void submitRenderObject(std::string pipelineName, std::string renderId, GfxMaterial *material= nullptr, GfxMesh *mesh = nullptr);
 
 	// void initTestInfo();
 	// /*  // 采样次数 */

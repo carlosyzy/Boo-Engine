@@ -66,6 +66,8 @@ void GfxQueueUI::render(std::vector<VkCommandBuffer> &commandBuffers)
     }
     commandBuffers.push_back(this->_renderTexture->getCommandBuffer());
 
+    this->_renderTexture->saveToFile1("ui.png");
+
     // this->_bindPipeline(pipeline);
 
     // // 进行一次顶点绑定
@@ -157,10 +159,16 @@ void GfxQueueUI::_beginRenderPass()
     renderPassInfo.renderPass = pass->getVKRenderPass();
     renderPassInfo.renderArea.offset = {0, 0};
 
-    VkClearValue clearColor{};
-    clearColor.color = {{0.0f, 0.0f, 0.0f, 1.0f}};
-    renderPassInfo.pClearValues = &clearColor;
-    renderPassInfo.clearValueCount = 1;
+    // VkClearValue clearColor{};
+    // clearColor.color = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    // renderPassInfo.pClearValues = &clearColor;
+    // renderPassInfo.clearValueCount = 1;
+
+    std::array<VkClearValue, 2> clearValues = {}; /*  // 至少4个，因为最高索引是3 */
+    clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    clearValues[1].depthStencil = {1.0f, 0}; /* // 深度=1.0f，模板=0 */
+    renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+    renderPassInfo.pClearValues = clearValues.data();
 
     vkCmdBeginRenderPass(this->_renderTexture->getCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 }

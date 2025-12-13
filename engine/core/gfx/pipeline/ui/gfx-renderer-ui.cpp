@@ -179,7 +179,18 @@ void GfxRendererUI::_initDefaultPipeline()
     // 推送常量 开启
     uiPipeline.pushConstant = 1;
     uiPipeline.pushConstantSize = 0;
+
     this->createPipeline(uiPipeline.generateKey(), uiPipeline);
+
+    this->_uiMaterial = new GfxMaterial();
+    this->_uiMaterial->setRenderPass("ui");
+    this->_uiMaterial->setPipelineStruct(uiPipeline);
+    std::vector<std::string> aaas;
+    aaas.push_back("default-texture");
+    aaas.push_back("default-texture");
+    aaas.push_back("default-texture");
+    aaas.push_back("default-texture");
+    this->_uiMaterial->setTextures(aaas);
 }
 void GfxRendererUI::_initDefaultUniformBuffer()
 {
@@ -239,7 +250,7 @@ VkDescriptorSet &GfxRendererUI::getDescriptorSet()
             return renderxDescriptorSets.descriptorSet;
         }
     }
-    VkDescriptorSet descriptorSet;
+    VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
     std::vector<VkDescriptorSetLayout> layouts(1, this->_descriptorSetLayout);
     VkDescriptorSetAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO; // VK_STRUCTURE_TYPE_DESCRIPT1OR_SET_ALLOCATE_INFO
@@ -249,7 +260,6 @@ VkDescriptorSet &GfxRendererUI::getDescriptorSet()
     if (vkAllocateDescriptorSets(Gfx::context->getVkDevice(), &allocInfo, &descriptorSet) != VK_SUCCESS)
     {
         std::cout << "Gfx : Descriptor ::create descriptor sets failed " << std::endl;
-        return;
     }
     GfxRenderxDescriptorSet renderxDescriptorSet = {descriptorSet, true};
     this->_gfxDescriptorSets.push_back(renderxDescriptorSet);
@@ -298,7 +308,19 @@ void GfxRendererUI::submitRenderObject(std::string renderId, GfxMaterial *materi
         std::cout << "submitRenderObject:renderId not found:" << renderId << std::endl;
         return;
     }
-    this->_renderQueues[renderId]->submitObject(material, this->_uiMesh);
+    if (material == nullptr && mesh == nullptr)
+    {
+        this->_renderQueues[renderId]->submitObject(this->_uiMaterial, this->_uiMesh);
+    }else{
+        if(material == nullptr){
+            this->_renderQueues[renderId]->submitObject(this->_uiMaterial, mesh);
+        }else if(mesh == nullptr){
+            this->_renderQueues[renderId]->submitObject(material, this->_uiMesh);
+        }else{
+            this->_renderQueues[renderId]->submitObject(material, mesh);
+        }
+    }
+    
 }
 
 void GfxRendererUI::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
@@ -307,6 +329,7 @@ void GfxRendererUI::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuff
     {
         renderQueue.second->render(commandBuffers);
     }
+
     // 渲染完成后，重置描述符集状态
     for (auto &renderxDescriptorSet : this->_gfxDescriptorSets)
     {

@@ -67,6 +67,7 @@ private:
 	std::map<std::string, GfxQueueUI *> _renderQueues;
 
 	GfxMesh *_uiMesh;
+	GfxMaterial *_uiMaterial;
 
 public:
 	GfxRendererUI(std::string name);

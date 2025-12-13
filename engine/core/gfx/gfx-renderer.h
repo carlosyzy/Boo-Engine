@@ -26,6 +26,7 @@ class GfxPipeline;
 class GfxRenderTexture;
 class GfxMaterial;
 class GfxMesh;
+class GfxRendererUI;
 
 class GfxRenderer
 {

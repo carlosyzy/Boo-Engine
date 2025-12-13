@@ -11,6 +11,7 @@ void GfxMesh::setInputVertices(std::vector<float> vertices, std::vector<uint32_t
 {
     this->_vertices = vertices;
     this->_indices = indices;
+    this->_createVertexBuffers();
 }
 void GfxMesh::_createVertexBuffers()
 {

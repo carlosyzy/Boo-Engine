@@ -4,11 +4,13 @@
 
 GfxPass::GfxPass(std::string name)
 {
+    std::cout << "Gfx : Pass ::pass " << name << std::endl;
     this->_name = name;
     this->_create();
 }
 void GfxPass::_create()
 {
+    std::cout << "Gfx : Pass :: create pass " << this->_name << std::endl;
 }
 const std::string GfxPass::name()
 {

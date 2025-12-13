@@ -53,11 +53,14 @@ void GfxBatchUI::render(VkCommandBuffer &queueCommandBuffer)
         {
             std::string textureUuid = this->_material->getTextures()[i];
             GfxTexture *texture = Gfx::renderer->getTexture(textureUuid);
+            std::cout << "GfxBatchUI::render() textureUuid: " << textureUuid << " index: " << i << std::endl;
             if (texture != nullptr)
             {
                 imageInfo.imageView = texture->getImageView();
                 imageInfo.sampler = texture->getSampler();
             }
+        }else{
+            std::cout << "GfxBatchUI::render() texture not found! index: " << i << std::endl;
         }
         descriptorWrites[i + 1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         descriptorWrites[i + 1].dstSet = descriptor;

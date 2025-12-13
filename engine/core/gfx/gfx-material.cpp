@@ -61,6 +61,10 @@ const GfxPushConstants &GfxMaterial::getPushConstants() const
 {
     return this->_pushConstants;
 }
+const std::vector<std::string> &GfxMaterial::getTextures() const
+{
+    return this->_textures;
+}
 
 GfxMaterial::~GfxMaterial()
 {

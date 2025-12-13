@@ -1,6 +1,6 @@
 #include "gfx-buffer-ubo.h"
-#include "../gfx.h"
-#include "../gfx-context.h"
+#include "gfx.h"
+#include "gfx-context.h"
 
 GfxBufferUBO::GfxBufferUBO()
 {
@@ -58,6 +58,15 @@ uint32_t GfxBufferUBO::_findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlag
 
     throw std::runtime_error("Failed to find suitable memory type!");
 }
+void GfxBufferUBO::setIsOccupied(bool isOccupied)
+{
+    this->_isOccupied = isOccupied;
+}
+bool GfxBufferUBO::getIsOccupied() const
+{
+    return this->_isOccupied;
+}
+
 GfxBufferUBO::~GfxBufferUBO()
 {
 }

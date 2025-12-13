@@ -147,10 +147,10 @@ enum class GfxPipelineCullMode
 
 struct GfxPipelineStruct
 {
+    std::string pass = "";
     std::string vert = "";
     std::string geom = "";
     std::string frag = "";
-    std::string pass = "";
 
     /**
      * 多边形模式
@@ -174,7 +174,7 @@ struct GfxPipelineStruct
     /**
      * 深度比较操作
      */
-    GfxPipelineCompareOp depthCompareOp = GfxPipelineCompareOp::LessOrEqual;
+    GfxPipelineCompareOp depthCompareOp = GfxPipelineCompareOp::Always;
 
     /**
      * 模板测试
@@ -184,20 +184,20 @@ struct GfxPipelineStruct
     /**
      * 正面三角形（逆时针）的Stencil操作
      */
-    GfxPipelineCompareOp stencilFrontCompareOp = GfxPipelineCompareOp::Never;
+    GfxPipelineCompareOp stencilFrontCompareOp = GfxPipelineCompareOp::Equal;
     GfxPipelineStencilOp stencilFrontFailOp = GfxPipelineStencilOp::Keep;
     GfxPipelineStencilOp stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep;
-    GfxPipelineStencilOp stencilFrontPassOp = GfxPipelineStencilOp::Increment_Add;
+    GfxPipelineStencilOp stencilFrontPassOp = GfxPipelineStencilOp::Keep;
     uint32_t stencilFrontCompareMask = 0xFFFFFFFF;
     uint32_t stencilFrontWriteMask = 0xFFFFFFFF;
     uint32_t stencilFrontRreference = 0;
     /**
      * 反面三角形（顺时针）的Stencil操作
      */
-    GfxPipelineCompareOp stencilBackCompareOp = GfxPipelineCompareOp::Never;
+    GfxPipelineCompareOp stencilBackCompareOp = GfxPipelineCompareOp::Equal;
     GfxPipelineStencilOp stencilBackFailOp = GfxPipelineStencilOp::Keep;
     GfxPipelineStencilOp stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
-    GfxPipelineStencilOp stencilBackPassOp = GfxPipelineStencilOp::Increment_Add;
+    GfxPipelineStencilOp stencilBackPassOp = GfxPipelineStencilOp::Keep;
     uint32_t stencilBackCompareMask = 0xFFFFFFFF;
     uint32_t stencilBackWriteMask = 0xFFFFFFFF;
     uint32_t stencilBackRreference = 0;
@@ -213,11 +213,11 @@ struct GfxPipelineStruct
     /**
      * 源颜色混合因子
      */
-    GfxPipelineColorBlendFactor srcColorBlendFactor = GfxPipelineColorBlendFactor::One;
+    GfxPipelineColorBlendFactor srcColorBlendFactor = GfxPipelineColorBlendFactor::SrcAlpha;
     /**
      * 目标颜色混合因子
      */
-    GfxPipelineColorBlendFactor dstColorBlendFactor = GfxPipelineColorBlendFactor::Zero;
+    GfxPipelineColorBlendFactor dstColorBlendFactor = GfxPipelineColorBlendFactor::OneMinusSrcAlpha;
     /**
      * 颜色混合操作
      */
@@ -229,7 +229,7 @@ struct GfxPipelineStruct
     /**
      * 目标alpha混合因子
      */
-    GfxPipelineColorBlendFactor dstAlphaBlendFactor = GfxPipelineColorBlendFactor::Zero;
+    GfxPipelineColorBlendFactor dstAlphaBlendFactor = GfxPipelineColorBlendFactor::OneMinusSrcAlpha;
     /**
      * alpha混合操作
      */

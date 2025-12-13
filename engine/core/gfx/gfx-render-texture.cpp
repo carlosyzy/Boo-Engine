@@ -3,7 +3,7 @@
 #include "gfx-context.h"
 #include "gfx-renderer.h"
 #include "gfx-texture.h"
-#include "gfx-pass-ui.h"
+#include "gfx-pass.h"
 #include "gfx-pipeline.h"
 
 GfxRenderTexture::GfxRenderTexture(std::string uuid)
@@ -16,7 +16,7 @@ GfxRenderTexture::GfxRenderTexture(std::string uuid)
     this->_colorTexture = nullptr;
     this->_depthTexture = nullptr;
 }
-void GfxRenderTexture::bindRenderPass(GfxPassUI *pass)
+void GfxRenderTexture::bindRenderPass(GfxPass *pass)
 {
     if (this->_pass != nullptr)
     {

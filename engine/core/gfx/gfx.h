@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <string>
 #include <vulkan/vulkan_core.h>
 
 class GfxContext;

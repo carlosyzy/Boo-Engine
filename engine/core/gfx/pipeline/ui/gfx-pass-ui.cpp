@@ -8,6 +8,8 @@
  */
 GfxPassUI::GfxPassUI(std::string name) : GfxPass(name)
 {
+    this->_name = name;
+    this->_create();
 }
 void GfxPassUI::_create()
 {

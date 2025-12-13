@@ -173,6 +173,7 @@ void GfxPipelineUI::_initPipeline()
     this->_pipelineInfo.pColorBlendState = &this->_colorBlendInfo;
     this->_pipelineInfo.pDepthStencilState = &this->_depthStencilInfo;
     this->_pipelineInfo.layout = this->_vkPipelineLayout;
+    std::cout << "Gfx : Pipeline :: create pipeline info success "  << this->_pass  <<"   "<<this->_pass->getVKRenderPass()<< std::endl;
     this->_pipelineInfo.renderPass = this->_pass->getVKRenderPass();
     this->_pipelineInfo.subpass = 0;
     this->_pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;

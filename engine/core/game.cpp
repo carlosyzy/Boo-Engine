@@ -10,7 +10,9 @@
 #include "scene/scene.h"
 #include "gfx/gfx-mgr.h"
 #include "gfx/gfx-render-texture.h"
+#include "gfx/gfx-material.h"
 #include "gfx/gfx-struct.h"
+#include "gfx/gfx-pipeline-struct.h"
 #include "alpha/alpha.h"
 #include "font/freetype-mgr.h"
 #include "input/input.h"
@@ -32,8 +34,24 @@ void Game::init()
 	this->_initView();
 	this->_initFont();
 	this->_initAssets();
-	// this->_renderTexture = new GfxRenderTexture();
-	// GfxMgr::getInstance()->initRenderQueue(0, this->_renderTexture);
+	this->_renderTexture = new GfxRenderTexture("text-render-texture");
+	this->_renderTexture->resize(this->_view->width, this->_view->height);
+	GfxMgr::getInstance()->initRenderQueue("ui", "text-render-texture", this->_renderTexture);
+	
+	// this->_textMaterial = new GfxMaterial();
+	// this->_textMaterial->setRenderPass("ui");
+	// const GfxPipelineStruct pipeline = {
+	// 	.pass = "ui",
+	// 	.vert = "ui.vert",
+	// 	.frag = "ui.frag",
+	// 	.depthTest = 1,
+	// 	.depthWrite = 1,
+	// 	.stencilTest = 1,
+	// 	.colorBlend = 1,
+	// 	.pushConstant = 1,
+	// };
+	// this->_textMaterial->setPipelineStruct(pipeline);
+	// this->_textMaterial->setTextures({"default-texture"});
 	// this->_textMaterial = {
 	// 	.name = "Text-Material",
 	// 	.uuid = "Text-Material-UUID",
@@ -198,7 +216,8 @@ void Game::_render(float dt)
 	// {
 	// 	camera->Render();
 	// }
-	// GfxMgr::getInstance()->submitRenderObject(0, this->_textMaterial, defaultMesh);
+
+	GfxMgr::getInstance()->submitRenderObject("ui", "text-render-texture", nullptr, nullptr);
 
 	// // 更新渲染器
 	GfxMgr::getInstance()->update();

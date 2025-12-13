@@ -15,6 +15,8 @@ class GfxRendererUI;
 class GfxBatchUI;
 class GfxPipelineUI;
 class GfxRenderTexture;
+class GfxMaterial;
+class GfxMesh;
 
 class GfxQueueUI
 {
