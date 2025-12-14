@@ -18,7 +18,6 @@
 #include "../../math/size.h"
 #include "../../component/component.h"
 
-
 class Node;
 class MaterialAsset;
 class TextureAsset;

@@ -14,6 +14,7 @@ UIRenderer::UIRenderer(std::string name, Node *node, std::string uuid) : Compone
 {
 	this->_layer = NodeLayer::Node2D;
 	this->_materialAsset = new MaterialAsset();
+	this->_materialAsset->createTest();
 }
 /**
  * @brief 反序列化组件属性-配置
@@ -154,7 +155,7 @@ void UIRenderer::Render(Camera *camera)
 	_instanceData.push_back(_color.getB());
 	_instanceData.push_back(_color.getA());
 
-	GfxMgr::getInstance()->submitRenderObject("ui", camera->getUuid(), nullptr, nullptr, this->_instanceData);
+	GfxMgr::getInstance()->submitRenderObject("ui", camera->getUuid(), this->_materialAsset->getGfxMaterial(), nullptr, this->_instanceData);
 }
 
 void UIRenderer::Disable()
