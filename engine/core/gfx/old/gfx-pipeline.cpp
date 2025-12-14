@@ -10,7 +10,7 @@
 // 	this->_name = name;
 // 	this->_context = context;
 // }
-// void GfxPipeline::create(GfxPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, std::unordered_map<std::string, std::string> pipelineState)
+// void GfxPipeline::create(GfxRenderPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, std::unordered_map<std::string, std::string> pipelineState)
 // {
 
 // 	// this->_pass = pass;
@@ -20,7 +20,7 @@
 // 	// this->_createDescriptorSetLayout();
 // 	// this->_createPipeline();
 // }
-// void GfxPipeline::create(GfxPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, GfxPipelineStruct pipelineStruct)
+// void GfxPipeline::create(GfxRenderPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, GfxPipelineStruct pipelineStruct)
 // {
 // 	this->_pass = pass;
 // 	this->_vertexShader = vertexShader;

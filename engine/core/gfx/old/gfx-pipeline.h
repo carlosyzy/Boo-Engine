@@ -7,7 +7,7 @@
 // #include "gfx-pipeline-struct.h"
 
 
-// class GfxPass;
+// class GfxRenderPass;
 // class GfxShader;
 // class GfxContext;
 // // struct GfxPipelineStruct;
@@ -23,7 +23,7 @@
 // private:
 //     std::string _name;
 //     GfxContext *_context;
-//     GfxPass *_pass;
+//     GfxRenderPass *_pass;
 //     GfxShader *_vertexShader;
 //     GfxShader *_fragmentShader;
 //     GfxPipelineStruct _pipelineStruct;
@@ -48,9 +48,9 @@
 // public:
 //     GfxPipeline(std::string name, GfxContext *context);
 //     //旧的create方法，保留兼容性
-//     void create(GfxPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, std::unordered_map<std::string, std::string> pipelineState);
+//     void create(GfxRenderPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, std::unordered_map<std::string, std::string> pipelineState);
 //     //新的create方法，使用GfxPipelineStruct
-//     void create(GfxPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, GfxPipelineStruct pipelineStruct);
+//     void create(GfxRenderPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, GfxPipelineStruct pipelineStruct);
 //     void clear();
 //     void reset();
 

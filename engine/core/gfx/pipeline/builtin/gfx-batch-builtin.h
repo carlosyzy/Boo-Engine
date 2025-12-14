@@ -22,7 +22,7 @@
 //    alignas(4) uint32_t textureIndex; // 默认纹理索引
 //};
 //
-//class GfxPass;
+//class GfxRenderPass;
 //class GfxPipelineBuiltin;
 //class GfxRendererBuiltin;
 //

@@ -1,10 +1,10 @@
 #include "gfx.h"
 #include "gfx-context.h"
 #include "gfx-renderer.h"
-#include "gfx-shader.h"
-#include "gfx-texture.h"
-#include "gfx-buffer-ubo.h"
-#include "gfx-buffer-instance.h"
+#include "base/gfx-shader.h"
+#include "base/gfx-texture.h"
+#include "base/gfx-buffer-ubo.h"
+#include "base/gfx-buffer-instance.h"
 
 namespace Gfx
 {

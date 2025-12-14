@@ -8,7 +8,7 @@
 // class GfxPipeline;
 // class GfxTexture;
 // class GfxContext;
-// class GfxPass;
+// class GfxRenderPass;
 // enum class GfxObjectType;
 // /**
 //  * 渲染对象包含
@@ -31,7 +31,7 @@
 //     GfxObjectType _type;
 //     GfxContext *_context;
 //     GfxPipeline *_pipeline;
-//     GfxPass *_pass;
+//     GfxRenderPass *_pass;
 //     GfxTexture *_texture;
 
 //     /**
@@ -90,7 +90,7 @@
 //      */
 //     GfxObject(std::string uuid, GfxObjectType type, GfxContext *context);
 //     void setVertexs(std::vector<float> &points, std::vector<float> &colors, std::vector<float> &normals, std::vector<float> &uvs, std::vector<uint32_t> &indices);
-//     void setPass(GfxPass *pass);
+//     void setPass(GfxRenderPass *pass);
 //     void setPipeline(GfxPipeline *pipeline);
 //     void setUIMaskPipeline(GfxPipeline *pipelineAdd, GfxPipeline *pipelineSub);
 //     /**
@@ -148,7 +148,7 @@
 //     {
 //         return this->_texture;
 //     }
-//     GfxPass *getPass()
+//     GfxRenderPass *getPass()
 //     {
 //         return this->_pass;
 //     }

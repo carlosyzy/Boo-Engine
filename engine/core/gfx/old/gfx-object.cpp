@@ -125,7 +125,7 @@
 //         indices.size() * sizeof(uint32_t),
 //         indices.data());
 // }
-// void GfxObject::setPass(GfxPass *pass)
+// void GfxObject::setPass(GfxRenderPass *pass)
 // {
 //     this->_pass = pass;
 // }

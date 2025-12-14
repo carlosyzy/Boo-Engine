@@ -12,28 +12,25 @@
 #include <vulkan/vulkan_core.h>
 #include <shaderc/shaderc.hpp>
 
-
 #include "gfx-struct.h"
 #include "gfx-pipeline-struct.h"
 #include "../assets/texture-asset.h"
 
 class GfxContext;
-class GfxRendererBuiltin;
+class GfxRendererDefault;
 class GfxTexture;
-class GfxPass;
+class GfxRenderPass;
 class GfxShader;
 class GfxPipeline;
 class GfxRenderTexture;
 class GfxMaterial;
 class GfxMesh;
-class GfxRendererUI;
 
 class GfxRenderer
 {
 private:
-	GfxRendererBuiltin *_renderPipelineBuiltin;
-	GfxRendererUI *_renderPipelineUI;
-	std::vector<std::string> _pipelineOutds;
+	GfxRendererDefault *_defaultRenderer;
+
 public:
 	GfxRenderer();
 	void init();
@@ -66,10 +63,10 @@ public:
 	 */
 	void createSpirvShader(const std::string &shaderName, const std::vector<char> &data);
 
-	void initRenderQueue(std::string pipelineName, std::string renderId, GfxRenderTexture *renderTexture);
-	void delRenderQueue(std::string pipelineName, std::string renderId);
-	void submitRenderMat(std::string pipelineName, std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
-	void submitRenderObject(const std::string &pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData);
+	void initRenderQueue(std::string renderId, GfxRenderTexture *renderTexture);
+	void delRenderQueue(std::string renderId);
+	void submitRenderMat(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
+	void submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData);
 
 	void frameRendererBefore();
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
@@ -80,6 +77,7 @@ public:
 
 	~GfxRenderer();
 };
+
 // private:
 // 	float _time;
 // 	std::string _name;
@@ -91,7 +89,7 @@ public:
 // 	 * @brief 渲染通道
 // 	 * 渲染通道
 // 	 */
-// 	std::map<std::string, GfxPass *> _passes;
+// 	std::map<std::string, GfxRenderPass *> _passes;
 
 // 	/**
 // 	 * @brief 渲染队列
@@ -140,7 +138,7 @@ public:
 // 	void init();
 
 // 	GfxDescriptor *getDescriptor(std::string name); //{ return this->_descriptors.at(name); }
-// 	GfxPass *getPass(std::string name);				// const { return this->_passes.at(name); }
+// 	GfxRenderPass *getPass(std::string name);				// const { return this->_passes.at(name); }
 // 		// const { return this->_pipelines.at(name); }
 // 		// const { return this->_textures.at(uuid); }
 

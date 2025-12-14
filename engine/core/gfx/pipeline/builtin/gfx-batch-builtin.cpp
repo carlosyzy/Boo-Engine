@@ -163,7 +163,7 @@
 //    // {
 //    //     throw std::runtime_error("GfxRenderBatch::render() pipeline not found!");
 //    // }
-//    // GfxPass *pass = Gfx::renderer->getPass("default");
+//    // GfxRenderPass *pass = Gfx::renderer->getPass("default");
 //    // if (pass == nullptr)
 //    // {
 //    //     throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
@@ -205,7 +205,7 @@
 //// void GfxRenderBatch::_beginBindRenderPass(GfxRenderTexture *renderTexture)
 //// {
 //
-////     GfxPass *pass = Gfx::renderer->getPass("default");
+////     GfxRenderPass *pass = Gfx::renderer->getPass("default");
 ////     if (pass == nullptr)
 ////     {
 ////         std::cout << "GfxRenderBatch::_beginBindRenderPass() pass not found!" << std::endl;
