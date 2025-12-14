@@ -31,11 +31,10 @@ void EditorLoading::Awake()
 	this->_logoRatio = 0.35f;
 	this->_width = Boo::game->view()->width;
 	this->_height = Boo::game->view()->height;
-	// this->_initDefaultTexture();
 	this->_initCamera();
 	this->_initBg();
 	this->_initLogo();
-	// this->_initLoadUI();
+	this->_initLoadUI();
 	// this->_initAssetsDB();
 }
 void EditorLoading::Enable() { Component::Enable(); }
@@ -43,17 +42,6 @@ void EditorLoading::setOnLoadComplete(std::function<void()> onLoadComplete)
 {
 	this->_onLoadComplete = onLoadComplete;
 }
-// void EditorLoading::_initDefaultTexture()
-// {
-// 	// this->_textureDefault = new TextureAsset("boo-default-texture");
-// 	// std::filesystem::path defaultPath = (std::filesystem::path(BooEditor::editorPath) / "res/alpha/default.png").generic_string();
-// 	// this->_textureDefault->create(defaultPath.string());
-// 	// this->_textureLogo = new TextureAsset("boo-logo-texture");
-// 	// std::filesystem::path logoPath = (std::filesystem::path(BooEditor::editorPath) / "res/alpha/logo.png").generic_string();
-// 	// this->_textureLogo->create(logoPath.string());
-// 	// this->_logoTxWidth = this->_textureLogo->width();
-// 	// this->_logoTxHeight = this->_textureLogo->height();
-// }
 void EditorLoading::_initCamera()
 {
 	Scene *scene = Boo::game->getScene();
@@ -80,7 +68,7 @@ void EditorLoading::_initBg()
 		this->_spriteAlpha = dynamic_cast<UISprite *>(compAlpha);
 		// this->_spriteAlpha->setTextureAsset(this->_textureDefault);
 		// this->_spriteAlpha->setMaterialAsset(nullptr);
-		this->_spriteAlpha->setColor("#222222ff");
+		this->_spriteAlpha->setColor("#111111ff");
 	}
 	this->_ndAlpha->setSize(this->_width, this->_height);
 }
@@ -101,7 +89,7 @@ void EditorLoading::_initLogo()
 		this->_spriteLogo = dynamic_cast<UISprite *>(compLogo);
 		this->_spriteLogo->setEnabled(true);
 		this->_spriteLogo->setTextureAsset(texture);
-		this->_spriteLogo->setMaterialAsset(nullptr);
+		// this->_spriteLogo->setMaterialAsset(nullptr);
 		this->_spriteLogo->setColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	// 初始化logo大小

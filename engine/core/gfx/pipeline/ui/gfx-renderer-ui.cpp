@@ -358,16 +358,17 @@ void GfxRendererUI::submitRenderObject(std::string renderId, GfxMaterial *materi
 
 void GfxRendererUI::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds)
 {
-    for (auto &renderQueue : this->_renderQueues)
-    {
-        renderQueue.second->render(commandBuffers, pipelineOutds);
-    }
-
     // 渲染完成后，重置描述符集状态
     for (auto &renderxDescriptorSet : this->_gfxDescriptorSets)
     {
         renderxDescriptorSet.isUsed = false;
     }
+
+    for (auto &renderQueue : this->_renderQueues)
+    {
+        renderQueue.second->render(commandBuffers, pipelineOutds);
+    }
+
     this->_currentObjectCount = 0;
 }
 

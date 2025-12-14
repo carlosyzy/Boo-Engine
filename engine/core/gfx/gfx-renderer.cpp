@@ -27,10 +27,10 @@ void GfxRenderer::init()
     Gfx::bufferUBO = new GfxBufferUBO();
     Gfx::bufferInstance = new GfxBufferInstance();
 
-    TextureAsset *textTexture = new TextureAsset("default-texture");
-    // // this->_textTexture->create("F:/worksapces/Boo-Engine/x64/Debug/res/private/ic-2d.png");
-    // // textTexture->create("/Users/yangzongyuan/personal/project/Boo-Engine/build/res/private/ic-3d.png");
-    textTexture->create("F:/worksapces/Boo-Engine/x64/Debug/res/private/ic-2d.png");
+    // TextureAsset *textTexture = new TextureAsset("default-texture");
+    // // // this->_textTexture->create("F:/worksapces/Boo-Engine/x64/Debug/res/private/ic-2d.png");
+    // // // textTexture->create("/Users/yangzongyuan/personal/project/Boo-Engine/build/res/private/ic-3d.png");
+    // textTexture->create("F:/worksapces/Boo-Engine/x64/Debug/res/private/ic-2d.png");
     this->_renderPipelineBuiltin = new GfxRendererBuiltin("built");
     this->_renderPipelineBuiltin->init();
     this->_renderPipelineUI = new GfxRendererUI("ui");

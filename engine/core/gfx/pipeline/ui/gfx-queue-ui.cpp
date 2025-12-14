@@ -73,7 +73,6 @@ void GfxQueueUI::render(std::vector<VkCommandBuffer> &commandBuffers, std::vecto
         throw std::runtime_error("Failed to record command buffer!");
     }
     commandBuffers.push_back(this->_renderTexture->getCommandBuffer());
-
     pipelineOutds.push_back(this->_renderTexture->getColorTextureUuid());
 
     // 清空批次
