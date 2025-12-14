@@ -32,7 +32,7 @@ public:
 	 */
 	void init();
 
-	void update();
+	void update(float dt);
 	void resetSwapChain();
 
 	/**
@@ -97,7 +97,7 @@ public:
 	 * @param vertices 顶点数据
 	 * @param indices 索引数据
 	 */
-	void submitRenderObject(std::string pipelineName, std::string renderId, GfxMaterial *material= nullptr, GfxMesh *mesh = nullptr, std::vector<float> &instanceData);
+	void submitRenderObject(std::string pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData);
 
 	// void initTestInfo();
 	// /*  // 采样次数 */

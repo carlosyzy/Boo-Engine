@@ -8,6 +8,7 @@
 #include "../../gfx-mesh.h"
 #include "../../gfx-material.h"
 #include "../../gfx-buffer-ubo.h"
+#include "../../gfx-buffer-instance.h"
 
 #include "../../../math/mat4.h"
 #include "gfx-pass-ui.h"
@@ -34,7 +35,6 @@ void GfxRendererUI::init()
     this->_initDefaultRenderPass();
     this->_initDefaultShader();
     this->_initDefaultPipeline();
-    this->_initDefaultUniformBuffer();
 }
 void GfxRendererUI::_initDescriptorSetLayout()
 {
@@ -192,16 +192,22 @@ void GfxRendererUI::_initDefaultPipeline()
     aaas.push_back("default-texture");
     this->_uiMaterial->setTextures(aaas);
 }
-void GfxRendererUI::_initDefaultUniformBuffer()
-{
-    for (uint32_t i = 0; i < 100; i++)
-    {
-        GfxBufferUBO *uniformBuffer = new GfxBufferUBO();
-        uniformBuffer->create(sizeof(float) * (16 + 16 + 1)); // 视图矩阵 + 投影矩阵 + 时间
-        uniformBuffer->setIsOccupied(false);
-        this->_uniformBuffers.push_back(uniformBuffer);
-    }
-}
+// void GfxRendererUI::_initDefaultUniformBuffer()
+// {
+//     for (uint32_t i = 0; i < 100; i++)
+//     {
+//         GfxBufferUBO *uniformBuffer = new GfxBufferUBO();
+//         uniformBuffer->create(sizeof(float) * (16 + 16 + 1)); // 视图矩阵 + 投影矩阵 + 时间
+//         uniformBuffer->setIsOccupied(false);
+//         this->_uniformBuffers.push_back(uniformBuffer);
+//     }
+// }
+// void GfxRendererUI::_initDefaultInstanceBuffer()
+// {
+//     this->_instanceBuffer = new GfxBufferInstance();
+//     this->_instanceBuffer->create(sizeof(float) * (16 + 4)); // 模型矩阵 + 颜色
+//     this->_instanceBuffer->setIsOccupied(false);
+// }
 
 void GfxRendererUI::createPipeline(std::string name, GfxPipelineStruct pipelineStruct)
 {
@@ -265,22 +271,22 @@ VkDescriptorSet &GfxRendererUI::getDescriptorSet()
     this->_gfxDescriptorSets.push_back(renderxDescriptorSet);
     return renderxDescriptorSet.descriptorSet;
 }
-GfxBufferUBO *GfxRendererUI::getUniformBuffer()
-{
-    for (auto &uniformBuffer : this->_uniformBuffers)
-    {
-        if (!uniformBuffer->getIsOccupied())
-        {
-            uniformBuffer->setIsOccupied(true);
-            return uniformBuffer;
-        }
-    }
-    GfxBufferUBO *uniformBuffer = new GfxBufferUBO();
-    uniformBuffer->create(sizeof(float) * (16 + 16 + 1)); // 视图矩阵 + 投影矩阵 + 时间
-    uniformBuffer->setIsOccupied(true);
-    this->_uniformBuffers.push_back(uniformBuffer);
-    return uniformBuffer;
-}
+// GfxBufferUBO *GfxRendererUI::getUniformBuffer()
+// {
+//     for (auto &uniformBuffer : this->_uniformBuffers)
+//     {
+//         if (!uniformBuffer->getIsOccupied())
+//         {
+//             uniformBuffer->setIsOccupied(true);
+//             return uniformBuffer;
+//         }
+//     }
+//     GfxBufferUBO *uniformBuffer = new GfxBufferUBO();
+//     uniformBuffer->create(sizeof(float) * (16 + 16 + 1)); // 视图矩阵 + 投影矩阵 + 时间
+//     uniformBuffer->setIsOccupied(true);
+//     this->_uniformBuffers.push_back(uniformBuffer);
+//     return uniformBuffer;
+// }
 void GfxRendererUI::initRenderQueue(std::string renderId, GfxRenderTexture *renderTexture)
 {
     if (this->_renderQueues.find(renderId) != this->_renderQueues.end())
@@ -302,7 +308,8 @@ void GfxRendererUI::delRenderQueue(std::string renderId)
         std::cout << "delRenderQueue:renderId not found:" << renderId << std::endl;
         return;
     }
-    this->_renderQueues[renderId]->destroy();;
+    this->_renderQueues[renderId]->destroy();
+    ;
     delete this->_renderQueues[renderId];
     this->_renderQueues.erase(renderId);
 }
@@ -360,11 +367,6 @@ void GfxRendererUI::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuff
     for (auto &renderxDescriptorSet : this->_gfxDescriptorSets)
     {
         renderxDescriptorSet.isUsed = false;
-    }
-    // ubo状态重置
-    for (auto &uniformBuffer : this->_uniformBuffers)
-    {
-        uniformBuffer->setIsOccupied(false);
     }
     this->_currentObjectCount = 0;
 }

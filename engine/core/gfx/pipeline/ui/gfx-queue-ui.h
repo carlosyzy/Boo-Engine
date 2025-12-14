@@ -17,6 +17,7 @@ class GfxPipelineUI;
 class GfxRenderTexture;
 class GfxMaterial;
 class GfxMesh;
+class GfxBuffer;
 
 class GfxQueueUI
 {
@@ -27,6 +28,8 @@ private:
 	std::array<float, 16> _projMatrix;
 
 	std::vector<GfxBatchUI *> _batches;
+
+	GfxBuffer *_ubo;
 
 	/**
 	 * @brief 重置命令缓冲区
@@ -43,6 +46,11 @@ private:
 	 * 渲染第三步
 	 */
 	void _beginRenderPass();
+	/**
+	 * @brief 绑定uniform buffer
+	 * 渲染第四步
+	 */
+	void _bindUniformBuffer();
 
 public:
 	GfxQueueUI(GfxRendererUI *renderer, GfxRenderTexture *renderTexture);

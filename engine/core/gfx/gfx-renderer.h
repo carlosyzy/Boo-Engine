@@ -70,7 +70,10 @@ public:
 	void delRenderQueue(std::string pipelineName, std::string renderId);
 	void submitRenderMat(std::string pipelineName, std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
 	void submitRenderObject(const std::string &pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData);
+
+	void frameRendererBefore();
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
+	void frameRendererAfter();
 
 	void _cleanRendererState();
 	void _resetRendererState();

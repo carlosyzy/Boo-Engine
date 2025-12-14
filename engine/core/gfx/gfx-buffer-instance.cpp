@@ -1,23 +1,23 @@
-#include "gfx-buffer-ubo.h"
+#include "gfx-buffer-instance.h"
 #include "gfx.h"
 #include "gfx-context.h"
 #include "gfx-buffer.h"
 
-GfxBufferUBO::GfxBufferUBO()
+GfxBufferInstance::GfxBufferInstance()
 {
 }
-GfxBuffer *GfxBufferUBO::getBuffer(int size)
+GfxBuffer *GfxBufferInstance::getBuffer(int size)
 {
     // 检查是否存在该大小的池
     if (this->pools.find(size) == this->pools.end())
     {
-        this->pools[size] = new GfxBufferUBOPool();
+        this->pools[size] = new GfxBufferInstancePool();
     }
-    GfxBufferUBOPool *pool = this->pools[size];
+    GfxBufferInstancePool *pool = this->pools[size];
     if (pool->buffers.empty())
     {
         GfxBuffer *buffer = new GfxBuffer();
-        buffer->create(size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
+        buffer->create(size,VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
         buffer->setIsOccupied(true);
         pool->buffers.push_back(buffer);
         return buffer;
@@ -33,14 +33,13 @@ GfxBuffer *GfxBufferUBO::getBuffer(int size)
             }
         }
         GfxBuffer *buffer = new GfxBuffer();
-        buffer->create(size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
+        buffer->create(size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
         buffer->setIsOccupied(true);
         pool->buffers.push_back(buffer);
         return buffer;
     }
 }
-
-void GfxBufferUBO::clear()
+void GfxBufferInstance::clear()
 {
     for (auto pool : this->pools)
     {
@@ -50,7 +49,11 @@ void GfxBufferUBO::clear()
         }
     }
 }
-// void GfxBufferUBO::create(VkDeviceSize bufferSize)
+// 
+GfxBufferInstance::~GfxBufferInstance()
+{
+}
+// void GfxBufferInstance::create(VkDeviceSize bufferSize)
 // {
 //     this->_buffer = VK_NULL_HANDLE;
 //     this->_bufferMemory = VK_NULL_HANDLE;
@@ -60,7 +63,7 @@ void GfxBufferUBO::clear()
 //     VkBufferCreateInfo bufferInfo{};
 //     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 //     bufferInfo.size = bufferSize;
-//     bufferInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+//     bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 //     bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 //     if (vkCreateBuffer(Gfx::context->getVkDevice(), &bufferInfo, nullptr, &this->_buffer) != VK_SUCCESS)
 //     {
@@ -85,7 +88,7 @@ void GfxBufferUBO::clear()
 //     // 映射内存
 //     vkMapMemory(Gfx::context->getVkDevice(), this->_bufferMemory, 0, bufferSize, 0, &this->_bufferMapped);
 // }
-// uint32_t GfxBufferUBO::_findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+// uint32_t GfxBufferInstance::_findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
 // {
 //     VkPhysicalDeviceMemoryProperties memProperties;
 //     vkGetPhysicalDeviceMemoryProperties(Gfx::context->getPhysicalDevice(), &memProperties);
@@ -103,23 +106,19 @@ void GfxBufferUBO::clear()
 
 //     throw std::runtime_error("Failed to find suitable memory type!");
 // }
-// void GfxBufferUBO::setIsOccupied(bool isOccupied)
+// void GfxBufferInstance::setIsOccupied(bool isOccupied)
 // {
 //     this->_isOccupied = isOccupied;
 // }
-// bool GfxBufferUBO::getIsOccupied() const
+// bool GfxBufferInstance::getIsOccupied() const
 // {
 //     return this->_isOccupied;
 // }
-// void *GfxBufferUBO::getMappedData()
+// void *GfxBufferInstance::getMappedData()
 // {
 //     return this->_bufferMapped;
 // }
-// VkBuffer GfxBufferUBO::getBuffer() const
+// VkBuffer GfxBufferInstance::getBuffer() const
 // {
 //     return this->_buffer;
 // }
-
-GfxBufferUBO::~GfxBufferUBO()
-{
-}

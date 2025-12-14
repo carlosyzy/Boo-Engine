@@ -8,6 +8,8 @@
 #include "../../gfx-texture.h"
 #include "../../gfx-material.h"
 #include "../../gfx-mesh.h"
+#include "../../gfx-buffer.h"
+#include "../../gfx-buffer-ubo.h"
 #include "gfx-renderer-ui.h"
 #include "gfx-pass-ui.h"
 #include "gfx-batch-ui.h"
@@ -56,10 +58,12 @@ void GfxQueueUI::render(std::vector<VkCommandBuffer> &commandBuffers, std::vecto
     this->_resetCommandBuffer();
     this->_beginCommandBuffer();
     this->_beginRenderPass();
+    this->_bindUniformBuffer();
+
     for (size_t i = 0; i < this->_batches.size(); i++)
     {
         GfxBatchUI *batch = this->_batches[i];
-        batch->render(this->_renderTexture->getCommandBuffer());
+        batch->render(this->_renderTexture->getCommandBuffer(), this->_ubo);
     }
     // 渲染结束
     vkCmdEndRenderPass(this->_renderTexture->getCommandBuffer());
@@ -190,6 +194,16 @@ void GfxQueueUI::_beginRenderPass()
 GfxRenderTexture *GfxQueueUI::getRenderTexture()
 {
     return this->_renderTexture;
+}
+void GfxQueueUI::_bindUniformBuffer()
+{
+    this->_ubo = Gfx::bufferUBO->getBuffer(16 + 16 + 1);
+    this->_ubo->setIsOccupied(true);
+    // 提交视图矩阵和投影矩阵
+    memcpy(this->_ubo->getMappedData(), this->_viewMatrix.data(), sizeof(float) * 16);
+    memcpy((char *)this->_ubo->getMappedData() + sizeof(float) * 16, this->_projMatrix.data(), sizeof(float) * 16);
+    // 提交全局时间
+    memcpy((char *)this->_ubo->getMappedData() + sizeof(float) * 16 * 2, &Gfx::time, sizeof(float));
 }
 
 void GfxQueueUI::_clean()

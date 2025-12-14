@@ -6,6 +6,9 @@
 #include "../../gfx-material.h"
 #include "../../gfx-pipeline-struct.h"
 #include "../../gfx-render-texture.h"
+#include "../../gfx-buffer.h"
+#include "../../gfx-buffer-ubo.h"
+#include "../../gfx-buffer-instance.h"
 #include "gfx-renderer-ui.h"
 #include "gfx-pipeline-ui.h"
 
@@ -28,9 +31,23 @@ void GfxBatchUI::addObject(std::vector<float> &instanceData)
         throw std::runtime_error("GfxBatchUI::addObject() instanceData size is not multiple of vertex size!");
     }
     this->_instanceDatas.insert(this->_instanceDatas.end(), instanceData.begin(), instanceData.end());
+    this->_instanceCount++;
+    // std::cout << "GfxBatchUI::addObject() instanceData size: " << instanceData.size() << " instanceDatas size: " << this->_instanceDatas.size() << std::endl;
 }
-void GfxBatchUI::render(VkCommandBuffer &queueCommandBuffer)
+void GfxBatchUI::render(VkCommandBuffer &queueCommandBuffer, GfxBuffer *ubo)
 {
+    // // 清空实例数据缓冲区
+    // if (this->_vertexInstanceBuffer != VK_NULL_HANDLE)
+    // {
+    //     vkDestroyBuffer(Gfx::context->getVkDevice(), this->_vertexInstanceBuffer, nullptr);
+    //     this->_vertexInstanceBuffer = VK_NULL_HANDLE;
+    // }
+    // if (this->_vertexInstanceMemory != VK_NULL_HANDLE)
+    // {
+    //     vkFreeMemory(Gfx::context->getVkDevice(), this->_vertexInstanceMemory, nullptr);
+    //     this->_vertexInstanceMemory = VK_NULL_HANDLE;
+    // }
+
     const GfxPipelineStruct &pipelineStruct = this->_material->getPipelineStruct();
     GfxPipelineUI *pipeline = this->_renderer->getPipeline(pipelineStruct.generateKey());
     if (pipeline == nullptr)
@@ -43,9 +60,9 @@ void GfxBatchUI::render(VkCommandBuffer &queueCommandBuffer)
     std::array<VkWriteDescriptorSet, 5> descriptorWrites{};
     // 绑定ubo
     VkDescriptorBufferInfo bufferInfo{};
-    // bufferInfo.buffer = VK_NULL_HANDLE;
-    // bufferInfo.offset = 0;
-    // bufferInfo.range = 0;
+    bufferInfo.buffer = ubo->getBuffer();
+    bufferInfo.offset = 0;
+    bufferInfo.range = sizeof(float) * (16 + 16 + 1); // 视图矩阵+投影矩阵+全局时间
     descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[0].dstSet = descriptor;
     descriptorWrites[0].dstBinding = 0;
@@ -62,7 +79,7 @@ void GfxBatchUI::render(VkCommandBuffer &queueCommandBuffer)
         {
             std::string textureUuid = this->_material->getTextures()[i];
             GfxTexture *texture = Gfx::renderer->getTexture(textureUuid);
-            std::cout << "GfxBatchUI::render() textureUuid: " << textureUuid << " index: " << i << std::endl;
+            // std::cout << "GfxBatchUI::render() textureUuid: " << textureUuid << " index: " << i << std::endl;
             if (texture != nullptr)
             {
                 imageInfo.imageView = texture->getImageView();
@@ -71,7 +88,7 @@ void GfxBatchUI::render(VkCommandBuffer &queueCommandBuffer)
         }
         else
         {
-            std::cout << "GfxBatchUI::render() texture not found! index: " << i << std::endl;
+            // std::cout << "GfxBatchUI::render() texture not found! index: " << i << std::endl;
         }
         descriptorWrites[i + 1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         descriptorWrites[i + 1].dstSet = descriptor;
@@ -85,10 +102,14 @@ void GfxBatchUI::render(VkCommandBuffer &queueCommandBuffer)
     vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
     vkCmdBindDescriptorSets(queueCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptor, 0, nullptr);
 
-    VkDeviceSize offsets[1] = {0};
+    GfxBuffer *instanceBuffer = Gfx::bufferInstance->getBuffer(this->_instanceDatas.size());
+    memcpy(instanceBuffer->getMappedData(), this->_instanceDatas.data(), this->_instanceDatas.size() * sizeof(float));
+
+    VkDeviceSize offsets[2] = {0, 0};
     VkBuffer vertexBuffer = this->_mesh->getVertexBuffer();
     VkBuffer indexBuffer = this->_mesh->getIndexBuffer();
-    vkCmdBindVertexBuffers(queueCommandBuffer, 0, 1, &vertexBuffer, offsets);
+    VkBuffer vertexBuffers[] = {vertexBuffer, instanceBuffer->getBuffer()}; // 作为顶点缓冲绑定
+    vkCmdBindVertexBuffers(queueCommandBuffer, 0, 2, vertexBuffers, offsets);
     vkCmdBindIndexBuffer(queueCommandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
     // 设置视口
@@ -109,11 +130,11 @@ void GfxBatchUI::render(VkCommandBuffer &queueCommandBuffer)
 
     vkCmdDrawIndexed(
         queueCommandBuffer,
-        3, // 只绘制3个索引（第一个三角形）
-        1, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
-        0, // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
-        0, // 第一个实例的索引 从第 0 个实例开始绘制
-        0  // 实例偏移
+        3,                    // 只绘制3个索引（第一个三角形）
+        this->_instanceCount, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
+        0,                    // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
+        0,                    // 第一个实例的索引 从第 0 个实例开始绘制
+        0                     // 实例偏移
     );
 }
 void GfxBatchUI::_bindPipeline(VkCommandBuffer &queueCommandBuffer, GfxPipelineUI *pipeline)

@@ -37,14 +37,17 @@ void GfxMgr::init()
     Gfx::renderer->init();
 }
 
-void GfxMgr::update()
+void GfxMgr::update(float dt)
 {
+    Gfx::time += dt;
+   
     // Gfx::renderer->clearDestroyObjects();
     // std::cout << "renderer update" << std::endl;
     Gfx::context->frameFencesPrepare(this->_currentFrame);
     // std::cout << "renderer update1" << std::endl;
     /* // 可用的图像的索引 */
     uint32_t imageIndex;
+    Gfx::renderer->frameRendererBefore();
     /**
      * 从交换链申请一个可渲染的图像
      * 通过 _imageAvailableSemaphores[_currentFrame] 信号量，通知 GPU："必须等这个信号量触发后，才能开始渲染该图像"。
@@ -71,6 +74,7 @@ void GfxMgr::update()
     VkResult result2 = Gfx::context->framePresentFrame(imageIndex, this->_currentFrame);
     if (result2 == VK_ERROR_OUT_OF_DATE_KHR || result2 == VK_SUBOPTIMAL_KHR)
     {
+        Gfx::renderer->frameRendererAfter();
         this->resetSwapChain();
         return;
     }
@@ -85,6 +89,7 @@ void GfxMgr::update()
      * 帧0	等待帧0栅栏，信号量A复用	渲染帧1完成，显示帧0
      */
     this->_currentFrame = (this->_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+    Gfx::renderer->frameRendererAfter();
 }
 void GfxMgr::resetSwapChain()
 {
@@ -124,6 +129,10 @@ void GfxMgr::initRenderQueue(std::string pipelineName, std::string renderId, Gfx
 void GfxMgr::delRenderQueue(std::string pipelineName, std::string renderId)
 {
     Gfx::renderer->delRenderQueue(pipelineName, renderId);
+}
+void GfxMgr::submitRenderMat(std::string pipelineName, std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix)
+{
+    Gfx::renderer->submitRenderMat(pipelineName, renderId, viewMatrix, projMatrix);
 }
 void GfxMgr::submitRenderObject(std::string pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData)
 {

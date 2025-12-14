@@ -19,6 +19,7 @@ class GfxPassUI;
 class GfxQueueUI;
 class GfxPipelineUI;
 class GfxBufferUBO;
+class GfxBufferInstance;
 
 struct GfxRenderxDescriptorSet
 {
@@ -56,8 +57,11 @@ private:
 	std::map<std::string, GfxPipelineUI *> _pipelines;
 	void _initDefaultPipeline();
 
-	std::vector<GfxBufferUBO *> _uniformBuffers;
-	void _initDefaultUniformBuffer();
+	// std::vector<GfxBufferUBO *> _uniformBuffers;
+	// void _initDefaultUniformBuffer();
+
+	// std::map<std::string, GfxBufferInstance *> _instanceBuffers;
+	// void _initDefaultInstanceBuffer();
 	
 
 	/**
@@ -76,6 +80,7 @@ public:
 	GfxPipelineUI *getPipeline(std::string name);
 	VkDescriptorSet &getDescriptorSet();
 	GfxBufferUBO *getUniformBuffer();
+
 
 
 	void createPipeline(std::string name, GfxPipelineStruct pipelineStruct);

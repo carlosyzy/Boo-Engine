@@ -7,6 +7,8 @@ class GfxContext;
 class GfxRenderer;
 class GfxShader;
 class GfxTexture;
+class GfxBufferUBO;
+class GfxBufferInstance;
 
 namespace Gfx
 {
@@ -15,4 +17,6 @@ namespace Gfx
 	extern float time;
 	extern std::map<std::string, GfxShader *> shaders;
 	extern std::map<std::string, GfxTexture *> textures;
+	extern GfxBufferUBO *bufferUBO;
+	extern GfxBufferInstance *bufferInstance;
 }

@@ -29,6 +29,7 @@ class GfxTexture;
 class GfxMaterial;
 class GfxMesh;
 class GfxRendererUI;
+class GfxBuffer;
 
 class GfxBatchUI
 {
@@ -37,7 +38,11 @@ private:
     GfxRenderTexture *_renderTexture;
     GfxMaterial *_material;
     GfxMesh *_mesh;
+
     std::vector<float> _instanceDatas;
+    int _instanceCount = 0;
+    // VkBuffer _vertexInstanceBuffer = VK_NULL_HANDLE;
+    // VkDeviceMemory _vertexInstanceMemory = VK_NULL_HANDLE;
 
     /**
      * @brief 绑定渲染管线
@@ -50,7 +55,7 @@ public:
     const GfxMaterial *getMaterial() const { return _material; }
     const GfxMesh *getMesh() const { return _mesh; }
     void addObject(std::vector<float> &instanceData);
-    void render(VkCommandBuffer &queueCommandBuffer);
+    void render(VkCommandBuffer &queueCommandBuffer, GfxBuffer *ubo);
     void destroy();
     ~GfxBatchUI();
 };

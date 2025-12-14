@@ -7,6 +7,8 @@
 #include "gfx-pass.h"
 #include "gfx-material.h"
 #include "gfx-mesh.h"
+#include "gfx-buffer-ubo.h"
+#include "gfx-buffer-instance.h"
 
 #include "gfx-render-texture.h"
 #include "pipeline/builtin/gfx-renderer-builtin.h"
@@ -22,10 +24,13 @@ GfxRenderer::GfxRenderer()
 }
 void GfxRenderer::init()
 {
-    // TextureAsset *textTexture = new TextureAsset("default-texture");
+    Gfx::bufferUBO = new GfxBufferUBO();
+    Gfx::bufferInstance = new GfxBufferInstance();
+
+    TextureAsset *textTexture = new TextureAsset("default-texture");
     // // this->_textTexture->create("F:/worksapces/Boo-Engine/x64/Debug/res/private/ic-2d.png");
     // // textTexture->create("/Users/yangzongyuan/personal/project/Boo-Engine/build/res/private/ic-3d.png");
-    // textTexture->create("F:/worksapces/Boo-Engine/x64/Debug/res/private/ic-2d.png");
+    textTexture->create("F:/worksapces/Boo-Engine/x64/Debug/res/private/ic-2d.png");
     this->_renderPipelineBuiltin = new GfxRendererBuiltin("built");
     this->_renderPipelineBuiltin->init();
     this->_renderPipelineUI = new GfxRendererUI("ui");
@@ -213,6 +218,11 @@ void GfxRenderer::submitRenderObject(const std::string &pipelineName, std::strin
         this->_renderPipelineUI->submitRenderObject(renderId, material, mesh, instanceData);
     }
 }
+void GfxRenderer::frameRendererBefore()
+{
+    Gfx::bufferUBO->clear();
+    Gfx::bufferInstance->clear();
+}
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
     this->_pipelineOutds.clear();
@@ -245,6 +255,10 @@ void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer
     // }
 
     // this->_renderPipelineBuiltin->frameRenderer(imageIndex, commandBuffers);
+}
+void GfxRenderer::frameRendererAfter()
+{
+    
 }
 
 // void GfxRenderer::submitRenderObject(uint32_t renderId, GfxMaterial &material, GfxMesh &mesh)

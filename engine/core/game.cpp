@@ -235,7 +235,7 @@ void Game::_render(float dt)
 	// GfxMgr::getInstance()->submitRenderObject("ui", "text-render-texture", nullptr, nullptr);
 
 	// // 更新渲染器
-	GfxMgr::getInstance()->update();
+	GfxMgr::getInstance()->update(dt);
 }
 void Game::_renderCameras(Camera *camera)
 {

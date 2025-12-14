@@ -32,8 +32,8 @@ void EditorLoading::Awake()
 	this->_initDefaultTexture();
 	this->_initCamera();
 	this->_initBg();
-	this->_initLogo();
-	this->_initLoadUI();
+	// this->_initLogo();
+	// this->_initLoadUI();
 	// this->_initAssetsDB();
 }
 void EditorLoading::Enable() { Component::Enable(); }
@@ -78,9 +78,9 @@ void EditorLoading::_initBg()
 		this->_spriteAlpha = dynamic_cast<UISprite *>(compAlpha);
 		this->_spriteAlpha->setTextureAsset(this->_textureDefault);
 		this->_spriteAlpha->setMaterialAsset(nullptr);
-		this->_spriteAlpha->setColor("#000000ff");
+		this->_spriteAlpha->setColor("#3fbb54ff");
 	}
-	this->_ndAlpha->setSize(this->_width, this->_height);
+	this->_ndAlpha->setSize(this->_width-200, this->_height-200);
 }
 void EditorLoading::_initLogo()
 {
@@ -193,9 +193,9 @@ void EditorLoading::Update(float deltaTime)
 		this->_height = height;
 		std::cout << "EditorLoading::update() width: " << width
 				  << " height: " << height << std::endl;
-		// this->_updateBgSize(width, height);
-		// this->_updateLogoSize(width, height);
-		// this->_updateLoadBarSize(width, height);
+		this->_updateBgSize(width, height);
+		this->_updateLogoSize(width, height);
+		this->_updateLoadBarSize(width, height);
 	}
 }
 void EditorLoading::LateUpdate(float deltaTime)

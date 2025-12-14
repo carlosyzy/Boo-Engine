@@ -3,6 +3,7 @@
 #include "../math/size.h"
 #include "../math/vec3.h"
 #include "../math/vec2.h"
+#include "../math/mat4.h"
 #include "../scene/node.h"
 #include "../scene/node-2d.h"
 #include "../gfx/gfx-mgr.h"
@@ -19,6 +20,8 @@ void Camera::_deserialized()
 void Camera::Awake()
 {
     Component::Awake();
+    this->_matView = Mat4::identity();
+    this->_matProj = Mat4::identity();
 }
 void Camera::Enable()
 {
@@ -38,6 +41,8 @@ void Camera::resize(int width, int height)
     {
         this->_renderTexture->resize(this->_width, this->_height);
     }
+    this->_matProj.setM00(2.0f / (float)this->_width);
+    this->_matProj.setM11(2.0f / (float)this->_height);
 }
 void Camera::setPipeline(std::string pipeline)
 {

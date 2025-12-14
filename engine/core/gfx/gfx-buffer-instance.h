@@ -10,18 +10,20 @@
 
 class GfxBuffer;
 
-struct GfxBufferUBOPool
+struct GfxBufferInstancePool
 {
     std::vector<GfxBuffer *> buffers;
 };
 
-class GfxBufferUBO
+
+class GfxBufferInstance
 {
 private:
-    std::map<int, GfxBufferUBOPool *> pools;
+    std::map<int, GfxBufferInstancePool *> pools;
+
 public:
-    GfxBufferUBO();
-    GfxBuffer *getBuffer(int size);
-    void clear();
-    ~GfxBufferUBO();
+    GfxBufferInstance();
+     GfxBuffer *getBuffer(int size);
+     void clear();
+    ~GfxBufferInstance();
 };
