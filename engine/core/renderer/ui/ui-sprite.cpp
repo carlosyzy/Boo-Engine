@@ -77,9 +77,9 @@ void UISprite::setAlpha(float alpha)
     this->_setColor(c.getR(), c.getG(), c.getB(), c.getA());
 }
 
-void UISprite::setTextureAsset(std::string texture)
+void UISprite::setTextureAsset(std::string path)
 {
-    // TextureAsset *tex = dynamic_cast<TextureAsset *>(Boo::game->assetsManager()->get(texture));
+    // TextureAsset *tex = dynamic_cast<TextureAsset *>(Boo::game->assetsManager()->getAssetByPath(texture));
     // if (tex == nullptr)
     // {
     //     std::cout << "UISprite::setTexture: texture " << texture << " not found" << std::endl;

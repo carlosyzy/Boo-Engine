@@ -57,6 +57,8 @@ public:
 	void create(std::string path) override;
 	void createTest();
 	void setTextures(const std::vector<std::string> textures);
+	void setTexture(int index, std::string texture);
+
 
 	GfxMaterial *getGfxMaterial() { return _gfxMaterial; }
 	/**

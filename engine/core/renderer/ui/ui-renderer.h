@@ -28,6 +28,8 @@ class UIRenderer : public Component
 private:
 protected:
     MaterialAsset *_materialAsset;
+    TextureAsset *_textureAsset;
+
     std::vector<float> _instanceData;
     Color _color;
     /**

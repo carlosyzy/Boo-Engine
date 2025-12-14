@@ -4,6 +4,8 @@
 
 #include "../../engine/boo.h"
 #include "../../engine/core/assets/assets-manager.h"
+#include "../../engine/core/assets/asset.h"
+#include "../../engine/core/assets/texture-asset.h"
 #include "../../engine/core/renderer/ui/ui-sprite.h"
 #include "../../engine/core/scene/node-2d.h"
 #include "../../engine/core/scene/node.h"
@@ -29,10 +31,10 @@ void EditorLoading::Awake()
 	this->_logoRatio = 0.35f;
 	this->_width = Boo::game->view()->width;
 	this->_height = Boo::game->view()->height;
-	this->_initDefaultTexture();
+	// this->_initDefaultTexture();
 	this->_initCamera();
 	this->_initBg();
-	// this->_initLogo();
+	this->_initLogo();
 	// this->_initLoadUI();
 	// this->_initAssetsDB();
 }
@@ -41,17 +43,17 @@ void EditorLoading::setOnLoadComplete(std::function<void()> onLoadComplete)
 {
 	this->_onLoadComplete = onLoadComplete;
 }
-void EditorLoading::_initDefaultTexture()
-{
-	this->_textureDefault = new TextureAsset("boo-default-texture");
-	std::filesystem::path defaultPath = (std::filesystem::path(BooEditor::editorPath) / "res/alpha/default.png").generic_string();
-	this->_textureDefault->create(defaultPath.string());
-	this->_textureLogo = new TextureAsset("boo-logo-texture");
-	std::filesystem::path logoPath = (std::filesystem::path(BooEditor::editorPath) / "res/alpha/logo.png").generic_string();
-	this->_textureLogo->create(logoPath.string());
-	this->_logoTxWidth = this->_textureLogo->width();
-	this->_logoTxHeight = this->_textureLogo->height();
-}
+// void EditorLoading::_initDefaultTexture()
+// {
+// 	// this->_textureDefault = new TextureAsset("boo-default-texture");
+// 	// std::filesystem::path defaultPath = (std::filesystem::path(BooEditor::editorPath) / "res/alpha/default.png").generic_string();
+// 	// this->_textureDefault->create(defaultPath.string());
+// 	// this->_textureLogo = new TextureAsset("boo-logo-texture");
+// 	// std::filesystem::path logoPath = (std::filesystem::path(BooEditor::editorPath) / "res/alpha/logo.png").generic_string();
+// 	// this->_textureLogo->create(logoPath.string());
+// 	// this->_logoTxWidth = this->_textureLogo->width();
+// 	// this->_logoTxHeight = this->_textureLogo->height();
+// }
 void EditorLoading::_initCamera()
 {
 	Scene *scene = Boo::game->getScene();
@@ -76,14 +78,19 @@ void EditorLoading::_initBg()
 	if (compAlpha != nullptr)
 	{
 		this->_spriteAlpha = dynamic_cast<UISprite *>(compAlpha);
-		this->_spriteAlpha->setTextureAsset(this->_textureDefault);
-		this->_spriteAlpha->setMaterialAsset(nullptr);
-		this->_spriteAlpha->setColor("#3fbb54ff");
+		// this->_spriteAlpha->setTextureAsset(this->_textureDefault);
+		// this->_spriteAlpha->setMaterialAsset(nullptr);
+		this->_spriteAlpha->setColor("#222222ff");
 	}
-	this->_ndAlpha->setSize(this->_width-200, this->_height-200);
+	this->_ndAlpha->setSize(this->_width, this->_height);
 }
 void EditorLoading::_initLogo()
 {
+	Asset *text = Boo::game->assetsManager()->getAssetByUuid("123e4567-e89b-12d3-a456-426614174000");
+	TextureAsset *texture = dynamic_cast<TextureAsset *>(text);
+	this->_logoTxWidth = texture->width();
+	this->_logoTxHeight = texture->height();
+
 	// 添加logo
 	this->_ndLogo = new Node2D("Editor-EditorLoading-Logo");
 	this->_node->addChild(this->_ndLogo);
@@ -93,7 +100,7 @@ void EditorLoading::_initLogo()
 	{
 		this->_spriteLogo = dynamic_cast<UISprite *>(compLogo);
 		this->_spriteLogo->setEnabled(true);
-		this->_spriteLogo->setTextureAsset(this->_textureLogo);
+		this->_spriteLogo->setTextureAsset(texture);
 		this->_spriteLogo->setMaterialAsset(nullptr);
 		this->_spriteLogo->setColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
@@ -108,7 +115,7 @@ void EditorLoading::_initLoadUI()
 		dynamic_cast<UISprite *>(this->_ndLoad->addComponent("UISprite"));
 	if (this->_spriteLoad != nullptr)
 	{
-		this->_spriteLoad->setTextureAsset(this->_textureDefault);
+		// this->_spriteLoad->setTextureAsset(this->_textureDefault);
 		this->_spriteLoad->setMaterialAsset(nullptr);
 		this->_spriteLoad->setColor("#0A2F36");
 	}
@@ -117,7 +124,7 @@ void EditorLoading::_initLoadUI()
 	this->_spriteLoadBar = dynamic_cast<UISprite *>(this->_ndLoadBar->addComponent("UISprite"));
 	if (this->_spriteLoadBar != nullptr)
 	{
-		this->_spriteLoadBar->setTextureAsset(this->_textureDefault);
+		// this->_spriteLoadBar->setTextureAsset(this->_textureDefault);
 		this->_spriteLoadBar->setMaterialAsset(nullptr);
 		this->_spriteLoadBar->setColor(1.0f, 1.0f, 1.0f, 1.0f);
 		this->_spriteLoadBar->setColor("#AFF2FF");

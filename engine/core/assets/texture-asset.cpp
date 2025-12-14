@@ -48,13 +48,14 @@ void TextureAsset::create(const unsigned char *data, size_t size)
     std::cerr << "Failed to load TextureAsset from memory" << std::endl;
     return;
   }
-  this->_channels = 4;
   this->_pixelsVector = std::vector<uint8_t>(
       static_cast<const uint8_t *>(_pixels),
       static_cast<const uint8_t *>(_pixels) + (_width * _height * _channels));
   stbi_image_free((void *)_pixels);
   GfxMgr::getInstance()->createTexture(this->_uuid, this->_width, this->_height,
                                        this->_channels, &this->_pixelsVector);
+
+  std::cout << "TextureAsset::create from memory"<<this->_width<<","<<this->_height<<","<<this->_channels << std::endl;
 }
 void TextureAsset::destroy()
 {

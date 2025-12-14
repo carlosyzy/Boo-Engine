@@ -15,8 +15,8 @@ class EditorLoading : public Component
 private:
 	float _width;
 	float _height;
-	TextureAsset* _textureDefault;
-	void _initDefaultTexture();
+	// TextureAsset* _textureDefault;
+	// void _initDefaultTexture();
 
 	void _initCamera();
 	Camera* _uiCamera;
@@ -28,7 +28,7 @@ private:
 	// logo
 	Node2D *_ndLogo;
 	UISprite *_spriteLogo;
-	TextureAsset* _textureLogo;
+	// TextureAsset* _textureLogo;
 	float _logoTxWidth;
 	float _logoTxHeight;
 	float _logoRatio;

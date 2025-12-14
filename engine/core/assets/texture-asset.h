@@ -32,26 +32,6 @@ public:
    * @param size 像素数据大小
    */
   void create(const unsigned char *data, size_t size);
-
-  //   /**
-  //    * @brief 构造函数
-  //    * @param uuid 资产唯一标识
-  //    * @param path 资产路径
-  //    */
-  //   TextureAsset(const std::string uuid, const std::string path);
-  //   TextureAsset(const std::string uuid, const unsigned char *data,
-  //                const size_t size);
-  //   /**
-  //    * @brief 构造函数
-  //    * @param uuid 资产唯一标识
-  //    * @param width 纹理宽度
-  //    * @param height 纹理高度
-  //    * @param channels 纹理通道数
-  //    * @param pixelsVector 像素数据
-  //    */
-  //   TextureAsset(const std::string uuid, int width, int height, int channels,
-  //                std::vector<uint8_t> pixelsVector);
-
   /**
    * @brief 获取纹理宽度
    *
@@ -74,3 +54,24 @@ public:
   void destroy() override;
   ~TextureAsset() {}
 };
+
+
+
+  //   /**
+  //    * @brief 构造函数
+  //    * @param uuid 资产唯一标识
+  //    * @param path 资产路径
+  //    */
+  //   TextureAsset(const std::string uuid, const std::string path);
+  //   TextureAsset(const std::string uuid, const unsigned char *data,
+  //                const size_t size);
+  //   /**
+  //    * @brief 构造函数
+  //    * @param uuid 资产唯一标识
+  //    * @param width 纹理宽度
+  //    * @param height 纹理高度
+  //    * @param channels 纹理通道数
+  //    * @param pixelsVector 像素数据
+  //    */
+  //   TextureAsset(const std::string uuid, int width, int height, int channels,
+  //                std::vector<uint8_t> pixelsVector);

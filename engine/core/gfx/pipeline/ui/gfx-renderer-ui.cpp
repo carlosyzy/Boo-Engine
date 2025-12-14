@@ -22,9 +22,9 @@ GfxRendererUI::GfxRendererUI(std::string name)
     this->_maxObjectCount = 2048;
     this->_uiMesh = new GfxMesh("ui");
     this->_uiMesh->setInputVertices({-0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-                                     -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+                                     -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
                                      0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-                                     0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
+                                     0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
                                     {0, 1, 2, 0, 2, 3});
 }
 void GfxRendererUI::init()
@@ -182,15 +182,15 @@ void GfxRendererUI::_initDefaultPipeline()
 
     this->createPipeline(uiPipeline.generateKey(), uiPipeline);
 
-    this->_uiMaterial = new GfxMaterial();
-    this->_uiMaterial->setRenderPass("ui");
-    this->_uiMaterial->setPipelineStruct(uiPipeline);
-    std::vector<std::string> aaas;
-    aaas.push_back("default-texture");
-    aaas.push_back("default-texture");
-    aaas.push_back("default-texture");
-    aaas.push_back("default-texture");
-    this->_uiMaterial->setTextures(aaas);
+    // this->_uiMaterial = new GfxMaterial();
+    // this->_uiMaterial->setRenderPass("ui");
+    // this->_uiMaterial->setPipelineStruct(uiPipeline);
+    // std::vector<std::string> aaas;
+    // aaas.push_back("default-texture");
+    // aaas.push_back("default-texture");
+    // aaas.push_back("default-texture");
+    // aaas.push_back("default-texture");
+    // this->_uiMaterial->setTextures(aaas);
 }
 // void GfxRendererUI::_initDefaultUniformBuffer()
 // {

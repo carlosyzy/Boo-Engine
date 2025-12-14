@@ -71,32 +71,31 @@ void GfxBatchUI::render(VkCommandBuffer &queueCommandBuffer, GfxBuffer *ubo)
     descriptorWrites[0].descriptorCount = 1;
     descriptorWrites[0].pBufferInfo = &bufferInfo;
     // 绑定采样器
+    std::array<VkDescriptorImageInfo, 4> imageInfos;
     for (size_t i = 0; i < 4; i++)
     {
-        VkDescriptorImageInfo imageInfo{};
-        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        imageInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        std::string textureUuid = "550e8400-e29b-41d4-a716-446655440000";
         if (i < this->_material->getTextures().size())
         {
-            std::string textureUuid = this->_material->getTextures()[i];
-            GfxTexture *texture = Gfx::renderer->getTexture(textureUuid);
-            // std::cout << "GfxBatchUI::render() textureUuid: " << textureUuid << " index: " << i << std::endl;
-            if (texture != nullptr)
-            {
-                imageInfo.imageView = texture->getImageView();
-                imageInfo.sampler = texture->getSampler();
-            }
+            textureUuid = this->_material->getTextures()[i];
         }
-        else
+        GfxTexture *texture = Gfx::renderer->getTexture(textureUuid);
+        if (texture != nullptr)
         {
-            // std::cout << "GfxBatchUI::render() texture not found! index: " << i << std::endl;
+            imageInfos[i].imageView = texture->getImageView();
+            imageInfos[i].sampler = texture->getSampler();
+        }else{
+            imageInfos[i].imageView = VK_NULL_HANDLE;
+            imageInfos[i].sampler = VK_NULL_HANDLE;
         }
         descriptorWrites[i + 1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         descriptorWrites[i + 1].dstSet = descriptor;
-        descriptorWrites[i + 1].dstBinding = i + 1;
+        descriptorWrites[i + 1].dstBinding = static_cast<uint32_t>(i + 1);
         descriptorWrites[i + 1].dstArrayElement = 0;
         descriptorWrites[i + 1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
         descriptorWrites[i + 1].descriptorCount = 1;
-        descriptorWrites[i + 1].pImageInfo = &imageInfo;
+        descriptorWrites[i + 1].pImageInfo = &imageInfos[i];
     }
 
     vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
@@ -130,7 +129,7 @@ void GfxBatchUI::render(VkCommandBuffer &queueCommandBuffer, GfxBuffer *ubo)
 
     vkCmdDrawIndexed(
         queueCommandBuffer,
-        3,                    // 只绘制3个索引（第一个三角形）
+        6,                    // 只绘制3个索引（第一个三角形）
         this->_instanceCount, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
         0,                    // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
         0,                    // 第一个实例的索引 从第 0 个实例开始绘制

@@ -54,13 +54,13 @@ void UIRenderer::_setColor(float r, float g, float b, float a)
 
 void UIRenderer::_setMaterial(MaterialAsset *mtl)
 {
-	if (this->_materialAsset == nullptr)
-	{
-		return;
-	}
-	this->_materialAsset = mtl;
-	if (!this->_isEnabledInHierarchy)
-		return;
+	// if (this->_materialAsset == nullptr)
+	// {
+	// 	return;
+	// }
+	// this->_materialAsset = mtl;
+	// if (!this->_isEnabledInHierarchy)
+	// 	return;
 	// GfxMgr::getInstance()->setObjectPass(this->_uuid, this->_materialAsset->getPass());
 	// GfxMgr::getInstance()->setObjectPipeline(this->_uuid, this->_materialAsset->getPipeline());
 	// // std::string vert = std::filesystem::path("resources/shader/ui/ui.vert.spv").generic_string();
@@ -71,19 +71,17 @@ void UIRenderer::_setMaterial(MaterialAsset *mtl)
 }
 void UIRenderer::_setTexture(TextureAsset *texture)
 {
-	// if (texture == nullptr)
-	// {
-	// 	std::cout << "UIRenderer::setTexture: texture is nullptr" << std::endl;
-	// 	return;
-	// }
-	// if (this->_textureAsset == texture)
-	// {
-	// 	return;
-	// }
-	// this->_textureAsset = texture;
-	// if (!this->_isEnabledInHierarchy)
-	// 	return;
-	// // GfxMgr::getInstance()->setObjectTexture(this->_uuid, this->_textureAsset->getUuid());
+	if (texture == nullptr)
+	{
+		std::cout << "UIRenderer::setTexture: texture is nullptr" << std::endl;
+		return;
+	}
+	if (this->_textureAsset != nullptr && this->_textureAsset->getUuid() == texture->getUuid())
+	{
+		return;
+	}
+	this->_textureAsset = texture;
+	this->_materialAsset->setTexture(0, texture->getUuid());
 }
 
 // void UIRenderer::_updateRendererState()

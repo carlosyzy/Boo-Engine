@@ -160,7 +160,7 @@ void GfxQueueBuiltin::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
 
         vkCmdDrawIndexed(
             this->_commandBuffers[imageIndex],
-            3, // 只绘制3个索引（第一个三角形）
+            6, // 只绘制3个索引（第一个三角形）
             1, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
             0, // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
             0, // 第一个实例的索引 从第 0 个实例开始绘制

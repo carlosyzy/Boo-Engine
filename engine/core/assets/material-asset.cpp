@@ -64,15 +64,16 @@ void MaterialAsset::createTest()
     this->_gfxMaterial->setRenderPass("ui");
     this->_gfxMaterial->setPipelineStruct(uiPipeline);
     std::vector<std::string> aaas;
-    aaas.push_back("default-texture");
-    aaas.push_back("default-texture");
-    aaas.push_back("default-texture");
-    aaas.push_back("default-texture");
+    aaas.push_back("550e8400-e29b-41d4-a716-446655440000");
     this->_gfxMaterial->setTextures(aaas);
 }
 void MaterialAsset::setTextures(const std::vector<std::string> textures)
 {
     this->_gfxMaterial->setTextures(textures);
+}
+void MaterialAsset::setTexture(int index, std::string texture)
+{
+   this->_gfxMaterial->setTextures({texture});
 }
 
 
