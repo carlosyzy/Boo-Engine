@@ -12,7 +12,7 @@
 GfxRendererDefault::GfxRendererDefault(std::string name)
 {
     this->_samplerCount = 1;
-    this->_maxObjectCount = 10;
+    this->_maxObjectCount = 100;
 }
 void GfxRendererDefault::init()
 {
@@ -65,26 +65,6 @@ void GfxRendererDefault::_initDefaultDescriptor()
         return;
     }
     std::cout << "Gfx : Descriptor ::create descriptor pool success " << std::endl;
-    for (uint32_t i = 0; i < this->_maxObjectCount; i++)
-    {
-        std::vector<VkDescriptorSet> descriptorSets;
-        std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
-        uint32_t swapChainImageCount = swapChainImageViews.size();
-        std::vector<VkDescriptorSetLayout> layouts(swapChainImageCount, this->_descriptorSetLayout);
-        VkDescriptorSetAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        allocInfo.descriptorPool = this->_descriptorPool;
-        allocInfo.descriptorSetCount = swapChainImageCount;
-        allocInfo.pSetLayouts = layouts.data();
-        descriptorSets.resize(swapChainImageCount);
-        if (vkAllocateDescriptorSets(Gfx::context->getVkDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS)
-        {
-            std::cout << "Gfx : Descriptor ::create descriptor sets failed " << std::endl;
-            return;
-        }
-        GfxRenderxDescriptorSets renderxDescriptorSets = {descriptorSets, false};
-        this->_descriptorSets.push_back(renderxDescriptorSets);
-    }
 }
 
 /**
@@ -119,7 +99,7 @@ void GfxRendererDefault::_initDefaultShader()
 void GfxRendererDefault::_initDefaultPipeline()
 {
     GfxPipelineStruct pipelineStruct = {};
-    pipelineStruct.pass = "default";
+    pipelineStruct.render = uint32_t(GfxPipelineRender::_Default);
     pipelineStruct.vert = "default.vert";
     pipelineStruct.frag = "default.frag";
     // 多边形模式 填充
@@ -164,7 +144,7 @@ void GfxRendererDefault::createPipeline(std::string name, GfxPipelineStruct pipe
     }
     if (this->_pass == nullptr)
     {
-        std::cout << "createPipeline:pass not found:" << pipelineStruct.pass << std::endl;
+        std::cout << "createPipeline:pass not found:" << std::endl;
         return;
     }
     this->_pipeline = new GfxPipelineDefault(name);
@@ -180,39 +160,48 @@ GfxPipelineDefault *GfxRendererDefault::getPipeline()
     }
     return this->_pipeline;
 }
-std::vector<VkDescriptorSet> &GfxRendererDefault::getDescriptorSets()
+std::vector<VkDescriptorSet> GfxRendererDefault::getDescriptorSets()
 {
-    for (auto &renderxDescriptorSets : this->_descriptorSets)
+    if (this->_currentDescriptorSetIndex >= this->_maxObjectCount - 10)
     {
-        if (!renderxDescriptorSets.isUsed)
+        std::vector<VkDescriptorSet> descriptorSets;
+        std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
+        uint32_t swapChainImageCount = swapChainImageViews.size();
+        descriptorSets.resize(swapChainImageCount);
+        return descriptorSets;
+    }
+    if (this->_currentDescriptorSetIndex >= this->_descriptorSets.size())
+    {
+        std::vector<VkDescriptorSet> descriptorSets;
+        std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
+        uint32_t swapChainImageCount = swapChainImageViews.size();
+        std::vector<VkDescriptorSetLayout> layouts(swapChainImageCount, this->_descriptorSetLayout);
+        VkDescriptorSetAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        allocInfo.descriptorPool = this->_descriptorPool;
+        allocInfo.descriptorSetCount = swapChainImageCount;
+        allocInfo.pSetLayouts = layouts.data();
+        descriptorSets.resize(swapChainImageCount);
+        if (vkAllocateDescriptorSets(Gfx::context->getVkDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS)
         {
-            renderxDescriptorSets.isUsed = true;
-            return renderxDescriptorSets.descriptorSets;
+            std::cout << "Gfx : Descriptor ::create descriptor sets failed " << std::endl;
         }
+        GfxRenderxDescriptorSets renderxDescriptorSets = {descriptorSets};
+        this->_descriptorSets.push_back(renderxDescriptorSets);
     }
-    return this->_descriptorSets[0].descriptorSets;
+    return this->_descriptorSets[this->_currentDescriptorSetIndex++].descriptorSets;
 }
 
-void GfxRendererDefault::submitRenderObject(const std::string textureUuid)
+void GfxRendererDefault::frameRendererBefore()
 {
-    if (this->_currentObjectCount >= this->_maxObjectCount)
-    {
-        std::cout << "submitRenderObject:max object count reached:" << this->_maxObjectCount << std::endl;
-        return;
-    }
-    this->_currentObjectCount++;
-    this->_queue->submitObject(textureUuid);
+    this->_currentDescriptorSetIndex = 0;
 }
-
-void GfxRendererDefault::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
+void GfxRendererDefault::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds)
 {
-    this->_queue->render(imageIndex, commandBuffers);
-    // 渲染完成后，重置描述符集状态
-    for (auto &renderxDescriptorSets : this->_descriptorSets)
-    {
-        renderxDescriptorSets.isUsed = false;
-    }
-    this->_currentObjectCount = 0;
+    this->_queue->render(imageIndex, commandBuffers, pipelineOutds);
+}
+void GfxRendererDefault::frameRendererAfter()
+{
 }
 
 void GfxRendererDefault::_cleanRendererState()
@@ -238,32 +227,6 @@ void GfxRendererDefault::_resetRendererState()
     this->_pipeline->_reset();
     this->_queue->_reset();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // void GfxRendererBuilt::_initDescriptor()
 // {

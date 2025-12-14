@@ -12,13 +12,9 @@ class GfxRenderTexture;
 class Camera : public Component
 {
 public:
-    // /**
-    //  * 相机渲染目标矩形
-    //  */
-    // Rect viewportRect = Rect(0, 0, 1, 1);
 
 private:
-    std::string _pipeline = "";
+   
     /**
      * 相机渲染优先级
      * 优先级越低，越先渲染
@@ -48,7 +44,6 @@ private:
     Mat4 _matProj = Mat4::identity();
 
     GfxRenderTexture *_renderTexture = nullptr;
-    void _clearOldRenderPipeline();
     void _createRenderPipeline();
 protected:
     void _deserialized() override;
@@ -57,8 +52,6 @@ public:
     Camera(std::string name, Node *node, std::string uuid = "");
     void Awake() override;
     void Enable() override;
-    void setPipeline(std::string pipeline);
-    std::string getPipeline();
     void setPriority(int priority);
     int getPriority();
     void setVisibility(int visibility);

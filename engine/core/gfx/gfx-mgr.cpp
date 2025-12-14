@@ -3,10 +3,10 @@
 #include "gfx.h"
 #include "gfx-mgr.h"
 #include "gfx-context.h"
-#include "gfx-render-texture.h"
 #include "gfx-renderer.h"
-#include "gfx-material.h"
-#include "gfx-mesh.h"
+#include "base/gfx-material.h"
+#include "base/gfx-mesh.h"
+#include "base/gfx-render-texture.h"
 
 #include "../utils/time-util.h"
 
@@ -36,11 +36,20 @@ void GfxMgr::init()
     Gfx::renderer = new GfxRenderer();
     Gfx::renderer->init();
 }
+void GfxMgr::setLockRender(bool lock)
+{
+    this->_lockRender = lock;
+}
 
 void GfxMgr::update(float dt)
 {
     Gfx::time += dt;
-   
+    
+    if (this->_lockRender)
+    {
+        return;
+    }
+
     // Gfx::renderer->clearDestroyObjects();
     // std::cout << "renderer update" << std::endl;
     Gfx::context->frameFencesPrepare(this->_currentFrame);
@@ -91,6 +100,9 @@ void GfxMgr::update(float dt)
     this->_currentFrame = (this->_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
     Gfx::renderer->frameRendererAfter();
 }
+/**
+ * 关键时刻手动重置交换链
+ */
 void GfxMgr::resetSwapChain()
 {
     vkDeviceWaitIdle(Gfx::context->getVkDevice()); /*  // 等待所有操作完成 */
@@ -122,22 +134,105 @@ void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<
 {
     Gfx::renderer->createSpirvShader(shaderName, data);
 }
-void GfxMgr::initRenderQueue(std::string pipelineName, std::string renderId, GfxRenderTexture *renderTexture)
+void GfxMgr::initRenderQueue(std::string renderId, GfxRenderTexture *renderTexture)
 {
-    Gfx::renderer->initRenderQueue(pipelineName, renderId, renderTexture);
+    Gfx::renderer->initRenderQueue(renderId, renderTexture);
 }
-void GfxMgr::delRenderQueue(std::string pipelineName, std::string renderId)
+void GfxMgr::delRenderQueue(std::string renderId)
 {
-    Gfx::renderer->delRenderQueue(pipelineName, renderId);
+    Gfx::renderer->delRenderQueue(renderId);
 }
-void GfxMgr::submitRenderMat(std::string pipelineName, std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix)
+void GfxMgr::submitRenderMat(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix)
 {
-    Gfx::renderer->submitRenderMat(pipelineName, renderId, viewMatrix, projMatrix);
+    Gfx::renderer->submitRenderMat(renderId, viewMatrix, projMatrix);
 }
-void GfxMgr::submitRenderObject(std::string pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData)
+void GfxMgr::submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData)
 {
-    Gfx::renderer->submitRenderObject(pipelineName, renderId, material, mesh, instanceData);
+    Gfx::renderer->submitRenderObject(renderId, material, mesh, instanceData);
 }
+std::vector<char> GfxMgr::readShaderFile(const std::string &filename)
+{
+    /*   // ate: 表示从文件末未开始读取
+      // binary: 表示以二进制方式读取 */
+    std::ifstream file(filename, std::ios::ate | std::ios::binary);
+    /*    // std::cout << filename << std::endl; */
+    if (!file.is_open())
+    {
+        throw std::runtime_error("failed to open file!");
+    }
+    /*  // tellg()返回当前定位指针的位置，也代表着输入流的大小。 */
+    size_t fileSize = (size_t)file.tellg();
+    /*  // std::cout << fileSize << std::endl; */
+    std::vector<char> buffer(fileSize);
+    /*  // seekg()是对输入流的操作 g是get缩写，0是代表从开头读起。 */
+    file.seekg(0);
+    /* // 读入到Buffer当中 */
+    file.read(buffer.data(), fileSize);
+    file.close();
+    /* // std::cout << "read file success: " << filename << std::endl; */
+    return buffer;
+}
+
+VkResult GfxMgr::createBuffer(VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags, VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size, void *data = nullptr)
+{
+    VkBufferCreateInfo bufferCreateInfo{};
+    bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferCreateInfo.usage = usageFlags;
+    bufferCreateInfo.size = size;
+    bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    vkCreateBuffer(Gfx::context->getVkDevice(), &bufferCreateInfo, nullptr, buffer);
+
+    VkMemoryRequirements memReqs;
+    VkMemoryAllocateInfo memAlloc{};
+    memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    vkGetBufferMemoryRequirements(Gfx::context->getVkDevice(), *buffer, &memReqs);
+    memAlloc.allocationSize = memReqs.size;
+    memAlloc.memoryTypeIndex = getMemoryTypeIndex(memReqs.memoryTypeBits, memoryPropertyFlags);
+    vkAllocateMemory(Gfx::context->getVkDevice(), &memAlloc, nullptr, memory);
+
+    if (data != nullptr)
+    {
+        void *mapped;
+        vkMapMemory(Gfx::context->getVkDevice(), *memory, 0, size, 0, &mapped);
+        memcpy(mapped, data, size);
+        vkUnmapMemory(Gfx::context->getVkDevice(), *memory);
+    }
+
+    vkBindBufferMemory(Gfx::context->getVkDevice(), *buffer, *memory, 0);
+    return VK_SUCCESS;
+}
+uint32_t GfxMgr::getMemoryTypeIndex(uint32_t typeBits, VkMemoryPropertyFlags properties)
+{
+    VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
+    vkGetPhysicalDeviceMemoryProperties(Gfx::context->getPhysicalDevice(), &deviceMemoryProperties);
+    for (uint32_t i = 0; i < deviceMemoryProperties.memoryTypeCount; i++)
+    {
+        if ((typeBits & 1) == 1)
+        {
+            if ((deviceMemoryProperties.memoryTypes[i].propertyFlags & properties) == properties)
+            {
+                return i;
+            }
+        }
+        typeBits >>= 1;
+    }
+    return 0;
+}
+GfxMgr::~GfxMgr()
+{
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 // void GfxMgr::initTestInfo()
 // {
@@ -290,74 +385,3 @@ void GfxMgr::submitRenderObject(std::string pipelineName, std::string renderId, 
 // }
 
 /* // 读取shader内容 */
-std::vector<char> GfxMgr::readShaderFile(const std::string &filename)
-{
-    /*   // ate: 表示从文件末未开始读取
-      // binary: 表示以二进制方式读取 */
-    std::ifstream file(filename, std::ios::ate | std::ios::binary);
-    /*    // std::cout << filename << std::endl; */
-    if (!file.is_open())
-    {
-        throw std::runtime_error("failed to open file!");
-    }
-    /*  // tellg()返回当前定位指针的位置，也代表着输入流的大小。 */
-    size_t fileSize = (size_t)file.tellg();
-    /*  // std::cout << fileSize << std::endl; */
-    std::vector<char> buffer(fileSize);
-    /*  // seekg()是对输入流的操作 g是get缩写，0是代表从开头读起。 */
-    file.seekg(0);
-    /* // 读入到Buffer当中 */
-    file.read(buffer.data(), fileSize);
-    file.close();
-    /* // std::cout << "read file success: " << filename << std::endl; */
-    return buffer;
-}
-
-VkResult GfxMgr::createBuffer(VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags, VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size, void *data = nullptr)
-{
-    VkBufferCreateInfo bufferCreateInfo{};
-    bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bufferCreateInfo.usage = usageFlags;
-    bufferCreateInfo.size = size;
-    bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    vkCreateBuffer(Gfx::context->getVkDevice(), &bufferCreateInfo, nullptr, buffer);
-
-    VkMemoryRequirements memReqs;
-    VkMemoryAllocateInfo memAlloc{};
-    memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    vkGetBufferMemoryRequirements(Gfx::context->getVkDevice(), *buffer, &memReqs);
-    memAlloc.allocationSize = memReqs.size;
-    memAlloc.memoryTypeIndex = getMemoryTypeIndex(memReqs.memoryTypeBits, memoryPropertyFlags);
-    vkAllocateMemory(Gfx::context->getVkDevice(), &memAlloc, nullptr, memory);
-
-    if (data != nullptr)
-    {
-        void *mapped;
-        vkMapMemory(Gfx::context->getVkDevice(), *memory, 0, size, 0, &mapped);
-        memcpy(mapped, data, size);
-        vkUnmapMemory(Gfx::context->getVkDevice(), *memory);
-    }
-
-    vkBindBufferMemory(Gfx::context->getVkDevice(), *buffer, *memory, 0);
-    return VK_SUCCESS;
-}
-uint32_t GfxMgr::getMemoryTypeIndex(uint32_t typeBits, VkMemoryPropertyFlags properties)
-{
-    VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
-    vkGetPhysicalDeviceMemoryProperties(Gfx::context->getPhysicalDevice(), &deviceMemoryProperties);
-    for (uint32_t i = 0; i < deviceMemoryProperties.memoryTypeCount; i++)
-    {
-        if ((typeBits & 1) == 1)
-        {
-            if ((deviceMemoryProperties.memoryTypes[i].propertyFlags & properties) == properties)
-            {
-                return i;
-            }
-        }
-        typeBits >>= 1;
-    }
-    return 0;
-}
-GfxMgr::~GfxMgr()
-{
-}

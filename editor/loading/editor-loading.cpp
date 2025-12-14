@@ -54,7 +54,6 @@ void EditorLoading::_initCamera()
 	node2d->addChild(ndCamera);
 	ndCamera->setPosition(0.0f, 0.0f, -100.0f);
 	this->_uiCamera = dynamic_cast<Camera *>(ndCamera->addComponent("Camera"));
-	this->_uiCamera->setPipeline("ui");
 }
 
 void EditorLoading::_initBg()

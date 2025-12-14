@@ -99,11 +99,7 @@ void GfxQueueDefault::_createVertexBuffers()
         indices.data());
     std::cout << "Gfx : RenderQueue :: Created vertex buffer with " << interleavedVertices.size() << " vertices." << std::endl;
 }
-void GfxQueueDefault::submitObject(const std::string textureUuid)
-{
-    this->_renderTextures.push_back(textureUuid);
-}
-void GfxQueueDefault::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
+void GfxQueueDefault::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds)
 {
     GfxPipelineDefault *pipeline = this->_renderer->getPipeline();
 
@@ -117,9 +113,9 @@ void GfxQueueDefault::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
     vkCmdBindVertexBuffers(this->_commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
     vkCmdBindIndexBuffer(this->_commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-    for (size_t i = 0; i < this->_renderTextures.size(); i++)
+    for (size_t i = 0; i < pipelineOutds.size(); i++)
     {
-        std::string textureUuid = this->_renderTextures[i];
+        std::string textureUuid = pipelineOutds[i];
         GfxTexture *texture = Gfx::renderer->getTexture(textureUuid);
         if (texture == nullptr)
         {
@@ -176,7 +172,6 @@ void GfxQueueDefault::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
         throw std::runtime_error("Failed to record command buffer!");
     }
     commandBuffers.push_back(this->_commandBuffers[imageIndex]);
-    this->_renderTextures.clear();
 }
 void GfxQueueDefault::_resetCommandBuffer(uint32_t imageIndex)
 {

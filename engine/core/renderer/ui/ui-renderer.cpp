@@ -153,7 +153,7 @@ void UIRenderer::Render(Camera *camera)
 	_instanceData.push_back(_color.getB());
 	_instanceData.push_back(_color.getA());
 
-	GfxMgr::getInstance()->submitRenderObject("ui", camera->getUuid(), this->_materialAsset->getGfxMaterial(), nullptr, this->_instanceData);
+	GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_materialAsset->getGfxMaterial(), nullptr, this->_instanceData);
 }
 
 void UIRenderer::Disable()

@@ -7,9 +7,7 @@
 #include <vector>
 #include <set>
 #include <map>
-
-#include "gfx-struct.h"
-#include "gfx-pipeline-struct.h"
+#include "base/gfx-pipeline-struct.h"
 
 class GfxRenderTexture;
 class GfxMaterial;
@@ -22,7 +20,7 @@ private:
 	GfxMgr &operator=(const GfxMgr &) = delete; /* // 禁用赋值操作符 */
 	GfxMgr();
 	~GfxMgr();
-
+	bool _lockRender = false;
 	size_t _currentFrame = 0;
 
 public:
@@ -35,6 +33,7 @@ public:
 	void update(float dt);
 	void resetSwapChain();
 
+	void setLockRender(bool lock);
 	/**
 	 * @brief 创建纹理
 	 *
@@ -79,15 +78,15 @@ public:
 	 * @param viewMat 视图矩阵
 	 * @param projMat 投影矩阵
 	 */
-	void initRenderQueue(std::string pipelineName, std::string renderId, GfxRenderTexture *renderTexture);
+	void initRenderQueue(std::string renderId, GfxRenderTexture *renderTexture);
 	/**
 	 * @brief 销毁渲染队列
 	 *
 	 * @param renderId 渲染队列ID
 	 */
-	void delRenderQueue(std::string pipelineName, std::string renderId);
+	void delRenderQueue(std::string renderId);
 	
-	void submitRenderMat(std::string pipelineName, std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
+	void submitRenderMat(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
 	/**
 	 * @brief 提交渲染对象
 	 *
@@ -97,7 +96,7 @@ public:
 	 * @param vertices 顶点数据
 	 * @param indices 索引数据
 	 */
-	void submitRenderObject(std::string pipelineName, std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData);
+	void submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData);
 
 	// void initTestInfo();
 	// /*  // 采样次数 */

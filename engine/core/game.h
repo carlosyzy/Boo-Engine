@@ -14,12 +14,9 @@ class FreetypeMgr;
 class Input;
 class Camera;
 class UIRenderer;
-class GfxRenderTexture;
-class GfxMaterial;
 
 struct View
 {
-    bool isFlag;
     int width = 1280;
     int height = 720;
 };
@@ -96,6 +93,8 @@ private:
      */
     std::unordered_map<std::string, UIRenderer *> _uiRenderers;
 
+    bool _viewChanged = false;
+
     /**
      * @brief 初始化图形库
      */
@@ -125,6 +124,7 @@ private:
      */
     void _initAlpha();
 
+    void _viewChangeEnd();
     void _update(float dt);
     void _updateSchedules(float dt);
     void _lateUpdate(float dt);

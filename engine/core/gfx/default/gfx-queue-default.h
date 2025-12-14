@@ -32,7 +32,7 @@ private :
 	void _createFramebuffers();
 	void _createCommandBuffers();
 	
-	std::vector<std::string> _renderTextures;
+	// std::vector<std::string> _renderTextures;
 
 	// // 渲染批次
 	// std::vector<GfxBatchBuiltin *> _batches;
@@ -61,8 +61,7 @@ private :
 public:
 	GfxQueueDefault(GfxRendererDefault *renderer);
 	void init();
-	void submitObject(const std::string textureUuid);
-	void render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
+	void render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers,std::vector<std::string> &pipelineOutds);
 	void _clean();
 	void _reset();
 	~GfxQueueDefault();

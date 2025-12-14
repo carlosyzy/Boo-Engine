@@ -1,10 +1,10 @@
 #include "material-asset.h"
 #include "../gfx/gfx-mgr.h"
 #include "../utils/uuid-util.h"
-#include "../gfx/gfx-pipeline-struct.h"
-#include "../gfx/gfx-push-constants.h"
-#include "../gfx/gfx-mesh.h"
-#include "../gfx/gfx-material.h"
+#include "../gfx/base/gfx-pipeline-struct.h"
+#include "../gfx/base/gfx-push-constants.h"
+#include "../gfx/base/gfx-mesh.h"
+#include "../gfx/base/gfx-material.h"
 
 
 MaterialAsset::MaterialAsset() : Asset()
@@ -24,7 +24,7 @@ void MaterialAsset::create(std::string path)
 void MaterialAsset::createTest()
 {
 	GfxPipelineStruct uiPipeline = {};
-    uiPipeline.pass = "ui";
+    uiPipeline.render = 1;
     uiPipeline.vert = "ui.vert";
     uiPipeline.frag = "ui.frag";
     // 多边形模式 填充

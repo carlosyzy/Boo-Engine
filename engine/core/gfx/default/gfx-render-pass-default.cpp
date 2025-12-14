@@ -1,6 +1,6 @@
 #include "gfx-render-pass-default.h"
-#include "../../gfx.h"
-#include "../../gfx-context.h"
+#include "../gfx.h"
+#include "../gfx-context.h"
 
 GfxRenderPassDefault::GfxRenderPassDefault(std::string name) : GfxRenderPass(name)
 {

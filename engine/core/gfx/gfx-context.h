@@ -8,7 +8,6 @@
 #include <set>
 #include <map>
 #include <algorithm>
-#include "gfx-texture.h"
 
 // 查询并记录交换链支持的细节
 struct SwapChainSupportDetails

@@ -21,7 +21,6 @@ class GfxPipelineDefault;
 struct GfxRenderxDescriptorSets
 {
 	std::vector<VkDescriptorSet> descriptorSets;
-	bool isUsed = false;
 };
 
 class GfxRendererDefault
@@ -42,6 +41,7 @@ private:
 	VkDescriptorSetLayout _descriptorSetLayout;
 	void _initDescriptorSetLayout();
 	std::vector<GfxRenderxDescriptorSets> _descriptorSets;
+	int _currentDescriptorSetIndex = 0;
 	void _initDefaultDescriptor();
 
 	GfxRenderPassDefault *_pass;
@@ -62,11 +62,12 @@ public:
 	void init();
 	GfxRenderPassDefault *getRenderPass();
 	GfxPipelineDefault *getPipeline();
-	std::vector<VkDescriptorSet> &getDescriptorSets();
+	std::vector<VkDescriptorSet> getDescriptorSets();
 
 	void createPipeline(std::string name, GfxPipelineStruct pipelineStruct);
-	void submitRenderObject(const std::string textureUuid);
-	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
+	void frameRendererBefore();
+	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds);
+	void frameRendererAfter();
 
 	void _cleanRendererState();
 	void _resetRendererState();

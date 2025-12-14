@@ -7,7 +7,7 @@
 #include "../scene/node.h"
 #include "../scene/node-2d.h"
 #include "../gfx/gfx-mgr.h"
-#include "../gfx/gfx-render-texture.h"
+#include "../gfx/base/gfx-render-texture.h"
 
 Camera::Camera(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
 {
@@ -22,12 +22,23 @@ void Camera::Awake()
     Component::Awake();
     this->_matView = Mat4::identity();
     this->_matProj = Mat4::identity();
+    this->_createRenderPipeline();
+}
+void Camera::_createRenderPipeline()
+{
+    this->_renderTexture = new GfxRenderTexture(this->_uuid);
+    GfxMgr::getInstance()->initRenderQueue(this->_uuid, this->_renderTexture);
+    if (this->_width > 0 && this->_height > 0)
+    {
+        this->_renderTexture->resize(this->_width, this->_height);
+    }
 }
 void Camera::Enable()
 {
     Component::Enable();
     Boo::game->extractCamera(this);
 }
+
 void Camera::resize(int width, int height)
 {
     if (this->_width == width && this->_height == height)
@@ -43,39 +54,6 @@ void Camera::resize(int width, int height)
     }
     this->_matProj.setM00(2.0f / (float)this->_width);
     this->_matProj.setM11(2.0f / (float)this->_height);
-}
-void Camera::setPipeline(std::string pipeline)
-{
-    if (this->_pipeline == pipeline)
-    {
-        return;
-    }
-    this->_clearOldRenderPipeline();
-    this->_pipeline = pipeline;
-    this->_createRenderPipeline();
-}
-void Camera::_clearOldRenderPipeline()
-{
-    // 渲染管线变了后重制渲染目标
-    if (this->_renderTexture != nullptr)
-    {
-        this->_renderTexture->destroy();
-        this->_renderTexture = nullptr;
-        GfxMgr::getInstance()->delRenderQueue(this->_pipeline, this->_uuid);
-    }
-}
-void Camera::_createRenderPipeline()
-{
-    this->_renderTexture = new GfxRenderTexture(this->_uuid);
-    GfxMgr::getInstance()->initRenderQueue(this->_pipeline, this->_uuid, this->_renderTexture);
-    if (this->_width > 0 && this->_height > 0)
-    {
-        this->_renderTexture->resize(this->_width, this->_height);
-    }
-}
-std::string Camera::getPipeline()
-{
-    return this->_pipeline;
 }
 void Camera::setPriority(int priority)
 {
@@ -111,7 +89,7 @@ void Camera::LateUpdate(float deltaTime)
 }
 void Camera::Render()
 {
-    GfxMgr::getInstance()->submitRenderMat(this->_pipeline, this->_uuid, this->_matView.data(), this->_matProj.data());
+    GfxMgr::getInstance()->submitRenderMat(this->_uuid, this->_matView.data(), this->_matProj.data());
 }
 void Camera::Disable()
 {

@@ -11,8 +11,7 @@
 #include <sstream>
 #include <vulkan/vulkan_core.h>
 #include <shaderc/shaderc.hpp>
-#include "../../gfx-renderer.h"
-
+#include "../base/gfx-pipeline-struct.h"
 
 class GfxContext;
 class GfxRenderPassBuiltin;
@@ -20,6 +19,11 @@ class GfxQueueBuiltin;
 class GfxPipelineBuiltin;
 class GfxBufferUBO;
 class GfxBufferInstance;
+class GfxRenderTexture;
+class GfxMesh;
+class GfxMaterial;
+
+
 
 // struct GfxRenderxDescriptorSet
 // {
@@ -98,8 +102,10 @@ public:
 	void delRenderQueue(std::string renderId);
 	void submitRenderMat(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
 	void submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData);
-
+	void getOffScreenOutds(std::vector<std::string> &pipelineOutds);
+	void frameRendererBefore();
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers,std::vector<std::string> &pipelineOutds);
+	void frameRendererAfter();	
 
 	void _cleanRendererState();
 	void _resetRendererState();

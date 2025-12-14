@@ -1,7 +1,7 @@
 #include "gfx-mesh.h"
-#include "gfx-mgr.h"
-#include "gfx.h"
-#include "gfx-context.h"
+#include "../gfx-mgr.h"
+#include "../gfx.h"
+#include "../gfx-context.h"
 
 GfxMesh::GfxMesh(std::string uuid)
 {

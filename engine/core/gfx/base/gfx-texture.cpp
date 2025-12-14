@@ -1,9 +1,7 @@
 #include "gfx-texture.h"
 #include "../gfx.h"
 #include "../gfx-context.h"
-#include "../gfx-struct.h"
 #include "../gfx-mgr.h"
-
 #include "../../../libs/stb/stb_image_write.h"
 
 /* // 主要用于创建附件贴图 */

@@ -416,7 +416,19 @@ void GfxRendererBuiltin::submitRenderObject(std::string renderId, GfxMaterial *m
     // }
     this->_renderQueues[renderId]->submitObject(this->_uiMaterial, mesh, instanceData);
 }
+void GfxRendererBuiltin::getOffScreenOutds(std::vector<std::string> &pipelineOutds)
+{
+    // for (auto &renderQueue : this->_renderQueues)
+    // {
+    //     pipelineOutds.push_back(renderQueue.first);
+    // }
+}
 
+
+void GfxRendererBuiltin::frameRendererBefore()
+{
+  
+}
 void GfxRendererBuiltin::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds)
 {
 
@@ -432,6 +444,12 @@ void GfxRendererBuiltin::frameRenderer(uint32_t imageIndex, std::vector<VkComman
     //     renderxDescriptorSet.isUsed = false;
     // }
 }
+void GfxRendererBuiltin::frameRendererAfter()
+{
+  
+}
+
+
 
 void GfxRendererBuiltin::_cleanRendererState()
 {

@@ -12,9 +12,7 @@
 #include <vulkan/vulkan_core.h>
 #include <shaderc/shaderc.hpp>
 
-#include "gfx-struct.h"
-#include "gfx-pipeline-struct.h"
-#include "../assets/texture-asset.h"
+#include "base/gfx-pipeline-struct.h"
 
 class GfxContext;
 class GfxRendererDefault;
@@ -25,11 +23,13 @@ class GfxPipeline;
 class GfxRenderTexture;
 class GfxMaterial;
 class GfxMesh;
+class GfxRendererBuiltin;
 
 class GfxRenderer
 {
 private:
 	GfxRendererDefault *_defaultRenderer;
+	GfxRendererBuiltin *_builtinRenderer;
 
 public:
 	GfxRenderer();
@@ -67,7 +67,7 @@ public:
 	void delRenderQueue(std::string renderId);
 	void submitRenderMat(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
 	void submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData);
-
+	
 	void frameRendererBefore();
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
 	void frameRendererAfter();

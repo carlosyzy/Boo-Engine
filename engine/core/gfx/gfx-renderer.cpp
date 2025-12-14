@@ -11,12 +11,14 @@
 #include "base/gfx-buffer-instance.h"
 #include "base/gfx-render-texture.h"
 #include "default/gfx-renderer-default.h"
+#include "builtin/gfx-renderer-builtin.h"
 
 #include "../math/mat4.h"
 
 GfxRenderer::GfxRenderer()
 {
     this->_defaultRenderer = new GfxRendererDefault("default");
+    this->_builtinRenderer = new GfxRendererBuiltin("builtin");
 }
 void GfxRenderer::init()
 {
@@ -179,39 +181,33 @@ std::vector<uint32_t> GfxRenderer::compileShaderGlslToSpirv(const std::string &t
 }
 void GfxRenderer::initRenderQueue(std::string renderId, GfxRenderTexture *renderTexture)
 {
-    // if (renderId == "ui")
-    // {
-    //     this->_renderPipelineUI->initRenderQueue(renderId, renderTexture);
-    // }
+    this->_builtinRenderer->initRenderQueue(renderId, renderTexture);
 }
 void GfxRenderer::delRenderQueue(std::string renderId)
 {
-    // if (pipelineName == "ui")
-    // {
-    //     this->_renderPipelineUI->delRenderQueue(renderId);
-    // }
+    this->_builtinRenderer->delRenderQueue(renderId);
 }
 void GfxRenderer::submitRenderMat(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix)
 {
-    // if (pipelineName == "ui")
-    // {
-    //     this->_renderPipelineUI->submitRenderMat(renderId, viewMatrix, projMatrix);
-    // }
+    this->_builtinRenderer->submitRenderMat(renderId, viewMatrix, projMatrix);
 }
 void GfxRenderer::submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData)
 {
-    // if (pipelineName == "ui")
-    // {
-    //     this->_renderPipelineUI->submitRenderObject(renderId, material, mesh, instanceData);
-    // }
+    this->_builtinRenderer->submitRenderObject(renderId, material, mesh, instanceData);
 }
 void GfxRenderer::frameRendererBefore()
 {
     Gfx::bufferUBO->clear();
     Gfx::bufferInstance->clear();
+    this->_defaultRenderer->frameRendererBefore();
+    this->_builtinRenderer->frameRendererBefore();
 }
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
+    //先获取上一帧的离屏渲染输出提交到默认队列
+    std::vector<std::string> pipelineOutds;
+    this->_builtinRenderer->getOffScreenOutds(pipelineOutds);
+    this->_defaultRenderer->frameRenderer(imageIndex, commandBuffers, pipelineOutds);
     // this->_pipelineOutds.clear();
     // // 渲染3d队列
     // // 渲染ui队列
@@ -228,6 +224,8 @@ void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer
 }
 void GfxRenderer::frameRendererAfter()
 {
+    this->_defaultRenderer->frameRendererAfter();
+    this->_builtinRenderer->frameRendererAfter();
 }
 GfxRenderer::~GfxRenderer()
 {
