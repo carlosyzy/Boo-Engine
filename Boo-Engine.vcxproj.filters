@@ -231,21 +231,6 @@
     <ClCompile Include="engine\core\gfx\gfx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-batch-builtin.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-pass-builtin.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-pipeline-builtin.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-queue-builtin.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-renderer-builtin.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\gfx\pipeline\ui\gfx-batch-ui.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -265,6 +250,21 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\gfx\gfx-buffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-batch-builtin.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-pass-builtin.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-pipeline-builtin.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-queue-builtin.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-renderer-builtin.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -710,21 +710,6 @@
     <ClInclude Include="engine\core\gfx\gfx.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-batch-builtin.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-pass-builtin.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-pipeline-builtin.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-queue-builtin.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-renderer-builtin.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="engine\core\gfx\pipeline\ui\gfx-batch-ui.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -747,6 +732,21 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\gfx\gfx-buffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-batch-builtin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-pass-builtin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-pipeline-builtin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-queue-builtin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-renderer-builtin.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
