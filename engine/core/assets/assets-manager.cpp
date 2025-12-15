@@ -11,12 +11,15 @@
 
 AssetsManager::AssetsManager()
 {
+	this->_assetsCache = new AssetCache();
+	this->_assetsLoad = new AssetLoad(this);
 }
 void AssetsManager::init()
 {
-	this->_assetsCache = new AssetCache();
-	this->_assetsLoad = new AssetLoad(this);
-
+	this->_initDefaultBuiltinAssets();
+}
+void AssetsManager::_initDefaultBuiltinAssets()
+{
 	TextureAsset *texture = new TextureAsset("550e8400-e29b-41d4-a716-446655440000");
 	texture->create(DefaultTexture, sizeof(DefaultTexture));
 	this->_assetsCache->addAsset("550e8400-e29b-41d4-a716-446655440000", texture);
@@ -25,6 +28,7 @@ void AssetsManager::init()
 	logo->create(LogoTexture, sizeof(LogoTexture));
 	this->_assetsCache->addAsset("123e4567-e89b-12d3-a456-426614174000", logo);
 }
+
 void AssetsManager::initAssetsDB(const std::string &path)
 {
 	this->_assetsCache->initAssetsDB(path);

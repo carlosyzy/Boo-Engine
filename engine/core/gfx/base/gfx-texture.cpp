@@ -20,7 +20,7 @@ GfxTexture::GfxTexture(std::string uuid, const std::vector<uint8_t> *pixels, uin
     this->_createTextureImage();
     this->_createTextureImageView();
     this->_createTextureSampler();
-    std::cout << "Gfx : Texture :: create success" << std::endl;
+    std::cout << "[Gfx : Texture]:: create success" << std::endl;
 }
 
 void GfxTexture::_createTextureImage()
@@ -92,9 +92,7 @@ void GfxTexture::_createTextureSampler()
     if (vkCreateSampler(Gfx::context->getVkDevice(), &samplerInfo, nullptr, &this->_textureSampler) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create texture sampler!");
-    }
-    // this->_Log("create texture sampler success...");
-    
+    }    
 }
 /* 
 // 以下实现辅助方法... */
@@ -448,11 +446,11 @@ bool GfxTexture::saveToFile(std::string filePath, uint32_t width, uint32_t heigh
 
     if (success)
     {
-        std::cout << "GfxTexture: Saved to " << filePath << std::endl;
+        std::cout << "[Gfx : Texture]:: Saved to " << filePath << std::endl;
     }
     else
     {
-        std::cerr << "GfxTexture: Failed to save to " << filePath << std::endl;
+        std::cerr << "[Gfx : Texture]:: Failed to save to " << filePath << std::endl;
     }
 
     return success;

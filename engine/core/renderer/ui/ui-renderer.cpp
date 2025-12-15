@@ -1,6 +1,8 @@
 #include "ui-renderer.h"
 #include <filesystem>
+#include "../../gfx/gfx.h"
 #include "../../gfx/gfx-mgr.h"
+#include "../../gfx/base/gfx-mesh.h"
 #include "../../boo.h"
 #include "../../scene/node.h"
 #include "../../scene/node-2d.h"
@@ -153,7 +155,7 @@ void UIRenderer::Render(Camera *camera)
 	_instanceData.push_back(_color.getB());
 	_instanceData.push_back(_color.getA());
 
-	GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_materialAsset->getGfxMaterial(), nullptr, this->_instanceData);
+	GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_materialAsset->getGfxMaterial(), Gfx::uiTestMesh, this->_instanceData);
 }
 
 void UIRenderer::Disable()

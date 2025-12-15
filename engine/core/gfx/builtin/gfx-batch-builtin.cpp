@@ -40,14 +40,15 @@ void GfxBatchBuiltin::render(VkCommandBuffer &queueCommandBuffer, GfxBuffer *ubo
 
     const GfxPipelineStruct &pipelineStruct = this->_material->getPipelineStruct();
     GfxPipelineBuiltin *pipeline = this->_renderer->getPipeline(pipelineStruct.generateKey());
-    if(pipelineStruct.render==uint32_t(GfxPipelineRender::_UI)){
+    if (pipelineStruct.render == uint32_t(GfxPipelineRender::_UI))
+    {
         this->_bindUIDescriptorSets(queueCommandBuffer, pipeline, ubo);
-    }else if(pipelineStruct.render==uint32_t(GfxPipelineRender::_3D)){
+    }
+    else if (pipelineStruct.render == uint32_t(GfxPipelineRender::_3D))
+    {
         this->_bind3DDescriptorSets(queueCommandBuffer, pipeline, ubo);
     }
 
-
-    
     if (pipeline == nullptr)
     {
         throw std::runtime_error("GfxRenderBatch::render() pipeline not found!");
@@ -138,9 +139,8 @@ void GfxBatchBuiltin::_bindPipeline(VkCommandBuffer &queueCommandBuffer, GfxPipe
 {
     vkCmdBindPipeline(queueCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipeline());
 }
-void GfxBatchBuiltin::_bindUIDescriptorSets(VkCommandBuffer &queueCommandBuffer,GfxPipelineBuiltin *pipeline, GfxBuffer *ubo)
+void GfxBatchBuiltin::_bindUIDescriptorSets(VkCommandBuffer &queueCommandBuffer, GfxPipelineBuiltin *pipeline, GfxBuffer *ubo)
 {
-
     VkDescriptorSet descriptor = this->_renderer->getUIDescriptorSet();
     std::array<VkWriteDescriptorSet, 5> descriptorWrites{};
     // 绑定ubo
@@ -188,7 +188,7 @@ void GfxBatchBuiltin::_bindUIDescriptorSets(VkCommandBuffer &queueCommandBuffer,
     vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
     vkCmdBindDescriptorSets(queueCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptor, 0, nullptr);
 }
-void GfxBatchBuiltin::_bind3DDescriptorSets(VkCommandBuffer &queueCommandBuffer,GfxPipelineBuiltin *pipeline, GfxBuffer *ubo)
+void GfxBatchBuiltin::_bind3DDescriptorSets(VkCommandBuffer &queueCommandBuffer, GfxPipelineBuiltin *pipeline, GfxBuffer *ubo)
 {
 }
 

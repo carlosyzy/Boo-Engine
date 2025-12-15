@@ -3,8 +3,10 @@
 #include "gfx-renderer.h"
 #include "base/gfx-shader.h"
 #include "base/gfx-texture.h"
+#include "base/gfx-mesh.h"
 #include "base/gfx-buffer-ubo.h"
 #include "base/gfx-buffer-instance.h"
+
 
 namespace Gfx
 {
@@ -15,4 +17,5 @@ namespace Gfx
     std::map<std::string, GfxTexture *> textures;
     GfxBufferUBO *bufferUBO = nullptr;
     GfxBufferInstance *bufferInstance = nullptr;
+    GfxMesh *uiTestMesh = nullptr;
 }

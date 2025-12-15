@@ -62,7 +62,7 @@ public:
 	GfxQueueDefault(GfxRendererDefault *renderer);
 	void init();
 	void render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers,std::vector<std::string> &pipelineOutds);
-	void _clean();
+	void _clear();
 	void _reset();
 	~GfxQueueDefault();
 };

@@ -25,8 +25,8 @@ void MaterialAsset::createTest()
 {
 	GfxPipelineStruct uiPipeline = {};
     uiPipeline.render = 1;
-    uiPipeline.vert = "ui.vert";
-    uiPipeline.frag = "ui.frag";
+    uiPipeline.vert = "builtin-ui.vert";
+    uiPipeline.frag = "builtin-ui.frag";
     // 多边形模式 填充
     uiPipeline.polygonMode = GfxPipelinePolygonMode::Fill;
     // 剔除模式 背面

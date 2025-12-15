@@ -66,10 +66,10 @@ void GfxRenderPassBuiltin::_create()
     renderPassInfo.pDependencies = &dependency;
     if (vkCreateRenderPass(Gfx::context->getVkDevice(), &renderPassInfo, nullptr, &this->_vkRenderPass) != VK_SUCCESS)
     {
-        std::cout << "GfxRenderPass :create render pass failed " << this->_name << std::endl;
+        std::cout << "[Gfx : GfxRenderPassBuiltin] :: create render pass failed " << this->_name << std::endl;
         return;
     }
-    std::cout << "GfxRenderPass :create render pass success " << this->_name << std::endl;
+    std::cout << "[Gfx : GfxRenderPassBuiltin] :: create render pass success " << this->_name << std::endl;
 }
 
 GfxRenderPassBuiltin::~GfxRenderPassBuiltin()

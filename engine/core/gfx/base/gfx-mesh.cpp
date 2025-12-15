@@ -35,7 +35,6 @@ void GfxMesh::_createVertexBuffers()
         &this->_indexMemory,
         this->_indices.size() * sizeof(uint32_t),
         this->_indices.data());
-    std::cout << "Gfx : RenderQueue :: Created index buffer with " << this->_indices.size() << " indices." << std::endl;
     this->_indexSize = this->_indices.size();
 }
 void GfxMesh::_clearVertexBuffers()

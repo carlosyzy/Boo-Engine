@@ -3,7 +3,7 @@
 #include "texture-asset.h"
 #include <filesystem>
 #include <iostream>
-#include "shader.h"
+#include "shader-asset.h"
 #include "assets-manager.h"
 #include "asset-cache.h"
 #include "asset-task.h"

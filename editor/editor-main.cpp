@@ -28,7 +28,6 @@ void EditorMain::init()
     // 加载场景
     Scene *scene = new Scene("Editor-Loading-Scene");
     Node2D *node2d = scene->getRoot2D();
-    node2d->setVisibility(1 << 20);
     EditorLoading *editorLoading = static_cast<EditorLoading *>(node2d->addComponent("EditorLoading"));
     Boo::game->openScene(scene);
     editorLoading->setOnLoadComplete([this]()

@@ -16,17 +16,11 @@
 
 GfxRendererBuiltin::GfxRendererBuiltin(std::string name)
 {
-    // 所有ui 默认绑定4个采样器
-    this->_uiMesh = new GfxMesh("ui");
-    this->_uiMesh->setInputVertices({-0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-                                     -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-                                     0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-                                     0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
-                                    {0, 1, 2, 0, 2, 3});
+    this->_name = name;
 }
 void GfxRendererBuiltin::init()
 {
-    std::cout << "Gfx : Renderer UI :: init" << std::endl;
+    std::cout << "[Gfx : GfxRendererBuiltin] :: init "<< this->_name << std::endl;
     this->_initDescriptorSetLayout();
     this->_initDescriptorSets();
     this->_initDefaultRenderPass();
@@ -69,10 +63,10 @@ void GfxRendererBuiltin::_initUIDescriptorSetLayout()
     if (vkCreateDescriptorSetLayout(Gfx::context->getVkDevice(),
                                     &layoutInfo, nullptr, &this->_uiDescriptorSetLayout) != VK_SUCCESS)
     {
-        std::cout << "Gfx : Descriptor ::create descriptor set layout failed " << std::endl;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: create descriptor set layout failed " << std::endl;
         return;
     }
-    std::cout << "Gfx : Descriptor ::create descriptor set layout success " << std::endl;
+    std::cout << "[Gfx : GfxRendererBuiltin] :: create descriptor set layout success " << std::endl;
 }
 void GfxRendererBuiltin::_init3DDescriptorSetLayout()
 {
@@ -103,10 +97,10 @@ void GfxRendererBuiltin::_initUIDescriptorSets()
     poolInfo.maxSets = (maxObjectCount + 3); // 描述符集的最大数量
     if (vkCreateDescriptorPool(Gfx::context->getVkDevice(), &poolInfo, nullptr, &this->_uiDescriptorPool) != VK_SUCCESS)
     {
-        std::cout << "Gfx : Descriptor ::create descriptor pool failed " << std::endl;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: create descriptor pool failed " << std::endl;
         return;
     }
-    std::cout << "Gfx : Descriptor ::create descriptor pool success " << std::endl;
+    std::cout << "[Gfx : GfxRendererBuiltin] :: create descriptor pool success " << std::endl;
     // for (uint32_t i = 0; i < 100; i++)
     // {
     //     VkDescriptorSet descriptorSet;
@@ -145,10 +139,10 @@ void GfxRendererBuiltin::_init3DDescriptorSets()
     poolInfo.maxSets = (maxObjectCount + 3); // 描述符集的最大数量
     if (vkCreateDescriptorPool(Gfx::context->getVkDevice(), &poolInfo, nullptr, &this->_uiDescriptorPool) != VK_SUCCESS)
     {
-        std::cout << "Gfx : Descriptor ::create descriptor pool failed " << std::endl;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: create descriptor pool failed " << std::endl;
         return;
     }
-    std::cout << "Gfx : Descriptor ::create descriptor pool success " << std::endl;
+    std::cout << "[Gfx : GfxRendererBuiltin] :: create descriptor pool success " << std::endl;
 }
 
 /**
@@ -228,22 +222,22 @@ void GfxRendererBuiltin::createPipeline(std::string name, GfxPipelineStruct pipe
 {
     if (Gfx::shaders.find(pipelineStruct.vert) == Gfx::shaders.end())
     {
-        std::cout << "createPipeline:vert not found:" << pipelineStruct.vert << std::endl;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: createPipeline:vert not found:" << pipelineStruct.vert << std::endl;
         return;
     }
     if (Gfx::shaders.find(pipelineStruct.frag) == Gfx::shaders.end())
     {
-        std::cout << "createPipeline:frag not found:" << pipelineStruct.frag << std::endl;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: createPipeline:frag not found:" << pipelineStruct.frag << std::endl;
         return;
     }
     if (this->_pass == nullptr)
     {
-        std::cout << "createPipeline:pass not found:" << std::endl;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: createPipeline:pass not found:" << std::endl;
         return;
     }
     if (this->_pipelines.find(name) != this->_pipelines.end())
     {
-        std::cout << "createPipeline:name already exists:" << name << std::endl;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: createPipeline:name already exists:" << name << std::endl;
         return;
     }
     GfxPipelineBuiltin *pipeline = new GfxPipelineBuiltin(name);
@@ -270,7 +264,7 @@ GfxPipelineBuiltin *GfxRendererBuiltin::getPipeline(std::string name)
 }
 VkDescriptorSet GfxRendererBuiltin::getUIDescriptorSet()
 {
-
+    // std::cout << "GfxRendererBuiltin::getUIDescriptorSet:" << this->_gfxUIDescriptorSets.size() << std::endl;
     for (auto &descriptorSet : this->_gfxUIDescriptorSets)
     {
         if (!descriptorSet.isOccupied)
@@ -293,7 +287,7 @@ VkDescriptorSet GfxRendererBuiltin::getUIDescriptorSet()
     allocInfo.pSetLayouts = layouts.data();
     if (vkAllocateDescriptorSets(Gfx::context->getVkDevice(), &allocInfo, &descriptorSet) != VK_SUCCESS)
     {
-        std::cout << "Gfx : Descriptor ::create descriptor sets failed " << std::endl;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: create descriptor sets failed " << std::endl;
     }
     this->_gfxUIDescriptorSets.push_back({descriptorSet, true});
     return descriptorSet;
@@ -302,7 +296,7 @@ void GfxRendererBuiltin::initRenderQueue(std::string renderId, GfxRenderTexture 
 {
     if (this->_renderQueues.find(renderId) != this->_renderQueues.end())
     {
-        std::cout << "initRenderQueue:renderId already exists:" << renderId << std::endl;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: initRenderQueue:renderId already exists:" << renderId << std::endl;
         return;
     }
     // 绑定渲染pass
@@ -316,11 +310,11 @@ void GfxRendererBuiltin::delRenderQueue(std::string renderId)
 {
     if (this->_renderQueues.find(renderId) == this->_renderQueues.end())
     {
-        std::cout << "delRenderQueue:renderId not found:" << renderId << std::endl;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: delRenderQueue:renderId not found:" << renderId << std::endl;
         return;
     }
     this->_renderQueues[renderId]->destroy();
-    ;
+    // 销毁渲染队列
     delete this->_renderQueues[renderId];
     this->_renderQueues.erase(renderId);
 }
@@ -328,7 +322,7 @@ void GfxRendererBuiltin::submitRenderMat(std::string renderId, const std::array<
 {
     if (this->_renderQueues.find(renderId) == this->_renderQueues.end())
     {
-        std::cout << "submitRenderMat:renderId not found:" << renderId << std::endl;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: submitRenderMat:renderId not found:" << renderId << std::endl;
         return;
     }
     this->_renderQueues[renderId]->submitMat(viewMatrix, projMatrix);
@@ -337,12 +331,17 @@ void GfxRendererBuiltin::submitRenderObject(std::string renderId, GfxMaterial *m
 {
     if (this->_renderQueues.find(renderId) == this->_renderQueues.end())
     {
-        std::cout << "submitRenderObject:renderId not found:" << renderId << std::endl;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: submitRenderObject:renderId not found:" << renderId << std::endl;
         return;
     }
-    if (material == nullptr || mesh == nullptr)
+    if (material == nullptr)
     {
-        std::cout << "submitRenderObject:material or mesh is null:" << renderId << std::endl;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: submitRenderObject:material is null:" << renderId << std::endl;
+        return;
+    }
+    if (mesh == nullptr)
+    {
+        std::cout << "[Gfx : GfxRendererBuiltin] :: submitRenderObject:mesh is null:" << renderId << std::endl;
         return;
     }
     this->_renderQueues[renderId]->submitObject(material, mesh, instanceData);
@@ -367,10 +366,17 @@ void GfxRendererBuiltin::getOffScreenOutds(std::vector<std::string> &pipelineOut
 
 void GfxRendererBuiltin::frameRendererBefore()
 {
+    for (auto &descriptorSet : this->_gfxUIDescriptorSets)
+    {
+        descriptorSet.isOccupied = false;
+    }
+    for (auto &descriptorSet : this->_gfx3DDescriptorSets)
+    {
+        descriptorSet.isOccupied = false;
+    }
 }
 void GfxRendererBuiltin::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
-
     for (auto &renderQueue : this->_renderQueues)
     {
         renderQueue.second->render(commandBuffers);

@@ -13,12 +13,27 @@ const std::string &GfxPipeline::getName()
 }
 void GfxPipeline::create(GfxRenderPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, VkDescriptorSetLayout descriptorSetLayout, GfxPipelineStruct pipelineStruct)
 {
-    if (this->_pass == nullptr || this->_vertexShader == nullptr || this->_fragmentShader == nullptr || this->_descriptorSetLayout == nullptr)
+    if (pass == nullptr)
     {
-        std::cout << "Gfx : Base  : Pipeline :: create pipeline " << this->_name << " failed, pass or vertexShader or fragmentShader or descriptorSetLayout is nullptr" << std::endl;
+        std::cout << "[Gfx : GfxPipeline]::create: pass  is nullptr" << std::endl;
         return;
     }
-    
+    if (vertexShader == nullptr)
+    {
+        std::cout << "[Gfx : GfxPipeline]::create: vertexShader  is nullptr" << std::endl;
+        return;
+    }
+    if (fragmentShader == nullptr)
+    {
+        std::cout << "[Gfx : GfxPipeline]::create: fragmentShader  is nullptr" << std::endl;
+        return;
+    }
+    if (descriptorSetLayout == nullptr)
+    {
+        std::cout << "[Gfx : GfxPipeline]::create: descriptorSetLayout  is nullptr" << std::endl;
+        return;
+    }
+
     this->_pass = pass;
     this->_vertexShader = vertexShader;
     this->_fragmentShader = fragmentShader;
@@ -69,7 +84,6 @@ void GfxPipeline::_initShaderState()
  */
 void GfxPipeline::_initVertexInputState()
 {
-   
 }
 void GfxPipeline::_initInputAssemblyState()
 {
@@ -91,7 +105,6 @@ void GfxPipeline::_initDynamicState()
 }
 void GfxPipeline::_initViewportState()
 {
-    
 }
 void GfxPipeline::_initRasterizationState()
 {
@@ -280,7 +293,6 @@ VkBlendOp GfxPipeline::_getBlendOp(GfxPipelineColorBlendOp blendOp)
 }
 void GfxPipeline::_initPipelineLayout()
 {
-    
 }
 VkPipelineLayout GfxPipeline::getVKPipelineLayout()
 {
@@ -289,7 +301,6 @@ VkPipelineLayout GfxPipeline::getVKPipelineLayout()
 
 void GfxPipeline::_initPipeline()
 {
-    
 }
 
 VkPipeline GfxPipeline::getVKPipeline()
@@ -321,7 +332,6 @@ void GfxPipeline::_reset()
 GfxPipeline::~GfxPipeline()
 {
 }
-
 
 /**
  * 要实际使用Shader，我们需要通过 VkPipelineShaderStageCreateInfo 结构将它们分配给特定的管道阶段，作为实际管道创建过程的一部分。

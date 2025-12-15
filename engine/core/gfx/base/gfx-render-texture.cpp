@@ -19,18 +19,17 @@ GfxRenderTexture::GfxRenderTexture(std::string uuid)
 }
 void GfxRenderTexture::bindRenderPass(GfxRenderPass *pass)
 {
-    if (this->_pass == nullptr)
+    if (pass == nullptr)
     {
-        std::cout << "GfxRenderTexture::bindRenderPass: pass is null" << std::endl;
+        std::cout << "[Gfx : GfxRenderTexture]::bindRenderPass: pass is null" << std::endl;
         return;
     }
-    std::cout << "GfxRenderTexture::bindRenderPass: pass:" << pass << std::endl;
     this->_pass = pass;
     if (this->_colorTexture == nullptr || this->_depthTexture == nullptr)
     {
+        std::cout << "[Gfx : GfxRenderTexture]::bindRenderPass: colorTexture or depthTexture is null" << std::endl;
         return;
     }
-
     this->_createFrameBuffer();
     this->_createCommandBuffer();
 }
@@ -57,7 +56,7 @@ void GfxRenderTexture::_createFrameBuffer()
     {
         throw std::runtime_error("failed to create framebuffer!");
     }
-    std::cout << "GfxRenderTexture::_createFrameBuffer: framebuffer:" << this->_framebuffer << std::endl;
+    std::cout << "[Gfx : GfxRenderTexture]:: create framebuffer success" << std::endl;
 }
 void GfxRenderTexture::_createCommandBuffer()
 {
@@ -75,7 +74,7 @@ void GfxRenderTexture::_createCommandBuffer()
     {
         throw std::runtime_error("Failed to allocate command buffers!");
     }
-    std::cout << "GfxRenderTexture::_createCommandBuffer: commandBuffer:" << this->_commandBuffer << std::endl;
+    std::cout << "[Gfx : GfxRenderTexture]:: create commandbuffer success" << std::endl;
 }
 VkFramebuffer &GfxRenderTexture::getFramebuffer()
 {
@@ -88,7 +87,7 @@ VkCommandBuffer &GfxRenderTexture::getCommandBuffer()
 
 void GfxRenderTexture::resize(uint32_t width, uint32_t height)
 {
-    std::cout << "GfxRenderTexture::resize: width:" << width << " height:" << height << std::endl;
+    std::cout << "[Gfx : GfxRenderTexture]::resize: width:" << width << " height:" << height << std::endl;
     this->_width = width;
     this->_height = height;
     this->_createTextures();
@@ -140,7 +139,7 @@ void GfxRenderTexture::_createTextures()
     Gfx::renderer->insertTexture(this->_colorUuid, this->_colorTexture);
     Gfx::renderer->insertTexture(this->_depthUuid, this->_depthTexture);
 
-    std::cout << "GfxRenderTexture::_createTextures: colorTexture:" << this->_colorTexture << " depthTexture:" << this->_depthTexture << std::endl;
+    std::cout << "[Gfx : GfxRenderTexture]:: create textures success" << std::endl;
 }
 const std::string &GfxRenderTexture::getColorTextureUuid() const
 {
@@ -176,7 +175,7 @@ bool GfxRenderTexture::saveToFile1(std::string filePath)
 {
     if (this->_colorTexture == nullptr)
     {
-        std::cerr << "GfxRenderTexture : Cannot save, color texture is null" << std::endl;
+        std::cerr << "[Gfx : GfxRenderTexture]:: Cannot save, color texture is null" << std::endl;
         return false;
     }
     return this->_colorTexture->saveToFile(filePath, this->_width, this->_height);

@@ -13,7 +13,7 @@ GfxPipelineBuiltin::GfxPipelineBuiltin(const std::string &name) : GfxPipeline(na
 
 void GfxPipelineBuiltin::_createPipeline()
 {
-    std::cout << "Gfx : Pipeline :: create pipeline " << this->_name << " start..." << std::endl;
+    std::cout << "[Gfx : GfxPipelineBuiltin] :: create pipeline " << " start..." << std::endl;
     GfxPipeline::_createPipeline();
 }
 
@@ -181,13 +181,15 @@ void GfxPipelineBuiltin::_initInputAssemblyState()
 }
 void GfxPipelineBuiltin::_initDynamicState()
 {
-    this->_dynamicStates = {
-        VK_DYNAMIC_STATE_VIEWPORT,
-        VK_DYNAMIC_STATE_SCISSOR,
-    };
-    this->_dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-    this->_dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(this->_dynamicStates.size());
-    this->_dynamicStateInfo.pDynamicStates = this->_dynamicStates.data();
+    // this->_dynamicStateInfo = {};
+    // this->_dynamicStates = {
+    //     VK_DYNAMIC_STATE_VIEWPORT,
+    //     VK_DYNAMIC_STATE_SCISSOR,
+    // };
+    // this->_dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    // this->_dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(this->_dynamicStates.size());
+    // this->_dynamicStateInfo.pDynamicStates = this->_dynamicStates.data();
+    GfxPipeline::_initDynamicState();
 }
 void GfxPipelineBuiltin::_initViewportState()
 {
@@ -274,10 +276,10 @@ void GfxPipelineBuiltin::_initPipelineLayout()
     // 第八步：管线布局
     if (vkCreatePipelineLayout(Gfx::context->getVkDevice(), &this->_pipelineLayoutInfo, nullptr, &this->_vkPipelineLayout) != VK_SUCCESS)
     {
-        std::cout << "Gfx : Pipeline :: create pipeline layout failed " << std::endl;
+        std::cout << "[Gfx : GfxPipelineBuiltin] :: create pipeline layout failed " << std::endl;
         return;
     }
-    std::cout << "Gfx : Pipeline :: create pipeline layout success " << std::endl;
+    std::cout << "[Gfx : GfxPipelineBuiltin] :: create pipeline layout success " << std::endl;
 }
 void GfxPipelineBuiltin::_initPipeline()
 {
@@ -293,16 +295,16 @@ void GfxPipelineBuiltin::_initPipeline()
     this->_pipelineInfo.pColorBlendState = &this->_colorBlendInfo;
     this->_pipelineInfo.pDepthStencilState = &this->_depthStencilInfo;
     this->_pipelineInfo.layout = this->_vkPipelineLayout;
-    std::cout << "Gfx : Pipeline :: create pipeline info success " << this->_pass << "   " << this->_pass->getVKRenderPass() << std::endl;
+    std::cout << "[Gfx : GfxPipelineBuiltin] :: create pipeline info success " << this->_pass << "   " << this->_pass->getVKRenderPass() << std::endl;
     this->_pipelineInfo.renderPass = this->_pass->getVKRenderPass();
     this->_pipelineInfo.subpass = 0;
     this->_pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
     if (vkCreateGraphicsPipelines(Gfx::context->getVkDevice(), VK_NULL_HANDLE, 1, &this->_pipelineInfo, nullptr, &this->_vkPipeline) != VK_SUCCESS)
     {
-        std::cout << "Gfx : Pipeline :: create pipeline failed " << std::endl;
+        std::cout << "[Gfx : GfxPipelineBuiltin] :: create pipeline failed " << std::endl;
         return;
     }
-    std::cout << "Gfx : Pipeline :: create pipeline success " << std::endl;
+    std::cout << "[Gfx : GfxPipelineBuiltin] :: create pipeline success " << std::endl;
 }
 
 GfxPipelineBuiltin::~GfxPipelineBuiltin()

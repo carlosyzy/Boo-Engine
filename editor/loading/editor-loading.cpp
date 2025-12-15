@@ -33,8 +33,8 @@ void EditorLoading::Awake()
 	this->_height = Boo::game->view()->height;
 	this->_initCamera();
 	this->_initBg();
-	// this->_initLogo();
-	// this->_initLoadUI();
+	this->_initLogo();
+	this->_initLoadUI();
 	// this->_initAssetsDB();
 }
 void EditorLoading::Enable() { Component::Enable(); }
@@ -65,11 +65,9 @@ void EditorLoading::_initBg()
 	if (compAlpha != nullptr)
 	{
 		this->_spriteAlpha = dynamic_cast<UISprite *>(compAlpha);
-		// this->_spriteAlpha->setTextureAsset(this->_textureDefault);
-		// this->_spriteAlpha->setMaterialAsset(nullptr);
-		this->_spriteAlpha->setColor("#6d2b2bff");
+		this->_spriteAlpha->setColor("#151515ff");
 	}
-	this->_ndAlpha->setSize(this->_width-100, this->_height-100);
+	this->_ndAlpha->setSize(this->_width/2.0, this->_height);
 }
 void EditorLoading::_initLogo()
 {
@@ -87,8 +85,6 @@ void EditorLoading::_initLogo()
 	{
 		this->_spriteLogo = dynamic_cast<UISprite *>(compLogo);
 		this->_spriteLogo->setEnabled(true);
-		this->_spriteLogo->setTextureAsset(texture);
-		// this->_spriteLogo->setMaterialAsset(nullptr);
 		this->_spriteLogo->setColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	// 初始化logo大小
@@ -102,8 +98,6 @@ void EditorLoading::_initLoadUI()
 		dynamic_cast<UISprite *>(this->_ndLoad->addComponent("UISprite"));
 	if (this->_spriteLoad != nullptr)
 	{
-		// this->_spriteLoad->setTextureAsset(this->_textureDefault);
-		this->_spriteLoad->setMaterialAsset(nullptr);
 		this->_spriteLoad->setColor("#0A2F36");
 	}
 	this->_ndLoadBar = new Node2D("Editor-LoadBar");
@@ -111,8 +105,6 @@ void EditorLoading::_initLoadUI()
 	this->_spriteLoadBar = dynamic_cast<UISprite *>(this->_ndLoadBar->addComponent("UISprite"));
 	if (this->_spriteLoadBar != nullptr)
 	{
-		// this->_spriteLoadBar->setTextureAsset(this->_textureDefault);
-		this->_spriteLoadBar->setMaterialAsset(nullptr);
 		this->_spriteLoadBar->setColor(1.0f, 1.0f, 1.0f, 1.0f);
 		this->_spriteLoadBar->setColor("#AFF2FF");
 	}

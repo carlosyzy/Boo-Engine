@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <iostream>
 #include "texture-asset.h"
-#include "shader.h"
+#include "shader-asset.h"
 #include "scene-asset.h"
 #include "assets-manager.h"
 

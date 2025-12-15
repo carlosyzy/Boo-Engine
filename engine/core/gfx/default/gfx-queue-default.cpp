@@ -50,7 +50,7 @@ void GfxQueueDefault::_createFramebuffers()
             throw std::runtime_error("Gfx : RenderQueue :: Failed to create framebuffer!");
         }
     }
-    std::cout << "Gfx : Default  : RenderQueue :: Created " << this->_framebuffers.size() << " framebuffers." << std::endl;
+    std::cout << "[Gfx : GfxQueueDefault]:: Created " << this->_framebuffers.size() << " framebuffers." << std::endl;
 }
 void GfxQueueDefault::_createCommandBuffers()
 {
@@ -65,7 +65,7 @@ void GfxQueueDefault::_createCommandBuffers()
     {
         throw std::runtime_error("Gfx : RenderQueue :: Failed to allocate command buffers!");
     }
-    std::cout << "Gfx : Default  : RenderQueue :: Created " << this->_commandBuffers.size() << " command buffers." << std::endl;
+    std::cout << "[Gfx : GfxQueueDefault]:: Created " << this->_commandBuffers.size() << " command buffers." << std::endl;
 }
 void GfxQueueDefault::_createVertexBuffers()
 {
@@ -97,23 +97,16 @@ void GfxQueueDefault::_createVertexBuffers()
         &this->_indexMemory,
         indices.size() * sizeof(uint32_t),
         indices.data());
-    std::cout << "Gfx : Default  : RenderQueue :: Created vertex buffer with " << interleavedVertices.size() << " vertices." << std::endl;
+    std::cout << "[Gfx : GfxQueueDefault]:: Created vertex buffer with " << interleavedVertices.size() << " vertices." << std::endl;
 }
 void GfxQueueDefault::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds)
 {
-    std::cout << "Gfx : Default  : RenderQueue :: Rendering frame " << imageIndex << std::endl;
-    std::cout<<"pipelineOutds:"<<pipelineOutds.size()<<std::endl;
-    for (size_t i = 0; i < pipelineOutds.size(); i++)
-    {
-        std::cout<<"Gfx : Default  : RenderQueue :: pipelineOutds["<<i<<"]:"<<pipelineOutds[i]<<std::endl;
-    }
-
-
     GfxPipelineDefault *pipeline = this->_renderer->getPipeline();
     this->_resetCommandBuffer(imageIndex);
     this->_beginCommandBuffer(imageIndex);
     this->_beginRenderPass(imageIndex);
     this->_bindPipeline(imageIndex, pipeline);
+        
 
     // 进行一次顶点绑定
     VkDeviceSize offsets[1] = {0};
@@ -126,7 +119,7 @@ void GfxQueueDefault::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
         GfxTexture *texture = Gfx::renderer->getTexture(textureUuid);
         if (texture == nullptr)
         {
-            std::cout << "Gfx : Default  : RenderQueue :: render: texture not found:" << textureUuid << std::endl;
+            std::cout << "[Gfx : GfxQueueDefault]:: render: texture not found:" << textureUuid << std::endl;
             continue;
         }
 
@@ -213,7 +206,7 @@ void GfxQueueDefault::_bindPipeline(uint32_t imageIndex, GfxPipelineDefault *pip
 {
     vkCmdBindPipeline(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipeline());
 }
-void GfxQueueDefault::_clean()
+void GfxQueueDefault::_clear()
 {
     for (auto framebuffer : this->_framebuffers)
     {

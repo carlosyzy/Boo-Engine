@@ -9,6 +9,7 @@ class GfxShader;
 class GfxTexture;
 class GfxBufferUBO;
 class GfxBufferInstance;
+class GfxMesh;
 
 namespace Gfx
 {
@@ -19,4 +20,5 @@ namespace Gfx
 	extern std::map<std::string, GfxTexture *> textures;
 	extern GfxBufferUBO *bufferUBO;
 	extern GfxBufferInstance *bufferInstance;
+	extern GfxMesh *uiTestMesh;
 }

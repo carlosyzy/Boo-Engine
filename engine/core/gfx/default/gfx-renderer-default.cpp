@@ -16,6 +16,7 @@ GfxRendererDefault::GfxRendererDefault(std::string name)
 }
 void GfxRendererDefault::init()
 {
+    std::cout << "[Gfx : GfxRendererDefault] :: init "<< this->_name << std::endl;
     this->_initDescriptorSetLayout();
     this->_initDefaultDescriptor();
     this->_initDefaultRenderPass();
@@ -41,10 +42,10 @@ void GfxRendererDefault::_initDescriptorSetLayout()
     if (vkCreateDescriptorSetLayout(Gfx::context->getVkDevice(),
                                     &layoutInfo, nullptr, &this->_descriptorSetLayout) != VK_SUCCESS)
     {
-        std::cout << "Gfx : Default  : Descriptor ::create descriptor set layout failed " << std::endl;
+        std::cout << "[Gfx : GfxRendererDefault]::create descriptor set layout failed " << std::endl;
         return;
     }
-    std::cout << "Gfx : Default  : Descriptor ::create descriptor set layout success " << std::endl;
+    std::cout << "[Gfx : GfxRendererDefault]::create descriptor set layout success " << std::endl;
 }
 void GfxRendererDefault::_initDefaultDescriptor()
 {
@@ -61,10 +62,10 @@ void GfxRendererDefault::_initDefaultDescriptor()
     poolInfo.maxSets = swapChainImageCount * (this->_maxObjectCount + 3); // 描述符集的最大数量
     if (vkCreateDescriptorPool(Gfx::context->getVkDevice(), &poolInfo, nullptr, &this->_descriptorPool) != VK_SUCCESS)
     {
-        std::cout << "Gfx : Default  : Descriptor ::create descriptor pool failed " << std::endl;
+        std::cout << "[Gfx : GfxRendererDefault]::create descriptor pool failed " << std::endl;
         return;
     }
-    std::cout << "Gfx : Default  : Descriptor ::create descriptor pool success " << std::endl;
+    std::cout << "[Gfx : GfxRendererDefault]::create descriptor pool success " << std::endl;
 }
 
 /**
@@ -134,17 +135,17 @@ void GfxRendererDefault::createPipeline(std::string name, GfxPipelineStruct pipe
 {
     if (Gfx::shaders.find(pipelineStruct.vert) == Gfx::shaders.end())
     {
-        std::cout << "Gfx : Default  : createPipeline:vert not found:" << pipelineStruct.vert << std::endl;
+        std::cout << "[Gfx : GfxRendererDefault]::createPipeline:vert not found:" << pipelineStruct.vert << std::endl;
         return;
     }
     if (Gfx::shaders.find(pipelineStruct.frag) == Gfx::shaders.end())
     {
-        std::cout << "Gfx : Default  : createPipeline:frag not found:" << pipelineStruct.frag << std::endl;
+        std::cout << "[Gfx : GfxRendererDefault]::createPipeline:frag not found:" << pipelineStruct.frag << std::endl;
         return;
     }
     if (this->_pass == nullptr)
     {
-        std::cout << "Gfx : Default  : createPipeline:pass not found:" << std::endl;
+        std::cout << "[Gfx : GfxRendererDefault]::createPipeline:pass not found:" << std::endl;
         return;
     }
     this->_pipeline = new GfxPipelineDefault(name);
@@ -155,7 +156,7 @@ GfxPipelineDefault *GfxRendererDefault::getPipeline()
 {
     if (this->_pipeline == nullptr)
     {
-        std::cout << "Gfx : Default  : getPipeline:not found:" << std::endl;
+        std::cout << "[Gfx : GfxRendererDefault]::getPipeline:not found:" << std::endl;
         return nullptr;
     }
     return this->_pipeline;
@@ -188,7 +189,7 @@ std::vector<VkDescriptorSet> GfxRendererDefault::getDescriptorSets()
     descriptorSets.resize(swapChainImageCount);
     if (vkAllocateDescriptorSets(Gfx::context->getVkDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS)
     {
-        std::cout << "Gfx : Default  : Descriptor ::create descriptor sets failed " << std::endl;
+        std::cout << "[Gfx : GfxRendererDefault]::create descriptor sets failed " << std::endl;
     }
     GfxRenderxDescriptorSets renderxDescriptorSets = {descriptorSets, true};
     this->_descriptorSets.push_back(renderxDescriptorSets);
@@ -214,7 +215,7 @@ void GfxRendererDefault::frameRendererAfter()
 void GfxRendererDefault::_cleanRendererState()
 {
     // 清除渲染队列相关的状态
-    this->_queue->_clean();
+    this->_queue->_clear();
     //  渲染管线清除
     this->_pipeline->_clear();
     // 渲染pass清除

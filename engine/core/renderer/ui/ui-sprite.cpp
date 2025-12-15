@@ -110,12 +110,12 @@ void UISprite::setMaterialAsset(std::string mtl)
 }
 void UISprite::setMaterialAsset(MaterialAsset *mtl)
 {
-    if (mtl == nullptr)
-    {
-        std::cout << "UISprite::setMaterial: material " << mtl << " not found" << std::endl;
-        return;
-    }
-    this->_setMaterial(mtl);
+    // if (mtl == nullptr)
+    // {
+    //     std::cout << "UISprite::setMaterial: material " << mtl << " not found" << std::endl;
+    //     return;
+    // }
+    // this->_setMaterial(mtl);
 }
 
 

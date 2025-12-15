@@ -10,7 +10,7 @@
 #include "asset-cache.h"
 #include "texture-asset.h"
 #include "material-asset.h"
-#include "shader.h"
+#include "shader-asset.h"
 
 // 基础图片资源
 class AssetsManager
@@ -30,6 +30,8 @@ private:
 	 */
 	AssetCache *_assetsCache;
 
+
+	void _initDefaultBuiltinAssets();
 public:
 	AssetsManager();
 	/**

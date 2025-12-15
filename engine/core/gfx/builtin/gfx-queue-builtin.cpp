@@ -30,7 +30,7 @@ void GfxQueueBuiltin::submitObject(GfxMaterial *material, GfxMesh *mesh, std::ve
 {
     if (material == nullptr || mesh == nullptr)
     {
-        std::cout << "submitObject: material or mesh is nullptr" << std::endl;
+        std::cout << "[Gfx : GfxQueueBuiltin] :: submitObject: material or mesh is nullptr" << std::endl;
         return;
     }
 
@@ -53,6 +53,7 @@ void GfxQueueBuiltin::submitObject(GfxMaterial *material, GfxMesh *mesh, std::ve
 }
 void GfxQueueBuiltin::render(std::vector<VkCommandBuffer> &commandBuffers)
 {
+
     this->_resetCommandBuffer();
     this->_beginCommandBuffer();
     this->_beginRenderPass();
