@@ -51,7 +51,7 @@ void GfxMgr::update(float dt)
     }
 
     // Gfx::renderer->clearDestroyObjects();
-    std::cout << "renderer update" << std::endl;
+    // std::cout << "renderer update" << std::endl;
     Gfx::context->frameFencesPrepare(this->_currentFrame);
     // std::cout << "renderer update1" << std::endl;
     /* // 可用的图像的索引 */

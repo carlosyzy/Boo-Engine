@@ -139,8 +139,103 @@ void GfxRenderTexture::_createTextures()
     Gfx::renderer->insertTexture(this->_colorUuid, this->_colorTexture);
     Gfx::renderer->insertTexture(this->_depthUuid, this->_depthTexture);
 
+    // ✅ 初始化纹理：转换布局并清除为透明黑色
+    this->_initializeRenderTexture();
+
     std::cout << "[Gfx : GfxRenderTexture]:: create textures success" << std::endl;
 }
+
+/**
+ * @brief 初始化渲染纹理：清除为透明黑色
+ */
+void GfxRenderTexture::_initializeRenderTexture()
+{
+    // 创建一次性命令缓冲区
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandPool = Gfx::context->getCommandPool();
+    allocInfo.commandBufferCount = 1;
+
+    VkCommandBuffer commandBuffer;
+    vkAllocateCommandBuffers(Gfx::context->getVkDevice(), &allocInfo, &commandBuffer);
+
+    // 开始记录命令
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+    vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+    // 1. 转换颜色纹理布局: UNDEFINED -> TRANSFER_DST_OPTIMAL
+    VkImageMemoryBarrier barrier1{};
+    barrier1.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrier1.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    barrier1.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+    barrier1.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier1.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier1.image = this->_colorTexture->getImage();
+    barrier1.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    barrier1.subresourceRange.baseMipLevel = 0;
+    barrier1.subresourceRange.levelCount = 1;
+    barrier1.subresourceRange.baseArrayLayer = 0;
+    barrier1.subresourceRange.layerCount = 1;
+    barrier1.srcAccessMask = 0;
+    barrier1.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+
+    vkCmdPipelineBarrier(commandBuffer,
+                         VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                         0, 0, nullptr, 0, nullptr, 1, &barrier1);
+
+    // 2. 清除颜色纹理为透明黑色
+    VkClearColorValue clearColor = {{0.0f, 0.0f, 0.0f, 0.0f}};
+    VkImageSubresourceRange range{};
+    range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    range.baseMipLevel = 0;
+    range.levelCount = 1;
+    range.baseArrayLayer = 0;
+    range.layerCount = 1;
+
+    vkCmdClearColorImage(commandBuffer, this->_colorTexture->getImage(),
+                         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, &clearColor, 1, &range);
+
+    // 3. 转换颜色纹理布局: TRANSFER_DST_OPTIMAL -> SHADER_READ_ONLY_OPTIMAL
+    VkImageMemoryBarrier barrier2{};
+    barrier2.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrier2.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+    barrier2.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    barrier2.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier2.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier2.image = this->_colorTexture->getImage();
+    barrier2.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    barrier2.subresourceRange.baseMipLevel = 0;
+    barrier2.subresourceRange.levelCount = 1;
+    barrier2.subresourceRange.baseArrayLayer = 0;
+    barrier2.subresourceRange.layerCount = 1;
+    barrier2.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+    barrier2.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+    vkCmdPipelineBarrier(commandBuffer,
+                         VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+                         0, 0, nullptr, 0, nullptr, 1, &barrier2);
+
+    // 结束命令记录
+    vkEndCommandBuffer(commandBuffer);
+
+    // 提交并等待完成
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffer;
+
+    vkQueueSubmit(Gfx::context->getGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(Gfx::context->getGraphicsQueue());
+
+    // 清理命令缓冲区
+    vkFreeCommandBuffers(Gfx::context->getVkDevice(), Gfx::context->getCommandPool(), 1, &commandBuffer);
+
+    std::cout << "[Gfx : GfxRenderTexture]:: initialized render texture (cleared to transparent)" << std::endl;
+}
+
 const std::string &GfxRenderTexture::getColorTextureUuid() const
 {
     if (this->_colorTexture == nullptr)

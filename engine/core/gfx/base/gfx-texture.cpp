@@ -310,6 +310,10 @@ void GfxTexture::_copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t wid
     this->_endSingleTimeCommands(commandBuffer);
 }
 
+VkImage GfxTexture::getImage()
+{
+    return this->_textureImage;
+}
 VkImageView GfxTexture::getImageView()
 {
     return this->_textureImageView;
@@ -318,6 +322,12 @@ VkSampler GfxTexture::getSampler()
 {
     return this->_textureSampler;
 }
+std::string GfxTexture::getUuid()
+{
+    return this->_uuid;
+}
+
+
 
 // 绑定less 索引
 uint32_t GfxTexture::getBindlessIndex()

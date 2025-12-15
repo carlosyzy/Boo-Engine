@@ -61,8 +61,12 @@ public:
 
     void crateImageSampler();
 
+    VkImage getImage();
     VkImageView getImageView();
     VkSampler getSampler();
+    std::string getUuid();
+
+
 
     
     bool saveToFile(std::string filePath, uint32_t width, uint32_t height);

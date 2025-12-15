@@ -30,6 +30,7 @@ private:
 	virtual void _createTextures();
 	virtual void _createFrameBuffer();
 	virtual void _createCommandBuffer();
+	virtual void _initializeRenderTexture();
 
 public:
 	GfxRenderTexture(std::string uuid);
