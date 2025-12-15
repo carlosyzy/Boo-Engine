@@ -32,9 +32,9 @@ void EditorLoading::Awake()
 	this->_width = Boo::game->view()->width;
 	this->_height = Boo::game->view()->height;
 	this->_initCamera();
-	this->_initBg();
-	this->_initLogo();
-	this->_initLoadUI();
+	// this->_initBg();
+	// this->_initLogo();
+	// this->_initLoadUI();
 	// this->_initAssetsDB();
 }
 void EditorLoading::Enable() { Component::Enable(); }
