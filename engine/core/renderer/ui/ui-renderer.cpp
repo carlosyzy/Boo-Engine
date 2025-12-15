@@ -44,6 +44,7 @@ const int UIRenderer::getVisibility()
 }
 void UIRenderer::_setColor(float r, float g, float b, float a)
 {
+	// 透明度会影响到子节点的透明度
 	if (r == this->_color.getR() && g == this->_color.getG() && b == this->_color.getB() && a == this->_color.getA())
 	{
 		return;

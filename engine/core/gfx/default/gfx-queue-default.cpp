@@ -134,7 +134,6 @@ void GfxQueueDefault::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
 // 550e8400-e29b-41d4-a716-446655440000
 void GfxQueueDefault::_draw(uint32_t imageIndex, GfxTexture *texture, GfxPipelineDefault *pipeline)
 {
-    std::cout << "[Gfx : GfxQueueDefault]:: draw: texture:" << texture->getUuid() << std::endl;
     std::vector<VkDescriptorSet> descriptorSets = this->_renderer->getDescriptorSets();
     VkDescriptorImageInfo imageInfo{};
     imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;

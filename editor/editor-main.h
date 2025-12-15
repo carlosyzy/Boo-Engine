@@ -17,9 +17,9 @@ private :
      // EditorHierarchy *_hierarchy;
     // EditorAssets *_assets;
     // EditorProperty *_property;
-    void _initEditorModules();
-    void _initEditorRunScene();
-    void _launchEditorScene();
+    // void _initEditorModules();
+    // void _initEditorRunScene();
+    // void _launchEditorScene();
 public:
     EditorMain();
     void init();

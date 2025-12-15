@@ -102,6 +102,14 @@ AssetType EditorCacheTask::getAssetType(const std::string &path)
     }
     return AssetType::None;
 }
+
+
+
+
+
+
+
+
 // if (this->_configs.size() > 0)
 // {
 //     bool isOK = true;

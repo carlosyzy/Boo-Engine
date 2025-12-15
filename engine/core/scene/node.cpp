@@ -184,6 +184,7 @@ void Node::_updateWorldTransform()
 		this->_worldMatrix = this->_localMatrix;
 	}
 	this->_worldPosition.set(this->_worldMatrix.getM30(), this->_worldMatrix.getM31(), this->_worldMatrix.getM32());
+	this->_worldScale.set(this->_worldMatrix.getM00(), this->_worldMatrix.getM11(), this->_worldMatrix.getM22());
 	this->_worldTransformFlag = NodeTransformFlag::NONE_FLAG;
 }
 

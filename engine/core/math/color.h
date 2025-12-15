@@ -23,9 +23,9 @@ public:
     std::string hexString(){
         return this->_hexString;
     }
-    float getR();
-    float getG();
-    float getB();
-    float getA();
+    float getR() const;
+    float getG() const;
+    float getB() const;
+    float getA() const;
     ~Color();
 };

@@ -35,7 +35,7 @@ void EditorLoading::Awake()
 	this->_initBg();
 	this->_initLogo();
 	this->_initLoadUI();
-	// this->_initAssetsDB();
+	this->_initAssetsDB();
 }
 void EditorLoading::Enable() { Component::Enable(); }
 void EditorLoading::setOnLoadComplete(std::function<void()> onLoadComplete)
@@ -67,7 +67,7 @@ void EditorLoading::_initBg()
 		this->_spriteAlpha = dynamic_cast<UISprite *>(compAlpha);
 		this->_spriteAlpha->setColor("#151515ff");
 	}
-	this->_ndAlpha->setSize(this->_width/2.0, this->_height);
+	this->_ndAlpha->setSize(this->_width, this->_height);
 }
 void EditorLoading::_initLogo()
 {

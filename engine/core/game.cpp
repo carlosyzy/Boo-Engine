@@ -12,6 +12,7 @@
 #include "alpha/alpha.h"
 #include "font/freetype-mgr.h"
 #include "input/input.h"
+#include "renderer/renderer.h"
 #include "renderer/camera.h"
 #include "renderer/ui/ui-renderer.h"
 
@@ -32,6 +33,7 @@ void Game::init()
 	this->_initView();
 	this->_initFont();
 	this->_initAssets();
+	this->_initRenderer();
 }
 void Game::_initGFX()
 {
@@ -63,6 +65,11 @@ void Game::_initAssets()
 	std::cout << "INIT ASSETS MGR" << std::endl;
 	this->_assetsManager = new AssetsManager();
 	this->_assetsManager->init();
+}
+void Game::_initRenderer()
+{
+	this->_renderer = new Renderer();
+	this->_renderer->init();
 }
 void Game::_initAlpha()
 {
@@ -157,28 +164,6 @@ void Game::removeCamera(Camera *camera)
 {
 	this->_cameras.erase(camera->getUuid());
 }
-/**
- * @brief 挂在UI渲染器到游戏中
- *
- * @param uiRenderer UI渲染器指针
- */
-void Game::extractUIRenderer(UIRenderer *uiRenderer)
-{
-	if (this->_uiRenderers.find(uiRenderer->getUuid()) != this->_uiRenderers.end())
-	{
-		return;
-	}
-	this->_uiRenderers[uiRenderer->getUuid()] = uiRenderer;
-}
-/**
- * @brief 从游戏中移除UI渲染器
- *
- * @param uiRenderer UI渲染器指针
- */
-void Game::removeUIRenderer(UIRenderer *uiRenderer)
-{
-	this->_uiRenderers.erase(uiRenderer->getUuid());
-}
 
 void Game::addCompClearCaches(Component *comp)
 {
@@ -224,37 +209,9 @@ void Game::_lateUpdate(float dt)
 }
 void Game::_render(float dt)
 {
-	// 相机排序 按照从小到大优先级
-	std::vector<Camera *> sortedCameras;
-	for (auto &camera : this->_cameras)
-	{
-		sortedCameras.push_back(camera.second);
-	}
-	std::sort(sortedCameras.begin(), sortedCameras.end(), [](Camera *a, Camera *b)
-			  { return a->getPriority() < b->getPriority(); });
-
-	// 渲染相机
-	for (auto camera : sortedCameras)
-	{
-		this->_renderCameras(camera);
-	}
 	// 更新渲染器
+	this->_renderer->render(this->_cameras, this->_curScene);
 	GfxMgr::getInstance()->update(dt);
-}
-void Game::_renderCameras(Camera *camera)
-{
-	camera->Render();
-	for (auto uiRenderer : this->_uiRenderers)
-	{
-		if (!uiRenderer.second->isEnabled())
-		{
-			continue;
-		}
-		if (uiRenderer.second->getVisibility() | camera->getVisibility())
-		{
-			uiRenderer.second->Render(camera);
-		}
-	}
 }
 
 void Game::_clear()

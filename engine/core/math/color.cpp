@@ -71,22 +71,22 @@ void Color::setA(float a)
 {
     this->_a = a;
 }
-float Color::getR()
+float Color::getR() const
 {
     return this->_r;
 }
 
-float Color::getG()
+float Color::getG() const
 {
     return this->_g;
 }
 
-float Color::getB()
+float Color::getB() const
 {
     return this->_b;
 }
 
-float Color::getA()
+float Color::getA() const
 {
     return this->_a;
 }

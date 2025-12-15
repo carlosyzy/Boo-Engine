@@ -8,10 +8,14 @@ class Scene;
 class Node2D;
 class UISprite;
 class UIWidget;
+class Camera;
 
 class EditorLayout : public Component
 {
 private:
+	Camera* _uiCamera;
+	void _initCamera();
+	
 	float _border = 2.0f;
 	float _width;
 	float _height;

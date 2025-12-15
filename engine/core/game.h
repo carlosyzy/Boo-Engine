@@ -13,6 +13,7 @@ class AssetsManager;
 class FreetypeMgr;
 class Input;
 class Camera;
+class Renderer;
 class UIRenderer;
 
 struct View
@@ -88,12 +89,10 @@ private:
      * @brief 相机系统
      */
     std::unordered_map<std::string, Camera *> _cameras;
-    /**
-     * @brief UI渲染组件
-     */
-    std::unordered_map<std::string, UIRenderer *> _uiRenderers;
 
     bool _viewChanged = false;
+
+    Renderer *_renderer;
 
     /**
      * @brief 初始化图形库
@@ -115,10 +114,13 @@ private:
      * @brief 初始化字体系统
      */
     void _initFont();
-    /**
+    /**_renderCameras
      * @brief 初始化资产系统
      */
     void _initAssets();
+
+    void _initRenderer();
+
     /**
      * @brief 初始化透明度系统
      */
@@ -129,8 +131,6 @@ private:
     void _updateSchedules(float dt);
     void _lateUpdate(float dt);
     void _render(float dt);
-    void _renderCameras(Camera *camera);
-
 
     void _clear();
     void _updateClearCaches();
@@ -182,18 +182,6 @@ public:
      * @param camera 相机指针
      */
     void removeCamera(Camera *camera);
-    /**
-     * @brief 挂在UI渲染器到游戏中
-     *
-     * @param uiRenderer UI渲染器指针
-     */
-    void extractUIRenderer(UIRenderer *uiRenderer);
-    /**
-     * @brief 从游戏中移除UI渲染器
-     *
-     * @param uiRenderer UI渲染器指针
-     */
-    void removeUIRenderer(UIRenderer *uiRenderer);
 
     // typename T: 表示一个类型参数，通常指类的类型
     // typename Func: 表示另一个类型参数，通常指函数类型（函数指针、成员函数指针、函数对象等）

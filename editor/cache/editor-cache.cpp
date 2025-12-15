@@ -62,7 +62,6 @@ void EditorCache::_initSetting()
     else
     {
         this->_settingEditor = json::object();
-
         FileUtil::saveJsonToBinary(settingPath, this->_settingEditor);
     }
 }

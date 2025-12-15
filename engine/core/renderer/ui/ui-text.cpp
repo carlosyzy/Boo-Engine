@@ -36,7 +36,6 @@ void UIText::Awake()
 void UIText::Enable()
 {
   UIRenderer::Enable();
-  Boo::game->extractUIRenderer(this);
 }
 
 void UIText::setText(std::string text)
@@ -145,7 +144,6 @@ void UIText::_clearTexture()
 void UIText::Disable()
 {
   UIRenderer::Disable();
-  Boo::game->removeUIRenderer(this);
 }
 
 void UIText::destroy()

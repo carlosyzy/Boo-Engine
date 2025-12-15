@@ -34,7 +34,6 @@ void UISprite::Awake()
 void UISprite::Enable()
 {
     UIRenderer::Enable();
-    Boo::game->extractUIRenderer(this);
 }
 
 void UISprite::setColor(Color &color)
@@ -143,7 +142,6 @@ void UISprite::Render(Camera *camera)
 void UISprite::Disable()
 {
     UIRenderer::Disable();
-    Boo::game->removeUIRenderer(this);
 }
 
 void UISprite::destroy()

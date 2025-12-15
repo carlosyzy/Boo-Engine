@@ -39,43 +39,6 @@ void EditorMain::_launchEditor()
     Node2D *node2d = scene->getRoot2D();
     this->_editorLayout = static_cast<EditorLayout *>(node2d->addComponent("EditorLayout"));
     Boo::game->openScene(scene);
-    // BooEditor::scene->clear();
-    // 初始化编辑器模块
-    // this->_initEditorModules();
-    // // 初始化编辑器场景
-    // this->_initEditorRunScene();
-    // // 启动编辑器场景
-    // this->_launchEditorScene();
-}
-void EditorMain::_initEditorModules()
-{
-    this->_editorScene = new EditorScene();
-}
-void EditorMain::_initEditorRunScene()
-{
-    // // 初始化启动场景
-    // std::string launchScene = BooEditor::project->getLaunchScene();
-    // if (launchScene.empty()) // 没有指定启动场景
-    // {
-    //     BooEditor::scene->newScene();
-    // }
-    // else
-    // {
-    //     SceneAsset *sceneAsset = static_cast<SceneAsset *>(Boo::game->assetsManager()->get(launchScene));
-    //     if (sceneAsset)
-    //     {
-    //         BooEditor::scene->openScene(sceneAsset->getName(), launchScene, sceneAsset->getScene());
-    //     }
-    //     else
-    //     {
-    //         BooEditor::scene->newScene();
-    //     }
-    // }
-}
-void EditorMain::_launchEditorScene()
-{
-    // BooEditor::project->setLaunchScene(BooEditor::scene->getSceneName());
-    // BooEditor::scene->save();
 }
 void EditorMain::tick()
 {

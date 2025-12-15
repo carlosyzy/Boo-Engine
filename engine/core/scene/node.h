@@ -276,7 +276,7 @@ public:
 	/**
 	 * 获取子节点列表
 	 */
-	std::vector<Node *> getChildren() { return this->_children; }
+	const std::vector<Node *> &getChildren() { return this->_children; }
 	/**
 	 * 删除子节点
 	 */

@@ -31,7 +31,6 @@ void AssetCache::initAssetsDB(const std::string &path)
 }
 void AssetCache::_insertTextureAssetDB(const std::string &path, json assetDB)
 {
-    // std::cout << "Insert texture asset db: " << path << std::endl;
     AssetDB db{};
     db.name = assetDB["name"];
     db.path = path;

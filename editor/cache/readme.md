@@ -1,4 +1,4 @@
-# 资产缓存
+# 资产缓存 assets.db
 {
     path:{
         type:  资源类型

@@ -15,9 +15,6 @@ class EditorLoading : public Component
 private:
 	float _width;
 	float _height;
-	// TextureAsset* _textureDefault;
-	// void _initDefaultTexture();
-
 	void _initCamera();
 	Camera* _uiCamera;
 
