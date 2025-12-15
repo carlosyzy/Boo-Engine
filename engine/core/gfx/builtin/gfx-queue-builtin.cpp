@@ -51,7 +51,7 @@ void GfxQueueBuiltin::submitObject(GfxMaterial *material, GfxMesh *mesh, std::ve
     GfxBatchBuiltin *batch = this->_batches.back();
     batch->addObject(instanceData);
 }
-void GfxQueueBuiltin::render(std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds)
+void GfxQueueBuiltin::render(std::vector<VkCommandBuffer> &commandBuffers)
 {
     this->_resetCommandBuffer();
     this->_beginCommandBuffer();
@@ -71,8 +71,6 @@ void GfxQueueBuiltin::render(std::vector<VkCommandBuffer> &commandBuffers, std::
         throw std::runtime_error("Failed to record command buffer!");
     }
     commandBuffers.push_back(this->_renderTexture->getCommandBuffer());
-    pipelineOutds.push_back(this->_renderTexture->getColorTextureUuid());
-
     // 清空批次
     for (size_t i = 0; i < this->_batches.size(); i++)
     {
@@ -82,7 +80,7 @@ void GfxQueueBuiltin::render(std::vector<VkCommandBuffer> &commandBuffers, std::
         batch = nullptr;
     }
     this->_batches.clear();
-    // this->_renderTexture->saveToFile1("ui.png");
+    this->_renderTexture->saveToFile1("ui.png");
 
     // this->_bindPipeline(pipeline);
 

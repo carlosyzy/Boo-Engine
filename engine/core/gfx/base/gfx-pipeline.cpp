@@ -13,6 +13,12 @@ const std::string &GfxPipeline::getName()
 }
 void GfxPipeline::create(GfxRenderPass *pass, GfxShader *vertexShader, GfxShader *fragmentShader, VkDescriptorSetLayout descriptorSetLayout, GfxPipelineStruct pipelineStruct)
 {
+    if (this->_pass == nullptr || this->_vertexShader == nullptr || this->_fragmentShader == nullptr || this->_descriptorSetLayout == nullptr)
+    {
+        std::cout << "Gfx : Base  : Pipeline :: create pipeline " << this->_name << " failed, pass or vertexShader or fragmentShader or descriptorSetLayout is nullptr" << std::endl;
+        return;
+    }
+    
     this->_pass = pass;
     this->_vertexShader = vertexShader;
     this->_fragmentShader = fragmentShader;

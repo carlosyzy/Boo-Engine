@@ -41,10 +41,10 @@ void GfxRendererDefault::_initDescriptorSetLayout()
     if (vkCreateDescriptorSetLayout(Gfx::context->getVkDevice(),
                                     &layoutInfo, nullptr, &this->_descriptorSetLayout) != VK_SUCCESS)
     {
-        std::cout << "Gfx : Descriptor ::create descriptor set layout failed " << std::endl;
+        std::cout << "Gfx : Default  : Descriptor ::create descriptor set layout failed " << std::endl;
         return;
     }
-    std::cout << "Gfx : Descriptor ::create descriptor set layout success " << std::endl;
+    std::cout << "Gfx : Default  : Descriptor ::create descriptor set layout success " << std::endl;
 }
 void GfxRendererDefault::_initDefaultDescriptor()
 {
@@ -61,10 +61,10 @@ void GfxRendererDefault::_initDefaultDescriptor()
     poolInfo.maxSets = swapChainImageCount * (this->_maxObjectCount + 3); // 描述符集的最大数量
     if (vkCreateDescriptorPool(Gfx::context->getVkDevice(), &poolInfo, nullptr, &this->_descriptorPool) != VK_SUCCESS)
     {
-        std::cout << "Gfx : Descriptor ::create descriptor pool failed " << std::endl;
+        std::cout << "Gfx : Default  : Descriptor ::create descriptor pool failed " << std::endl;
         return;
     }
-    std::cout << "Gfx : Descriptor ::create descriptor pool success " << std::endl;
+    std::cout << "Gfx : Default  : Descriptor ::create descriptor pool success " << std::endl;
 }
 
 /**
@@ -134,17 +134,17 @@ void GfxRendererDefault::createPipeline(std::string name, GfxPipelineStruct pipe
 {
     if (Gfx::shaders.find(pipelineStruct.vert) == Gfx::shaders.end())
     {
-        std::cout << "createPipeline:vert not found:" << pipelineStruct.vert << std::endl;
+        std::cout << "Gfx : Default  : createPipeline:vert not found:" << pipelineStruct.vert << std::endl;
         return;
     }
     if (Gfx::shaders.find(pipelineStruct.frag) == Gfx::shaders.end())
     {
-        std::cout << "createPipeline:frag not found:" << pipelineStruct.frag << std::endl;
+        std::cout << "Gfx : Default  : createPipeline:frag not found:" << pipelineStruct.frag << std::endl;
         return;
     }
     if (this->_pass == nullptr)
     {
-        std::cout << "createPipeline:pass not found:" << std::endl;
+        std::cout << "Gfx : Default  : createPipeline:pass not found:" << std::endl;
         return;
     }
     this->_pipeline = new GfxPipelineDefault(name);
@@ -155,46 +155,53 @@ GfxPipelineDefault *GfxRendererDefault::getPipeline()
 {
     if (this->_pipeline == nullptr)
     {
-        std::cout << "getPipeline:not found:" << std::endl;
+        std::cout << "Gfx : Default  : getPipeline:not found:" << std::endl;
         return nullptr;
     }
     return this->_pipeline;
 }
 std::vector<VkDescriptorSet> GfxRendererDefault::getDescriptorSets()
 {
-    if (this->_currentDescriptorSetIndex >= this->_maxObjectCount - 10)
+    for (auto &renderxDescriptorSets : this->_descriptorSets)
     {
-        std::vector<VkDescriptorSet> descriptorSets;
-        std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
-        uint32_t swapChainImageCount = swapChainImageViews.size();
-        descriptorSets.resize(swapChainImageCount);
-        return descriptorSets;
-    }
-    if (this->_currentDescriptorSetIndex >= this->_descriptorSets.size())
-    {
-        std::vector<VkDescriptorSet> descriptorSets;
-        std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
-        uint32_t swapChainImageCount = swapChainImageViews.size();
-        std::vector<VkDescriptorSetLayout> layouts(swapChainImageCount, this->_descriptorSetLayout);
-        VkDescriptorSetAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        allocInfo.descriptorPool = this->_descriptorPool;
-        allocInfo.descriptorSetCount = swapChainImageCount;
-        allocInfo.pSetLayouts = layouts.data();
-        descriptorSets.resize(swapChainImageCount);
-        if (vkAllocateDescriptorSets(Gfx::context->getVkDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS)
+        if (!renderxDescriptorSets.isOccupied)
         {
-            std::cout << "Gfx : Descriptor ::create descriptor sets failed " << std::endl;
+            renderxDescriptorSets.isOccupied = true;
+            return renderxDescriptorSets.descriptorSets;
         }
-        GfxRenderxDescriptorSets renderxDescriptorSets = {descriptorSets};
-        this->_descriptorSets.push_back(renderxDescriptorSets);
     }
-    return this->_descriptorSets[this->_currentDescriptorSetIndex++].descriptorSets;
+    if (this->_descriptorSets.size() > 90)
+    {
+        // 返回最后一个
+        return this->_descriptorSets.back().descriptorSets;
+    }
+
+    std::vector<VkDescriptorSet> descriptorSets;
+    std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
+    uint32_t swapChainImageCount = swapChainImageViews.size();
+    std::vector<VkDescriptorSetLayout> layouts(swapChainImageCount, this->_descriptorSetLayout);
+    VkDescriptorSetAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    allocInfo.descriptorPool = this->_descriptorPool;
+    allocInfo.descriptorSetCount = swapChainImageCount;
+    allocInfo.pSetLayouts = layouts.data();
+    descriptorSets.resize(swapChainImageCount);
+    if (vkAllocateDescriptorSets(Gfx::context->getVkDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS)
+    {
+        std::cout << "Gfx : Default  : Descriptor ::create descriptor sets failed " << std::endl;
+    }
+    GfxRenderxDescriptorSets renderxDescriptorSets = {descriptorSets, true};
+    this->_descriptorSets.push_back(renderxDescriptorSets);
+    return descriptorSets;
 }
 
 void GfxRendererDefault::frameRendererBefore()
 {
-    this->_currentDescriptorSetIndex = 0;
+    // 清除描述符集占用状态
+    for (auto &renderxDescriptorSets : this->_descriptorSets)
+    {
+        renderxDescriptorSets.isOccupied = false;
+    }
 }
 void GfxRendererDefault::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds)
 {

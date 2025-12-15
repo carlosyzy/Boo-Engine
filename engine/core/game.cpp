@@ -50,8 +50,8 @@ void Game::_initInput()
 void Game::_initView()
 {
 	this->_view = new View();
-	this->_view->width = 1280;
-	this->_view->height = 720;
+	this->_view->width = 0;
+	this->_view->height = 0;
 }
 void Game::_initFont()
 {
@@ -70,18 +70,29 @@ void Game::_initAlpha()
 	Alpha *alpha = new Alpha("Editor-Alpha");
 	this->openScene(alpha);
 }
-
-void Game::setView(const int width, const int height)
+void Game::resizeView(const int width, const int height)
 {
-	std::cout << "setView: width:" << width << " height:" << height << std::endl;
+	std::cout << "resizeView: width:" << width << " height:" << height << std::endl;
 	if (this->_view->width == width && this->_view->height == height)
 	{
 		return;
 	}
-	this->_view->width = width;
-	this->_view->height = height;
-	this->_viewChanged = true;
-	GfxMgr::getInstance()->setLockRender(true);
+	if (this->_view->width == 0 || this->_view->height == 0)
+	{
+		// 初始化视图尺寸
+		this->_view->width = width;
+		this->_view->height = height;
+		this->_viewChanged = false;
+		GfxMgr::getInstance()->setLockRender(false);
+	}
+	else
+	{
+		// 视图尺寸变化
+		this->_view->width = width;
+		this->_view->height = height;
+		this->_viewChanged = true;
+		GfxMgr::getInstance()->setLockRender(true);
+	}
 }
 void Game::_viewChangeEnd()
 {

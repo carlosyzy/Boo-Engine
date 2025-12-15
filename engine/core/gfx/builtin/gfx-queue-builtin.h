@@ -56,7 +56,7 @@ public:
 	void init();
 	void submitMat(const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
 	void submitObject(GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData);
-	void render(std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds);
+	void render(std::vector<VkCommandBuffer> &commandBuffers);
 	GfxRenderTexture *getRenderTexture();
 	void _clean();
 	void _reset();

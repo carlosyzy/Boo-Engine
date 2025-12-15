@@ -156,7 +156,7 @@ void GfxRendererBuiltin::_init3DDescriptorSets()
  */
 void GfxRendererBuiltin::_initDefaultRenderPass()
 {
-    this->_pass = new GfxRenderPassBuiltin("ui");
+    this->_pass = new GfxRenderPassBuiltin("builtin");
 }
 GfxRenderPassBuiltin *GfxRendererBuiltin::getRenderPass()
 {
@@ -270,88 +270,34 @@ GfxPipelineBuiltin *GfxRendererBuiltin::getPipeline(std::string name)
 }
 VkDescriptorSet GfxRendererBuiltin::getUIDescriptorSet()
 {
-    if (this->_currentUIDescriptorSetIndex >= 2000)
+
+    for (auto &descriptorSet : this->_gfxUIDescriptorSets)
     {
-        return VK_NULL_HANDLE;
-    }
-    // 确保当前索引不超过最大索引
-    if (this->_currentUIDescriptorSetIndex >= this->_gfxUIDescriptorSets.size())
-    {
-        VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-        std::vector<VkDescriptorSetLayout> layouts(1, this->_uiDescriptorSetLayout);
-        VkDescriptorSetAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO; // VK_STRUCTURE_TYPE_DESCRIPT1OR_SET_ALLOCATE_INFO
-        allocInfo.descriptorPool = this->_uiDescriptorPool;
-        allocInfo.descriptorSetCount = 1;
-        allocInfo.pSetLayouts = layouts.data();
-        if (vkAllocateDescriptorSets(Gfx::context->getVkDevice(), &allocInfo, &descriptorSet) != VK_SUCCESS)
+        if (!descriptorSet.isOccupied)
         {
-            std::cout << "Gfx : Descriptor ::create descriptor sets failed " << std::endl;
+            descriptorSet.isOccupied = true;
+            return descriptorSet.descriptorSet;
         }
     }
-    return this->_gfxUIDescriptorSets[this->_currentUIDescriptorSetIndex++];
+    if (this->_gfxUIDescriptorSets.size() >= 2000)
+    {
+        return this->_gfxUIDescriptorSets.back().descriptorSet;
+    }
 
-    // if (this->_currentUIDescriptorSetIndex < this->_gfxUIDescriptorSets.size())
-    // {
-    //     return this->_gfxUIDescriptorSets[this->_currentUIDescriptorSetIndex++];
-    // }
-    // else
-    // {
-    //     VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-    //     std::vector<VkDescriptorSetLayout> layouts(1, this->_uiDescriptorSetLayout);
-    //     VkDescriptorSetAllocateInfo allocInfo{};
-    //     allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO; // VK_STRUCTURE_TYPE_DESCRIPT1OR_SET_ALLOCATE_INFO
-    //     allocInfo.descriptorPool = this->_uiDescriptorPool;
-    //     allocInfo.descriptorSetCount = 1;
-    //     allocInfo.pSetLayouts = layouts.data();
-    //     if (vkAllocateDescriptorSets(Gfx::context->getVkDevice(), &allocInfo, &descriptorSet) != VK_SUCCESS)
-    //     {
-    //         std::cout << "Gfx : Descriptor ::create descriptor sets failed " << std::endl;
-    //     }
-    //     GfxRenderxDescriptorSet renderxDescriptorSet = {descriptorSet, true};
-    //     this->_gfxDescriptorSets.push_back(renderxDescriptorSet);
-    //     return renderxDescriptorSet.descriptorSet;
-    // }
-
-    // for (auto &renderxDescriptorSets : this->_gfxDescriptorSets)
-    // {
-    //     if (!renderxDescriptorSets.isUsed)
-    //     {
-    //         renderxDescriptorSets.isUsed = true;
-    //         return renderxDescriptorSets.descriptorSet;
-    //     }
-    // }
-    // VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-    // std::vector<VkDescriptorSetLayout> layouts(1, this->_descriptorSetLayout);
-    // VkDescriptorSetAllocateInfo allocInfo{};
-    // allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO; // VK_STRUCTURE_TYPE_DESCRIPT1OR_SET_ALLOCATE_INFO
-    // allocInfo.descriptorPool = this->_descriptorPool;
-    // allocInfo.descriptorSetCount = 1;
-    // allocInfo.pSetLayouts = layouts.data();
-    // if (vkAllocateDescriptorSets(Gfx::context->getVkDevice(), &allocInfo, &descriptorSet) != VK_SUCCESS)
-    // {
-    //     std::cout << "Gfx : Descriptor ::create descriptor sets failed " << std::endl;
-    // }
-    // GfxRenderxDescriptorSet renderxDescriptorSet = {descriptorSet, true};
-    // this->_gfxDescriptorSets.push_back(renderxDescriptorSet);
-    // return renderxDescriptorSet.descriptorSet;
+    VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+    std::vector<VkDescriptorSetLayout> layouts(1, this->_uiDescriptorSetLayout);
+    VkDescriptorSetAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO; // VK_STRUCTURE_TYPE_DESCRIPT1OR_SET_ALLOCATE_INFO
+    allocInfo.descriptorPool = this->_uiDescriptorPool;
+    allocInfo.descriptorSetCount = 1;
+    allocInfo.pSetLayouts = layouts.data();
+    if (vkAllocateDescriptorSets(Gfx::context->getVkDevice(), &allocInfo, &descriptorSet) != VK_SUCCESS)
+    {
+        std::cout << "Gfx : Descriptor ::create descriptor sets failed " << std::endl;
+    }
+    this->_gfxUIDescriptorSets.push_back({descriptorSet, true});
+    return descriptorSet;
 }
-// GfxBufferUBO *GfxRendererBuiltin::getUniformBuffer()
-// {
-//     for (auto &uniformBuffer : this->_uniformBuffers)
-//     {
-//         if (!uniformBuffer->getIsOccupied())
-//         {
-//             uniformBuffer->setIsOccupied(true);
-//             return uniformBuffer;
-//         }
-//     }
-//     GfxBufferUBO *uniformBuffer = new GfxBufferUBO();
-//     uniformBuffer->create(sizeof(float) * (16 + 16 + 1)); // 视图矩阵 + 投影矩阵 + 时间
-//     uniformBuffer->setIsOccupied(true);
-//     this->_uniformBuffers.push_back(uniformBuffer);
-//     return uniformBuffer;
-// }
 void GfxRendererBuiltin::initRenderQueue(std::string renderId, GfxRenderTexture *renderTexture)
 {
     if (this->_renderQueues.find(renderId) != this->_renderQueues.end())
@@ -396,60 +342,43 @@ void GfxRendererBuiltin::submitRenderObject(std::string renderId, GfxMaterial *m
     }
     if (material == nullptr || mesh == nullptr)
     {
-        // this->_renderQueues[renderId]->submitObject(this->_uiMaterial, this->_uiMesh, instanceData);
+        std::cout << "submitRenderObject:material or mesh is null:" << renderId << std::endl;
         return;
     }
-    // else
-    // {
-    //     if (material == nullptr)
-    //     {
-
-    //     }
-    //     else if (mesh == nullptr)
-    //     {
-    //         this->_renderQueues[renderId]->submitObject(material, this->_uiMesh, instanceData);
-    //     }
-    //     else
-    //     {
-    //         this->_renderQueues[renderId]->submitObject(material, mesh, instanceData);
-    //     }
-    // }
-    this->_renderQueues[renderId]->submitObject(this->_uiMaterial, mesh, instanceData);
+    this->_renderQueues[renderId]->submitObject(material, mesh, instanceData);
 }
 void GfxRendererBuiltin::getOffScreenOutds(std::vector<std::string> &pipelineOutds)
 {
-    // for (auto &renderQueue : this->_renderQueues)
-    // {
-    //     pipelineOutds.push_back(renderQueue.first);
-    // }
+    for (auto &renderQueue : this->_renderQueues)
+    {
+        GfxRenderTexture *renderTexture = renderQueue.second->getRenderTexture();
+        if (renderTexture == nullptr)
+        {
+            continue;
+        }
+        const std::string &renderTargetUid = renderTexture->getColorTextureUuid();
+        if (renderTargetUid.empty())
+        {
+            continue;
+        }
+        pipelineOutds.push_back(renderTargetUid);
+    }
 }
-
 
 void GfxRendererBuiltin::frameRendererBefore()
 {
-  
 }
-void GfxRendererBuiltin::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds)
+void GfxRendererBuiltin::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
 
     for (auto &renderQueue : this->_renderQueues)
     {
-        renderQueue.second->render(commandBuffers, pipelineOutds);
+        renderQueue.second->render(commandBuffers);
     }
-
-    // this->_currentObjectCount = 0;
-    // // 渲染完成后，重置描述符集状态
-    // for (auto &renderxDescriptorSet : this->_gfxDescriptorSets)
-    // {
-    //     renderxDescriptorSet.isUsed = false;
-    // }
 }
 void GfxRendererBuiltin::frameRendererAfter()
 {
-  
 }
-
-
 
 void GfxRendererBuiltin::_cleanRendererState()
 {

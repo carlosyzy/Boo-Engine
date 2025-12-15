@@ -23,13 +23,16 @@ class GfxRenderTexture;
 class GfxMesh;
 class GfxMaterial;
 
-
-
-// struct GfxRenderxDescriptorSet
-// {
-// 	VkDescriptorSet descriptorSet;
-// 	bool isUsed = false;
-// };
+struct GfxRenderxUIDescriptorSet
+{
+	VkDescriptorSet descriptorSet;
+	bool isOccupied = false;
+};
+struct GfxRenderx3DDescriptorSet
+{
+	VkDescriptorSet descriptorSet;
+	bool isOccupied = false;
+};
 
 class GfxRendererBuiltin
 {
@@ -54,10 +57,8 @@ private:
 	// 3d渲染器描述符池
 	VkDescriptorPool _3DDescriptorPool;
 	
-	std::vector<VkDescriptorSet> _gfxUIDescriptorSets;
-	std::vector<VkDescriptorSet> _gfx3DDescriptorSets;
-	int _currentUIDescriptorSetIndex = 0;
-	int _current3DDescriptorSetIndex = 0;
+	std::vector<GfxRenderxUIDescriptorSet> _gfxUIDescriptorSets;
+	std::vector<GfxRenderx3DDescriptorSet> _gfx3DDescriptorSets;
 
 	void _initDescriptorSets();
 	void _initUIDescriptorSets();
@@ -104,7 +105,7 @@ public:
 	void submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData);
 	void getOffScreenOutds(std::vector<std::string> &pipelineOutds);
 	void frameRendererBefore();
-	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers,std::vector<std::string> &pipelineOutds);
+	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
 	void frameRendererAfter();	
 
 	void _cleanRendererState();

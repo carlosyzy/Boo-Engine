@@ -13,7 +13,7 @@ GfxPipelineDefault::GfxPipelineDefault(const std::string &name) : GfxPipeline(na
 
 void GfxPipelineDefault::_createPipeline()
 {
-    std::cout << "Gfx : Pipeline :: create pipeline " << this->_name << " start..." << std::endl;
+    std::cout << "Gfx : Default  : Pipeline :: create pipeline " << this->_name << " start..." << std::endl;
     GfxPipeline::_createPipeline();
 }
 
@@ -72,18 +72,18 @@ void GfxPipelineDefault::_initDynamicState()
 }
 void GfxPipelineDefault::_initViewportState()
 {
-    // this->_viewport = {};
-    // this->_viewport.x = 0.0f;
-    // this->_viewport.y = 0.0f;
-    // this->_viewport.width = (float)Gfx::context->getSwapChainExtent().width;
-    // this->_viewport.height = (float)Gfx::context->getSwapChainExtent().height;
-    // this->_viewport.minDepth = 0.0f;
-    // this->_viewport.maxDepth = 1.0f;
+    this->_viewport = {};
+    this->_viewport.x = 0.0f;
+    this->_viewport.y = 0.0f;
+    this->_viewport.width = (float)Gfx::context->getSwapChainExtent().width;
+    this->_viewport.height = (float)Gfx::context->getSwapChainExtent().height;
+    this->_viewport.minDepth = 0.0f;
+    this->_viewport.maxDepth = 1.0f;
 
-    // // 裁剪定义哪一块区域的像素实际被存储在帧缓存中。任何位于裁剪范围之外都会被光栅化丢弃
-    // this->_scissor = {};
-    // this->_scissor.offset = {0, 0};
-    // this->_scissor.extent = Gfx::context->getSwapChainExtent();
+    // 裁剪定义哪一块区域的像素实际被存储在帧缓存中。任何位于裁剪范围之外都会被光栅化丢弃
+    this->_scissor = {};
+    this->_scissor.offset = {0, 0};
+    this->_scissor.extent = Gfx::context->getSwapChainExtent();
 
     this->_viewportInfo = {};
     this->_viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -155,10 +155,10 @@ void GfxPipelineDefault::_initPipelineLayout()
     // 第八步：管线布局
     if (vkCreatePipelineLayout(Gfx::context->getVkDevice(), &this->_pipelineLayoutInfo, nullptr, &this->_vkPipelineLayout) != VK_SUCCESS)
     {
-        std::cout << "Gfx : Pipeline :: create pipeline layout failed " << std::endl;
+        std::cout << "Gfx : Default  : Pipeline :: create pipeline layout failed " << std::endl;
         return;
     }
-    std::cout << "Gfx : Pipeline :: create pipeline layout success " << std::endl;
+    std::cout << "Gfx : Default  : Pipeline :: create pipeline layout success " << std::endl;
 }
 void GfxPipelineDefault::_initPipeline()
 {
@@ -179,10 +179,10 @@ void GfxPipelineDefault::_initPipeline()
     this->_pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
     if (vkCreateGraphicsPipelines(Gfx::context->getVkDevice(), VK_NULL_HANDLE, 1, &this->_pipelineInfo, nullptr, &this->_vkPipeline) != VK_SUCCESS)
     {
-        std::cout << "Gfx : Pipeline :: create pipeline failed " << std::endl;
+        std::cout << "Gfx : Default  : Pipeline :: create pipeline failed " << std::endl;
         return;
     }
-    std::cout << "Gfx : Pipeline :: create pipeline success " << std::endl;
+    std::cout << "Gfx : Default  : Pipeline :: create pipeline success " << std::endl;
 }
 
 GfxPipelineDefault::~GfxPipelineDefault()

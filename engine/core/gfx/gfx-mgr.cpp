@@ -51,7 +51,7 @@ void GfxMgr::update(float dt)
     }
 
     // Gfx::renderer->clearDestroyObjects();
-    // std::cout << "renderer update" << std::endl;
+    std::cout << "renderer update" << std::endl;
     Gfx::context->frameFencesPrepare(this->_currentFrame);
     // std::cout << "renderer update1" << std::endl;
     /* // 可用的图像的索引 */
@@ -76,7 +76,6 @@ void GfxMgr::update(float dt)
     /*  // 准备渲染buffer */
     std::vector<VkCommandBuffer> commandBuffers;
     Gfx::renderer->frameRenderer(imageIndex, commandBuffers);
-
     /*  // 提交渲染命令 */
     Gfx::context->frameSubmitCommands(imageIndex, commandBuffers, this->_currentFrame);
     /*  // 显示图像 */

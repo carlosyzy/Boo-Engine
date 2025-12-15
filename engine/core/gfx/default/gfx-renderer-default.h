@@ -21,6 +21,7 @@ class GfxPipelineDefault;
 struct GfxRenderxDescriptorSets
 {
 	std::vector<VkDescriptorSet> descriptorSets;
+	bool isOccupied = false;
 };
 
 class GfxRendererDefault
@@ -41,7 +42,7 @@ private:
 	VkDescriptorSetLayout _descriptorSetLayout;
 	void _initDescriptorSetLayout();
 	std::vector<GfxRenderxDescriptorSets> _descriptorSets;
-	int _currentDescriptorSetIndex = 0;
+	// int _currentDescriptorSetIndex = 0;
 	void _initDefaultDescriptor();
 
 	GfxRenderPassDefault *_pass;

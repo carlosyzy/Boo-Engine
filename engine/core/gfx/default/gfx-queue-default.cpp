@@ -28,7 +28,7 @@ void GfxQueueDefault::_createFramebuffers()
     GfxRenderPassDefault *pass = this->_renderer->getRenderPass();
     if (pass == nullptr)
     {
-        throw std::runtime_error("GfxRenderBatch::_createFramebuffers() pass not found!");
+        throw std::runtime_error("Gfx : RenderQueue :: _createFramebuffers() pass not found!");
     }
     this->_framebuffers.clear();
     std::vector<VkImageView> &swapChainImageViews = Gfx::context->getSwapChainImageViews();
@@ -50,7 +50,7 @@ void GfxQueueDefault::_createFramebuffers()
             throw std::runtime_error("Gfx : RenderQueue :: Failed to create framebuffer!");
         }
     }
-    std::cout << "Gfx : RenderQueue :: Created " << this->_framebuffers.size() << " framebuffers." << std::endl;
+    std::cout << "Gfx : Default  : RenderQueue :: Created " << this->_framebuffers.size() << " framebuffers." << std::endl;
 }
 void GfxQueueDefault::_createCommandBuffers()
 {
@@ -65,7 +65,7 @@ void GfxQueueDefault::_createCommandBuffers()
     {
         throw std::runtime_error("Gfx : RenderQueue :: Failed to allocate command buffers!");
     }
-    std::cout << "Gfx : RenderQueue :: Created " << this->_commandBuffers.size() << " command buffers." << std::endl;
+    std::cout << "Gfx : Default  : RenderQueue :: Created " << this->_commandBuffers.size() << " command buffers." << std::endl;
 }
 void GfxQueueDefault::_createVertexBuffers()
 {
@@ -97,12 +97,19 @@ void GfxQueueDefault::_createVertexBuffers()
         &this->_indexMemory,
         indices.size() * sizeof(uint32_t),
         indices.data());
-    std::cout << "Gfx : RenderQueue :: Created vertex buffer with " << interleavedVertices.size() << " vertices." << std::endl;
+    std::cout << "Gfx : Default  : RenderQueue :: Created vertex buffer with " << interleavedVertices.size() << " vertices." << std::endl;
 }
 void GfxQueueDefault::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers, std::vector<std::string> &pipelineOutds)
 {
-    GfxPipelineDefault *pipeline = this->_renderer->getPipeline();
+    std::cout << "Gfx : Default  : RenderQueue :: Rendering frame " << imageIndex << std::endl;
+    std::cout<<"pipelineOutds:"<<pipelineOutds.size()<<std::endl;
+    for (size_t i = 0; i < pipelineOutds.size(); i++)
+    {
+        std::cout<<"Gfx : Default  : RenderQueue :: pipelineOutds["<<i<<"]:"<<pipelineOutds[i]<<std::endl;
+    }
 
+
+    GfxPipelineDefault *pipeline = this->_renderer->getPipeline();
     this->_resetCommandBuffer(imageIndex);
     this->_beginCommandBuffer(imageIndex);
     this->_beginRenderPass(imageIndex);
@@ -119,7 +126,7 @@ void GfxQueueDefault::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
         GfxTexture *texture = Gfx::renderer->getTexture(textureUuid);
         if (texture == nullptr)
         {
-            std::cout << "render: texture not found:" << textureUuid << std::endl;
+            std::cout << "Gfx : Default  : RenderQueue :: render: texture not found:" << textureUuid << std::endl;
             continue;
         }
 

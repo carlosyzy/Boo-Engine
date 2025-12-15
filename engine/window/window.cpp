@@ -130,7 +130,7 @@ void Window::onWindowSize()
 	glfwGetWindowSize(this->_window, &this->_width, &this->_height);
 	if (Boo::game == nullptr)
 		return;
-	Boo::game->setView(this->_width, this->_height);
+	Boo::game->resizeView(this->_width, this->_height);
 };
 bool Window::isRunning()
 {

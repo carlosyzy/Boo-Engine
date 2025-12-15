@@ -15,11 +15,13 @@ GfxRenderTexture::GfxRenderTexture(std::string uuid)
     this->_height = 0;
     this->_colorTexture = nullptr;
     this->_depthTexture = nullptr;
+    this->_pass = nullptr;
 }
 void GfxRenderTexture::bindRenderPass(GfxRenderPass *pass)
 {
-    if (this->_pass != nullptr)
+    if (this->_pass == nullptr)
     {
+        std::cout << "GfxRenderTexture::bindRenderPass: pass is null" << std::endl;
         return;
     }
     std::cout << "GfxRenderTexture::bindRenderPass: pass:" << pass << std::endl;
@@ -28,7 +30,7 @@ void GfxRenderTexture::bindRenderPass(GfxRenderPass *pass)
     {
         return;
     }
-    
+
     this->_createFrameBuffer();
     this->_createCommandBuffer();
 }
@@ -89,8 +91,6 @@ void GfxRenderTexture::resize(uint32_t width, uint32_t height)
     std::cout << "GfxRenderTexture::resize: width:" << width << " height:" << height << std::endl;
     this->_width = width;
     this->_height = height;
-    this->_width = Gfx::context->getSwapChainExtent().width;
-    this->_height = Gfx::context->getSwapChainExtent().height;
     this->_createTextures();
     if (this->_pass != nullptr)
     {
@@ -144,6 +144,14 @@ void GfxRenderTexture::_createTextures()
 }
 const std::string &GfxRenderTexture::getColorTextureUuid() const
 {
+    if (this->_colorTexture == nullptr)
+    {
+        return "";
+    }
+    if (this->_colorTexture->getImageView() == VK_NULL_HANDLE || this->_depthTexture->getSampler() == VK_NULL_HANDLE)
+    {
+        return "";
+    }
     return this->_colorUuid;
 }
 

@@ -24,6 +24,8 @@ void GfxRenderer::init()
 {
     Gfx::bufferUBO = new GfxBufferUBO();
     Gfx::bufferInstance = new GfxBufferInstance();
+    this->_defaultRenderer->init();
+    this->_builtinRenderer->init();
 }
 void GfxRenderer::createTexture(std::string textureUuid, uint32_t width, uint32_t height, uint32_t channels, const std::vector<uint8_t> *pixels)
 {
@@ -195,6 +197,10 @@ void GfxRenderer::submitRenderObject(std::string renderId, GfxMaterial *material
 {
     this->_builtinRenderer->submitRenderObject(renderId, material, mesh, instanceData);
 }
+/**
+ * @brief 渲染前处理
+ * 上一帧渲染完成，清空渲染目标，准备新帧渲染
+ */
 void GfxRenderer::frameRendererBefore()
 {
     Gfx::bufferUBO->clear();
@@ -205,9 +211,14 @@ void GfxRenderer::frameRendererBefore()
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
     //先获取上一帧的离屏渲染输出提交到默认队列
-    std::vector<std::string> pipelineOutds;
-    this->_builtinRenderer->getOffScreenOutds(pipelineOutds);
-    this->_defaultRenderer->frameRenderer(imageIndex, commandBuffers, pipelineOutds);
+    std::cout << "Gfx : Renderer :: frameRendererBefore" << std::endl;
+    // std::vector<std::string> pipelineOutds;
+    // this->_builtinRenderer->getOffScreenOutds(pipelineOutds);
+    // this->_defaultRenderer->frameRenderer(imageIndex, commandBuffers, pipelineOutds);
+
+    // 渲染3d队列
+    this->_builtinRenderer->frameRenderer(imageIndex, commandBuffers);
+
     // this->_pipelineOutds.clear();
     // // 渲染3d队列
     // // 渲染ui队列

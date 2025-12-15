@@ -32,7 +32,7 @@ void EditorLoading::Awake()
 	this->_width = Boo::game->view()->width;
 	this->_height = Boo::game->view()->height;
 	this->_initCamera();
-	// this->_initBg();
+	this->_initBg();
 	// this->_initLogo();
 	// this->_initLoadUI();
 	// this->_initAssetsDB();
@@ -67,9 +67,9 @@ void EditorLoading::_initBg()
 		this->_spriteAlpha = dynamic_cast<UISprite *>(compAlpha);
 		// this->_spriteAlpha->setTextureAsset(this->_textureDefault);
 		// this->_spriteAlpha->setMaterialAsset(nullptr);
-		this->_spriteAlpha->setColor("#111111ff");
+		this->_spriteAlpha->setColor("#6d2b2bff");
 	}
-	this->_ndAlpha->setSize(this->_width, this->_height);
+	this->_ndAlpha->setSize(this->_width-100, this->_height-100);
 }
 void EditorLoading::_initLogo()
 {
