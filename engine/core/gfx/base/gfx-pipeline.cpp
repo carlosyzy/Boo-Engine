@@ -80,6 +80,7 @@ void GfxPipeline::_initInputAssemblyState()
 }
 void GfxPipeline::_initDynamicState()
 {
+    this->_dynamicStateInfo = {};
     this->_dynamicStates = {
         VK_DYNAMIC_STATE_VIEWPORT,
         VK_DYNAMIC_STATE_SCISSOR,

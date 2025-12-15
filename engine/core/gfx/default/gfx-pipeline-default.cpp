@@ -13,7 +13,7 @@ GfxPipelineDefault::GfxPipelineDefault(const std::string &name) : GfxPipeline(na
 
 void GfxPipelineDefault::_createPipeline()
 {
-    std::cout << "Gfx : Default  : Pipeline :: create pipeline " << this->_name << " start..." << std::endl;
+    std::cout << "Gfx : Default  : Pipeline :: create pipeline " <<" start..." << std::endl;
     GfxPipeline::_createPipeline();
 }
 
@@ -62,13 +62,7 @@ void GfxPipelineDefault::_initInputAssemblyState()
 }
 void GfxPipelineDefault::_initDynamicState()
 {
-    this->_dynamicStates = {
-        VK_DYNAMIC_STATE_VIEWPORT,
-        VK_DYNAMIC_STATE_SCISSOR,
-    };
-    this->_dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-    this->_dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(this->_dynamicStates.size());
-    this->_dynamicStateInfo.pDynamicStates = this->_dynamicStates.data();
+    GfxPipeline::_initDynamicState();
 }
 void GfxPipelineDefault::_initViewportState()
 {
@@ -88,9 +82,9 @@ void GfxPipelineDefault::_initViewportState()
     this->_viewportInfo = {};
     this->_viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
     this->_viewportInfo.viewportCount = 1;
-    // this->_viewportInfo.pViewports = &this->_viewport;
+    this->_viewportInfo.pViewports = &this->_viewport;
     this->_viewportInfo.scissorCount = 1;
-    // this->_viewportInfo.pScissors = &this->_scissor;
+    this->_viewportInfo.pScissors = &this->_scissor;
 }
 void GfxPipelineDefault::_initRasterizationState()
 {
