@@ -106,13 +106,11 @@ void GfxQueueDefault::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
     this->_beginCommandBuffer(imageIndex);
     this->_beginRenderPass(imageIndex);
     this->_bindPipeline(imageIndex, pipeline);
-        
 
     // 进行一次顶点绑定
     VkDeviceSize offsets[1] = {0};
     vkCmdBindVertexBuffers(this->_commandBuffers[imageIndex], 0, 1, &this->_vertexBuffer, offsets);
     vkCmdBindIndexBuffer(this->_commandBuffers[imageIndex], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-
     for (size_t i = 0; i < pipelineOutds.size(); i++)
     {
         std::string textureUuid = pipelineOutds[i];
@@ -122,47 +120,7 @@ void GfxQueueDefault::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
             std::cout << "[Gfx : GfxQueueDefault]:: render: texture not found:" << textureUuid << std::endl;
             continue;
         }
-
-        std::vector<VkDescriptorSet> descriptorSets = this->_renderer->getDescriptorSets();
-        VkDescriptorImageInfo imageInfo{};
-        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        imageInfo.imageView = texture->getImageView();
-        imageInfo.sampler = texture->getSampler();
-        std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
-        descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descriptorWrites[0].dstSet = descriptorSets[imageIndex];
-        descriptorWrites[0].dstBinding = 0;
-        descriptorWrites[0].dstArrayElement = 0;
-        descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        descriptorWrites[0].descriptorCount = 1;
-        descriptorWrites[0].pImageInfo = &imageInfo;
-        vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-        vkCmdBindDescriptorSets(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptorSets[imageIndex], 0, nullptr);
-
-        // 设置视口
-        VkViewport _viewport{};
-        // 裁剪区域 原点左上角为(0,0)
-        VkRect2D _scissor{};
-        _viewport.x = 0.0f;
-        _viewport.y = 0.0f;
-        _viewport.width = (float)Gfx::context->getSwapChainExtent().width;
-        _viewport.height = (float)Gfx::context->getSwapChainExtent().height;
-        _viewport.minDepth = 0.0f;
-        _viewport.maxDepth = 1.0f;
-        _scissor.offset = {0, 0};
-        _scissor.extent = {(uint32_t)(Gfx::context->getSwapChainExtent().width), (uint32_t)(Gfx::context->getSwapChainExtent().height)};
-        vkCmdSetViewport(this->_commandBuffers[imageIndex], 0, 1, &_viewport);
-        // 设置裁剪区域
-        vkCmdSetScissor(this->_commandBuffers[imageIndex], 0, 1, &_scissor);
-
-        vkCmdDrawIndexed(
-            this->_commandBuffers[imageIndex],
-            6, // 只绘制3个索引（第一个三角形）
-            1, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
-            0, // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
-            0, // 第一个实例的索引 从第 0 个实例开始绘制
-            0  // 实例偏移
-        );
+        this->_draw(imageIndex, texture, pipeline);
     }
     // 渲染结束
     vkCmdEndRenderPass(this->_commandBuffers[imageIndex]);
@@ -173,6 +131,51 @@ void GfxQueueDefault::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
     }
     commandBuffers.push_back(this->_commandBuffers[imageIndex]);
 }
+// 550e8400-e29b-41d4-a716-446655440000
+void GfxQueueDefault::_draw(uint32_t imageIndex, GfxTexture *texture, GfxPipelineDefault *pipeline)
+{
+    std::cout << "[Gfx : GfxQueueDefault]:: draw: texture:" << texture->getUuid() << std::endl;
+    std::vector<VkDescriptorSet> descriptorSets = this->_renderer->getDescriptorSets();
+    VkDescriptorImageInfo imageInfo{};
+    imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo.imageView = texture->getImageView();
+    imageInfo.sampler = texture->getSampler();
+    std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = descriptorSets[imageIndex];
+    descriptorWrites[0].dstBinding = 0;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pImageInfo = &imageInfo;
+    vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+    vkCmdBindDescriptorSets(this->_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptorSets[imageIndex], 0, nullptr);
+    // 设置视口
+    VkViewport _viewport{};
+    // 裁剪区域 原点左上角为(0,0)
+    VkRect2D _scissor{};
+    _viewport.x = 0.0f;
+    _viewport.y = 0.0f;
+    _viewport.width = (float)Gfx::context->getSwapChainExtent().width;
+    _viewport.height = (float)Gfx::context->getSwapChainExtent().height;
+    _viewport.minDepth = 0.0f;
+    _viewport.maxDepth = 1.0f;
+    _scissor.offset = {0, 0};
+    _scissor.extent = {(uint32_t)(Gfx::context->getSwapChainExtent().width), (uint32_t)(Gfx::context->getSwapChainExtent().height)};
+    vkCmdSetViewport(this->_commandBuffers[imageIndex], 0, 1, &_viewport);
+    // 设置裁剪区域
+    vkCmdSetScissor(this->_commandBuffers[imageIndex], 0, 1, &_scissor);
+
+    vkCmdDrawIndexed(
+        this->_commandBuffers[imageIndex],
+        6, // 只绘制3个索引（第一个三角形）
+        1, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
+        0, // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
+        0, // 第一个实例的索引 从第 0 个实例开始绘制
+        0  // 实例偏移
+    );
+}
+
 void GfxQueueDefault::_resetCommandBuffer(uint32_t imageIndex)
 {
     vkResetCommandBuffer(this->_commandBuffers[imageIndex], 0);
@@ -196,11 +199,12 @@ void GfxQueueDefault::_beginRenderPass(uint32_t imageIndex)
     renderPassInfo.renderArea.offset = {0, 0};
 
     VkClearValue clearColor{};
-    clearColor.color = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    clearColor.color = {{0.0f, 0.0f, 0.0f, 0.0f}};
     renderPassInfo.pClearValues = &clearColor;
     renderPassInfo.clearValueCount = 1;
 
     vkCmdBeginRenderPass(this->_commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+    // std::cout << "[Gfx : GfxQueueDefault]:: render: begin render pass" << std::endl;
 }
 void GfxQueueDefault::_bindPipeline(uint32_t imageIndex, GfxPipelineDefault *pipeline)
 {

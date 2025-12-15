@@ -81,7 +81,7 @@ void GfxQueueBuiltin::render(std::vector<VkCommandBuffer> &commandBuffers)
         batch = nullptr;
     }
     this->_batches.clear();
-    this->_renderTexture->saveToFile1("ui.png");
+    // this->_renderTexture->saveToFile1("ui.png");
 
     // this->_bindPipeline(pipeline);
 
