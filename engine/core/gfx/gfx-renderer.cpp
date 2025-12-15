@@ -17,6 +17,14 @@
 
 GfxRenderer::GfxRenderer()
 {
+    // 所有ui 默认绑定4个采样器
+    Gfx::uiTestMesh = new GfxMesh("789abcde-f012-34a5-b678-901234567890");
+    Gfx::uiTestMesh->setInputVertices({-0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+                                       -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+                                       0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+                                       0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
+                                      {0, 1, 2, 0, 2, 3});
+
     this->_defaultRenderer = new GfxRendererDefault("default");
     this->_builtinRenderer = new GfxRendererBuiltin("builtin");
 }
@@ -210,13 +218,12 @@ void GfxRenderer::frameRendererBefore()
 }
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
-    //先获取上一帧的离屏渲染输出提交到默认队列
-    std::cout << "Gfx : Renderer :: frameRendererBefore" << std::endl;
-    // std::vector<std::string> pipelineOutds;
-    // this->_builtinRenderer->getOffScreenOutds(pipelineOutds);
-    // this->_defaultRenderer->frameRenderer(imageIndex, commandBuffers, pipelineOutds);
+    // 先获取上一帧的离屏渲染输出提交到默认队列
+    std::vector<std::string> pipelineOutds;
+    this->_builtinRenderer->getOffScreenOutds(pipelineOutds);
+    this->_defaultRenderer->frameRenderer(imageIndex, commandBuffers, pipelineOutds);
 
-    // 渲染3d队列
+    //离屏渲染队列
     this->_builtinRenderer->frameRenderer(imageIndex, commandBuffers);
 
     // this->_pipelineOutds.clear();
