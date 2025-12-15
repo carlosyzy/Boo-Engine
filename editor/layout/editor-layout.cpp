@@ -68,8 +68,6 @@ void EditorLayout::_initMainUI()
     if (this->_spriteMain != nullptr)
     {
         std::cout << "EditorLayout::_initMainUI1" << std::endl;
-        // this->_spriteMain->setTextureAsset(BooEditor::cache->getEditorTexture("ic-default.png"));
-        // this->_spriteMain->setMaterialAsset(nullptr);
         this->_spriteMain->setColor(0.1f, 0.1f, 0.1f, 1.0f);
     }
 }
@@ -84,10 +82,7 @@ void EditorLayout::_initMenuUI()
     this->_spriteMenu = dynamic_cast<UISprite *>(this->_ndMenu->addComponent("UISprite"));
     if (this->_spriteMenu != nullptr)
     {
-        std::cout << "EditorLayout::_initMenuUI1" << std::endl;
-        // this->_spriteMenu->setTextureAsset(BooEditor::cache->getEditorTexture("ic-default.png"));
         this->_spriteMenu->setColor(EditorConfig::theme);
-        // this->_spriteMenu->setMaterialAsset(nullptr);
     }
 }
 void EditorLayout::_initHierarchyUI()
@@ -100,8 +95,6 @@ void EditorLayout::_initHierarchyUI()
     if (this->_spriteHierarchy != nullptr)
     {
         this->_spriteHierarchy->setColor(EditorConfig::theme);
-        // this->_spriteHierarchy->setTextureAsset(BooEditor::cache->getEditorTexture("ic-default.png"));
-        // this->_spriteHierarchy->setMaterialAsset(nullptr);
     }
 }
 void EditorLayout::_initAssetsUI()
@@ -114,8 +107,6 @@ void EditorLayout::_initAssetsUI()
     if (this->_spriteAsset != nullptr)
     {
         this->_spriteAsset->setColor("#0A2F36");
-        // this->_spriteAsset->setTextureAsset(BooEditor::cache->getEditorTexture("ic-default.png"));
-        // this->_spriteAsset->setMaterialAsset(nullptr);
     }
 }
 void EditorLayout::_initPropertyUI()
@@ -128,8 +119,6 @@ void EditorLayout::_initPropertyUI()
     if (this->_spriteProperty != nullptr)
     {
         this->_spriteProperty->setColor(EditorConfig::theme);
-        // this->_spriteProperty->setTextureAsset(BooEditor::cache->getEditorTexture("ic-default.png"));
-        // this->_spriteProperty->setMaterialAsset(nullptr);
     }
 }
 void EditorLayout::_initSceneUI()
@@ -142,8 +131,6 @@ void EditorLayout::_initSceneUI()
     if (this->_spriteScene != nullptr)
     {
         this->_spriteScene->setColor(EditorConfig::theme);
-        // this->_spriteScene->setTextureAsset(BooEditor::cache->getEditorTexture("ic-default.png"));
-        // this->_spriteScene->setMaterialAsset(nullptr);
     }
 }
 void EditorLayout::_initToolUI()
@@ -156,8 +143,6 @@ void EditorLayout::_initToolUI()
     if (this->_spriteTool != nullptr)
     {
         this->_spriteTool->setColor(EditorConfig::theme);
-        // this->_spriteTool->setTextureAsset(BooEditor::cache->getEditorTexture("ic-default.png"));
-        // this->_spriteTool->setMaterialAsset(nullptr);
     }
 }
 void EditorLayout::_initBottomUI()
@@ -170,8 +155,6 @@ void EditorLayout::_initBottomUI()
     if (this->_spriteBottom != nullptr)
     {
         this->_spriteBottom->setColor(EditorConfig::theme);
-        // this->_spriteBottom->setTextureAsset(BooEditor::cache->getEditorTexture("ic-default.png"));
-        // this->_spriteBottom->setMaterialAsset(nullptr);
     }
 }
 

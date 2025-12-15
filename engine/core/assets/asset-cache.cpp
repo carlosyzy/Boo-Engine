@@ -7,6 +7,10 @@
 AssetCache::AssetCache()
 {
 }
+/**
+ * @brief 初始化资产数据库
+ * @param path 资产数据库路径
+ */
 void AssetCache::initAssetsDB(const std::string &path)
 {
     json content = FileUtil::readJsonFromBinary(path);

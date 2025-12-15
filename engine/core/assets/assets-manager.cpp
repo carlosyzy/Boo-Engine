@@ -13,10 +13,11 @@ AssetsManager::AssetsManager()
 {
 	this->_assetsCache = new AssetCache();
 	this->_assetsLoad = new AssetLoad(this);
+	this->_initDefaultBuiltinAssets();
 }
 void AssetsManager::init()
 {
-	this->_initDefaultBuiltinAssets();
+	
 }
 void AssetsManager::_initDefaultBuiltinAssets()
 {

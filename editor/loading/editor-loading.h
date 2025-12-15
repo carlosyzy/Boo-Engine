@@ -42,7 +42,7 @@ private:
 	void _updateLoadBarSize(float width, float height);
 
 	void _initAssetsDB();
-	void _initAssetsDBCallback(int completedCount, int allCount, float progress);
+	void _initAssetsDBCallback(float progress, std::string file);
 
 	void _saveEditorCache();
 	int _launchEditorTaskId = -1;
