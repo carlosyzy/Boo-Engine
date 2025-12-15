@@ -43,6 +43,7 @@ private:
 
 	void _initAssetsDB();
 	void _initAssetsDBCallback(float progress, std::string file);
+	void _initAssetsDBCompleteCallback();
 
 	void _saveEditorCache();
 	int _launchEditorTaskId = -1;
