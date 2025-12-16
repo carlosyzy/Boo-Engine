@@ -10,6 +10,7 @@ private:
     std::string _name;
     Scene *_scene;
     void _deserializeScene();
+    void _deserializeNode(Node *node, json &_nodeData);
 protected:
 public:
     SceneAsset();

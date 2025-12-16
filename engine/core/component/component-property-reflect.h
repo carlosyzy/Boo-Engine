@@ -15,7 +15,7 @@ enum class PropertyType
     Vec2 = 4,
     Vec3 = 5,
     Color = 6,
-    Image = 7,
+    Texture = 7,
     Material = 8,
     ShaderV = 9,
     ShaderF = 10,

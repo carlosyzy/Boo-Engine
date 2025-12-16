@@ -58,3 +58,42 @@ private:                                                                \
             &ComponentClass::property \
         ); \
         return true; }()
+
+
+/**
+ * Texture 类型
+ * Texture类型的属性，用于存储纹理uuid
+ */
+#define REGISTER_PROPERTY_TEXTURE(ComponentClass, property, displayName) \
+public:                                                                 \
+    std::string property;                                               \
+                                                                        \
+private:                                                                \
+    static inline auto _field_##property = []() { \
+        ReflectionRegistry::getInstance().addField( \
+            #ComponentClass, \
+            7, \
+            #property, \
+            displayName, \
+            &ComponentClass::property \
+        ); \
+        return true; }()
+
+/**
+ * Material 类型
+ * Material类型的属性，用于存储材质uuid
+ */
+#define REGISTER_PROPERTY_MATERIAL(ComponentClass, property, displayName) \
+public:                                                                 \
+    std::string property;                                               \
+                                                                        \
+private:                                                                \
+    static inline auto _field_##property = []() { \
+        ReflectionRegistry::getInstance().addField( \
+            #ComponentClass, \
+            8, \
+            #property, \
+            displayName, \
+            &ComponentClass::property \
+        ); \
+        return true; }()

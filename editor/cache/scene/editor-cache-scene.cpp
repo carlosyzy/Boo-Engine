@@ -173,7 +173,7 @@ void EditorCacheScene::_serializeSceneData(Scene *scene, json &sceneData)
         nodeData["_name"] = node->getName();
         nodeData["_layer"] = node->getLayer();
         nodeData["_uuid"] = node->getUuid();
-        nodeData["_visible"] = 0;
+        nodeData["_visibility"] = node->getVisibility();
         nodeData["_active"] = node->isActive() ? 1 : 0;
         nodeData["_position"] = {node->getPosition().getX(), node->getPosition().getY(), node->getPosition().getZ()};
         nodeData["_rotation"] = {node->getEulerAngles().getX(), node->getEulerAngles().getY(), node->getEulerAngles().getZ()};
@@ -207,8 +207,8 @@ void EditorCacheScene::_serializeSceneData(Scene *scene, json &sceneData)
     };
     sceneData["_name"] = scene->getName();
     sceneData["_type"] = "SceneAsset";
-    sceneData["_node"] = json::object();
-    _serializeNode(scene, sceneData["_node"]);
+    sceneData["_scene"] = json::object();
+    _serializeNode(scene, sceneData["_scene"]);
 }
 
 EditorCacheScene::~EditorCacheScene()

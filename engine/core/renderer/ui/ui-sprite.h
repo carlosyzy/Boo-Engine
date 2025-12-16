@@ -11,8 +11,8 @@ class Camera;
 class UISprite : public UIRenderer
 {
 public:
-    REGISTER_PROPERTY_STRING(UISprite, _texture, "纹理");
-    REGISTER_PROPERTY_STRING(UISprite, _material, "材质");
+    REGISTER_PROPERTY_TEXTURE(UISprite, _texture, "纹理");
+    REGISTER_PROPERTY_MATERIAL(UISprite, _material, "材质");
     
 protected:
     /**
