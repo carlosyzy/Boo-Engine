@@ -1,6 +1,6 @@
 #include "editor-loading.h"
 #include "../boo-editor.h"
-#include "../layout/editor-layout.h"
+#include "../modules/editor-layout.h"
 
 #include "../../engine/boo.h"
 #include "../../engine/core/assets/assets-manager.h"

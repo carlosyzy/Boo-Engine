@@ -16,7 +16,7 @@ private:
 	Camera* _uiCamera;
 	void _initCamera();
 	
-	float _border = 2.0f;
+	float _border = 4.0f;
 	float _width;
 	float _height;
 	// 菜单布局

@@ -1,11 +1,8 @@
 #include "editor-main.h"
 #include "boo-editor.h"
-// #include "cache/editor-project-cache.h"
-// #include "cache/editor-scene-cache.h"
 #include "cache/editor-cache.h"
 #include "loading/editor-loading.h"
-#include "layout/editor-layout.h"
-#include "layout/scene/editor-scene.h"
+#include "modules/editor-layout.h"
 
 #include "../engine/boo.h"
 #include "../engine/core/game.h"

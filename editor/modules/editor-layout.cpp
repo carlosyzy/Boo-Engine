@@ -180,6 +180,7 @@ void EditorLayout::_updateModuleSize()
 {
     // 基于左上角为0，0点的坐标
     //  菜单
+    this->_border = 3.0f;
     this->menu_width = this->_width;
     this->menu_height = 25;
     this->menu_x = 0.0f;
@@ -198,21 +199,21 @@ void EditorLayout::_updateModuleSize()
     this->hierarchy_y = std::ceil(this->_height / 2.0 - this->menu_height - this->_border - this->hierarchy_height / 2.0);
     // 资产
     this->asset_width = this->hierarchy_width;
-    this->asset_height = this->_height - this->menu_height - this->_border - this->hierarchy_height - this->_border - this->bottom_height - this->_border;
+    this->asset_height = std::ceil(this->_height - this->menu_height - this->_border - this->hierarchy_height - this->_border - this->bottom_height-this->_border);
     this->asset_x = -this->_width / 2.0 + this->asset_width / 2.0;
     this->asset_y = std::ceil(this->_height / 2.0 - this->menu_height - this->_border - this->hierarchy_height - this->_border - this->asset_height / 2.0);
 
     // 属性
     this->property_width = std::ceil(this->_width * 0.25);
     this->property_height = this->_height - this->menu_height - this->_border - this->bottom_height - this->_border;
-    this->property_x = std::round(this->_width / 2.0 - this->property_width / 2.0);
+    this->property_x = std::ceil(this->_width / 2.0 - this->property_width / 2.0);
     this->property_y = std::ceil(this->_height / 2.0 - this->menu_height - this->_border - this->property_height / 2.0);
 
     // 场景
-    this->scene_width = std::round(this->_width - this->hierarchy_width - this->property_width - this->_border - this->_border);
+    this->scene_width = std::ceil(this->_width - this->hierarchy_width - this->property_width - this->_border - this->_border);
     this->scene_height = this->hierarchy_height;
-    this->scene_x = std::round(-this->_width / 2.0 + this->hierarchy_width + this->_border + this->scene_width / 2.0);
-    this->scene_y = std::round(this->_height / 2.0 - this->menu_height - this->_border - this->scene_height / 2.0);
+    this->scene_x = std::ceil(-this->_width / 2.0 + this->hierarchy_width + this->_border + this->scene_width / 2.0);
+    this->scene_y = std::ceil(this->_height / 2.0 - this->menu_height - this->_border - this->scene_height / 2.0);
     // 工具
     this->tool_width = this->scene_width;
     this->tool_height = this->asset_height;
