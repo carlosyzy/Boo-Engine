@@ -1,8 +1,8 @@
-#include "editor-main.h"
+#include "editor-boot.h"
 #include "boo-editor.h"
 #include "cache/editor-cache.h"
 #include "loading/editor-loading.h"
-#include "modules/editor-layout.h"
+#include "main/editor-main.h"
 
 #include "../engine/boo.h"
 #include "../engine/core/game.h"
@@ -12,16 +12,20 @@
 #include "../engine/core/utils/dialog-util.h"
 #include "../engine/core/utils/time-util.h"
 
-EditorMain::EditorMain()
+EditorBoot::EditorBoot()
 {
     this->_deltaTime = TimeUtil::nowTime();
     this->_frameRate = 30;
     BooEditor::cache = new EditorCache();
     BooEditor::cache->init();
 }
-void EditorMain::init()
+void EditorBoot::init()
 {
-    std::cout << "EditorMain::_startLoading" << std::endl;
+    this->_launchEditorLoading();
+}
+void EditorBoot::_launchEditorLoading()
+{
+    std::cout << "EditorBoot::_startLoading" << std::endl;
     // 加载场景
     Scene *scene = new Scene("Editor-Loading-Scene");
     Node2D *node2d = scene->getRoot2D();
@@ -29,19 +33,20 @@ void EditorMain::init()
     std::cout << "EditorMain::init: scene: " << scene->getName() << std::endl;
     Boo::game->openScene(scene);
     editorLoading->setOnLoadComplete([this]()
-                                     { this->_launchEditor(); });
+                                     { this->_launchEditorMain(); });
 }
-void EditorMain::_launchEditor()
+
+void EditorBoot::_launchEditorMain()
 {
-    std::cout << "EditorMain::_launchEditor" << std::endl;
+    std::cout << "EditorBoot::_launchEditor" << std::endl;
     // 加载场景
-    Scene *scene = new Scene("Editor-Scene");
+    Scene *scene = new Scene("Editor-Main-Scene");
     Node2D *node2d = scene->getRoot2D();
-    this->_editorLayout = static_cast<EditorLayout *>(node2d->addComponent("EditorLayout"));
+    EditorMain *editorMain = static_cast<EditorMain *>(node2d->addComponent("EditorMain"));
     std::cout << "EditorMain::openScene: scene: " << scene->getName() << std::endl;
     Boo::game->openScene(scene);
 }
-void EditorMain::tick()
+void EditorBoot::tick()
 {
     long long deltaTime = TimeUtil::nowTime();
     long long t = deltaTime - this->_deltaTime;
@@ -51,7 +56,7 @@ void EditorMain::tick()
         this->_deltaTime = deltaTime;
     }
 }
-void EditorMain::update(float deltaTime)
+void EditorBoot::update(float deltaTime)
 {
     if (BooEditor::cache)
     {
@@ -59,6 +64,6 @@ void EditorMain::update(float deltaTime)
     }
 }
 
-EditorMain::~EditorMain()
+EditorBoot::~EditorBoot()
 {
 }

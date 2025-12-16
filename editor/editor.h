@@ -5,14 +5,14 @@
 
 class Window;
 class Engine;
-class EditorMain;
+class EditorBoot;
 
 class Editor
 {
 private:
     Window *_window;
     Engine *_engine;
-    EditorMain *_main;
+    EditorBoot *_boot;
 
     void _initWindow();
     void _initEngine();

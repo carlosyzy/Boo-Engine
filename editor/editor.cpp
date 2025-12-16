@@ -1,15 +1,11 @@
 #include "editor.h"
 #include "boo-editor.h"
-// #include "cache/editor-assets-cache.h"
-// #include "cache/editor-config-cache.h"
-// #include "cache/editor-project-cache.h"
-// #include "cache/editor-scene-cache.h"
 
 #include "cache/editor-cache.h"
 
 #include "../engine/boo.h"
 #include "../engine/engine.h"
-#include "editor-main.h"
+#include "editor-boot.h"
 
 #ifdef defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
@@ -94,14 +90,14 @@ void Editor::_initEngine() {
 #endif
 }
 void Editor::_initEditorMain() {
-	this->_main = new EditorMain();
-	this->_main->init();
+	this->_boot = new EditorBoot();
+	this->_boot->init();
 }
 
 void Editor::run() {
 	while (this->_window->isRunning()) {
 		this->_window->tick();
-		this->_main->tick();
+		this->_boot->tick();
 		this->_engine->tick();
 	}
 }

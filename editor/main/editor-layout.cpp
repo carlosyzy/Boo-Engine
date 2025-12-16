@@ -16,21 +16,22 @@
 #include "../../engine/core/assets/assets-manager.h"
 #include "../../engine/core/component/ui/ui-widget.h"
 
-EditorLayout::EditorLayout(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
+EditorLayout::EditorLayout() 
 {
     
 }
-/**
- * @brief 反序列化组件属性-配置
- * 反序列化成功后，更新模块尺寸
- */
-void EditorLayout::_deserialized()
+void EditorLayout::init()
 {
-    Component::_deserialized();
-}
-void EditorLayout::Awake()
-{
-    this->_initCamera();
+    Scene *scene = Boo::game->getScene();
+	if (scene == nullptr)
+	{
+		return;
+	}
+	this->_node  = scene->getRoot2D();
+	if (this->_node == nullptr)
+	{
+		return;
+	}
     this->_initMainUI();
     this->_initMenuUI();
     this->_initHierarchyUI();
@@ -40,24 +41,6 @@ void EditorLayout::Awake()
     this->_initToolUI();
     this->_initBottomUI();
 }
-void EditorLayout::Enable()
-{
-    Component::Enable();
-}
-void EditorLayout::_initCamera()
-{
-	Scene *scene = Boo::game->getScene();
-	if (scene == nullptr)
-	{
-		return;
-	}
-	Node2D *node2d = scene->getRoot2D();
-	Node2D *ndCamera = new Node2D("Editor-EditorLoading-Camera");
-	node2d->addChild(ndCamera);
-	ndCamera->setPosition(0.0f, 0.0f, -100.0f);
-	this->_uiCamera = dynamic_cast<Camera *>(ndCamera->addComponent("Camera"));
-}
-
 void EditorLayout::_initMainUI()
 {
     std::cout << "EditorLayout::_initMainUI" << std::endl;
@@ -158,9 +141,8 @@ void EditorLayout::_initBottomUI()
     }
 }
 
-void EditorLayout::Update(float dt)
+void EditorLayout::update(float dt)
 {
-    Component::Update(dt);
     View *view = Boo::game->view();
     if (this->_width != view->width || this->_height != view->height)
     {
@@ -170,11 +152,6 @@ void EditorLayout::Update(float dt)
         this->_updateModuleSize();
     }
 };
-void EditorLayout::LateUpdate(float dt)
-{
-    Component::LateUpdate(dt);
-}
-
 
 void EditorLayout::_updateModuleSize()
 {
@@ -262,16 +239,6 @@ void EditorLayout::_updateModuleSize()
         this->_ndBottom->setPosition(this->bottom_x, this->bottom_y, 0.0f);
     }
 }
-void EditorLayout::Disable()
-{
-    Component::Disable();
-}
-void EditorLayout::destroy()
-{
-    Component::destroy();
-}
-
-
 EditorLayout::~EditorLayout()
 {
     std::cout << "EditorLayout::~EditorLayout()" << std::endl;

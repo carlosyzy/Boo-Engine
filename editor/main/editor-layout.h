@@ -10,13 +10,12 @@ class UISprite;
 class UIWidget;
 class Camera;
 
-class EditorLayout : public Component
+class EditorLayout
 {
 private:
-	Camera* _uiCamera;
-	void _initCamera();
-	
-	float _border = 4.0f;
+	Node2D *_node;
+
+	float _border = 3.0f;
 	float _width;
 	float _height;
 	// 菜单布局
@@ -99,10 +98,12 @@ private:
 	 *更新各个模块尺寸
 	 */
 	void _updateModuleSize();
-protected:
-	void _deserialized() override;
 public:
-	EditorLayout(std::string name, Node *node, std::string uuid = "");
+	EditorLayout();
+	void init();
+	void update(float deltaTime);
+
+
 
 	Node2D *getHierarchy()
 	{
@@ -120,13 +121,5 @@ public:
 	{
 		return this->_ndBottom;
 	}
-	void Awake() override;
-	void Enable() override;
-
-	void Update(float deltaTime) override;
-	void LateUpdate(float deltaTime) override;
-	void Disable() override;
-	void destroy() override;
 	~EditorLayout();
 };
-REGISTER_COMPONENT(EditorLayout,"Custom Editor Layout Component")
