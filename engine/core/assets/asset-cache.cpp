@@ -141,6 +141,12 @@ AssetDB *AssetCache::getSceneAssetDB(const std::string &sceneName)
     {
         return nullptr;
     }
+    for (auto &assetDB : this->_sceneAssetsMap)
+    {
+        std::cout << "AssetCache::getSceneAssetDB: " << assetDB.first << std::endl;
+    }
+
+
     if (this->_sceneAssetsMap.find(sceneName) != this->_sceneAssetsMap.end())
     {
         return this->_sceneAssetsMap[sceneName];

@@ -44,8 +44,11 @@ void EditorCacheScene::openScene(std::string sceneName)
         if (this->_settingConfig["scene"].empty())
         {
             currentScene = ""; // 打开一个空场景
+        }else{
+            currentScene = this->_settingConfig["scene"].get<std::string>();
         }
     }
+    std::cout << "EditorCacheScene::openScene: sceneName: " << sceneName << ", currentScene: " << currentScene << std::endl;
     AssetDB *assetDb = Boo::game->assetsManager()->getSceneAssetDB(currentScene);
     if (assetDb == nullptr)
     {
@@ -114,7 +117,7 @@ void EditorCacheScene::saveScene()
         return;
     }
     this->_saveFlag = 0;
-    std::cout << "EditorCacheScene::saveScene 2" << std::endl;
+    std::cout << "EditorCacheScene::saveScene 2: uuid: " << this->_currentSceneAssetDB->uuid << ", name: " << this->_currentSceneAssetDB->path << std::endl;
     this->_preSavePath();
     if (this->_currentSceneAssetDB->path.empty())
     {
@@ -138,7 +141,7 @@ void EditorCacheScene::saveScene()
     assetCache->updateAssetDBByPath(this->_currentSceneAssetDB->path, 0, newAssetDB);
 
     // 当前打开场景
-    this->_settingConfig["scene"] = this->_currentSceneAssetDB->path;
+    this->_settingConfig["scene"] = this->_currentSceneAssetDB->name;
 }
 void EditorCacheScene::_preSavePath()
 {
