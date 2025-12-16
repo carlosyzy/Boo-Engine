@@ -25,6 +25,13 @@ json &EditorCacheSetting::getSettingConfig()
 void EditorCacheSetting::update(float deltaTime)
 {
 }
+void EditorCacheSetting::saveSetting()
+{
+    std::cout << "EditorCacheSetting::saveSetting: " << this->_settingConfig << std::endl;
+    FileUtil::saveJsonToBinary(this->_settingPath, this->_settingConfig);
+}
+
+
 EditorCacheSetting::~EditorCacheSetting()
 {
 }

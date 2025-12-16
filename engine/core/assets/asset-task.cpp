@@ -23,6 +23,11 @@ Asset *AssetTask::load(const AssetDB *_assetDB)
 	{
 		return this->_createTexture(_assetDB);
 	}
+	else if (_assetDB->extension == ".scene" || _assetDB->extension == ".SCENE" || _assetDB->extension == ".Scene")
+	{
+		return this->_createScene(_assetDB);
+	}
+
 	return nullptr;
 }
 
@@ -45,6 +50,26 @@ Asset *AssetTask::_createTexture(const AssetDB *db)
 	TextureAsset *texture = new TextureAsset(db->uuid);
 	texture->create(fullPath.string());
 	return texture;
+}
+Asset *AssetTask::_createScene(const AssetDB *db)
+{
+	std::string file = db->uuid + db->extension;
+	std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / file).generic_string();
+	if (!std::filesystem::exists(fullPath))
+	{
+		std::cerr << "AssetLoad:No such file or directory:" << fullPath << std::endl;
+		this->_loadError();
+		return nullptr;
+	}
+	if (!std::filesystem::is_regular_file(fullPath))
+	{
+		std::cerr << "AssetLoad:Not a regular file:" << fullPath << std::endl;
+		this->_loadError();
+		return nullptr;
+	}
+	SceneAsset *scene = new SceneAsset(db->uuid);
+	scene->create(fullPath.string());
+	return scene;
 }
 
 // void AssetTask::run()

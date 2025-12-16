@@ -67,6 +67,14 @@ public:
     {
         return this->_sceneCache;
     }
+    EditorCacheSetting *SettingCache()
+    {
+        return this->_settingCache;
+    }
+    EditorCacheAssetsDB *AssetsDBCache()
+    {
+        return this->_assetsDBCache;
+    }
 
     /**
      * @brief 初始化缓存

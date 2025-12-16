@@ -18,9 +18,12 @@ void SceneAsset::create(std::string path)
     this->_name = std::filesystem::path(path).stem().string();
     // 加载场景数据
     this->_sceneData = FileUtil::readJsonFromBinary(this->_path);
+    // 反序列化场景数据
+    this->_deserializeScene();
 }
 void SceneAsset::_deserializeScene()
 {
+    std::cout << "SceneAsset::_deserializeScene:"<< this->_sceneData << std::endl;
     // 反序列化场景数据
     // this->_scene = new Scene();
 }

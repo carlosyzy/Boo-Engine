@@ -32,6 +32,9 @@ private:
 
     void _parseTextureAssetDB();
     void _parseMaterialAssetDB();
+    void _parseSceneAssetDB();
+
+    void _createANewAssetDB(AssetType assetType);
     /**
      * @brief 更新资产
      * 拷贝资产资源到资产库

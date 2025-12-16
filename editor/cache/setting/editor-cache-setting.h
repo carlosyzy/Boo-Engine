@@ -15,5 +15,6 @@ public:
     void init(std::filesystem::path root);
     json &getSettingConfig();
     void update(float deltaTime);
+    void saveSetting();
     ~EditorCacheSetting();
 };

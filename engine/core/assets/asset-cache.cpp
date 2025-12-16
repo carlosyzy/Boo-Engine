@@ -78,6 +78,10 @@ void AssetCache::updateAssetDBByPath(const std::string &path, int index, const A
     assetsDB[index]->extension = assetDB.extension;
     // 更新_assetsDB
     this->_assetsDB[assetDB.uuid] = assetsDB[index];
+    if (assetDB.type == AssetType::Scene)
+    {
+        this->_sceneAssetsMap[assetDB.name] = assetsDB[index];
+    }
 }
 /**
  * @brief 获取资产数据库

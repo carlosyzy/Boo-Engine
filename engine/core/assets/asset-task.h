@@ -83,6 +83,13 @@ private:
      * @param fullPath 资产路径
      */
     Asset *_createTexture(const AssetDB *db);
+    /**
+     * @brief 创建场景
+     *
+     * @param resKey 资产键值
+     * @param fullPath 资产路径
+     */
+    Asset *_createScene(const AssetDB *db);
     // /**
     //  * @brief 创建GLSL着色器
     //  *

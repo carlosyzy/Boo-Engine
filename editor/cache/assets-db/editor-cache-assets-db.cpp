@@ -38,6 +38,10 @@ void EditorAssetDBTask::run()
     {
         this->_parseMaterialAssetDB();
     }
+    else if (this->_assetType == AssetType::Scene)
+    {
+        this->_parseSceneAssetDB();
+    }
 }
 void EditorAssetDBTask::_parseTextureAssetDB()
 {
@@ -49,15 +53,7 @@ void EditorAssetDBTask::_parseTextureAssetDB()
         // 创建资产配置
         // 拷贝资产资源
         std::cout << "EditorCacheTask::create new texture asset db: " << this->_assetPath << std::endl;
-        AssetDB newAssetDB{};
-        newAssetDB.path = this->_assetPath;
-        newAssetDB.extension = this->_assetExtension;
-        newAssetDB.uuid = UuidUtil::generateUUID();
-        newAssetDB.type = AssetType::Texture;
-        newAssetDB.name = std::filesystem::path(this->_assetPath).stem().generic_string();
-        assetCache->updateAssetDBByPath(this->_assetPath, 0, newAssetDB);
-        this->_updateLibraryAsset(newAssetDB);
-        Boo::game->assetsManager()->loadAsset(newAssetDB.uuid);
+        this->_createANewAssetDB(AssetType::Texture);
     }
     else
     {
@@ -66,16 +62,7 @@ void EditorAssetDBTask::_parseTextureAssetDB()
         {
             // 资产配置为空，或者路径和扩展名不匹配，重新赋值,更新资产配置
             // 拷贝资产资源
-            std::cout << "EditorCacheTask::update texture asset db: " << this->_assetPath << std::endl;
-            AssetDB newAssetDB{};
-            newAssetDB.path = this->_assetPath;
-            newAssetDB.extension = this->_assetExtension;
-            newAssetDB.uuid = UuidUtil::generateUUID();
-            newAssetDB.type = AssetType::Texture;
-            newAssetDB.name = std::filesystem::path(this->_assetPath).stem().generic_string();
-            assetCache->updateAssetDBByPath(this->_assetPath, 0, newAssetDB);
-            this->_updateLibraryAsset(newAssetDB);
-            Boo::game->assetsManager()->loadAsset(newAssetDB.uuid);
+            this->_createANewAssetDB(AssetType::Texture);
         }
         else
         {
@@ -88,6 +75,62 @@ void EditorAssetDBTask::_parseTextureAssetDB()
 }
 void EditorAssetDBTask::_parseMaterialAssetDB()
 {
+    AssetCache *assetCache = Boo::game->assetsManager()->getAssetsCache();
+    std::vector<AssetDB *> materialAssetsDB = assetCache->getAssetDBByPath(this->_assetPath);
+    if (materialAssetsDB.empty() || materialAssetsDB.size() <= 0)
+    {
+        // 没有找到资产配置
+        // 创建资产配置
+        // 拷贝资产资源
+        std::cout << "EditorCacheTask::create new material asset db: " << this->_assetPath << std::endl;
+        this->_createANewAssetDB(AssetType::Material);
+    }
+    else
+    {
+        AssetDB *assetDB = materialAssetsDB.at(0);
+        if (assetDB->uuid.empty() || this->_assetPath != assetDB->path || this->_assetExtension != assetDB->extension)
+        {
+            // 资产配置为空，或者路径和扩展名不匹配，重新赋值,更新资产配置
+            // 拷贝资产资源
+            this->_createANewAssetDB(AssetType::Material);
+        }
+        else
+        {
+            // 资产配置OK，无条件重新拷贝资产资源
+            this->_updateLibraryAsset(*assetDB);
+            // 加载资产
+            Boo::game->assetsManager()->loadAsset(assetDB->uuid);
+        }
+    }
+}
+void EditorAssetDBTask::_parseSceneAssetDB()
+{
+    AssetCache *assetCache = Boo::game->assetsManager()->getAssetsCache();
+    std::vector<AssetDB *> sceneAssetsDB = assetCache->getAssetDBByPath(this->_assetPath);
+    if (sceneAssetsDB.empty() || sceneAssetsDB.size() <= 0)
+    {
+        // 没有找到资产配置
+        // 创建资产配置
+        // 拷贝资产资源
+        this->_createANewAssetDB(AssetType::Scene);
+    }
+    else
+    {
+        AssetDB *assetDB = sceneAssetsDB.at(0);
+        if (assetDB->uuid.empty() || this->_assetPath != assetDB->path || this->_assetExtension != assetDB->extension)
+        {
+            // 资产配置为空，或者路径和扩展名不匹配，重新赋值,更新资产配置
+            // 拷贝资产资源
+            this->_createANewAssetDB(AssetType::Scene);
+        }
+        else
+        {
+            // 资产配置OK，无条件重新拷贝资产资源
+            this->_updateLibraryAsset(*assetDB);
+            // 加载资产
+            Boo::game->assetsManager()->loadAsset(assetDB->uuid);
+        }
+    }
 }
 
 void EditorAssetDBTask::_updateLibraryAsset(const AssetDB &db)
@@ -106,12 +149,45 @@ AssetType EditorAssetDBTask::getAssetType(const std::string &path)
     {
         return AssetType::Material;
     }
+    else if (extension == ".scene" || extension == ".Scene")
+    {
+        return AssetType::Scene;
+    }
     else
     {
         return AssetType::None;
     }
     return AssetType::None;
 }
+void EditorAssetDBTask::_createANewAssetDB(AssetType assetType)
+{
+    std::cout << "EditorCacheTask::create new asset db: " << this->_assetPath << std::endl;
+    AssetCache *assetCache = Boo::game->assetsManager()->getAssetsCache();
+    AssetDB newAssetDB{};
+    newAssetDB.path = this->_assetPath;
+    newAssetDB.extension = this->_assetExtension;
+    newAssetDB.uuid = UuidUtil::generateUUID();
+    newAssetDB.type = assetType;
+    newAssetDB.name = std::filesystem::path(this->_assetPath).stem().generic_string();
+    assetCache->updateAssetDBByPath(this->_assetPath, 0, newAssetDB);
+    this->_updateLibraryAsset(newAssetDB);
+    Boo::game->assetsManager()->loadAsset(newAssetDB.uuid);
+}
+// void EditorAssetDBTask::_updateAExistAssetDB(AssetType assetType, AssetDB *assetDB)
+// {
+//     std::cout << "EditorCacheTask::update exist asset db: " << this->_assetPath << std::endl;
+//     AssetCache *assetCache = Boo::game->assetsManager()->getAssetsCache();
+//     AssetDB newAssetDB{};
+//     newAssetDB.path = this->_assetPath;
+//     newAssetDB.extension = this->_assetExtension;
+//     newAssetDB.uuid = UuidUtil::generateUUID();
+//     newAssetDB.type = assetType;
+//     newAssetDB.name = std::filesystem::path(this->_assetPath).stem().generic_string();
+//     assetCache->updateAssetDBByPath(this->_assetPath, 0, newAssetDB);
+//     this->_updateLibraryAsset(newAssetDB);
+//     Boo::game->assetsManager()->loadAsset(newAssetDB.uuid);
+// }
+
 EditorAssetDBTask::~EditorAssetDBTask()
 {
 }
@@ -201,7 +277,7 @@ void EditorCacheAssetsDB::saveAssetsDB()
             subItem["extension"] = assetDB->extension;
             subItems.push_back(subItem);
         }
-        content[path] = subItems;   
+        content[path] = subItems;
     }
     FileUtil::saveJsonToBinary(this->_assetsDBPath, content);
     std::cout << "EditorCache::saveAssetsDB: " << this->_assetsDBPath << std::endl;

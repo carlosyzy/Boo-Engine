@@ -127,6 +127,16 @@ void EditorCacheScene::saveScene()
     std::string scenePath = (std::filesystem::path(BooEditor::projectPath) / "assets" / this->_currentSceneAssetDB->path).generic_string();
     FileUtil::saveJsonToBinary(scenePath, sceneData);
 
+    // 更新资产数据库
+    AssetCache *assetCache = Boo::game->assetsManager()->getAssetsCache();
+    AssetDB newAssetDB{};
+    newAssetDB.path = this->_currentSceneAssetDB->path;
+    newAssetDB.extension = this->_currentSceneAssetDB->extension;
+    newAssetDB.uuid = this->_currentSceneAssetDB->uuid;
+    newAssetDB.type = this->_currentSceneAssetDB->type;
+    newAssetDB.name = this->_currentSceneAssetDB->name;
+    assetCache->updateAssetDBByPath(this->_currentSceneAssetDB->path, 0, newAssetDB);
+
     // 当前打开场景
     this->_settingConfig["scene"] = this->_currentSceneAssetDB->path;
 }
@@ -148,6 +158,8 @@ void EditorCacheScene::_preSavePath()
         }
         std::cout << "EditorCacheScene::_preSavePath: " << path << std::endl;
         this->_currentSceneAssetDB->path = std::filesystem::relative(std::filesystem::path(path), assetPath).generic_string();
+        this->_currentSceneAssetDB->extension = ".scene";
+        this->_currentSceneAssetDB->name = std::filesystem::path(this->_currentSceneAssetDB->path).stem().generic_string();
     }
 }
 void EditorCacheScene::_serializeSceneData(Scene *scene, json &sceneData)
