@@ -128,6 +128,10 @@ void Game::openScene(Scene *scene)
 	// 销毁之前的场景
 	this->destroyScene();
 	std::cout << "openScene: scene: " << scene->getName() << std::endl;
+	if (scene == nullptr)
+	{
+		return;
+	}
 	this->_curScene = scene;
 	this->_curScene->setActive(true);
 }
@@ -135,10 +139,12 @@ void Game::destroyScene()
 {
 	if (this->_curScene)
 	{
+		std::cout << "destroyScene: scene: " << this->_curScene->getName() << std::endl;
 		this->_cameras.clear();
 		this->_curScene->destroy();
 		this->_curScene = nullptr;
 	}
+	std::cout << "destroyScene: scene submit complete: " << std::endl;
 }
 /**
  * @brief 挂在相机到游戏中
@@ -147,13 +153,14 @@ void Game::destroyScene()
  */
 void Game::extractCamera(Camera *camera)
 {
-	// this->_cameras.push_back(camera);
 	if (this->_cameras.find(camera->getUuid()) != this->_cameras.end())
 	{
 		return;
 	}
+	std::cout << "extractCamera: camera: " << camera->getUuid() << std::endl;
 	this->_cameras[camera->getUuid()] = camera;
 	camera->resize(this->_view->width, this->_view->height);
+	std::cout << "extractCamera: camera resize: " << this->_cameras.size() << std::endl;
 }
 /**
  * @brief 从游戏中移除相机
@@ -162,7 +169,12 @@ void Game::extractCamera(Camera *camera)
  */
 void Game::removeCamera(Camera *camera)
 {
+	if (this->_cameras.find(camera->getUuid()) == this->_cameras.end())
+	{
+		return;
+	}
 	this->_cameras.erase(camera->getUuid());
+	std::cout << "removeCamera: camera: " << camera->getUuid() << std::endl;
 }
 
 void Game::addCompClearCaches(Component *comp)

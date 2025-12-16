@@ -99,6 +99,7 @@ void Camera::Disable()
 void Camera::destroy()
 {
     Component::destroy();
+    GfxMgr::getInstance()->delRenderQueue(this->_uuid);
 }
 Camera::~Camera()
 {

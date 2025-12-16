@@ -155,7 +155,7 @@ void UIRenderer::Render(Camera *camera)
 	_instanceData.push_back(_color.getG());
 	_instanceData.push_back(_color.getB());
 	_instanceData.push_back(_color.getA());
-
+	
 	GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_materialAsset->getGfxMaterial(), Gfx::uiTestMesh, this->_instanceData);
 }
 
