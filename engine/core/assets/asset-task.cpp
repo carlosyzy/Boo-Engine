@@ -15,20 +15,20 @@ AssetTask::AssetTask(AssetsManager *mgr, int id)
 	this->_isComplete = false;
 	this->_id = id;
 }
-Asset *AssetTask::load(const AssetDB &_assetDB)
+Asset *AssetTask::load(const AssetDB *_assetDB)
 {
 	this->_type = AssetTaskType::Sync;
 	this->_assetDB = _assetDB;
-	if (this->_assetDB.extension == ".png" || this->_assetDB.extension == ".PNG" || this->_assetDB.extension == ".jpg" || this->_assetDB.extension == ".JPG" || this->_assetDB.extension == ".jpeg" || this->_assetDB.extension == ".JPEG")
+	if (_assetDB->extension == ".png" || _assetDB->extension == ".PNG" || _assetDB->extension == ".jpg" || _assetDB->extension == ".JPG" || _assetDB->extension == ".jpeg" || _assetDB->extension == ".JPEG")
 	{
-		return this->_createTexture(this->_assetDB);
+		return this->_createTexture(_assetDB);
 	}
 	return nullptr;
 }
 
-Asset *AssetTask::_createTexture(const AssetDB &db)
+Asset *AssetTask::_createTexture(const AssetDB *db)
 {
-	std::string file = this->_assetDB.uuid + this->_assetDB.extension;
+	std::string file = db->uuid + db->extension;
 	std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / file).generic_string();
 	if (!std::filesystem::exists(fullPath))
 	{
@@ -42,7 +42,7 @@ Asset *AssetTask::_createTexture(const AssetDB &db)
 		this->_loadError();
 		return nullptr;
 	}
-	TextureAsset *texture = new TextureAsset(db.uuid);
+	TextureAsset *texture = new TextureAsset(db->uuid);
 	texture->create(fullPath.string());
 	return texture;
 }

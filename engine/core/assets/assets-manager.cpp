@@ -17,7 +17,6 @@ AssetsManager::AssetsManager()
 }
 void AssetsManager::init()
 {
-	
 }
 void AssetsManager::_initDefaultBuiltinAssets()
 {
@@ -34,24 +33,6 @@ void AssetsManager::initAssetsDB(const std::string &path)
 {
 	this->_assetsCache->initAssetsDB(path);
 }
-// /**
-//  * @brief 获取资产数据库
-//  * @return std::unordered_map<std::string, std::vector<AssetDB>> 资产数据库
-//  */
-// std::unordered_map<std::string, std::vector<AssetDB>> &AssetsManager::getAssetsDB()
-// {
-// 	return this->_cache->getAssetsDB();
-// }
-// /**
-//  * @brief 更新资产数据库
-//  * @param path 资产路径
-//  * @param configs 资产配置
-//  */
-// void AssetsManager::updateAssetsDB(const std::string path, const std::vector<AssetDB> configs)
-// {
-
-// }
-
 void AssetsManager::setAssetsRoot(const std::string &root)
 {
 	this->_assetsRoot = root;
@@ -73,17 +54,22 @@ void AssetsManager::setMaxLoadCount(int count)
 {
 	this->_assetsLoad->setMaxLoadCount(count);
 }
-Asset *AssetsManager::loadByUuid(const std::string &uuid)
+Asset *AssetsManager::loadAsset(const std::string &uuid)
 {
-	return this->_assetsLoad->loadByUuid(uuid);
+	return this->_assetsLoad->loadAsset(uuid);
 }
-// void AssetsManager::clearLoadCall(const int loadId)
-// {
-// 	// this->_assetsLoad->clearLoadCall(loadId);
-// }
-Asset *AssetsManager::getAssetByUuid(const std::string &path)
+Asset *AssetsManager::getAsset(const std::string &path)
 {
-	return this->_assetsCache->getAssetByUuid(path);
+	return this->_assetsCache->getAsset(path);
+}
+/**
+ * @brief 获取场景资产数据库
+ * @param sceneName 场景名称
+ * @return AssetDB 场景资产数据库
+ */
+AssetDB *AssetsManager::getSceneAssetDB(const std::string &sceneName)
+{
+	return this->_assetsCache->getSceneAssetDB(sceneName);
 }
 
 void AssetsManager::update(float deltaTime)

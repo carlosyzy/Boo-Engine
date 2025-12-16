@@ -3,13 +3,15 @@
 #include <filesystem>
 #include <functional>
 
-#include "editor-cache-task.h"
 #include "../../engine/core/utils/file-util.h"
 #include "../../engine/core/utils/json-util.h"
 
 class TextureAsset;
 class EditorCacheAssetsDB;
 class EditorCacheSetting;
+class EditorCacheScene;
+
+
 
 class EditorCache
 {
@@ -25,6 +27,10 @@ class EditorCache
      * @brief 编辑器配置
      */
     EditorCacheSetting *_setting;
+    /**
+     * @brief 编辑器场景数据库
+     */
+    EditorCacheScene *_sceneDB;
 
 
 
@@ -53,10 +59,10 @@ class EditorCache
     //  */
     // void _updateAssetsDBMaps();
 
-    // /**
-    //  * @brief 编辑器专属纹理资产映射
-    //  */
-    // std::unordered_map<std::string, TextureAsset *> _editorTextures;
+    /**
+     * @brief 编辑器专属纹理资产映射
+     */
+    std::unordered_map<std::string, TextureAsset *> _editorTextures;
 
 public:
     EditorCache();
@@ -69,6 +75,11 @@ public:
      * @param callback 加载进度回调
      */
     void load(std::function<void(const float progress,std::string file)> progressCallback, std::function<void()> complete);
+    /**
+     * @brief 获取当前场景
+     * @return std::string 当前场景
+     */
+    std::string getCurrentScene();
      void update(float deltaTime);
 
     ~EditorCache();
@@ -87,8 +98,8 @@ public:
     //     this->_updateAssetsDBMaps();
     // }
 
-    // void addEditorTexture(const std::string &path, TextureAsset *texture);
-    // TextureAsset *getEditorTexture(const std::string &path);
+    void addEditorTexture(const std::string &path, TextureAsset *texture);
+    TextureAsset *getEditorTexture(const std::string &path);
 
     // void saveAssetsDB();
 

@@ -2,6 +2,7 @@
 #include "../boo-editor.h"
 #include "assets-db/editor-cache-assets-db.h"
 #include "setting/editor-cache-setting.h"
+#include "scene/editor-cache-scene.h"
 
 #include "../../engine/boo.h"
 #include "../../engine/core/assets/assets-manager.h"
@@ -32,25 +33,49 @@ EditorCache::EditorCache()
         std::filesystem::create_directories(this->_libraryPath);
     }
 
-    this->_assetsDB = new EditorCacheAssetsDB();
     this->_setting = new EditorCacheSetting();
+    this->_assetsDB = new EditorCacheAssetsDB();
 }
 void EditorCache::init()
 {
     Boo::game->assetsManager()->setAssetsRoot(this->_libraryPath);
     // 初始化
-    this->_assetsDB->init(this->_assetsPath,this->_settingPath, this->_libraryPath);
     this->_setting->init(this->_settingPath);
+    this->_assetsDB->init(this->_assetsPath, this->_settingPath, this->_libraryPath);
+    std::cout << "EditorCache::init" << std::endl;
+    this->_sceneDB = new EditorCacheScene(this->_setting->getSettingConfig());
 }
 void EditorCache::load(std::function<void(const float progress, std::string file)> progressCallback, std::function<void()> complete)
 {
+    std::cout << "EditorCache::load" << std::endl;
     this->_assetsDB->load(progressCallback, complete);
 }
+
+
+// std::string EditorCache::getCurrentScene()
+// {
+//     return this->_sceneDB->getCurrentScene();
+// }
+
+
 void EditorCache::update(float deltaTime)
 {
     this->_assetsDB->update(deltaTime);
     this->_setting->update(deltaTime);
-}   
+}
+
+void EditorCache::addEditorTexture(const std::string &path, TextureAsset *texture)
+{
+    this->_editorTextures[path] = texture;
+}
+TextureAsset *EditorCache::getEditorTexture(const std::string &path)
+{
+    if (this->_editorTextures.find(path) != this->_editorTextures.end())
+    {
+        return this->_editorTextures[path];
+    }
+    return nullptr;
+}
 
 // void EditorCache::_initRoot()
 // {
@@ -165,15 +190,4 @@ void EditorCache::update(float deltaTime)
 //     std::cout << "EditorCache::saveAssetsDB: " << content << std::endl;
 // }
 
-// void EditorCache::addEditorTexture(const std::string &path, TextureAsset *texture)
-// {
-//     this->_editorTextures[path] = texture;
-// }
-// TextureAsset *EditorCache::getEditorTexture(const std::string &path)
-// {
-//     if (this->_editorTextures.find(path) != this->_editorTextures.end())
-//     {
-//         return this->_editorTextures[path];
-//     }
-//     return nullptr;
-// }
+

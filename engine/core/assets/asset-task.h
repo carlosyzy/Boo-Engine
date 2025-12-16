@@ -56,7 +56,7 @@ private:
     /**
      * @brief 资产UUID
      */
-    AssetDB _assetDB;
+    const AssetDB *_assetDB = nullptr;
     /**
      * @brief 资产加载任务类型
      */
@@ -82,7 +82,7 @@ private:
      * @param resKey 资产键值
      * @param fullPath 资产路径
      */
-    Asset *_createTexture(const AssetDB &db);
+    Asset *_createTexture(const AssetDB *db);
     // /**
     //  * @brief 创建GLSL着色器
     //  *
@@ -124,7 +124,7 @@ public:
     {
         return this->_id;
     }
-    Asset *load(const AssetDB &_assetDB);
+    Asset *load(const AssetDB *_assetDB);
     // template <typename T, typename Func>
     // void loadAsync(const std::string &path, Func callback, T *instance)
     // {

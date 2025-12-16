@@ -76,6 +76,11 @@ public:
     void init(std::string assetsPath, std::string settingPath, std::string libraryPath);
     void load(std::function<void(const float progress, std::string file)> progress, std::function<void()> complete);
     void update(float deltaTime);
+    /**
+     * @brief 保存资产数据库
+     * 
+     */
+    void saveAssetsDB();
     ~EditorCacheAssetsDB();
 };
 

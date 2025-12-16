@@ -6,6 +6,7 @@
 #include <iostream>
 #include <filesystem>
 
+#include "asset-struct.h"
 #include "asset-load.h"
 #include "asset-cache.h"
 #include "texture-asset.h"
@@ -58,9 +59,13 @@ public:
 	AssetLoad *getAssetsLoad();
 	AssetCache *getAssetsCache();
 
-	Asset *loadByUuid(const std::string &uuid);
-	
-	Asset *getAssetByUuid(const std::string &uuid);
+	Asset *loadAsset(const std::string &uuid);
+	Asset *getAsset(const std::string &uuid);
+	/**
+	 * @brief 通过获取场景配置
+	 * @param sceneName 场景名称
+	 */
+	AssetDB* getSceneAssetDB(const std::string &sceneName);
 
 	// Asset *loadByPath(const std::string &path);
 	// Asset *getByPath(const std::string &path);

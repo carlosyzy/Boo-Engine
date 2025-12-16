@@ -8,14 +8,19 @@ void EditorCacheSetting::init(std::filesystem::path root)
     // 直接读取文件,解析文件
     if (std::filesystem::exists(this->_settingPath))
     {
-        this->_settingEditor = FileUtil::readJsonFromBinary(this->_settingPath);
+        this->_settingConfig = FileUtil::readJsonFromBinary(this->_settingPath);
     }
     else
     {
-        this->_settingEditor = json::object();
-        FileUtil::saveJsonToBinary(this->_settingPath, this->_settingEditor);
+        this->_settingConfig = json::object();
+        FileUtil::saveJsonToBinary(this->_settingPath, this->_settingConfig);
     }
-    std::cout << "EditorCache::saveAssetsDB: " << this->_settingEditor << std::endl;
+    std::cout << "EditorCacheSetting::init: " << this->_settingConfig << std::endl;
+}
+json &EditorCacheSetting::getSettingConfig()
+{
+    std::cout << "EditorCacheSetting::getSettingConfig: " << this->_settingConfig << std::endl;
+    return this->_settingConfig;
 }
 void EditorCacheSetting::update(float deltaTime)
 {

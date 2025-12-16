@@ -9,10 +9,11 @@ class EditorCacheSetting
 {
 private:
     std::string _settingPath;
-    json _settingEditor;
+    json _settingConfig;
 public:
     EditorCacheSetting();
     void init(std::filesystem::path root);
+    json &getSettingConfig();
     void update(float deltaTime);
     ~EditorCacheSetting();
 };

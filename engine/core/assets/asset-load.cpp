@@ -13,19 +13,22 @@ AssetLoad::AssetLoad(AssetsManager *mgr)
 {
     this->_mgr = mgr;
 }
-Asset *AssetLoad::loadByUuid(const std::string &uuid)
+Asset *AssetLoad::loadAsset(const std::string &uuid)
 {
     AssetCache *cache = this->_mgr->getAssetsCache();
     Asset *asset = nullptr;
-    asset = cache->getAssetByUuid(uuid);
+    asset = cache->getAsset(uuid);
     if (asset != nullptr)
     {
         return asset;
     }
     int taskID = this->_TaskNextID++;
     AssetTask task(this->_mgr, taskID);
-    const AssetDB &config = cache->getAssetDBByUuid(uuid);
-    asset = task.load(config);
+    AssetDB *db = cache->getAssetDB(uuid);
+    if(db == nullptr){
+        return nullptr;
+    }
+    asset = task.load(db);
     cache->addAsset(uuid,asset);
     return asset;
 }
