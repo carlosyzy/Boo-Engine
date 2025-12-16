@@ -34,7 +34,7 @@ void EditorLoading::Awake()
 	this->_initBg();
 	this->_initLogo();
 	this->_initLoadUI();
-	this->_initAssetsDB();
+	Boo::game->scheduleOnce(&EditorLoading::_initAssetsDB, this, 0.5f);
 }
 void EditorLoading::Enable() { Component::Enable(); }
 void EditorLoading::setOnLoadComplete(std::function<void()> onLoadComplete)
@@ -85,6 +85,7 @@ void EditorLoading::_initLogo()
 		this->_spriteLogo = dynamic_cast<UISprite *>(compLogo);
 		this->_spriteLogo->setEnabled(true);
 		this->_spriteLogo->setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		this->_spriteLogo->setTextureAsset(texture);
 	}
 	// 初始化logo大小
 	this->_updateLogoSize(this->_width, this->_height);

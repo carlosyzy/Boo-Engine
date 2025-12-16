@@ -10,31 +10,27 @@ class TextureAsset;
 class EditorCacheAssetsDB;
 class EditorCacheSetting;
 class EditorCacheScene;
-
-
+class Scene;
 
 class EditorCache
 {
     std::string _assetsPath;
     std::string _settingPath;
     std::string _libraryPath;
-    
+
     /**
      * @brief 编辑器资产数据库
      */
-    EditorCacheAssetsDB *_assetsDB;
+    EditorCacheAssetsDB *_assetsDBCache;
     /**
      * @brief 编辑器配置
      */
-    EditorCacheSetting *_setting;
+    EditorCacheSetting *_settingCache;
     /**
      * @brief 编辑器场景数据库
      */
-    EditorCacheScene *_sceneDB;
+    EditorCacheScene *_sceneCache;
 
-
-
-    
     // std::string _assetsDBPath;
     // void _initRoot();
     // /**
@@ -66,6 +62,12 @@ class EditorCache
 
 public:
     EditorCache();
+    
+    EditorCacheScene *SceneCache()
+    {
+        return this->_sceneCache;
+    }
+
     /**
      * @brief 初始化缓存
      */
@@ -74,16 +76,22 @@ public:
      * @brief 加载缓存
      * @param callback 加载进度回调
      */
-    void load(std::function<void(const float progress,std::string file)> progressCallback, std::function<void()> complete);
-    /**
-     * @brief 获取当前场景
-     * @return std::string 当前场景
-     */
-    std::string getCurrentScene();
-     void update(float deltaTime);
+    void load(std::function<void(const float progress, std::string file)> progressCallback, std::function<void()> complete);
+    // /**
+    //  * @brief 获取当前场景
+    //  * @return std::string 当前场景
+    //  */
+    // Scene *getCurrentScene();
+    // /**
+    //  * @brief 保存当前场景
+    //  */
+    // void saveScene();
 
+    void update(float deltaTime);
+
+    void addEditorTexture(const std::string &path, TextureAsset *texture);
+    TextureAsset *getEditorTexture(const std::string &path);
     ~EditorCache();
-
 
     // template <typename T, typename Func>
     // void initAssetsDBMaps(Func callback, T *instance)
@@ -98,10 +106,5 @@ public:
     //     this->_updateAssetsDBMaps();
     // }
 
-    void addEditorTexture(const std::string &path, TextureAsset *texture);
-    TextureAsset *getEditorTexture(const std::string &path);
-
     // void saveAssetsDB();
-
-   
 };

@@ -133,6 +133,10 @@ Asset *AssetCache::getAsset(const std::string &uuid)
  */
 AssetDB *AssetCache::getSceneAssetDB(const std::string &sceneName)
 {
+    if (sceneName.empty())
+    {
+        return nullptr;
+    }
     if (this->_sceneAssetsMap.find(sceneName) != this->_sceneAssetsMap.end())
     {
         return this->_sceneAssetsMap[sceneName];

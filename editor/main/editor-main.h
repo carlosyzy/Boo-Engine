@@ -18,6 +18,9 @@ private:
 	void _initCamera();
 	EditorLayout *_layout;
 	
+	Scene *_scene;
+	void _initScene();
+
 protected:
 	void _deserialized() override;
 public:

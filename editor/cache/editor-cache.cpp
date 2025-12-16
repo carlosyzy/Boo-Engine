@@ -8,6 +8,7 @@
 #include "../../engine/core/assets/assets-manager.h"
 #include "../../engine/core/assets/texture-asset.h"
 #include "../../engine/core/assets/asset-cache.h"
+#include "../../engine/core/scene/scene.h"
 
 EditorCache::EditorCache()
 {
@@ -33,35 +34,28 @@ EditorCache::EditorCache()
         std::filesystem::create_directories(this->_libraryPath);
     }
 
-    this->_setting = new EditorCacheSetting();
-    this->_assetsDB = new EditorCacheAssetsDB();
+    this->_settingCache = new EditorCacheSetting();
+    this->_assetsDBCache = new EditorCacheAssetsDB();
 }
 void EditorCache::init()
 {
     Boo::game->assetsManager()->setAssetsRoot(this->_libraryPath);
     // 初始化
-    this->_setting->init(this->_settingPath);
-    this->_assetsDB->init(this->_assetsPath, this->_settingPath, this->_libraryPath);
+    this->_settingCache->init(this->_settingPath);
+    this->_assetsDBCache->init(this->_assetsPath, this->_settingPath, this->_libraryPath);
     std::cout << "EditorCache::init" << std::endl;
-    this->_sceneDB = new EditorCacheScene(this->_setting->getSettingConfig());
+    this->_sceneCache = new EditorCacheScene(this->_settingCache->getSettingConfig());
 }
 void EditorCache::load(std::function<void(const float progress, std::string file)> progressCallback, std::function<void()> complete)
 {
     std::cout << "EditorCache::load" << std::endl;
-    this->_assetsDB->load(progressCallback, complete);
+    this->_assetsDBCache->load(progressCallback, complete);
 }
-
-
-// std::string EditorCache::getCurrentScene()
-// {
-//     return this->_sceneDB->getCurrentScene();
-// }
-
 
 void EditorCache::update(float deltaTime)
 {
-    this->_assetsDB->update(deltaTime);
-    this->_setting->update(deltaTime);
+    this->_assetsDBCache->update(deltaTime);
+    this->_settingCache->update(deltaTime);
 }
 
 void EditorCache::addEditorTexture(const std::string &path, TextureAsset *texture)
