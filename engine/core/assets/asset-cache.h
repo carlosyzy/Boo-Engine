@@ -78,6 +78,7 @@ public:
      * @param mate 资产元数据json
      */
     void _updateAssetMateCache(const std::string &uuid, const json &mate);
+    void _updateAssetPathCache(const std::string &uuid, const std::string &path);
 
 
     // /**
