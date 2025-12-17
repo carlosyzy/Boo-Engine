@@ -2,6 +2,10 @@
 #pragma once
 #include <string>
 #include <functional>
+
+#include "../utils/time-util.h"
+#include "../utils/json-util.h"
+
 #include "asset-cache.h"
 #include "asset-struct.h"
 
@@ -48,7 +52,6 @@ class AssetTask
 {
 private:
     AssetsManager *_mgr;
-
     /**
      * @brief 资产任务ID
      */
@@ -56,7 +59,7 @@ private:
     /**
      * @brief 资产UUID
      */
-    const AssetDB *_assetDB = nullptr;
+    json _assetMate;
     /**
      * @brief 资产加载任务类型
      */
@@ -82,14 +85,14 @@ private:
      * @param resKey 资产键值
      * @param fullPath 资产路径
      */
-    Asset *_createTexture(const AssetDB *db);
+    Asset *_createTexture();
     /**
      * @brief 创建场景
      *
      * @param resKey 资产键值
      * @param fullPath 资产路径
      */
-    Asset *_createScene(const AssetDB *db);
+    Asset *_createScene();
     // /**
     //  * @brief 创建GLSL着色器
     //  *
@@ -131,7 +134,7 @@ public:
     {
         return this->_id;
     }
-    Asset *load(const AssetDB *_assetDB);
+    Asset *load(const json &mate);
     // template <typename T, typename Func>
     // void loadAsync(const std::string &path, Func callback, T *instance)
     // {

@@ -2,6 +2,8 @@
 #include <string>
 #include <filesystem>
 #include "asset-struct.h"
+#include "../utils/time-util.h"
+#include "../utils/json-util.h"
 
 class Asset
 {
