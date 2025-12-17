@@ -3,6 +3,10 @@
 #include "../utils/json-util.h"
 
 class Scene;
+class Node;
+class Node2D;
+class Node3D;
+
 class SceneAsset : public Asset
 {
 private:
@@ -11,6 +15,7 @@ private:
     Scene *_scene;
     void _deserializeScene();
     void _deserializeNode(Node *node, json &_nodeData);
+    void _deserializeComponent(Node *node, json &_nodeData);
 protected:
 public:
     SceneAsset();

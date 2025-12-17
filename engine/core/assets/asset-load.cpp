@@ -32,6 +32,28 @@ Asset *AssetLoad::loadAsset(const std::string &uuid)
     cache->addAsset(uuid,asset);
     return asset;
 }
+Asset *AssetLoad::loadAssetByPath(const std::string &path)
+{
+    // AssetCache *cache = this->_mgr->getAssetsCache();
+    // Asset *asset = nullptr;
+    // asset = cache->getAssetByPath(path);
+    // if (asset != nullptr)
+    // {
+    //     return asset;
+    // }
+    // int taskID = this->_TaskNextID++;
+    // AssetTask task(this->_mgr, taskID);
+    // AssetDB *db = cache->getAssetDBByPath(path);
+    // if(db == nullptr){
+    //     return nullptr;
+    // }
+    // asset = task.load(db);
+    // cache->addAsset(path,asset);
+    // return asset;
+    return nullptr;
+}
+
+
 // Asset *AssetLoad::load(const std::string path)
 // {
 //     // 从缓存中获取资产

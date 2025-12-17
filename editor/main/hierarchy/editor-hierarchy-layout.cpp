@@ -1,19 +1,88 @@
-// #include "editor-hierarchy-layout.h"
-// #include "../../config/editor-config.h"
-// #include "../../engine/core/scene/node.h"
-// #include "../../engine/core/scene/node-2d.h"
-// #include "../../engine/core/scene/scene.h"
-// #include "../../engine/core/renderer/ui/ui-sprite.h"
-// #include "../../engine/core/renderer/ui/ui-mask.h"
-// #include "../../engine/core/component/ui/ui-widget.h"
-// #include "../../engine/core/component/ui/ui-tree/node-tree.h"
+#include "editor-hierarchy-layout.h"
+#include "../../config/editor-config.h"
+#include "../../boo-editor.h"
 
-// EditorHierarchyLayout::EditorHierarchyLayout(Node2D *root)
-// {
-//     this->_root = root;
-//     this->_initTitle();
-//     this->_initContent();
-// }
+#include "../../../engine/core/scene/node.h"
+#include "../../../engine/core/scene/node-2d.h"
+#include "../../../engine/core/scene/scene.h"
+#include "../../../engine/core/renderer/ui/ui-sprite.h"
+#include "../../../engine/core/renderer/ui/ui-mask.h"
+#include "../../../engine/core/component/ui/ui-widget.h"
+#include "../../../engine/core/assets/assets-manager.h"
+#include "../../../engine/core/assets/texture-asset.h"
+
+EditorHierarchyLayout::EditorHierarchyLayout(Node2D *root)
+{
+    this->_root = root;
+}
+void EditorHierarchyLayout::init()
+{
+    this->_initContent();
+    this->_initTitle();
+}
+void EditorHierarchyLayout::_initContent()
+{
+    // std::cout << "EditorHierarchyLayout::_initContent:"<< this->_root << std::endl;
+    this->_content = new Node2D("NodeHierarchy");
+    this->_root->addChild(this->_content);
+    this->_content->setSize(100.0f, 100.0f);
+    // 添加wedget组件
+    UIWidget *widget = dynamic_cast<UIWidget *>(this->_content->addComponent("UIWidget"));
+    WidgetHorizontalParam paramHorizontal{};
+    paramHorizontal.left = 0.0f;
+    paramHorizontal.right = 0.0f;
+    WidgetVerticalParam paramVertical{};
+    paramVertical.top = 0.0f; // 25.0f;
+    paramVertical.bottom = 0.0f;
+    widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
+    widget->setVertical(WidgetVertical::ALL, paramVertical);
+    // 渲染组件 后续不需要
+    UISprite *sprite = dynamic_cast<UISprite *>(this->_content->addComponent("UISprite"));
+    sprite->setColor("#000000ff");
+    // sprite->setTextureAsset(EditorConfig::txDefault);
+    // sprite->setMaterialAsset(nullptr);
+    // std::cout << "EditorHierarchyLayout::_initContent1:" << sprite << std::endl;
+}
+void EditorHierarchyLayout::_initTitle()
+{
+    Node2D *ndTitle = new Node2D("Title");
+    this->_root->addChild(ndTitle);
+    ndTitle->setSize(120.0f, 30.0f);
+    // 后续不需要这个组件
+    UISprite *sprite = dynamic_cast<UISprite *>(ndTitle->addComponent("UISprite"));
+    sprite->setColor(EditorConfig::title);
+    // sprite->setTextureAsset(EditorConfig::txDefault);
+    // sprite->setMaterialAsset(nullptr);
+    // 添加wedget组件
+    UIWidget *widget = dynamic_cast<UIWidget *>(ndTitle->addComponent("UIWidget"));
+    WidgetHorizontalParam paramHorizontal{};
+    paramHorizontal.left = 0.0f;
+    paramHorizontal.right = 0.0f;
+    WidgetVerticalParam paramVertical{};
+    paramVertical.top = 0.0f;
+    paramVertical.bottom = 0.0f;
+    widget->setHorizontal(WidgetHorizontal::LEFT, paramHorizontal);
+    widget->setVertical(WidgetVertical::TOP, paramVertical);
+
+    Node2D *ndTitleName = new Node2D("TitleName");
+    ndTitle->addChild(ndTitleName);
+    ndTitleName->setSize(100.0f, 25.0f);
+    ndTitleName->setPosition(-5.0f, 0.0f, 0.0f);
+    UISprite *spriteName = dynamic_cast<UISprite *>(ndTitleName->addComponent("UISprite"));
+    spriteName->setColor("#ffffffff");
+    TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-title-hierarchy.png");
+    spriteName->setTexture(tex);
+    // spriteName->setMaterialAsset(nullptr);
+    // 计算尺寸
+    float width = ndTitle->getSize().getWidth() * 0.95f;
+    float scale = width / 300.0f;
+    ndTitleName->setSize(width, 60.0f * scale);
+}
+
+EditorHierarchyLayout::~EditorHierarchyLayout()
+{
+}
+
 // void EditorHierarchyLayout::_initTitle()
 // {
 //     Node2D *ndTitle = new Node2D("Title");

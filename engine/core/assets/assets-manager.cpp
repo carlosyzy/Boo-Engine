@@ -58,9 +58,17 @@ Asset *AssetsManager::loadAsset(const std::string &uuid)
 {
 	return this->_assetsLoad->loadAsset(uuid);
 }
+Asset *AssetsManager::loadAssetByPath(const std::string &path)
+{
+	return this->_assetsLoad->loadAssetByPath(path);
+}
 Asset *AssetsManager::getAsset(const std::string &path)
 {
 	return this->_assetsCache->getAsset(path);
+}
+Asset *AssetsManager::getAssetByPath(const std::string &path)
+{
+	return nullptr;
 }
 /**
  * @brief 获取场景资产数据库

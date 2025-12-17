@@ -84,9 +84,10 @@ void Renderer::_walkNode(Camera *camera, Node *node)
             // 2D节点 类型错误
             return;
         }
-        UIRenderer *uiRenderer = dynamic_cast<UIRenderer *>(node2D->getComponent("UIRenderer"));
-        if (uiRenderer != nullptr)
+        UIRenderer *uiRenderer = dynamic_cast<UIRenderer *>(node2D->getUIRenderComponent());
+        if (uiRenderer != nullptr && uiRenderer->isEnabledInHierarchy())
         {
+            // std::cout << "Renderer::_walkNode5:" << node->getName() << std::endl;
             // 存在UI渲染器
             const Color &color = uiRenderer->getColor();
             float alpha = color.getA();

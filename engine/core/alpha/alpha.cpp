@@ -35,8 +35,8 @@ void Alpha::_initAlpha() {
   Component *compAlpha = this->_ndAlpha->addComponent("UISprite");
   if (compAlpha != nullptr) {
     this->_spriteAlpha = dynamic_cast<UISprite *>(compAlpha);
-    this->_spriteAlpha->setTextureAsset(this->_textureBg);
-    this->_spriteAlpha->setMaterialAsset(nullptr);
+    // this->_spriteAlpha->setTextureAsset(this->_textureBg);
+    // this->_spriteAlpha->setMaterialAsset(nullptr);
     this->_spriteAlpha->setColor(0.0f, 0.0f, 1.0f, 1.0f);
   }
 
@@ -49,8 +49,8 @@ void Alpha::_initAlpha() {
     this->_spriteLogo = dynamic_cast<UISprite *>(compLogo);
     // Asset *tex =
     // Boo::game->assetsManager()->get("resources/texture/logo.png");
-    this->_spriteLogo->setTextureAsset(this->_textureLogo);
-    this->_spriteLogo->setMaterialAsset(nullptr);
+    // this->_spriteLogo->setTextureAsset(this->_textureLogo);
+    // this->_spriteLogo->setMaterialAsset(nullptr);
     this->_spriteLogo->setColor(1.0f, 1.0f, 1.0f, 0.0f);
   }
   // json aa = ReflectionHelper::serializeToJson((void *)compLogo, "UISprite");

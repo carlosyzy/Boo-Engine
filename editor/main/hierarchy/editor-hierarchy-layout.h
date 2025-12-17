@@ -1,14 +1,30 @@
-// #pragma once
-// #include <iostream>
-// #include <functional>
-// class Node;
-// class Node2D;
-// class NodeTree;
-// class Scene;
-// class UISprite;
-// struct UITreeStructure;
-// // enum class NodeInput;
-// // struct NodeInputResult;
+#pragma once
+#include <iostream>
+#include <functional>
+class Node;
+class Node2D;
+class NodeTree;
+class Scene;
+class UISprite;
+struct UITreeStructure;
+
+class EditorHierarchyLayout
+{
+private:
+    Node2D *_root;
+    Node2D *_content;
+    void _initContent();
+    void _initTitle();
+
+public:
+    EditorHierarchyLayout(Node2D *root);
+    void init();
+
+    void setScene(Scene *Scene);
+    void setNode(Node *node);
+    void loseFocus();
+    ~EditorHierarchyLayout();
+};
 
 // class EditorHierarchyLayout
 // {

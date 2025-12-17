@@ -241,10 +241,13 @@ void Node::lateUpdate(float dt)
 		{
 			continue;
 		}
-		UIWidget *uiWidget = dynamic_cast<UIWidget *>(component);
-		if (uiWidget != nullptr)
+		if (this->_layer == NodeLayer::Node2D)
 		{
-			uiWidget->updateWidget();
+			UIWidget *uiWidget = dynamic_cast<UIWidget *>(component);
+			if (uiWidget != nullptr)
+			{
+				uiWidget->updateWidget();
+			}
 		}
 	}
 	// 更新组件

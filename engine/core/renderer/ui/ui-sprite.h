@@ -56,6 +56,9 @@ public:
     void setTextureAsset(std::string texture);
     void setTextureAsset(TextureAsset *texture);
 
+    void setTexture(std::string texture);
+    void setTexture(TextureAsset *texture);
+
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
     void Render(Camera *camera) override;

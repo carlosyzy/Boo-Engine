@@ -127,10 +127,10 @@ void UIRenderer::Render(Camera *camera)
 	{
 		return; // 相机为空
 	}
-	if (this->_color.getA() <= 0)
-	{
-		return; // 颜色透明
-	}
+	// if (this->_color.getA() <= 0)
+	// {
+	// 	return; // 颜色透明
+	// }
 	Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
 	if (node2D == nullptr)
 	{
@@ -156,6 +156,8 @@ void UIRenderer::Render(Camera *camera)
 	_instanceData.push_back(_color.getB());
 	_instanceData.push_back(_color.getA());
 	
+	// std::cout << "UIRenderer::Render6:" << this->_node->getName() << std::endl;
+
 	GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_materialAsset->getGfxMaterial(), Gfx::uiTestMesh, this->_instanceData);
 }
 

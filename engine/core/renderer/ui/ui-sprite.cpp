@@ -96,6 +96,26 @@ void UISprite::setTextureAsset(TextureAsset *texture)
     this->_setTexture(texture);
 }
 
+void UISprite::setTexture(std::string path)
+{
+    // TextureAsset *tex = dynamic_cast<TextureAsset *>(Boo::game->assetsManager()->getAssetByPath(texture));
+    // if (tex == nullptr)
+    // {
+    //     std::cout << "UISprite::setTexture: texture " << texture << " not found" << std::endl;
+    //     return;
+    // }
+    // this->_setTexture(tex);
+}
+void UISprite::setTexture(TextureAsset *texture)
+{
+    if (texture == nullptr)
+    {
+        std::cout << "UISprite::setTexture: texture " << texture << " not found" << std::endl;
+        return;
+    }
+    this->_setTexture(texture);
+}
+
 
 void UISprite::setMaterialAsset(std::string mtl)
 {

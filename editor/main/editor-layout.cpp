@@ -35,11 +35,11 @@ void EditorLayout::init()
     this->_initMainUI();
     this->_initMenuUI();
     this->_initHierarchyUI();
-    this->_initAssetsUI();
-    this->_initPropertyUI();
-    this->_initSceneUI();
-    this->_initToolUI();
-    this->_initBottomUI();
+    // this->_initAssetsUI();
+    // this->_initPropertyUI();
+    // this->_initSceneUI();
+    // this->_initToolUI();
+    // this->_initBottomUI();
 }
 void EditorLayout::_initMainUI()
 {

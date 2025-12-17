@@ -11,12 +11,19 @@ class UIWidget;
 class Camera;
 class EditorLayout;
 
+class EditorHierarchy;
+
 class EditorMain : public Component
 {
 private:
 	Camera* _uiCamera;
 	void _initCamera();
+	
 	EditorLayout *_layout;
+	void _initLayout();
+
+	EditorHierarchy *_hierarchy;
+	void _initHierarchy();
 	
 	Scene *_scene;
 	void _initScene();

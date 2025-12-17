@@ -1,4 +1,34 @@
-// #include "editor-hierarchy.h"
+#include "editor-hierarchy.h"
+#include "editor-hierarchy-layout.h"
+
+#include "../../../engine/core/scene/scene.h"
+#include "../../../engine/core/scene/node-2d.h"
+
+EditorHierarchy::EditorHierarchy(Node2D *root)
+{
+    this->_rootNode = root;
+}
+void EditorHierarchy::init()
+{
+    this->_layout = new EditorHierarchyLayout(this->_rootNode);
+    this->_layout->init();
+}
+void EditorHierarchy::setScene(Scene *scene)
+{
+}
+void EditorHierarchy::setNode(Node *node)
+{
+}
+
+void EditorHierarchy::update(float dt)
+{
+}
+
+EditorHierarchy::~EditorHierarchy()
+{
+    this->_rootNode = nullptr;
+}
+
 // #include "editor-hierarchy-layout.h"
 // EditorHierarchy::EditorHierarchy(Node2D *root)
 // {
@@ -20,18 +50,18 @@
 // }
 // void EditorHierarchy::setNode(Node *node)
 // {
-   
+
 // }
 // void EditorHierarchy::update(float dt)
 // {
-    
+
 // }
 // /*
 //  * @brief 更新根节点
 //  */
 // void EditorHierarchy::updateRoot()
 // {
-   
+
 // }
 // /*
 //  * @brief 节点树更新事件

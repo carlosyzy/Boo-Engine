@@ -79,8 +79,8 @@ void EditorCacheScene::_openNewScene()
     if (spriteMain != nullptr)
     {
         std::cout << "EditorLayout::_initMainUI1" << std::endl;
-        spriteMain->setTextureAsset("resources/texture/ic-default.png");
-        spriteMain->setMaterialAsset(nullptr);
+        // spriteMain->setTextureAsset("resources/texture/ic-default.png");
+        // spriteMain->setMaterialAsset(nullptr);
         spriteMain->setColor(0.1f, 0.1f, 0.1f, 1.0f);
     }
 }
@@ -194,7 +194,7 @@ void EditorCacheScene::_serializeSceneData(Scene *scene, json &sceneData)
             compData["_name"] = comp->getName();
             compData["_uuid"] = comp->getUuid();
             compData["_enable"] = comp->isEnabled() ? 1 : 0;
-            compData["_data"] = ReflectionRegistry::getInstance().serializeToJson((void *)comp, comp->getName());
+            compData["_properties"] = ReflectionRegistry::getInstance().serializeToJson((void *)comp, comp->getName());
             compsData.push_back(compData);
         }
         nodeData["_components"] = compsData;

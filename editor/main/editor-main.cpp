@@ -8,6 +8,7 @@
 #include "../cache/assets-db/editor-cache-assets-db.h"
 
 #include "editor-layout.h"
+#include "hierarchy/editor-hierarchy.h"
 
 #include "../../engine/boo.h"
 #include "../../engine/core/game.h"
@@ -34,8 +35,8 @@ void EditorMain::_deserialized()
 void EditorMain::Awake()
 {
     this->_initCamera();
-    this->_layout = new EditorLayout();
-    this->_layout->init();
+    this->_initLayout();
+    this->_initHierarchy();
     this->_initScene();
 }
 void EditorMain::Enable()
@@ -55,21 +56,35 @@ void EditorMain::_initCamera()
     ndCamera->setPosition(0.0f, 0.0f, -100.0f);
     this->_uiCamera = dynamic_cast<Camera *>(ndCamera->addComponent("Camera"));
 }
+void EditorMain::_initLayout()
+{
+    this->_layout = new EditorLayout();
+    this->_layout->init();
+}
+void EditorMain::_initHierarchy()
+{
+    this->_hierarchy = new EditorHierarchy(this->_layout->getHierarchy());
+    this->_hierarchy->init();
+}
+
+
+
+
 void EditorMain::_initScene()
 {
     BooEditor::cache->SceneCache()->openScene("");
     this->_scene = BooEditor::cache->SceneCache()->getScene();
-
-    // ctrl+S 保存
-    BooEditor::cache->SceneCache()->saveScene();
-    BooEditor::cache->SettingCache()->saveSetting();
-    BooEditor::cache->AssetsDBCache()->saveAssetsDB();
+    // // ctrl+S 保存
+    // BooEditor::cache->SceneCache()->saveScene();
+    // BooEditor::cache->SettingCache()->saveSetting();
+    // BooEditor::cache->AssetsDBCache()->saveAssetsDB();
 }
 
 void EditorMain::Update(float deltaTime)
 {
     Component::Update(deltaTime);
     this->_layout->update(deltaTime);
+    this->_hierarchy->update(deltaTime);
 }
 void EditorMain::LateUpdate(float deltaTime)
 {

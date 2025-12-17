@@ -98,7 +98,21 @@ Component *Node2D::addComponent(std::string name, std::string uuid)
 	}
 	return component;
 }
-
+/**
+ * 获取UI渲染组件
+ */
+UIRenderer *Node2D::getUIRenderComponent()
+{
+	for (auto &component : this->_components)
+	{
+		UIRenderer *uiRenderer = dynamic_cast<UIRenderer *>(component);
+		if (uiRenderer != nullptr)
+		{
+			return uiRenderer;
+		}
+	}
+	return nullptr;
+}
 
 void Node2D::update(float dt)
 {

@@ -60,7 +60,10 @@ public:
 	AssetCache *getAssetsCache();
 
 	Asset *loadAsset(const std::string &uuid);
+	Asset *loadAssetByPath(const std::string &path);
+
 	Asset *getAsset(const std::string &uuid);
+	Asset *getAssetByPath(const std::string &path);
 	/**
 	 * @brief 通过获取场景配置
 	 * @param sceneName 场景名称

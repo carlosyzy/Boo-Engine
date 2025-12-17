@@ -2,6 +2,7 @@
 #include "../utils/file-util.h"
 #include "../utils/json-util.h"
 #include "../scene/scene.h"
+#include "../component/component-property-reflect.h"
 
 SceneAsset::SceneAsset() : Asset()
 {
@@ -33,6 +34,7 @@ void SceneAsset::_deserializeScene()
                 Node2D *child2D = new Node2D(childData["_name"].get<std::string>(), childData["_uuid"].get<std::string>());
                 node->addChild(child2D);
                 this->_deserializeNode(child2D, childData["_children"]);
+                this->_deserializeComponent(child2D, childData);
                 _deserializeNodes(child2D, childData["_children"]);
             }
             else if (childData["_layer"] == NodeLayer::Node3D)
@@ -40,6 +42,7 @@ void SceneAsset::_deserializeScene()
                 Node3D *child3D = new Node3D(childData["_name"].get<std::string>(), childData["_uuid"].get<std::string>());
                 node->addChild(child3D);
                 this->_deserializeNode(child3D, childData["_children"]);
+                this->_deserializeComponent(child3D, childData);
                 _deserializeNodes(child3D, childData["_children"]);
             }
         }
@@ -47,6 +50,7 @@ void SceneAsset::_deserializeScene()
     json &sceneData = this->_sceneData["_scene"];
     this->_scene = new Scene(sceneData["_name"].get<std::string>(), sceneData["_uuid"].get<std::string>());
     _deserializeNodes(this->_scene, sceneData["_scene"]["_children"]);
+    std::cout << "SceneAsset::_deserializeScene: " << this->_scene << std::endl;
 }
 void SceneAsset::_deserializeNode(Node *node, json &_nodeData)
 {
@@ -141,6 +145,44 @@ void SceneAsset::_deserializeNode(Node *node, json &_nodeData)
             else
             {
                 node2d->setSize(0.0f, 0.0f);
+            }
+        }
+    }
+}
+void SceneAsset::_deserializeComponent(Node *node, json &_nodeData)
+{
+    if (!_nodeData.contains("_component"))
+    {
+        return;
+    }
+    json &components = _nodeData["_components"];
+    if (!components.is_array() || components.size() <= 0)
+    {
+        return;
+    }
+    for (json &component : components)
+    {
+        if (component.contains("_type"))
+        {
+            std::string name = component["_name"].get<std::string>();
+            std::string uuid = component["_uuid"].get<std::string>();
+            Component *comp = node->addComponent(name, uuid);
+            if (!comp)
+            {
+                std::cout << "component " << name << " not found" << std::endl;
+            }
+            if (component.contains("_enabled"))
+            {
+                int enabled = component["_enabled"].get<int>();
+                comp->setEnabled(enabled == 1);
+            }
+            if (component.contains("_properties"))
+            {
+                json &properties = component["_properties"];
+                for (json &property : properties)
+                {
+                    ReflectionRegistry::getInstance().deserializeFromJson((void *)comp, comp->getName(), property);
+                }
             }
         }
     }

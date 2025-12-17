@@ -249,7 +249,26 @@ void EditorCacheAssetsDB::update(float deltaTime)
             {
                 this->_completeCallback();
             }
+            // 清除旧资产库资产
+            this->_clearOldLibraryAssets();
             this->saveAssetsDB();
+        }
+    }
+}
+void EditorCacheAssetsDB::_clearOldLibraryAssets()
+{
+    std::cout << "EditorCacheAssetsDB::_clearOldLibraryAssets" << std::endl;
+    AssetCache *assetCache = Boo::game->assetsManager()->getAssetsCache();
+    for (const auto &entry : std::filesystem::recursive_directory_iterator(this->_libraryPath))
+    {
+        if (std::filesystem::is_regular_file(entry))
+        {
+            std::string assetPath = entry.path().generic_string();
+            std::string assetName = std::filesystem::path(assetPath).stem().generic_string();
+            if(assetCache->getAssetDB(assetName)==nullptr){
+                std::cout << "EditorCacheAssetsDB::_clearOldLibraryAssets: " << assetPath << std::endl;
+                std::filesystem::remove(assetPath);
+            }
         }
     }
 }

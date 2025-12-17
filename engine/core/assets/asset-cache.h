@@ -88,6 +88,13 @@ public:
      */
     Asset *getAsset(const std::string &uuid);
     /**
+     * @brief 通过资产路径获取资产实例指针
+     * @param path 资产路径
+     * @return Asset* 资产实例指针
+     */
+    Asset *getAssetByPath(const std::string &path);
+
+    /**
      * @brief 通过资产uuid获取资产数据库
      * @param uuid 资产uuid
      * @return const AssetDB& 资产数据库

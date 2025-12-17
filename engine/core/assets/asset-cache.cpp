@@ -131,6 +131,27 @@ Asset *AssetCache::getAsset(const std::string &uuid)
     return nullptr;
 }
 /**
+ * @brief 通过资产路径获取资产实例指针
+ * @param path 资产路径
+ * @return Asset* 资产实例指针
+ */
+Asset *AssetCache::getAssetByPath(const std::string &path)
+{
+    std::vector<AssetDB *> assetsDB = this->getAssetDBByPath(path);
+    if (assetsDB.empty())
+    {
+        return nullptr;
+    }
+    for (auto &assetDB : assetsDB)
+    {
+        if (assetDB->path == path)
+        {
+            return this->_assets[assetDB->uuid];
+        }
+    }
+    return nullptr;
+}
+/**
  * @brief 通过场景名称获取场景配置
  * @param sceneName 场景名称
  * @return AssetDB* 场景资产数据库指针
@@ -141,12 +162,6 @@ AssetDB *AssetCache::getSceneAssetDB(const std::string &sceneName)
     {
         return nullptr;
     }
-    for (auto &assetDB : this->_sceneAssetsMap)
-    {
-        std::cout << "AssetCache::getSceneAssetDB: " << assetDB.first << std::endl;
-    }
-
-
     if (this->_sceneAssetsMap.find(sceneName) != this->_sceneAssetsMap.end())
     {
         return this->_sceneAssetsMap[sceneName];
@@ -157,6 +172,14 @@ AssetDB *AssetCache::getSceneAssetDB(const std::string &sceneName)
 AssetCache::~AssetCache()
 {
 }
+
+
+
+
+
+
+
+
 
 // void AssetCache::_insertTextureAssetDB(const std::string &path, json assetDB)
 // {

@@ -74,6 +74,11 @@ private:
     int _initAssetsDBTaskComplete = 0;
     int _initAssetsDBTaskAll = 0;
 
+    /**
+     * @brief 清除旧资产库资产
+     * 
+     */
+    void _clearOldLibraryAssets();
 public:
     EditorCacheAssetsDB();
     void init(std::string assetsPath, std::string settingPath, std::string libraryPath);
