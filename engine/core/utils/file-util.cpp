@@ -101,6 +101,20 @@ json FileUtil::readJsonFromBinary(const std::string &filename)
         return json::object();
     }
 }
+json FileUtil::readJsonFromText(const std::string &filename)
+{
+    try
+    {
+        std::ifstream json_file(filename);
+        json data = json::parse(json_file);
+        return data;
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "File :Load Failed:: " << e.what() << std::endl;
+        return json::object();
+    }
+}
 void FileUtil::saveJsonToText(const std::string &filename, const json &data)
 {
     try

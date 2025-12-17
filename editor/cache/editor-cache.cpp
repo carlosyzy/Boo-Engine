@@ -42,7 +42,7 @@ void EditorCache::init()
     Boo::game->assetsManager()->setAssetsRoot(this->_libraryPath);
     // 初始化
     this->_settingCache->init(this->_settingPath);
-    this->_assetsDBCache->init(this->_assetsPath, this->_settingPath, this->_libraryPath);
+    this->_assetsDBCache->init(this->_assetsPath, this->_libraryPath);
     std::cout << "EditorCache::init" << std::endl;
     this->_sceneCache = new EditorCacheScene(this->_settingCache->getSettingConfig());
 }
