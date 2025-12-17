@@ -142,6 +142,8 @@ void EditorCacheAssetDBTask::_updateLibraryAsset(json &assetBooMapJson)
     // FileUtil::copyFile(this->_originalPath, libraryPath);
     std::string fileName = assetBooMapJson["uuid"].get<std::string>() + this->_assetExtension;
     std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / fileName).generic_string();
+    std::cout << "EditorCacheAssetDBTask::_updateLibraryAsset0: " << this->_originalPath << std::endl;
+    std::cout << "EditorCacheAssetDBTask::_updateLibraryAsset1: " << libraryPath << std::endl;
     FileUtil::copyFile(this->_originalPath, libraryPath);
 }
 AssetType EditorCacheAssetDBTask::getAssetType(const std::string &path)

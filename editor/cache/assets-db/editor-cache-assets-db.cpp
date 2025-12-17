@@ -90,7 +90,7 @@ void EditorCacheAssetsDB::update(float deltaTime)
                 this->_completeCallback();
             }
             // 清除旧资产库资产
-            this->_clearOldLibraryAssets();
+            // this->_clearOldLibraryAssets();
             // this->saveAssetsDB();
         }
     }
