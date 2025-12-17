@@ -59,7 +59,7 @@ private:
     /**
      * @brief 资产UUID
      */
-    json _assetMate;
+    json *_assetMate;
     /**
      * @brief 资产加载任务类型
      */

@@ -15,15 +15,16 @@ AssetTask::AssetTask(AssetsManager *mgr, int id)
 	this->_isComplete = false;
 	this->_id = id;
 }
-Asset *AssetTask::load(const json &mate)
+Asset *AssetTask::load(const json *mate)
 {
 	this->_type = AssetTaskType::Sync;
 	this->_assetMate = mate;
 	int type = _assetMate["type"].get<int>();
-	std::string extension = _assetMate["extension"].get<std::string>();
 	if ((AssetType)type == AssetType::Texture)
 	{
 		return this->_createTexture();
+	}else if((AssetType)type == AssetType::Scene){
+		return this->_createScene();
 	}
 
 	// if(type == "Texture"){
@@ -71,23 +72,28 @@ Asset *AssetTask::_createTexture()
 }
 Asset *AssetTask::_createScene()
 {
-	// std::string file = db->uuid + db->extension;
-	// std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / file).generic_string();
-	// if (!std::filesystem::exists(fullPath))
-	// {
-	// 	std::cerr << "AssetLoad:No such file or directory:" << fullPath << std::endl;
-	// 	this->_loadError();
-	// 	return nullptr;
-	// }
-	// if (!std::filesystem::is_regular_file(fullPath))
-	// {
-	// 	std::cerr << "AssetLoad:Not a regular file:" << fullPath << std::endl;
-	// 	this->_loadError();
-	// 	return nullptr;
-	// }
-	// SceneAsset *scene = new SceneAsset(db->uuid);
-	// scene->create(fullPath.string());
-	// return scene;
+	std::string filePath = "";
+	if (this->_assetMate.contains("uuid") && this->_assetMate.contains("extension"))
+	{
+		filePath = this->_assetMate["uuid"].get<std::string>() + this->_assetMate["extension"].get<std::string>();
+	}
+	std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / filePath).generic_string();
+
+	if (!std::filesystem::exists(fullPath))
+	{
+		std::cerr << "AssetLoad:No such file or directory:" << fullPath << std::endl;
+		this->_loadError();
+		return nullptr;
+	}
+	if (!std::filesystem::is_regular_file(fullPath))
+	{
+		std::cerr << "AssetLoad:Not a regular file:" << fullPath << std::endl;
+		this->_loadError();
+		return nullptr;
+	}
+  	SceneAsset *scene = new SceneAsset(this->_assetMate["uuid"].get<std::string>());
+	scene->create(fullPath.string());
+	return scene;
 }
 
 // void AssetTask::run()

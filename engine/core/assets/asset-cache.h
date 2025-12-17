@@ -32,23 +32,29 @@ private:
      */
     std::unordered_map<std::string, json> _assetMates;
 
+     /**
+     * @brief 场景映射数据库(1对1)
+     *  场景名称映射资产数据库
+     *  指针指向资产元数据json：_assetMates
+     */
+    std::unordered_map<std::string, json*> _sceneAssetMatesMap;
+
     /**
      * 全局资产映射(1对1)
      * key: 资产uuid 全局唯一
      * value : 资产实例指针
      */
     std::unordered_map<std::string, Asset *> _assets;
-    // /**
+   
+   
+
+
+    //  /**
     //  * @brief 资产数据库 (1对1)
     //  *  key: 资产uuid 全局唯一
     //  *  value: 资产基本信息
     //  */
     // std::unordered_map<std::string, AssetDB *> _assetsDB;
-    // /**
-    //  * @brief 场景映射数据库(1对1)
-    //  *  场景名称映射资产数据库
-    //  */
-    // std::unordered_map<std::string, AssetDB *> _sceneAssetsMap;
 
     // /**
     //  * @brief 资产数据库
@@ -122,14 +128,14 @@ public:
      * @param uuid 资产uuid
      * @return const AssetDB& 资产数据库
      */
-    json &getAssetMeta(const std::string &uuid);
+    json *getAssetMeta(const std::string &uuid);
 
-    // /**
-    //  * @brief 通过场景名称获取场景配置
-    //  * @param sceneName 场景名称
-    //  * @return AssetDB* 场景资产数据库指针
-    //  */
-    // AssetDB *getSceneAssetDB(const std::string &sceneName);
+    /**
+     * @brief 通过场景名称获取场景配置
+     * @param sceneName 场景名称
+     * @return AssetDB* 场景资产数据库指针
+     */
+    json &*getSceneAssetMate(const std::string &sceneName);
 
     // /**
     //  * @brief 获取纹理资产数据库
