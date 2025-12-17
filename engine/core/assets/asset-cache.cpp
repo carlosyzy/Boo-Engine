@@ -6,106 +6,113 @@
 
 AssetCache::AssetCache()
 {
+    this->_assetMates["undefined"] = json::object();
 }
 /**
  * @brief 初始化资产数据库
  * @param path 资产数据库路径
+ * 正式环境从指定目录获取
  */
 void AssetCache::initAssetsDB(const std::string &path)
 {
-    json content = FileUtil::readJsonFromBinary(path);
-    std::cout << "AssetCache::initAssetsDB: " << content << std::endl;
-    for (auto &asset : content.items())
-    {
-        std::string path = asset.key();
-        json value = asset.value();
-        this->_insertAssetDB(path, value);
-    }
+    // json content = FileUtil::readJsonFromBinary(path);
+    // std::cout << "AssetCache::initAssetsDB: " << content << std::endl;
+    // for (auto &asset : content.items())
+    // {
+    //     std::string path = asset.key();
+    //     json value = asset.value();
+    //     this->_insertAssetDB(path, value);
+    // }
 }
-/**
- * @brief 解析资产数据库
- * @param path 资产数据库路径
- * @param assetDB 资产数据库,理论是个数组
- */
-void AssetCache::_insertAssetDB(const std::string &path, json assetDB)
+void AssetCache::_updateAssetMateCache(const std::string &uuid, const json &mate)
 {
-    std::vector<AssetDB *> assetsDB;
-    for (auto &asset : assetDB)
-    {
-        AssetDB *db = new AssetDB();
-        db->name = asset["name"].get<std::string>();
-        db->path = path;
-        db->uuid = asset["uuid"].get<std::string>();
-        db->type = (AssetType)asset["type"];
-        db->extension = asset["extension"].get<std::string>();
-        this->_assetsDB[db->uuid] = db;
-        if (db->type == AssetType::Scene)
-        {
-            this->_sceneAssetsMap[db->name] = db;
-        }
-        assetsDB.push_back(db);
-    }
-    this->_pathAssetsDB[path] = assetsDB;
-}
-std::vector<AssetDB *> AssetCache::getAssetDBByPath(const std::string &path)
-{
-    if (this->_pathAssetsDB.find(path) != this->_pathAssetsDB.end())
-    {
-        return this->_pathAssetsDB[path];
-    }
-    return {};
-}
-void AssetCache::updateAssetDBByPath(const std::string &path, int index, const AssetDB &assetDB)
-{
-    if(index < 0)
-    {
-        return;
-    }
-    //通过path 更新_pathAssetsDB
-    std::vector<AssetDB *> &assetsDB = this->_pathAssetsDB[path];
-    if (index >= assetsDB.size())
-    {
-        assetsDB.resize(index + 1, nullptr);
-    }
-    if (assetsDB[index] == nullptr)
-    {
-        assetsDB[index] = new AssetDB();
-    }
-    assetsDB[index]->name = assetDB.name;
-    assetsDB[index]->path = assetDB.path;
-    assetsDB[index]->uuid = assetDB.uuid;
-    assetsDB[index]->type = assetDB.type;
-    assetsDB[index]->extension = assetDB.extension;
-    // 更新_assetsDB
-    this->_assetsDB[assetDB.uuid] = assetsDB[index];
-    if (assetDB.type == AssetType::Scene)
-    {
-        this->_sceneAssetsMap[assetDB.name] = assetsDB[index];
-    }
-}
-/**
- * @brief 获取资产数据库
- * @return std::unordered_map<std::string, std::vector<AssetDB *>>& 资产数据库指针数组
- */
-std::unordered_map<std::string, std::vector<AssetDB *>> &AssetCache::getPathAssetsDB()
-{
-    return this->_pathAssetsDB;
+    std::string path = mate["path"].get<std::string>();
+    this->_assetPathMapUuid[path] = uuid;
+    this->_assetMates[uuid] = mate;
 }
 
-
+// /**
+//  * @brief 解析资产数据库
+//  * @param path 资产数据库路径
+//  * @param assetDB 资产数据库,理论是个数组
+//  */
+// void AssetCache::_insertAssetDB(const std::string &path, json assetDB)
+// {
+//     std::vector<AssetDB *> assetsDB;
+//     for (auto &asset : assetDB)
+//     {
+//         AssetDB *db = new AssetDB();
+//         db->name = asset["name"].get<std::string>();
+//         db->path = path;
+//         db->uuid = asset["uuid"].get<std::string>();
+//         db->type = (AssetType)asset["type"];
+//         db->extension = asset["extension"].get<std::string>();
+//         this->_assetsDB[db->uuid] = db;
+//         if (db->type == AssetType::Scene)
+//         {
+//             this->_sceneAssetsMap[db->name] = db;
+//         }
+//         assetsDB.push_back(db);
+//     }
+//     this->_pathAssetsDB[path] = assetsDB;
+// }
+// std::vector<AssetDB *> AssetCache::getAssetDBByPath(const std::string &path)
+// {
+//     if (this->_pathAssetsDB.find(path) != this->_pathAssetsDB.end())
+//     {
+//         return this->_pathAssetsDB[path];
+//     }
+//     return {};
+// }
+// void AssetCache::updateAssetDBByPath(const std::string &path, int index, const AssetDB &assetDB)
+// {
+//     if(index < 0)
+//     {
+//         return;
+//     }
+//     //通过path 更新_pathAssetsDB
+//     std::vector<AssetDB *> &assetsDB = this->_pathAssetsDB[path];
+//     if (index >= assetsDB.size())
+//     {
+//         assetsDB.resize(index + 1, nullptr);
+//     }
+//     if (assetsDB[index] == nullptr)
+//     {
+//         assetsDB[index] = new AssetDB();
+//     }
+//     assetsDB[index]->name = assetDB.name;
+//     assetsDB[index]->path = assetDB.path;
+//     assetsDB[index]->uuid = assetDB.uuid;
+//     assetsDB[index]->type = assetDB.type;
+//     assetsDB[index]->extension = assetDB.extension;
+//     // 更新_assetsDB
+//     this->_assetsDB[assetDB.uuid] = assetsDB[index];
+//     if (assetDB.type == AssetType::Scene)
+//     {
+//         this->_sceneAssetsMap[assetDB.name] = assetsDB[index];
+//     }
+// }
+// /**
+//  * @brief 获取资产数据库
+//  * @return std::unordered_map<std::string, std::vector<AssetDB *>>& 资产数据库指针数组
+//  */
+// std::unordered_map<std::string, std::vector<AssetDB *>> &AssetCache::getPathAssetsDB()
+// {
+//     return this->_pathAssetsDB;
+// }
 
 /**
  * @brief 通过资产uuid获取资产数据库
  * @param uuid 资产uuid
  * @return AssetDB* 资产数据库指针
  */
-AssetDB *AssetCache::getAssetDB(const std::string &uuid)
+json &AssetCache::getAssetMeta(const std::string &uuid)
 {
-    if (this->_assetsDB.find(uuid) != this->_assetsDB.end())
+    if (this->_assetMates.find(uuid) != this->_assetMates.end())
     {
-        return this->_assetsDB[uuid];
+        return this->_assetMates[uuid];
     }
-    return nullptr;
+    return this->_assetMates["undefined"];
 }
 
 /**
@@ -137,49 +144,41 @@ Asset *AssetCache::getAsset(const std::string &uuid)
  */
 Asset *AssetCache::getAssetByPath(const std::string &path)
 {
-    std::vector<AssetDB *> assetsDB = this->getAssetDBByPath(path);
-    if (assetsDB.empty())
-    {
-        return nullptr;
-    }
-    for (auto &assetDB : assetsDB)
-    {
-        if (assetDB->path == path)
-        {
-            return this->_assets[assetDB->uuid];
-        }
-    }
+    // std::vector<AssetDB *> assetsDB = this->getAssetDBByPath(path);
+    // if (assetsDB.empty())
+    // {
+    //     return nullptr;
+    // }
+    // for (auto &assetDB : assetsDB)
+    // {
+    //     if (assetDB->path == path)
+    //     {
+    //         return this->_assets[assetDB->uuid];
+    //     }
+    // }
     return nullptr;
 }
-/**
- * @brief 通过场景名称获取场景配置
- * @param sceneName 场景名称
- * @return AssetDB* 场景资产数据库指针
- */
-AssetDB *AssetCache::getSceneAssetDB(const std::string &sceneName)
-{
-    if (sceneName.empty())
-    {
-        return nullptr;
-    }
-    if (this->_sceneAssetsMap.find(sceneName) != this->_sceneAssetsMap.end())
-    {
-        return this->_sceneAssetsMap[sceneName];
-    }
-    return nullptr;
-}
+// /**
+//  * @brief 通过场景名称获取场景配置
+//  * @param sceneName 场景名称
+//  * @return AssetDB* 场景资产数据库指针
+//  */
+// AssetDB *AssetCache::getSceneAssetDB(const std::string &sceneName)
+// {
+//     if (sceneName.empty())
+//     {
+//         return nullptr;
+//     }
+//     if (this->_sceneAssetsMap.find(sceneName) != this->_sceneAssetsMap.end())
+//     {
+//         return this->_sceneAssetsMap[sceneName];
+//     }
+//     return nullptr;
+// }
 
 AssetCache::~AssetCache()
 {
 }
-
-
-
-
-
-
-
-
 
 // void AssetCache::_insertTextureAssetDB(const std::string &path, json assetDB)
 // {

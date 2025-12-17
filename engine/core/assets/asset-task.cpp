@@ -15,26 +15,44 @@ AssetTask::AssetTask(AssetsManager *mgr, int id)
 	this->_isComplete = false;
 	this->_id = id;
 }
-Asset *AssetTask::load(const AssetDB *_assetDB)
+Asset *AssetTask::load(const json &mate)
 {
 	this->_type = AssetTaskType::Sync;
-	this->_assetDB = _assetDB;
-	if (_assetDB->extension == ".png" || _assetDB->extension == ".PNG" || _assetDB->extension == ".jpg" || _assetDB->extension == ".JPG" || _assetDB->extension == ".jpeg" || _assetDB->extension == ".JPEG")
+	this->_assetMate = mate;
+	int type = _assetMate["type"].get<int>();
+	std::string extension = _assetMate["extension"].get<std::string>();
+	if ((AssetType)type == AssetType::Texture)
 	{
-		return this->_createTexture(_assetDB);
+		return this->_createTexture();
 	}
-	else if (_assetDB->extension == ".scene" || _assetDB->extension == ".SCENE" || _assetDB->extension == ".Scene")
-	{
-		return this->_createScene(_assetDB);
-	}
+
+	// if(type == "Texture"){
+	// 	return this->_createTexture(_assetMate);
+	// }
+	// else if(type == "Scene"){
+	// 	return this->_createScene(_assetMate);
+	// }
+
+	// if (_assetDB->extension == ".png" || _assetDB->extension == ".PNG" || _assetDB->extension == ".jpg" || _assetDB->extension == ".JPG" || _assetDB->extension == ".jpeg" || _assetDB->extension == ".JPEG")
+	// {
+	// 	return this->_createTexture(_assetDB);
+	// }
+	// else if (_assetDB->extension == ".scene" || _assetDB->extension == ".SCENE" || _assetDB->extension == ".Scene")
+	// {
+	// 	return this->_createScene(_assetDB);
+	// }
 
 	return nullptr;
 }
 
-Asset *AssetTask::_createTexture(const AssetDB *db)
+Asset *AssetTask::_createTexture()
 {
-	std::string file = db->uuid + db->extension;
-	std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / file).generic_string();
+	std::string filePath = "";
+	if (this->_assetMate.contains("uuid") && this->_assetMate.contains("extension"))
+	{
+		filePath = this->_assetMate["uuid"].get<std::string>() + this->_assetMate["extension"].get<std::string>();
+	}
+	std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / filePath).generic_string();
 	if (!std::filesystem::exists(fullPath))
 	{
 		std::cerr << "AssetLoad:No such file or directory:" << fullPath << std::endl;
@@ -47,29 +65,29 @@ Asset *AssetTask::_createTexture(const AssetDB *db)
 		this->_loadError();
 		return nullptr;
 	}
-	TextureAsset *texture = new TextureAsset(db->uuid);
+	TextureAsset *texture = new TextureAsset(this->_assetMate["uuid"].get<std::string>());
 	texture->create(fullPath.string());
 	return texture;
 }
-Asset *AssetTask::_createScene(const AssetDB *db)
+Asset *AssetTask::_createScene()
 {
-	std::string file = db->uuid + db->extension;
-	std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / file).generic_string();
-	if (!std::filesystem::exists(fullPath))
-	{
-		std::cerr << "AssetLoad:No such file or directory:" << fullPath << std::endl;
-		this->_loadError();
-		return nullptr;
-	}
-	if (!std::filesystem::is_regular_file(fullPath))
-	{
-		std::cerr << "AssetLoad:Not a regular file:" << fullPath << std::endl;
-		this->_loadError();
-		return nullptr;
-	}
-	SceneAsset *scene = new SceneAsset(db->uuid);
-	scene->create(fullPath.string());
-	return scene;
+	// std::string file = db->uuid + db->extension;
+	// std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / file).generic_string();
+	// if (!std::filesystem::exists(fullPath))
+	// {
+	// 	std::cerr << "AssetLoad:No such file or directory:" << fullPath << std::endl;
+	// 	this->_loadError();
+	// 	return nullptr;
+	// }
+	// if (!std::filesystem::is_regular_file(fullPath))
+	// {
+	// 	std::cerr << "AssetLoad:Not a regular file:" << fullPath << std::endl;
+	// 	this->_loadError();
+	// 	return nullptr;
+	// }
+	// SceneAsset *scene = new SceneAsset(db->uuid);
+	// scene->create(fullPath.string());
+	// return scene;
 }
 
 // void AssetTask::run()

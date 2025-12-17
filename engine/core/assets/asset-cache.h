@@ -20,36 +20,49 @@ class AssetCache
 {
 private:
     /**
+     * @brief 资产路径映射资产uuid(1对1)
+     *  key: 资产路径
+     *  value: 资产uuid 全局唯一
+     */
+    std::unordered_map<std::string, std::string> _assetPathMapUuid;
+    /**
+     * @brief 资产元数据映射(1对1)
+     *  key: 资产uuid 全局唯一
+     *  value: 资产元数据json
+     */
+    std::unordered_map<std::string, json> _assetMates;
+
+    /**
      * 全局资产映射(1对1)
      * key: 资产uuid 全局唯一
      * value : 资产实例指针
      */
     std::unordered_map<std::string, Asset *> _assets;
-    /**
-     * @brief 资产数据库 (1对1)
-     *  key: 资产uuid 全局唯一
-     *  value: 资产基本信息
-     */
-    std::unordered_map<std::string, AssetDB *> _assetsDB;
-    /**
-     * @brief 场景映射数据库(1对1)
-     *  场景名称映射资产数据库
-     */
-    std::unordered_map<std::string, AssetDB *> _sceneAssetsMap;
+    // /**
+    //  * @brief 资产数据库 (1对1)
+    //  *  key: 资产uuid 全局唯一
+    //  *  value: 资产基本信息
+    //  */
+    // std::unordered_map<std::string, AssetDB *> _assetsDB;
+    // /**
+    //  * @brief 场景映射数据库(1对1)
+    //  *  场景名称映射资产数据库
+    //  */
+    // std::unordered_map<std::string, AssetDB *> _sceneAssetsMap;
 
-    /**
-     * @brief 资产数据库
-     *  key: 资产路径
-     *  value: 资产基本信息数组
-     */
-    std::unordered_map<std::string, std::vector<AssetDB *>> _pathAssetsDB;
+    // /**
+    //  * @brief 资产数据库
+    //  *  key: 资产路径
+    //  *  value: 资产基本信息数组
+    //  */
+    // std::unordered_map<std::string, std::vector<AssetDB *>> _pathAssetsDB;
 
-    /**
-     * @brief 解析纹理资产数据库
-     * @param path 资产数据库路径
-     * @param assetDB 资产数据库
-     */
-    void _insertAssetDB(const std::string &path, json assetDB);
+    // /**
+    //  * @brief 解析纹理资产数据库
+    //  * @param path 资产数据库路径
+    //  * @param assetDB 资产数据库
+    //  */
+    // void _insertAssetDB(const std::string &path, json assetDB);
 
 public:
     AssetCache();
@@ -58,22 +71,31 @@ public:
      * @param path 资产数据库路径
      */
     void initAssetsDB(const std::string &path);
+
     /**
-     * @brief 通过资产路径获取资产数据库
-     * @param path 资产路径
-     * @return std::vector<AssetDB *> 资产数据库指针数组
+     * @brief 更新资产元数据缓存
+     * @param uuid 资产uuid 全局唯一
+     * @param mate 资产元数据json
      */
-    std::vector<AssetDB *> getAssetDBByPath(const std::string &path);
-    /**
-     * @brief 更新资产数据库
-     * @param path 资产路径
-     * @param assetDBs 资产数据库指针数组
-     */
-    void updateAssetDBByPath(const std::string &path, int index, const AssetDB &assetDB);
-    /**
-     * @brief 获取资产数据库
-     */
-    std::unordered_map<std::string, std::vector<AssetDB *>> &getPathAssetsDB();
+    void _updateAssetMateCache(const std::string &uuid, const json &mate);
+
+
+    // /**
+    //  * @brief 通过资产路径获取资产数据库
+    //  * @param path 资产路径
+    //  * @return std::vector<AssetDB *> 资产数据库指针数组
+    //  */
+    // std::vector<AssetDB *> getAssetDBByPath(const std::string &path);
+    // /**
+    //  * @brief 更新资产数据库
+    //  * @param path 资产路径
+    //  * @param assetDBs 资产数据库指针数组
+    //  */
+    // void updateAssetDBByPath(const std::string &path, int index, const AssetDB &assetDB);
+    // /**
+    //  * @brief 获取资产数据库
+    //  */
+    // std::unordered_map<std::string, std::vector<AssetDB *>> &getPathAssetsDB();
 
     /**
      * @brief 添加资产到缓存
@@ -99,14 +121,14 @@ public:
      * @param uuid 资产uuid
      * @return const AssetDB& 资产数据库
      */
-    AssetDB *getAssetDB(const std::string &uuid);
+    json &getAssetMeta(const std::string &uuid);
 
-    /**
-     * @brief 通过场景名称获取场景配置
-     * @param sceneName 场景名称
-     * @return AssetDB* 场景资产数据库指针
-     */
-    AssetDB *getSceneAssetDB(const std::string &sceneName);
+    // /**
+    //  * @brief 通过场景名称获取场景配置
+    //  * @param sceneName 场景名称
+    //  * @return AssetDB* 场景资产数据库指针
+    //  */
+    // AssetDB *getSceneAssetDB(const std::string &sceneName);
 
     // /**
     //  * @brief 获取纹理资产数据库

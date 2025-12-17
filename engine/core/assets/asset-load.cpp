@@ -7,7 +7,7 @@
 #include "assets-manager.h"
 #include "asset-cache.h"
 #include "asset-task.h"
-#include "../utils/time-util.h"
+
 
 AssetLoad::AssetLoad(AssetsManager *mgr)
 {
@@ -24,11 +24,14 @@ Asset *AssetLoad::loadAsset(const std::string &uuid)
     }
     int taskID = this->_TaskNextID++;
     AssetTask task(this->_mgr, taskID);
-    AssetDB *db = cache->getAssetDB(uuid);
-    if(db == nullptr){
+    json &mate = cache->getAssetMeta(uuid);
+    if(mate["type"].is_null()||mate["uuid"].is_null()){
         return nullptr;
     }
-    asset = task.load(db);
+    asset = task.load(mate);
+    if(asset == nullptr){
+        return nullptr;
+    }
     cache->addAsset(uuid,asset);
     return asset;
 }

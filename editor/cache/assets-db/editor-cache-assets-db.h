@@ -19,7 +19,7 @@ private:
     int _initAssetsDBTaskAll = 0;
 
 
-    bool _isAssetBooMapFile(std::filesystem::path path);
+    bool _isAssetMateMapFile(std::filesystem::path path);
 
     /**
      * @brief 清除旧资产库资产

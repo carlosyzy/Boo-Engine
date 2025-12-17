@@ -105,6 +105,13 @@ json FileUtil::readJsonFromText(const std::string &filename)
 {
     try
     {
+        // 检查文件是否存在
+        if (!std::filesystem::exists(filename))
+        {
+            std::cerr << "File :Load Failed:: not exist: " << filename << std::endl;
+            return json::object();
+        }
+        
         std::ifstream json_file(filename);
         json data = json::parse(json_file);
         return data;

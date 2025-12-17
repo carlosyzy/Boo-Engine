@@ -64,11 +64,11 @@ public:
 
 	Asset *getAsset(const std::string &uuid);
 	Asset *getAssetByPath(const std::string &path);
-	/**
-	 * @brief 通过获取场景配置
-	 * @param sceneName 场景名称
-	 */
-	AssetDB* getSceneAssetDB(const std::string &sceneName);
+	// /**
+	//  * @brief 通过获取场景配置
+	//  * @param sceneName 场景名称
+	//  */
+	// AssetDB* getSceneAssetDB(const std::string &sceneName);
 
 	// Asset *loadByPath(const std::string &path);
 	// Asset *getByPath(const std::string &path);

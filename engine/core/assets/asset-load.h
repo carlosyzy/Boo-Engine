@@ -2,6 +2,10 @@
 #include <string>
 #include <vector>
 #include <functional>
+
+#include "../utils/time-util.h"
+#include "../utils/json-util.h"
+
 #include "asset-cache.h"
 #include "asset-task.h"
 
