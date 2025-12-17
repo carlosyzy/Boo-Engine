@@ -26,8 +26,12 @@ void AssetCache::initAssetsDB(const std::string &path)
 }
 void AssetCache::_updateAssetMateCache(const std::string &uuid, const json &mate)
 {
-    std::string path = mate["path"].get<std::string>();
     this->_assetMates[uuid] = mate;
+    int type = mate["type"].get<int>();
+    if(type==AssetType::Scene){
+        std::string name = mate["name"].get<std::string>();
+        this->_sceneAssetMatesMap[name] = &this->_assetMates[uuid];
+    }
 }
 void AssetCache::_updateAssetPathCache(const std::string &uuid, const std::string &path)
 {
@@ -109,13 +113,30 @@ void AssetCache::_updateAssetPathCache(const std::string &uuid, const std::strin
  * @param uuid 资产uuid
  * @return AssetDB* 资产数据库指针
  */
-json &AssetCache::getAssetMeta(const std::string &uuid)
+json *AssetCache::getAssetMeta(const std::string &uuid)
 {
-    if (this->_assetMates.find(uuid) != this->_assetMates.end())
-    {
-        return this->_assetMates[uuid];
+    auto it = _assetMates.find(uuid);
+    if (it != _assetMates.end()) {
+        return &it->second;
     }
-    return this->_assetMates["undefined"];
+    return nullptr;
+}
+/**
+ * @brief 通过场景名称获取场景配置
+ * @param sceneName 场景名称
+ * @return AssetDB* 场景资产数据库指针
+ */
+json *AssetCache::getSceneAssetMate(const std::string &sceneName)
+{
+    if (sceneName.empty())
+    {
+        return nullptr;
+    }
+    auto it = _sceneAssetMatesMap.find(sceneName);
+    if (it != _sceneAssetMatesMap.end()) {
+        return it->second;
+    }
+    return nullptr;
 }
 
 /**
@@ -161,23 +182,7 @@ Asset *AssetCache::getAssetByPath(const std::string &path)
     // }
     return nullptr;
 }
-// /**
-//  * @brief 通过场景名称获取场景配置
-//  * @param sceneName 场景名称
-//  * @return AssetDB* 场景资产数据库指针
-//  */
-// AssetDB *AssetCache::getSceneAssetDB(const std::string &sceneName)
-// {
-//     if (sceneName.empty())
-//     {
-//         return nullptr;
-//     }
-//     if (this->_sceneAssetsMap.find(sceneName) != this->_sceneAssetsMap.end())
-//     {
-//         return this->_sceneAssetsMap[sceneName];
-//     }
-//     return nullptr;
-// }
+
 
 AssetCache::~AssetCache()
 {
