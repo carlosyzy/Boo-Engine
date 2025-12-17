@@ -18,6 +18,7 @@ public:
     static void saveJsonToBinary(const std::string &filename, const json &data);
     static void saveJsonToText(const std::string &filename, const json &data);
     static json readJsonFromBinary(const std::string &filename);
+    static json readJsonFromText(const std::string &filename);
     static void copyFile(const std::string &src, const std::string &dst);
     static void removeFile(const std::string &path);
 };
