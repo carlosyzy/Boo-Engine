@@ -27,8 +27,11 @@ void AssetCache::initAssetsDB(const std::string &path)
 void AssetCache::_updateAssetMateCache(const std::string &uuid, const json &mate)
 {
     std::string path = mate["path"].get<std::string>();
-    this->_assetPathMapUuid[path] = uuid;
     this->_assetMates[uuid] = mate;
+}
+void AssetCache::_updateAssetPathCache(const std::string &uuid, const std::string &path)
+{
+    this->_assetPathMapUuid[path] = uuid;
 }
 
 // /**

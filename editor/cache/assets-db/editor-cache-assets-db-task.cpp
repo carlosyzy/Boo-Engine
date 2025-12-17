@@ -55,13 +55,14 @@ void EditorCacheAssetDBTask::_parseTextureAssetDB()
     assetMateMapJson["type"] = uint32_t(AssetType::Texture);
     assetMateMapJson["name"] = std::filesystem::path(this->_assetPath).stem().generic_string();
     assetMateMapJson["extension"] = this->_assetExtension;
-    assetMateMapJson["path"] = this->_assetPath;
+    // assetMateMapJson["path"] = this->_assetPath;
     // 更新存储到本地
     FileUtil::saveJsonToText(assetMateMapPath, assetMateMapJson);
     // 更新资产库
     this->_updateLibraryAsset(assetMateMapJson);
     // 更新资产缓存
     Boo::game->assetsManager()->getAssetsCache()->_updateAssetMateCache(assetMateMapJson["uuid"].get<std::string>(), assetMateMapJson);
+    Boo::game->assetsManager()->getAssetsCache()->_updateAssetPathCache(assetMateMapJson["uuid"].get<std::string>(), this->_assetPath);
     // 加载资产
     Boo::game->assetsManager()->loadAsset(assetMateMapJson["uuid"].get<std::string>());
 }
