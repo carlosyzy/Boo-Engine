@@ -1,14 +1,46 @@
 #include "editor-asset-util.h"
+#include "../../boo-editor.h"
+
+#include "../../../engine/boo.h"
+#include "../../../engine/core/assets/assets-manager.h"
+#include "../../../engine/core/assets/texture-asset.h"
+#include "../../../engine/core/assets/asset-cache.h"
+#include "../../../engine/core/assets/asset-struct.h"
+
 /**
  * @brief 更新资产
- * 
+ *
  * @param assetPath 资产路径
  */
-void EditorAssetUtil::updateAsset(const std::string &assetPath)
+void EditorAssetUtil::updateSceneAsset(const std::string &assetPath, const json &sceneData, const json &mateData)
 {
-    // 1. 确定资源存储路径(相对于项目assets目录)
-    // 2. 确定资产数据
-    // 3. 通过路径查找.mate文件
-    // 4. 如果有.mate文件,则只: 想存储数据到存储路径,资产存储到路径,在将资产更新到library目录下,加载资产到缓存
-    // 5. 如果没有.mate文件,则: 想存储数据到存储路径,资产存储到路径,并创建.mate文件存储到目录,在将资产更新到library目录下,加载资产到缓存
+    // 保存资产
+    std::string sceneStorageFullPath = (std::filesystem::path(BooEditor::projectPath) / "assets" / assetPath).generic_string();
+    FileUtil::saveJsonToBinary(sceneStorageFullPath, sceneData);
+    // 保存资产元数据
+    EditorAssetUtil::updateAssetMeta(assetPath, mateData);
+    // 更新Library目录下的资产元数据
+    EditorAssetUtil::updateLibraryAsset(assetPath, mateData);
+    // 更新资产映射
+    EditorAssetUtil::updateAssetMap(assetPath, mateData);
+}
+void EditorAssetUtil::updateAssetMeta(const std::string &assetPath, const json &mateData)
+{
+    // 保存资产元数据
+    std::string assetMetaPath = (std::filesystem::path(BooEditor::projectPath) / "assets" / assetPath).generic_string() + ".meta";
+    FileUtil::saveJsonToText(assetMetaPath, mateData);
+}
+void EditorAssetUtil::updateLibraryAsset(const std::string &assetPath, const json &mateData)
+{
+    // 更新Library目录下的资产
+    std::string originalAssetPath = (std::filesystem::path(BooEditor::projectPath) / "assets" / assetPath).generic_string();
+    std::string fileName = mateData["uuid"].get<std::string>() + mateData["extension"].get<std::string>();
+    std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / fileName).generic_string();
+    FileUtil::copyFile(originalAssetPath, libraryPath);
+}
+void EditorAssetUtil::updateAssetMap(const std::string &assetPath, const json &mateData)
+{
+    // 更新资产映射
+    Boo::game->assetsManager()->getAssetsCache()->_updateAssetMateCache(mateData["uuid"].get<std::string>(), mateData);
+    Boo::game->assetsManager()->getAssetsCache()->_updateAssetPathCache(mateData["uuid"].get<std::string>(), assetPath);
 }
