@@ -15,15 +15,15 @@ AssetTask::AssetTask(AssetsManager *mgr, int id)
 	this->_isComplete = false;
 	this->_id = id;
 }
-Asset *AssetTask::load(const json *mate)
+Asset *AssetTask::load(json *mate)
 {
 	this->_type = AssetTaskType::Sync;
 	this->_assetMate = mate;
-	int type = _assetMate["type"].get<int>();
-	if ((AssetType)type == AssetType::Texture)
+	int type = _assetMate->at("type").get<int>();
+	if (type == (int)AssetType::Texture)
 	{
 		return this->_createTexture();
-	}else if((AssetType)type == AssetType::Scene){
+	}else if(type == (int)AssetType::Scene){
 		return this->_createScene();
 	}
 
@@ -49,9 +49,9 @@ Asset *AssetTask::load(const json *mate)
 Asset *AssetTask::_createTexture()
 {
 	std::string filePath = "";
-	if (this->_assetMate.contains("uuid") && this->_assetMate.contains("extension"))
+	if (this->_assetMate->contains("uuid") && this->_assetMate->contains("extension"))
 	{
-		filePath = this->_assetMate["uuid"].get<std::string>() + this->_assetMate["extension"].get<std::string>();
+		filePath = this->_assetMate->at("uuid").get<std::string>() + this->_assetMate->at("extension").get<std::string>();
 	}
 	std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / filePath).generic_string();
 	if (!std::filesystem::exists(fullPath))
@@ -66,16 +66,16 @@ Asset *AssetTask::_createTexture()
 		this->_loadError();
 		return nullptr;
 	}
-	TextureAsset *texture = new TextureAsset(this->_assetMate["uuid"].get<std::string>());
+	TextureAsset *texture = new TextureAsset(this->_assetMate->at("uuid").get<std::string>());
 	texture->create(fullPath.string());
 	return texture;
 }
 Asset *AssetTask::_createScene()
 {
 	std::string filePath = "";
-	if (this->_assetMate.contains("uuid") && this->_assetMate.contains("extension"))
+	if (this->_assetMate->contains("uuid") && this->_assetMate->contains("extension"))
 	{
-		filePath = this->_assetMate["uuid"].get<std::string>() + this->_assetMate["extension"].get<std::string>();
+		filePath = this->_assetMate->at("uuid").get<std::string>() + this->_assetMate->at("extension").get<std::string>();
 	}
 	std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / filePath).generic_string();
 
@@ -91,7 +91,7 @@ Asset *AssetTask::_createScene()
 		this->_loadError();
 		return nullptr;
 	}
-  	SceneAsset *scene = new SceneAsset(this->_assetMate["uuid"].get<std::string>());
+  	SceneAsset *scene = new SceneAsset(this->_assetMate->at("uuid").get<std::string>());
 	scene->create(fullPath.string());
 	return scene;
 }

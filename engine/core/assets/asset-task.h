@@ -134,7 +134,7 @@ public:
     {
         return this->_id;
     }
-    Asset *load(const json &mate);
+    Asset *load(json *mate);
     // template <typename T, typename Func>
     // void loadAsync(const std::string &path, Func callback, T *instance)
     // {

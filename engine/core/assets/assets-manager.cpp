@@ -75,7 +75,7 @@ Asset *AssetsManager::getAssetByPath(const std::string &path)
  * @param sceneName 场景名称
  * @return AssetDB 场景资产数据库
  */
-json& AssetsManager::getSceneAssetMate(const std::string &sceneName)
+json* AssetsManager::getSceneAssetMate(const std::string &sceneName)
 {
 	return this->_assetsCache->getSceneAssetMate(sceneName);
 }
