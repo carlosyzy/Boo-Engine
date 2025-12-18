@@ -1,4 +1,4 @@
-#include "editor-cache-assets-db.h"
+#include "editor-cache-assets.h"
 #include "../../boo-editor.h"
 
 #include "../../../engine/boo.h"
@@ -10,18 +10,18 @@
 #include "../../../engine/core/utils/json-util.h"
 #include "../../../engine/core/utils/uuid-util.h"
 
-EditorCacheAssetsDB::EditorCacheAssetsDB()
+EditorCacheAssets::EditorCacheAssets()
 {
 }
-void EditorCacheAssetsDB::init(std::string assetsPath, std::string libraryPath)
+void EditorCacheAssets::init(std::string assetsPath, std::string libraryPath)
 {
     this->_assetsPath = assetsPath;
     this->_libraryPath = libraryPath;
     // Boo::game->assetsManager()->initAssetsDB(this->_assetsDBPath);
 }
-void EditorCacheAssetsDB::load(std::function<void(const float progress, std::string file)> progress, std::function<void()> complete)
+void EditorCacheAssets::load(std::function<void(const float progress, std::string file)> progress, std::function<void()> complete)
 {
-    this->_initAssetsDBTasks.clear();
+    this->_initAssetsTasks.clear();
     this->_progressCallback = progress;
     this->_completeCallback = complete;
     for (const auto &entry : std::filesystem::recursive_directory_iterator(this->_assetsPath))
@@ -30,16 +30,16 @@ void EditorCacheAssetsDB::load(std::function<void(const float progress, std::str
         {
             if (!this->_isAssetMateMapFile(entry))
             {
-                EditorCacheAssetDBTask task;
+                EditorCacheAssetsTask task;
                 task.init(entry.path().generic_string());
-                this->_initAssetsDBTasks.push_back(task);
+                this->_initAssetsTasks.push_back(task);
             }
         }
     }
-    this->_initAssetsDBTaskAll = this->_initAssetsDBTasks.size();
-    this->_initAssetsDBTaskComplete = 0;
+    this->_initAssetsTaskAll = this->_initAssetsTasks.size();
+    this->_initAssetsTaskComplete = 0;
 }
-bool EditorCacheAssetsDB::_isAssetMateMapFile(std::filesystem::path path)
+bool EditorCacheAssets::_isAssetMateMapFile(std::filesystem::path path)
 {
     if (path.extension()!=".mate")
     {
@@ -61,28 +61,28 @@ bool EditorCacheAssetsDB::_isAssetMateMapFile(std::filesystem::path path)
     return true;
 }
 
-void EditorCacheAssetsDB::update(float deltaTime)
+void EditorCacheAssets::update(float deltaTime)
 {
-    if (this->_initAssetsDBTasks.empty())
+    if (this->_initAssetsTasks.empty())
     {
         return;
     }
-    int count = this->_initAssetsDBTasks.size() > 30 ? 30 : this->_initAssetsDBTasks.size();
+    int count = this->_initAssetsTasks.size() > 30 ? 30 : this->_initAssetsTasks.size();
     for (int i = 0; i < count; i++)
     {
         // 执行任务
-        EditorCacheAssetDBTask task = this->_initAssetsDBTasks.front();
+        EditorCacheAssetsTask task = this->_initAssetsTasks.front();
         task.run();
         // 任务完成后移除
-        this->_initAssetsDBTasks.erase(this->_initAssetsDBTasks.begin());
+        this->_initAssetsTasks.erase(this->_initAssetsTasks.begin());
         // 任务完成后更新进度
-        this->_initAssetsDBTaskComplete = this->_initAssetsDBTaskAll - this->_initAssetsDBTasks.size();
+        this->_initAssetsTaskComplete = this->_initAssetsTaskAll - this->_initAssetsTasks.size();
         if (this->_progressCallback != nullptr)
         {
-            this->_progressCallback(this->_initAssetsDBTaskComplete / (float)this->_initAssetsDBTaskAll, task.getAssetPath());
+            this->_progressCallback(this->_initAssetsTaskComplete / (float)this->_initAssetsTaskAll, task.getAssetPath());
         }
 
-        if (this->_initAssetsDBTasks.empty() || this->_initAssetsDBTaskComplete >= this->_initAssetsDBTaskAll)
+        if (this->_initAssetsTasks.empty() || this->_initAssetsTaskComplete >= this->_initAssetsTaskAll)
         {
             if (this->_completeCallback != nullptr)
             {
@@ -94,9 +94,9 @@ void EditorCacheAssetsDB::update(float deltaTime)
         }
     }
 }
-void EditorCacheAssetsDB::_clearOldLibraryAssets()
+void EditorCacheAssets::_clearOldLibraryAssets()
 {
-    // std::cout << "EditorCacheAssetsDB::_clearOldLibraryAssets" << std::endl;
+    // std::cout << "EditorCacheAssets::_clearOldLibraryAssets" << std::endl;
     // AssetCache *assetCache = Boo::game->assetsManager()->getAssetsCache();
     // for (const auto &entry : std::filesystem::recursive_directory_iterator(this->_libraryPath))
     // {
@@ -116,7 +116,7 @@ void EditorCacheAssetsDB::_clearOldLibraryAssets()
 //  * @brief 保存资产数据库
 //  *
 //  */
-// void EditorCacheAssetsDB::saveAssetsDB()
+// void EditorCacheAssets::saveAssetsDB()
 // {
 //     // AssetCache *assetCache = Boo::game->assetsManager()->getAssetsCache();
 //     // std::unordered_map<std::string, std::vector<AssetDB *>> &pathAssetsDB = assetCache->getPathAssetsDB();
@@ -142,6 +142,6 @@ void EditorCacheAssetsDB::_clearOldLibraryAssets()
 //     // std::cout << "EditorCache::saveAssetsDB: " << this->_assetsDBPath << std::endl;
 //     // std::cout << "EditorCache::saveAssetsDB: " << content << std::endl;
 // }
-EditorCacheAssetsDB::~EditorCacheAssetsDB()
+EditorCacheAssets::~EditorCacheAssets()
 {
 }

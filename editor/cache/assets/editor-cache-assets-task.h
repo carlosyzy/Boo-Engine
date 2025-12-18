@@ -6,7 +6,7 @@
 #include "../../../engine/core/utils/json-util.h"
 #include "../../../engine/core/assets/asset-struct.h"
 
-class EditorCacheAssetDBTask
+class EditorCacheAssetsTask
 {
 private:
     /**
@@ -44,7 +44,7 @@ private:
     void _updateLibraryAsset(json &assetBooMapJson);
 
 public:
-    EditorCacheAssetDBTask();
+    EditorCacheAssetsTask();
     /**
      * 相对路径
      * 父路径
@@ -57,5 +57,5 @@ public:
      * @return std::string 资产路径
      */
     std::string getAssetPath();
-    ~EditorCacheAssetDBTask();
+    ~EditorCacheAssetsTask();
 };

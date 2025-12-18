@@ -1,6 +1,7 @@
 {
     "extension": ".scene",
     "name": "scene",
+    "path": "scene.scene",
     "type": 6,
-    "uuid": "4dabbd2c-6c29-4af6-85bb-276e3e8dcadf"
+    "uuid": "c3a4ebff-7a3c-4c66-ab41-ea797dc2800c"
 }

@@ -1,6 +1,6 @@
 #include "editor-cache.h"
 #include "../boo-editor.h"
-#include "assets-db/editor-cache-assets-db.h"
+#include "assets/editor-cache-assets.h"
 #include "setting/editor-cache-setting.h"
 #include "scene/editor-cache-scene.h"
 
@@ -35,26 +35,26 @@ EditorCache::EditorCache()
     }
 
     this->_settingCache = new EditorCacheSetting();
-    this->_assetsDBCache = new EditorCacheAssetsDB();
+    this->_assetsCache = new EditorCacheAssets();
 }
 void EditorCache::init()
 {
     Boo::game->assetsManager()->setAssetsRoot(this->_libraryPath);
     // 初始化
     this->_settingCache->init(this->_settingPath);
-    this->_assetsDBCache->init(this->_assetsPath, this->_libraryPath);
+    this->_assetsCache->init(this->_assetsPath, this->_libraryPath);
     std::cout << "EditorCache::init" << std::endl;
     this->_sceneCache = new EditorCacheScene(this->_settingCache->getSettingConfig());
 }
 void EditorCache::load(std::function<void(const float progress, std::string file)> progressCallback, std::function<void()> complete)
 {
     std::cout << "EditorCache::load" << std::endl;
-    this->_assetsDBCache->load(progressCallback, complete);
+    this->_assetsCache->load(progressCallback, complete);
 }
 
 void EditorCache::update(float deltaTime)
 {
-    this->_assetsDBCache->update(deltaTime);
+    this->_assetsCache->update(deltaTime);
     this->_settingCache->update(deltaTime);
 }
 
