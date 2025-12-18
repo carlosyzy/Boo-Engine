@@ -1,5 +1,6 @@
 #include "editor-cache-assets-task.h"
 #include "../../boo-editor.h"
+#include "editor-asset-util.h"
 
 #include "../../../engine/boo.h"
 #include "../../../engine/core/assets/assets-manager.h"
@@ -108,6 +109,7 @@ void EditorCacheAssetsTask::_parseSceneAssetDB()
     // 更新资产缓存
     Boo::game->assetsManager()->getAssetsCache()->_updateAssetMateCache(assetMateMapJson["uuid"].get<std::string>(), assetMateMapJson);
     Boo::game->assetsManager()->getAssetsCache()->_updateAssetPathCache(assetMateMapJson["uuid"].get<std::string>(), this->_assetPath);
+    
     // 加载资产
     Boo::game->assetsManager()->loadAsset(assetMateMapJson["uuid"].get<std::string>());
 }
