@@ -28,7 +28,7 @@ void AssetCache::_updateAssetMateCache(const std::string &uuid, const json &mate
 {
     this->_assetMates[uuid] = mate;
     int type = mate["type"].get<int>();
-    if(type==AssetType::Scene){
+    if(type==(int)AssetType::Scene){
         std::string name = mate["name"].get<std::string>();
         this->_sceneAssetMatesMap[name] = &this->_assetMates[uuid];
     }

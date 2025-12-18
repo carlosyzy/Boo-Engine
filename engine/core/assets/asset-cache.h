@@ -135,7 +135,7 @@ public:
      * @param sceneName 场景名称
      * @return AssetDB* 场景资产数据库指针
      */
-    json &*getSceneAssetMate(const std::string &sceneName);
+    json *getSceneAssetMate(const std::string &sceneName);
 
     // /**
     //  * @brief 获取纹理资产数据库
