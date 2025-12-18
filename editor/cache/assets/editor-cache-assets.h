@@ -3,20 +3,19 @@
 #include <filesystem>
 #include <functional>
 #include "../../../engine/core/assets/asset-struct.h"
-#include "editor-cache-assets-db-task.h"
+#include "editor-cache-assets-task.h"
 
-class EditorCacheAssetsDB
+class EditorCacheAssets
 {
 private:
     std::string _assetsPath;
     std::string _libraryPath;
-    // std::string _assetsDBPath;
 
-    std::vector<EditorCacheAssetDBTask> _initAssetsDBTasks;
+    std::vector<EditorCacheAssetsTask> _initAssetsTasks;
     std::function<void(const float progress, std::string file)> _progressCallback;
     std::function<void()> _completeCallback;
-    int _initAssetsDBTaskComplete = 0;
-    int _initAssetsDBTaskAll = 0;
+    int _initAssetsTaskComplete = 0;
+    int _initAssetsTaskAll = 0;
 
 
     bool _isAssetMateMapFile(std::filesystem::path path);
@@ -27,16 +26,11 @@ private:
      */
     void _clearOldLibraryAssets();
 public:
-    EditorCacheAssetsDB();
+    EditorCacheAssets();
     void init(std::string assetsPath, std::string libraryPath);
     void load(std::function<void(const float progress, std::string file)> progress, std::function<void()> complete);
     void update(float deltaTime);
-    // /**
-    //  * @brief 保存资产数据库
-    //  * 
-    //  */
-    // void saveAssetsDB();
-    ~EditorCacheAssetsDB();
+    ~EditorCacheAssets();
 };
 
 

@@ -13,7 +13,7 @@ AssetCache::AssetCache()
  * @param path 资产数据库路径
  * 正式环境从指定目录获取
  */
-void AssetCache::initAssetsDB(const std::string &path)
+void AssetCache::initAssetsMeta(const std::string &path)
 {
     // json content = FileUtil::readJsonFromBinary(path);
     // std::cout << "AssetCache::initAssetsDB: " << content << std::endl;
@@ -43,6 +43,14 @@ void AssetCache::_updateAssetMateCache(const std::string &uuid, const json &mate
 void AssetCache::_updateAssetPathCache(const std::string &uuid, const std::string &path)
 {
     this->_assetPathMapUuid[path] = uuid;
+}
+std::string AssetCache::_getAssetPathByUuid(const std::string &uuid)
+{
+    if (this->_assetPathMapUuid.find(uuid) == this->_assetPathMapUuid.end())
+    {
+        return "";
+    }
+    return this->_assetPathMapUuid[uuid];
 }
 
 // /**
@@ -120,7 +128,7 @@ void AssetCache::_updateAssetPathCache(const std::string &uuid, const std::strin
  * @param uuid 资产uuid
  * @return AssetDB* 资产数据库指针
  */
-json *AssetCache::getAssetMeta(const std::string &uuid)
+json *AssetCache::_getAssetMeta(const std::string &uuid)
 {
     auto it = _assetMates.find(uuid);
     if (it != _assetMates.end())
@@ -134,7 +142,7 @@ json *AssetCache::getAssetMeta(const std::string &uuid)
  * @param sceneName 场景名称
  * @return AssetDB* 场景资产数据库指针
  */
-json *AssetCache::getSceneAssetMate(const std::string &sceneName)
+json *AssetCache::_getSceneAssetMate(const std::string &sceneName)
 {
     if (sceneName.empty())
     {

@@ -32,12 +32,12 @@ private:
      */
     std::unordered_map<std::string, json> _assetMates;
 
-     /**
+    /**
      * @brief 场景映射数据库(1对1)
      *  场景名称映射资产数据库
      *  指针指向资产元数据json：_assetMates
      */
-    std::unordered_map<std::string, json*> _sceneAssetMatesMap;
+    std::unordered_map<std::string, json *> _sceneAssetMatesMap;
 
     /**
      * 全局资产映射(1对1)
@@ -45,9 +45,6 @@ private:
      * value : 资产实例指针
      */
     std::unordered_map<std::string, Asset *> _assets;
-   
-   
-
 
     //  /**
     //  * @brief 资产数据库 (1对1)
@@ -76,7 +73,7 @@ public:
      * @brief 初始化资产数据库
      * @param path 资产数据库路径
      */
-    void initAssetsDB(const std::string &path);
+    void initAssetsMeta(const std::string &path);
 
     /**
      * @brief 更新资产元数据缓存
@@ -85,7 +82,26 @@ public:
      */
     void _updateAssetMateCache(const std::string &uuid, const json &mate);
     void _updateAssetPathCache(const std::string &uuid, const std::string &path);
+    /**
+     * @brief 通过资产uuid获取资产路径
+     * @param uuid 资产uuid
+     * @return std::string 资产路径
+     */
+    std::string _getAssetPathByUuid(const std::string &uuid);
 
+    /**
+     * @brief 通过资产uuid获取资产数据库
+     * @param uuid 资产uuid
+     * @return const AssetDB& 资产数据库
+     */
+    json *_getAssetMeta(const std::string &uuid);
+
+    /**
+     * @brief 通过场景名称获取场景配置
+     * @param sceneName 场景名称
+     * @return AssetDB* 场景资产数据库指针
+     */
+    json *_getSceneAssetMate(const std::string &sceneName);
 
     // /**
     //  * @brief 通过资产路径获取资产数据库
@@ -123,19 +139,7 @@ public:
      */
     Asset *getAssetByPath(const std::string &path);
 
-    /**
-     * @brief 通过资产uuid获取资产数据库
-     * @param uuid 资产uuid
-     * @return const AssetDB& 资产数据库
-     */
-    json *getAssetMeta(const std::string &uuid);
-
-    /**
-     * @brief 通过场景名称获取场景配置
-     * @param sceneName 场景名称
-     * @return AssetDB* 场景资产数据库指针
-     */
-    json *getSceneAssetMate(const std::string &sceneName);
+    
 
     // /**
     //  * @brief 获取纹理资产数据库

@@ -24,7 +24,7 @@ Asset *AssetLoad::loadAsset(const std::string &uuid)
     }
     int taskID = this->_TaskNextID++;
     AssetTask task(this->_mgr, taskID);
-    json *mate = cache->getAssetMeta(uuid);
+    json *mate = cache->_getAssetMeta(uuid);
     if(mate == nullptr){
         return nullptr;
     }

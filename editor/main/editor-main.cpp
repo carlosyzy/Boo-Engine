@@ -5,7 +5,7 @@
 #include "../config/editor-config.h"
 #include "../cache/scene/editor-cache-scene.h"
 #include "../cache/setting/editor-cache-setting.h"
-#include "../cache/assets-db/editor-cache-assets-db.h"
+#include "../cache/assets/editor-cache-assets.h"
 
 #include "editor-layout.h"
 #include "hierarchy/editor-hierarchy.h"
@@ -76,9 +76,8 @@ void EditorMain::_initScene()
     this->_scene = BooEditor::cache->SceneCache()->getScene();
     std::cout << "EditorMain::_initScene: " << this->_scene << std::endl;
     // // ctrl+S 保存
-    // BooEditor::cache->SceneCache()->saveScene();
-    // BooEditor::cache->SettingCache()->saveSetting();
-    // BooEditor::cache->AssetsDBCache()->saveAssetsDB();
+    BooEditor::cache->SceneCache()->saveScene();
+    BooEditor::cache->SettingCache()->saveSetting();
 }
 
 void EditorMain::Update(float deltaTime)

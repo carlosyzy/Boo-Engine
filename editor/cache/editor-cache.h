@@ -7,7 +7,7 @@
 #include "../../engine/core/utils/json-util.h"
 
 class TextureAsset;
-class EditorCacheAssetsDB;
+class EditorCacheAssets;
 class EditorCacheSetting;
 class EditorCacheScene;
 class Scene;
@@ -21,7 +21,7 @@ class EditorCache
     /**
      * @brief 编辑器资产数据库
      */
-    EditorCacheAssetsDB *_assetsDBCache;
+    EditorCacheAssets *_assetsCache;
     /**
      * @brief 编辑器配置
      */
@@ -71,9 +71,9 @@ public:
     {
         return this->_settingCache;
     }
-    EditorCacheAssetsDB *AssetsDBCache()
+    EditorCacheAssets *AssetsCache()
     {
-        return this->_assetsDBCache;
+        return this->_assetsCache;
     }
 
     /**

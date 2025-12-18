@@ -26,7 +26,7 @@ void TextureAsset::create(std::string path)
       static_cast<const uint8_t *>(_pixels),
       static_cast<const uint8_t *>(_pixels) + (_width * _height * _channels));
   stbi_image_free((void *)_pixels);
-  std::cout << "TextureAsset::create: width=" << this->_width << ",height=" << this->_height << ",channels=" << this->_channels << std::endl;
+  // std::cout << "TextureAsset::create: width=" << this->_width << ",height=" << this->_height << ",channels=" << this->_channels << std::endl;
   GfxMgr::getInstance()->createTexture(this->_uuid, this->_width, this->_height,
                                        this->_channels, &this->_pixelsVector);
 }
@@ -63,6 +63,9 @@ void TextureAsset::destroy()
 {
   GfxMgr::getInstance()->destroyTexture(this->_uuid);
 }
+
+
+
 // TextureAsset::TextureAsset(const std::string uuid, const std::string path)
 //     : Asset(uuid, path) {
 //   this->_type = AssetType::Texture;

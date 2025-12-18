@@ -29,9 +29,9 @@ void AssetsManager::_initDefaultBuiltinAssets()
 	this->_assetsCache->addAsset("123e4567-e89b-12d3-a456-426614174000", logo);
 }
 
-void AssetsManager::initAssetsDB(const std::string &path)
+void AssetsManager::initAssetsMeta(const std::string &path)
 {
-	this->_assetsCache->initAssetsDB(path);
+	this->_assetsCache->initAssetsMeta(path);
 }
 void AssetsManager::setAssetsRoot(const std::string &root)
 {
@@ -75,9 +75,9 @@ Asset *AssetsManager::getAssetByPath(const std::string &path)
  * @param sceneName 场景名称
  * @return AssetDB 场景资产数据库
  */
-json* AssetsManager::getSceneAssetMate(const std::string &sceneName)
+json* AssetsManager::_getSceneAssetMate(const std::string &sceneName)
 {
-	return this->_assetsCache->getSceneAssetMate(sceneName);
+	return this->_assetsCache->_getSceneAssetMate(sceneName);
 }
 
 void AssetsManager::update(float deltaTime)

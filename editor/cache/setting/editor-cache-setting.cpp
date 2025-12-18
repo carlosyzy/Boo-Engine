@@ -17,10 +17,10 @@ void EditorCacheSetting::init(std::filesystem::path root)
     }
     std::cout << "EditorCacheSetting::init: " << this->_settingConfig << std::endl;
 }
-json &EditorCacheSetting::getSettingConfig()
+json *EditorCacheSetting::getSettingConfig()
 {
     std::cout << "EditorCacheSetting::getSettingConfig: " << this->_settingConfig << std::endl;
-    return this->_settingConfig;
+    return &this->_settingConfig;
 }
 void EditorCacheSetting::update(float deltaTime)
 {

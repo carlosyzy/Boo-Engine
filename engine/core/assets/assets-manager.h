@@ -40,7 +40,7 @@ public:
 	 */
 	void init();
 
-	void initAssetsDB(const std::string &path);
+	void initAssetsMeta(const std::string &path);
 	// /**
 	//  * @brief 获取资产数据库
 	//  * @return
@@ -68,7 +68,7 @@ public:
 	 * @brief 通过获取场景配置
 	 * @param sceneName 场景名称
 	 */
-	json* getSceneAssetMate(const std::string &sceneName);
+	json* _getSceneAssetMate(const std::string &sceneName);
 
 	// Asset *loadByPath(const std::string &path);
 	// Asset *getByPath(const std::string &path);
