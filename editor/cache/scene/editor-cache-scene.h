@@ -3,7 +3,6 @@
 #include "../../../engine/core/utils/json-util.h"
 
 class Scene;
-struct AssetDB;
 
 class EditorCacheScene
 {
@@ -12,7 +11,7 @@ private:
     void _initSceneConfig();
     int _saveFlag = 0;
     Scene* _scene;
-    AssetDB* _currentSceneAssetDB;
+    json* _currentSceneAssetMate;
     void _openNewScene();
     void _openOldScene();
     /**

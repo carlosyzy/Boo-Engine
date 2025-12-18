@@ -168,11 +168,10 @@ void UIRenderer::Disable()
 void UIRenderer::destroy()
 {
 	Component::destroy();
-	// GfxMgr::getInstance()->destroyObject(this->_uuid);
-	std::cout << "UIRenderer::destroy" << std::endl;
+	// std::cout << "UIRenderer::destroy" << std::endl;
 }
 
 UIRenderer::~UIRenderer()
 {
-	std::cout << "UIRenderer::~destructor" << this->_node->getName() << std::endl;
+	// std::cout << "UIRenderer::~destructor" << this->_node->getName() << std::endl;
 }

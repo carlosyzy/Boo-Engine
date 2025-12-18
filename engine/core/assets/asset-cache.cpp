@@ -26,11 +26,18 @@ void AssetCache::initAssetsDB(const std::string &path)
 }
 void AssetCache::_updateAssetMateCache(const std::string &uuid, const json &mate)
 {
-    this->_assetMates[uuid] = mate;
+    if (this->_assetMates.find(uuid) == this->_assetMates.end())
+    {
+        this->_assetMates[uuid] = json::object();
+    }
+    // 合并资产元数据更新
+    this->_assetMates[uuid].merge_patch(mate);
     int type = mate["type"].get<int>();
-    if(type==(int)AssetType::Scene){
+    if (type == (int)AssetType::Scene)
+    {
         std::string name = mate["name"].get<std::string>();
         this->_sceneAssetMatesMap[name] = &this->_assetMates[uuid];
+        std::cout << "AssetCache::_updateAssetMateCache: " << name << " -> " << uuid << std::endl;
     }
 }
 void AssetCache::_updateAssetPathCache(const std::string &uuid, const std::string &path)
@@ -116,7 +123,8 @@ void AssetCache::_updateAssetPathCache(const std::string &uuid, const std::strin
 json *AssetCache::getAssetMeta(const std::string &uuid)
 {
     auto it = _assetMates.find(uuid);
-    if (it != _assetMates.end()) {
+    if (it != _assetMates.end())
+    {
         return &it->second;
     }
     return nullptr;
@@ -133,7 +141,8 @@ json *AssetCache::getSceneAssetMate(const std::string &sceneName)
         return nullptr;
     }
     auto it = _sceneAssetMatesMap.find(sceneName);
-    if (it != _sceneAssetMatesMap.end()) {
+    if (it != _sceneAssetMatesMap.end())
+    {
         return it->second;
     }
     return nullptr;
@@ -182,7 +191,6 @@ Asset *AssetCache::getAssetByPath(const std::string &path)
     // }
     return nullptr;
 }
-
 
 AssetCache::~AssetCache()
 {
