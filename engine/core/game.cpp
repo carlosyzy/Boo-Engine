@@ -280,7 +280,7 @@ void Game::_updateClearCaches()
 	// 清除组件缓存
 	for (auto &comp : this->_compClearCaches)
 	{
-		std::cout << "Game::_updateClearCaches: clear comp: " << comp->getNode()->getName() << std::endl;
+		// std::cout << "Game::_updateClearCaches: clear comp: " << comp->getNode()->getName() << std::endl;
 		if (comp != nullptr)
 		{
 			delete comp;
@@ -291,7 +291,7 @@ void Game::_updateClearCaches()
 	// 清除节点缓存
 	for (auto &node : this->_nodeClearCaches)
 	{
-		std::cout << "Game::_updateClearCaches: clear node: " << node << "   " << node->getName() << std::endl;
+		// std::cout << "Game::_updateClearCaches: clear node: " << node << "   " << node->getName() << std::endl;
 		if (node != nullptr)
 		{
 			delete node;

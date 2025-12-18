@@ -55,7 +55,7 @@ void TextureAsset::create(const unsigned char *data, size_t size)
       static_cast<const uint8_t *>(_pixels),
       static_cast<const uint8_t *>(_pixels) + (this->_width * this->_height * this->_channels));
   stbi_image_free((void *)_pixels);
-  std::cout << "TextureAsset::create from memory " << this->_width << "," << this->_height << "," << this->_channels << std::endl;
+  // std::cout << "TextureAsset::create from memory " << this->_width << "," << this->_height << "," << this->_channels << std::endl;
   GfxMgr::getInstance()->createTexture(this->_uuid, this->_width, this->_height,
                                        this->_channels, &this->_pixelsVector);
 }

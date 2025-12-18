@@ -42,9 +42,10 @@ void GfxRenderer::createTexture(std::string textureUuid, uint32_t width, uint32_
 {
     if (Gfx::textures.find(textureUuid) == Gfx::textures.end())
     {
-        std::cout << "Gfx : Renderer :: createTexture:uuid:" << textureUuid << " width:" << width << " height:" << height << " channels:" << channels << std::endl;
         GfxTexture *texture = new GfxTexture(textureUuid, pixels, width, height, channels);
         Gfx::textures[textureUuid] = texture;
+    }else{
+        std::cout << "Gfx : Renderer :: createTexture:uuid:" << textureUuid << " already exists" << std::endl;
     }
 }
 void GfxRenderer::insertTexture(std::string textureUuid, GfxTexture *texture)

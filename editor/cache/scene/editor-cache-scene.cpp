@@ -37,72 +37,68 @@ void EditorCacheScene::_initSceneConfig()
  */
 void EditorCacheScene::openScene(std::string sceneName)
 {
-    // // 获取当前打开场景资产数据库
-    // std::string currentScene = sceneName;
-    // if (sceneName.empty())
-    // {
-    //     if (this->_settingConfig["scene"].empty())
-    //     {
-    //         currentScene = ""; // 打开一个空场景
-    //     }else{
-    //         currentScene = this->_settingConfig["scene"].get<std::string>();
-    //     }
-    // }
-    // std::cout << "EditorCacheScene::openScene: sceneName: " << sceneName << ", currentScene: " << currentScene << std::endl;
-    // AssetDB *assetDb = Boo::game->assetsManager()->getSceneAssetDB(currentScene);
-    // if (assetDb == nullptr)
-    // {
-    //     this->_openNewScene();
-    // }
-    // else
-    // {
-    //     this->_currentSceneAssetDB = assetDb;
-    //     this->_openOldScene();
-    // }
+    // 获取当前打开场景资产数据库
+    std::string currentScene = sceneName;
+    if (sceneName.empty())
+    {
+        if (this->_settingConfig["scene"].empty())
+        {
+            currentScene = ""; // 打开一个空场景
+        }else{
+            currentScene = this->_settingConfig["scene"].get<std::string>();
+        }
+    }
+    std::cout << "EditorCacheScene::openScene: sceneName: " << sceneName << ", currentScene: " << currentScene << std::endl;
+    json *sceneMate = Boo::game->assetsManager()->getSceneAssetMate(currentScene);
+    if (sceneMate == nullptr)
+    {
+        this->_openNewScene();
+    }
+    else
+    {
+        this->_currentSceneAssetMate = sceneMate;
+        this->_openOldScene();
+    }
 }
 void EditorCacheScene::_openNewScene()
 {
-    // std::cout << "EditorCacheScene::_openNewScene" << std::endl;
-    // this->_saveFlag++;
-    // this->_currentSceneAssetDB = new AssetDB();
-    // this->_currentSceneAssetDB->name = "New Scene";
-    // this->_currentSceneAssetDB->type = AssetType::Scene;
-    // this->_currentSceneAssetDB->uuid = UuidUtil::generateUUID();
-    // this->_currentSceneAssetDB->path = "";
-    // this->_scene = new Scene(this->_currentSceneAssetDB->name, this->_currentSceneAssetDB->uuid);
-    // // 测试代码
-    // Node2D *node2d = this->_scene->getRoot2D();
-    // Node2D *ndMain = new Node2D("Editor-Main");
-    // ndMain->setSize(100.0f, 100.0f);
-    // node2d->addChild(ndMain);
-    // UISprite *spriteMain = dynamic_cast<UISprite *>(ndMain->addComponent("UISprite"));
-    // if (spriteMain != nullptr)
-    // {
-    //     std::cout << "EditorLayout::_initMainUI1" << std::endl;
-    //     // spriteMain->setTextureAsset("resources/texture/ic-default.png");
-    //     // spriteMain->setMaterialAsset(nullptr);
-    //     spriteMain->setColor(0.1f, 0.1f, 0.1f, 1.0f);
-    // }
+    std::string name="New Scene";
+    std::string uuid=UuidUtil::generateUUID();
+    this->_scene = new Scene(name, uuid);
+    // 测试代码
+    Node2D *node2d = this->_scene->getRoot2D();
+    Node2D *ndMain = new Node2D("Editor-Main");
+    ndMain->setSize(100.0f, 100.0f);
+    node2d->addChild(ndMain);
+    UISprite *spriteMain = dynamic_cast<UISprite *>(ndMain->addComponent("UISprite"));
+    if (spriteMain != nullptr)
+    {
+        std::cout << "EditorLayout::_initMainUI1" << std::endl;
+        // spriteMain->setTextureAsset("resources/texture/ic-default.png");
+        // spriteMain->setMaterialAsset(nullptr);
+        spriteMain->setColor(0.1f, 0.1f, 0.1f, 1.0f);
+    }
 }
 void EditorCacheScene::_openOldScene()
 {
-    // Asset *asset = Boo::game->assetsManager()->getAsset(this->_currentSceneAssetDB->uuid);
-    // if (asset == nullptr)
-    // {
-    //     this->_scene = nullptr;
-    //     // 当前资产对应的场景不存在,删除当前资产数据库,打开一个新场景
-    //     std::cout << "EditorCacheScene::_openOldScene: 场景不存在, uuid: " << this->_currentSceneAssetDB->uuid << ", name: " << this->_currentSceneAssetDB->path << std::endl;
-    //     return;
-    // }
-    // SceneAsset *sceneAsset = dynamic_cast<SceneAsset *>(asset);
-    // if (sceneAsset == nullptr)
-    // {
-    //     this->_scene = nullptr;
-    //     std::cout << "EditorCacheScene::_openOldScene: 场景资产不存在, uuid: " << this->_currentSceneAssetDB->uuid << ", name: " << this->_currentSceneAssetDB->path << std::endl;
-    //     return;
-    // }
-    // this->_saveFlag = 0;
-    // this->_scene = sceneAsset->getScene();
+    std::string uuid = this->_currentSceneAssetMate->at("uuid").get<std::string>();
+    Asset *asset = Boo::game->assetsManager()->getAsset(uuid);
+    if (asset == nullptr)
+    {
+        this->_scene = nullptr;
+        // 当前资产对应的场景不存在,删除当前资产数据库,打开一个新场景
+        std::cout << "EditorCacheScene::_openOldScene: 场景不存在, uuid: " << uuid << ", name: " << this->_currentSceneAssetMate->at("name").get<std::string>() << std::endl;
+        return;
+    }
+    SceneAsset *sceneAsset = dynamic_cast<SceneAsset *>(asset);
+    if (sceneAsset == nullptr)
+    {
+        this->_scene = nullptr;
+        std::cout << "EditorCacheScene::_openOldScene: 场景资产不存在, uuid: " << uuid << ", name: " << this->_currentSceneAssetMate->at("name").get<std::string>() << std::endl;
+        return;
+    }
+    this->_saveFlag = 0;
+    this->_scene = sceneAsset->getScene();
 }
 Scene *EditorCacheScene::getScene()
 {

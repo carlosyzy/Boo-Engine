@@ -20,7 +20,7 @@ GfxTexture::GfxTexture(std::string uuid, const std::vector<uint8_t> *pixels, uin
     this->_createTextureImage();
     this->_createTextureImageView();
     this->_createTextureSampler();
-    std::cout << "[Gfx : Texture]:: create success" << std::endl;
+    // std::cout << "[Gfx : Texture]:: create success" << std::endl;
 }
 
 void GfxTexture::_createTextureImage()

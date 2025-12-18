@@ -167,9 +167,9 @@ void UISprite::Disable()
 void UISprite::destroy()
 {
     UIRenderer::destroy();
-    std::cout << "UISprite::destroy" << std::endl;
+    // std::cout << "UISprite::destroy" << std::endl;
 }
 UISprite::~UISprite()
 {
-    std::cout << "UISprite::~destructor" << std::endl;
+    // std::cout << "UISprite::~destructor" << std::endl;
 }

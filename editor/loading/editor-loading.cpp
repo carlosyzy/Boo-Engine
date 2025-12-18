@@ -132,7 +132,7 @@ void EditorLoading::_initAssetsDB()
 }
 void EditorLoading::_initAssetsDBCallback(float progress, std::string file)
 {
-	std::cout << "EditorLoading::_initAssetsDBCallback: " << progress << " " << file << std::endl;
+	// std::cout << "EditorLoading::_initAssetsDBCallback: " << progress << " " << file << std::endl;
 	this->_setLoadProgress(progress * 0.9f);
 }
 void EditorLoading::_initAssetsDBCompleteCallback()
