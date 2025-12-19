@@ -12,9 +12,9 @@ private:
     int _saveFlag = 0;
     Scene* _scene;
     json* _currentSceneAssetMate;
-    json _tempNewSceneAssetMate;
-    void _openNewScene();
-    void _openOldScene();
+   
+    void _create();
+    void _open(json *sceneMate);
     /**
      * @brief 获取场景保存路径
      * @return std::string 场景保存路径
@@ -26,7 +26,5 @@ public:
     void openScene(std::string sceneName);
     void saveScene();
     Scene* getScene();
-    // std::string getCurrentScene();
-    // void setCurrentScene(std::string scene);
     ~EditorCacheScene();
 };

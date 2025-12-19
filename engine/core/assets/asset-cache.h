@@ -103,6 +103,8 @@ public:
      */
     json *_getSceneAssetMate(const std::string &sceneName);
 
+    std::unordered_map<std::string, json *> &_getSceneAssetMatesMap();
+
     // /**
     //  * @brief 通过资产路径获取资产数据库
     //  * @param path 资产路径
