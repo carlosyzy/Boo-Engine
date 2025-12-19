@@ -75,7 +75,7 @@ void EditorMain::_initScene()
     BooEditor::cache->SceneCache()->openScene("");
     this->_scene = BooEditor::cache->SceneCache()->getScene();
     std::cout << "EditorMain::_initScene: " << this->_scene << std::endl;
-    // // ctrl+S 保存
+    // ctrl+S 保存
     BooEditor::cache->SceneCache()->saveScene();
     BooEditor::cache->SettingCache()->saveSetting();
 }

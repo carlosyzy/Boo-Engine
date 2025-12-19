@@ -30,6 +30,7 @@ void AssetCache::_updateAssetMateCache(const std::string &uuid, const json &mate
     {
         this->_assetMates[uuid] = json::object();
     }
+     this->_assetMates[uuid].clear();
     // 合并资产元数据更新
     this->_assetMates[uuid].merge_patch(mate);
     int type = mate["type"].get<int>();
@@ -155,6 +156,16 @@ json *AssetCache::_getSceneAssetMate(const std::string &sceneName)
     }
     return nullptr;
 }
+/**
+ * @brief 获取场景资产数据库指针数组
+ * @return std::unordered_map<std::string, json *>& 场景资产数据库指针数组
+ */
+std::unordered_map<std::string, json *> &AssetCache::_getSceneAssetMatesMap()
+{
+    return this->_sceneAssetMatesMap;
+}
+
+
 
 /**
  * @brief 添加资产到缓存

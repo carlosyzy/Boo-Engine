@@ -56,13 +56,13 @@ void EditorCacheAssetsTask::_parseTextureAssetDB()
     assetMateMapJson["type"] = uint32_t(AssetType::Texture);
     assetMateMapJson["name"] = std::filesystem::path(this->_assetPath).stem().generic_string();
     assetMateMapJson["extension"] = this->_assetExtension;
-    // 更新存储到本地
-    FileUtil::saveJsonToText(assetMateMapPath, assetMateMapJson);
+    assetMateMapJson["path"] = this->_assetPath;
+    // 更新资产元数据
+    EditorAssetUtil::updateAssetMeta(this->_assetPath, assetMateMapJson);
     // 更新资产库
-    this->_updateLibraryAsset(assetMateMapJson);
+    EditorAssetUtil::updateLibraryAsset(this->_assetPath, assetMateMapJson);
     // 更新资产缓存
-    Boo::game->assetsManager()->getAssetsCache()->_updateAssetMateCache(assetMateMapJson["uuid"].get<std::string>(), assetMateMapJson);
-    Boo::game->assetsManager()->getAssetsCache()->_updateAssetPathCache(assetMateMapJson["uuid"].get<std::string>(), this->_assetPath);
+    EditorAssetUtil::updateAssetMap(this->_assetPath, assetMateMapJson);
     // 加载资产
     Boo::game->assetsManager()->loadAsset(assetMateMapJson["uuid"].get<std::string>());
 }
@@ -79,13 +79,13 @@ void EditorCacheAssetsTask::_parseMaterialAssetDB()
     assetMateMapJson["type"] = uint32_t(AssetType::Material);
     assetMateMapJson["name"] = std::filesystem::path(this->_assetPath).stem().generic_string();
     assetMateMapJson["extension"] = this->_assetExtension;
-    // 更新存储到本地
-    FileUtil::saveJsonToText(assetMateMapPath, assetMateMapJson);
+    assetMateMapJson["path"] = this->_assetPath;
+    // 更新资产元数据
+    EditorAssetUtil::updateAssetMeta(this->_assetPath, assetMateMapJson);
     // 更新资产库
-    this->_updateLibraryAsset(assetMateMapJson);
+    EditorAssetUtil::updateLibraryAsset(this->_assetPath, assetMateMapJson);
     // 更新资产缓存
-    Boo::game->assetsManager()->getAssetsCache()->_updateAssetMateCache(assetMateMapJson["uuid"].get<std::string>(), assetMateMapJson);
-    Boo::game->assetsManager()->getAssetsCache()->_updateAssetPathCache(assetMateMapJson["uuid"].get<std::string>(), this->_assetPath);
+    EditorAssetUtil::updateAssetMap(this->_assetPath, assetMateMapJson);
     // 加载资产
     Boo::game->assetsManager()->loadAsset(assetMateMapJson["uuid"].get<std::string>());
 }
@@ -102,14 +102,14 @@ void EditorCacheAssetsTask::_parseSceneAssetDB()
     assetMateMapJson["type"] = uint32_t(AssetType::Scene);
     assetMateMapJson["name"] = std::filesystem::path(this->_assetPath).stem().generic_string();
     assetMateMapJson["extension"] = this->_assetExtension;
-    // 更新存储到本地
-    FileUtil::saveJsonToText(assetMateMapPath, assetMateMapJson);
-    // 更新资产库
-    this->_updateLibraryAsset(assetMateMapJson);
-    // 更新资产缓存
-    Boo::game->assetsManager()->getAssetsCache()->_updateAssetMateCache(assetMateMapJson["uuid"].get<std::string>(), assetMateMapJson);
-    Boo::game->assetsManager()->getAssetsCache()->_updateAssetPathCache(assetMateMapJson["uuid"].get<std::string>(), this->_assetPath);
+    assetMateMapJson["path"] = this->_assetPath;
     
+    // 更新资产元数据
+    EditorAssetUtil::updateAssetMeta(this->_assetPath, assetMateMapJson);
+    // 更新资产库
+    EditorAssetUtil::updateLibraryAsset(this->_assetPath, assetMateMapJson);
+    // 更新资产缓存
+    EditorAssetUtil::updateAssetMap(this->_assetPath, assetMateMapJson);
     // 加载资产
     Boo::game->assetsManager()->loadAsset(assetMateMapJson["uuid"].get<std::string>());
 }
