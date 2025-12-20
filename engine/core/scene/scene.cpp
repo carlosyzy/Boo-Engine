@@ -21,18 +21,12 @@ Scene::Scene(const std::string name, const std::string uuid)
 	this->_worldMatrix = Mat4::identity();
 	this->_worldTransformFlag = static_cast<uint32_t>(NodeTransformFlag::ALL_FLAG);
 	this->_frameTransformFlag = static_cast<uint32_t>(NodeTransformFlag::ALL_FLAG);
-	this->_root3D = new Node3D("root3D");
-	this->_root3D->_isLocked = true;
-	this->_root3D->setVisibility(uint32_t(NodeVisibility::Node3D));
-	this->_root2D = new Node2D("root2D");
-	this->_root2D->_isLocked = true;
-	this->_root2D->setVisibility(uint32_t(NodeVisibility::Node2D));
-	this->addChild(this->_root3D);
-	this->addChild(this->_root2D);
+	
 }
+
 void Scene::setActive(bool active)
 {
-	this->_active = active;
+	this->_active = true;
 	bool _isActiveInHierarchy = this->_active;
 	this->_updateNodesActiveInHierarchyState(_isActiveInHierarchy);
 }
