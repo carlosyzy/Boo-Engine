@@ -5,6 +5,14 @@ class Camera;
 class Scene;
 class Node;
 
+#pragma once
+#include <string>
+#include <vector>
+#include <cstdint>
+#include <unordered_map>
+
+class Camera;
+class Node;
 
 class Renderer
 {

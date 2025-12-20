@@ -27,7 +27,7 @@ void EditorAssetUtil::updateSceneAsset(const std::string &assetPath, const json 
 void EditorAssetUtil::updateAssetMeta(const std::string &assetPath, const json &mateData)
 {
     // 保存资产元数据
-    std::string assetMetaPath = (std::filesystem::path(BooEditor::projectPath) / "assets" / assetPath).generic_string() + ".meta";
+    std::string assetMetaPath = (std::filesystem::path(BooEditor::projectPath) / "assets" / assetPath).generic_string() + ".mate";
     FileUtil::saveJsonToText(assetMetaPath, mateData);
 }
 void EditorAssetUtil::updateLibraryAsset(const std::string &assetPath, const json &mateData)

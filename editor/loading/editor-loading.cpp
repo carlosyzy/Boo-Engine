@@ -142,9 +142,10 @@ void EditorLoading::_initAssetsDBCompleteCallback()
 }
 void EditorLoading::_saveEditorCache()
 {
-	std::cout << "EditorLoading::_saveEditorCache" << std::endl;
+	
 	// 加载 res/private 下边的所有资产
 	std::filesystem::path privatePath = (std::filesystem::path(BooEditor::editorPath) / "res/private").generic_string();
+	std::cout << "EditorLoading::_saveEditorCache:"<< privatePath << std::endl;
 	for (const auto &entry : std::filesystem::recursive_directory_iterator(privatePath))
 	{
 		if (std::filesystem::is_regular_file(entry))
