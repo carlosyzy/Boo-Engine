@@ -97,6 +97,7 @@ void EditorCacheScene::_create()
             }
         }
     }
+    std::cout << "EditorCacheScene::_create a new scene: " << name << std::endl;
     std::string uuid = UuidUtil::generateUUID();
     // 序列化场景保存
     Scene *newScene = new Scene(name, uuid);
@@ -121,8 +122,6 @@ void EditorCacheScene::_create()
     EditorAssetUtil::updateAssetMap(name + ".scene", newSceneAssetMate);
     // 加载资产
     Boo::game->assetsManager()->loadAsset(newSceneAssetMate["uuid"].get<std::string>());
-
-    (*this->_settingConfig)["scene"] = name;
 
     json *newSceneMate = Boo::game->assetsManager()->_getSceneAssetMate(name);
     if (newSceneMate != nullptr)
@@ -163,15 +162,20 @@ void EditorCacheScene::saveScene()
 {
     json sceneData;
     this->_serializeSceneData(this->_scene, sceneData);
-    std::string filePath = this->_currentSceneAssetMate->at("path").get<std::string>();
-    std::string fileName = this->_currentSceneAssetMate->at("name").get<std::string>();
-    std::string fileExtension =this->_currentSceneAssetMate->at("extension").get<std::string>();
-    std::string assetPath = (std::filesystem::path(filePath) / (fileName + fileExtension)).generic_string();
+    std::string assetPath = this->_currentSceneAssetMate->at("path").get<std::string>();
     std::string sceneSavePath = (std::filesystem::path(BooEditor::projectPath) / "assets" / assetPath).generic_string();
+    std::cout << "EditorCacheScene::saveScene: " << sceneSavePath << std::endl;
+    std::cout << "EditorCacheScene::saveScene: " << assetPath << std::endl;
+
+     std::cout << "EditorCacheScene::saveScene: " << this->_currentSceneAssetMate->at("name").get<std::string>() << "    ,  " << sceneData << std::endl;
     // 序列化场景保存
     FileUtil::saveJsonToBinary(sceneSavePath, sceneData);
     // 更新资产库
     EditorAssetUtil::updateLibraryAsset(assetPath, *this->_currentSceneAssetMate);
+
+    (*this->_settingConfig)["scene"] = this->_currentSceneAssetMate->at("name").get<std::string>();
+
+   
 }
 
 std::string EditorCacheScene::_preSavePath()
@@ -232,10 +236,23 @@ void EditorCacheScene::_serializeSceneData(Scene *scene, json &sceneData)
             nodeData["_children"].push_back(childData);
         }
     };
+
+    // _serializeNode(scene, sceneData["_scene"]);
+
+    // root3d
+    Node3D *root3d = scene->getRoot3D();
+    json root3dData = json::object();
+    _serializeNode(root3d, root3dData);
+    // root2d
+    Node2D *root2d = scene->getRoot2D();
+    json root2dData = json::object();
+    _serializeNode(root2d, root2dData);
+
     sceneData["_name"] = scene->getName();
     sceneData["_type"] = "SceneAsset";
     sceneData["_scene"] = json::object();
-    _serializeNode(scene, sceneData["_scene"]);
+    sceneData["_scene"]["_root3d"] = root3dData;
+    sceneData["_scene"]["_root2d"] = root2dData;
 }
 
 EditorCacheScene::~EditorCacheScene()

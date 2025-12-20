@@ -170,6 +170,7 @@ public:
 
 	const NodeLayer getLayer() const;
 	const std::string getUuid() const;
+	void setUuid(const std::string &uuid);
 
 	/**
 	 * 设置坐标
