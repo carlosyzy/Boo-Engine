@@ -25,35 +25,70 @@ void SceneAsset::create(std::string path)
 void SceneAsset::_deserializeScene()
 {
     std::cout << "SceneAsset::_deserializeScene:" << this->_sceneData << std::endl;
-    std::function<void(Node *, json &)> _deserializeNodes = [&](Node *node, json &_childData)
+    // std::function<void(Node *, json &)> _deserializeNodes = [&](Node *node, json &_childData)
+    std::function<void(Node *, json &)> _deserializeNodes = [&](Node *node, json &_nodeData)
     {
-        for (json &childData : _childData)
-        {
-            if (childData["_layer"] == NodeLayer::Node2D)
-            {
-                Node2D *child2D = new Node2D(childData["_name"].get<std::string>(), childData["_uuid"].get<std::string>());
-                node->addChild(child2D);
-                this->_deserializeNode(child2D, childData["_children"]);
-                this->_deserializeComponent(child2D, childData);
-                _deserializeNodes(child2D, childData["_children"]);
-            }
-            else if (childData["_layer"] == NodeLayer::Node3D)
-            {
-                Node3D *child3D = new Node3D(childData["_name"].get<std::string>(), childData["_uuid"].get<std::string>());
-                node->addChild(child3D);
-                this->_deserializeNode(child3D, childData["_children"]);
-                this->_deserializeComponent(child3D, childData);
-                _deserializeNodes(child3D, childData["_children"]);
-            }
-        }
+        this->_deserializeNode(node, _nodeData);
+
+
+        // for (json &childData : _childData)
+        // {
+        //     if (childData["_layer"] == NodeLayer::Node2D)
+        //     {
+        //         Node2D *child2D = new Node2D(childData["_name"].get<std::string>(), childData["_uuid"].get<std::string>());
+        //         node->addChild(child2D);
+        //         this->_deserializeNode(child2D, childData["_children"]);
+        //         this->_deserializeComponent(child2D, childData);
+
+        //         std::cout << "SceneAsset::_deserializeScene: " << child2D->getName() << std::endl;
+        //         _deserializeNodes(child2D, childData["_children"]);
+        //     }
+        //     else if (childData["_layer"] == NodeLayer::Node3D)
+        //     {
+        //         Node3D *child3D = new Node3D(childData["_name"].get<std::string>(), childData["_uuid"].get<std::string>());
+        //         node->addChild(child3D);
+        //         this->_deserializeNode(child3D, childData["_children"]);
+        //         this->_deserializeComponent(child3D, childData);
+        //         std::cout << "SceneAsset::_deserializeScene: " << child3D->getName() << std::endl;
+        //         _deserializeNodes(child3D, childData["_children"]);
+        //     }
+        // }
     };
     json &sceneData = this->_sceneData["_scene"];
     this->_scene = new Scene(sceneData["_name"].get<std::string>(), sceneData["_uuid"].get<std::string>());
+    // root3d
+    Node3D *root3d = this->_scene->getRoot3D();
+    _deserializeNodes(root3d, sceneData["_root3d"]);
+   
+    // root2d
+    Node2D *root2d = this->_scene->getRoot2D();
+    _deserializeNodes(root2d, sceneData["_root2d"]);
+    
+
+
+
     _deserializeNodes(this->_scene, sceneData["_scene"]["_children"]);
     std::cout << "SceneAsset::_deserializeScene: " << this->_scene << std::endl;
 }
 void SceneAsset::_deserializeNode(Node *node, json &_nodeData)
 {
+    // // name
+    // if (_nodeData.contains("_name"))
+    // {
+    //     node->setName(_nodeData["_name"].get<std::string>());
+    // }
+    // // uuid
+    // if (_nodeData.contains("_uuid"))
+    // {
+    //     node->setUuid(_nodeData["_uuid"].get<std::string>());
+    // }
+    // // layer
+    // if (_nodeData.contains("_layer"))
+    // {
+    //     node->setLayer((NodeLayer)_nodeData["_layer"].get<int>());
+    // }
+
+
     // position
     if (_nodeData.contains("_position"))
     {
@@ -186,6 +221,10 @@ void SceneAsset::_deserializeComponent(Node *node, json &_nodeData)
             }
         }
     }
+}
+Scene *SceneAsset::getScene()
+{
+    return this->_scene;
 }
 
 SceneAsset::~SceneAsset()

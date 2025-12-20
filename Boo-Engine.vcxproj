@@ -192,7 +192,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="engine\core\component\ui\ui-layout-horizontal.cpp" />
     <ClCompile Include="engine\core\component\ui\ui-layout-vertical.cpp" />
     <ClCompile Include="engine\core\component\ui\ui-tree\file-tree.cpp" />
-    <ClCompile Include="engine\core\component\ui\ui-tree\ui-node-tree.cpp" />
+    <ClCompile Include="editor\main\hierarchy\editor-hierarchy-node-tree.cpp" />
     <ClCompile Include="engine\core\component\ui\ui-tree\ui-tree.cpp" />
     <ClCompile Include="engine\core\component\ui\ui-widget.cpp" />
     <ClCompile Include="engine\core\event\event.cpp" />
@@ -308,7 +308,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="engine\core\component\ui\ui-layout-horizontal.h" />
     <ClInclude Include="engine\core\component\ui\ui-layout-vertical.h" />
     <ClInclude Include="engine\core\component\ui\ui-tree\file-tree.h" />
-    <ClInclude Include="engine\core\component\ui\ui-tree\ui-node-tree.h" />
+    <ClInclude Include="editor\main\hierarchy\editor-hierarchy-node-tree.h" />
     <ClInclude Include="engine\core\component\ui\ui-tree\ui-tree.h" />
     <ClInclude Include="engine\core\component\ui\ui-widget.h" />
     <ClInclude Include="engine\core\event\event.h" />

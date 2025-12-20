@@ -2,6 +2,7 @@
 #include "editor-hierarchy-layout.h"
 
 #include "../../../engine/core/scene/scene.h"
+#include "../../../engine/core/scene/node.h"
 #include "../../../engine/core/scene/node-2d.h"
 
 EditorHierarchy::EditorHierarchy(Node2D *root)
@@ -15,6 +16,10 @@ void EditorHierarchy::init()
 }
 void EditorHierarchy::setScene(Scene *scene)
 {
+    if (this->_layout != nullptr)
+    {
+        this->_layout->setScene(scene);
+    }
 }
 void EditorHierarchy::setNode(Node *node)
 {

@@ -42,6 +42,10 @@ const std::string Node::getUuid() const
 {
 	return this->_uuid;
 }
+void Node::setUuid(const std::string &uuid)
+{
+	this->_uuid = uuid;
+}
 /**
  * 设置坐标
  */

@@ -21,6 +21,6 @@ public:
     SceneAsset();
     SceneAsset(const std::string uuid);
     void create(std::string path) override;
-    Scene *getScene() { return this->_scene; }
+    Scene *getScene();
     ~SceneAsset();
 };

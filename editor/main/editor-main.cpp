@@ -67,17 +67,25 @@ void EditorMain::_initHierarchy()
     this->_hierarchy->init();
 }
 
-
-
-
 void EditorMain::_initScene()
 {
     BooEditor::cache->SceneCache()->openScene("");
     this->_scene = BooEditor::cache->SceneCache()->getScene();
     std::cout << "EditorMain::_initScene: " << this->_scene << std::endl;
-    // ctrl+S 保存
+  
+
+    this->_hierarchy->setScene(this->_scene);
+
+    // Node2D *rootNode = this->_scene->getRoot2D();
+    // Node2D *ndNodeTree = new Node2D("test");
+    // rootNode->addChild(ndNodeTree);
+    // ndNodeTree->setSize(100.0f, 100.0f);
+    // std::cout << "EditorMain::add test _initScene: " << ndNodeTree << std::endl;
+
+    //   ctrl+S 保存
     BooEditor::cache->SceneCache()->saveScene();
     BooEditor::cache->SettingCache()->saveSetting();
+    
 }
 
 void EditorMain::Update(float deltaTime)
