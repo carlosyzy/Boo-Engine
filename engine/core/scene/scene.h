@@ -9,15 +9,12 @@ class Scene : public Node
 {
 private:
 protected:
-  
-
-    Node3D *_root3D;
-    Node2D *_root2D;
 
 public:
     Scene(const std::string name, const std::string uuid = "");
-    Node3D *getRoot3D() { return this->_root3D; }
-    Node2D *getRoot2D() { return this->_root2D; }
+    // void initRootNode();
+    // Node3D *getRoot3D();
+    // Node2D *getRoot2D();
     void setActive(bool active) override;
     /**
      * 添加组件
