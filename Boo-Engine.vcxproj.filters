@@ -72,16 +72,10 @@
     <ClCompile Include="engine\core\renderer\ui\ui-renderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\editor.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\assets\asset-load.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\assets\assets-manager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\assets\shader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="engine\core\font\freetype-mgr.cpp">
@@ -144,24 +138,6 @@
     <ClCompile Include="engine\core\renderer\ui\ui-mask.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\boo-editor.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\editor-main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\layout\editor-layout.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\layout\scene\editor-scene.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\layout\scene\editor-scene-layout.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\config\editor-config.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\assets\scene-asset.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -180,91 +156,70 @@
     <ClCompile Include="engine\core\assets\texture-asset.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="engine\core\renderer\camera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\cache\assets\editor-asset-util.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\cache\assets\editor-cache-assets.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\cache\assets\editor-cache-assets-task.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\cache\scene\editor-cache-scene.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\cache\setting\editor-cache-setting.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="editor\cache\editor-cache.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\cache\editor-cache-task.cpp">
+    <ClCompile Include="editor\config\editor-config.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\loading\editor-loading.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\renderer\camera.cpp">
+    <ClCompile Include="editor\main\assets\editor-assets.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-buffer-ubo.cpp">
+    <ClCompile Include="editor\main\assets\editor-assets-layout.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-context.cpp">
+    <ClCompile Include="editor\main\hierarchy\editor-hierarchy.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-material.cpp">
+    <ClCompile Include="editor\main\hierarchy\editor-hierarchy-layout.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-mesh.cpp">
+    <ClCompile Include="editor\main\property\editor-property.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-mgr.cpp">
+    <ClCompile Include="editor\main\property\editor-property-layout.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-pass.cpp">
+    <ClCompile Include="editor\main\scene\editor-scene.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-pipeline.cpp">
+    <ClCompile Include="editor\main\scene\editor-scene-layout.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-push-constants.cpp">
+    <ClCompile Include="editor\main\editor-layout.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-render-texture.cpp">
+    <ClCompile Include="editor\main\editor-main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-renderer.cpp">
+    <ClCompile Include="editor\boo-editor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-shader.cpp">
+    <ClCompile Include="editor\editor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-texture.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\ui\gfx-batch-ui.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\ui\gfx-pass-ui.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\ui\gfx-pipeline-ui.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\ui\gfx-queue-ui.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\ui\gfx-renderer-ui.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-buffer-instance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\gfx-buffer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-batch-builtin.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-pass-builtin.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-pipeline-builtin.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-queue-builtin.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\core\gfx\pipeline\builtin\gfx-renderer-builtin.cpp">
+    <ClCompile Include="editor\editor-boot.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -327,9 +282,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\renderer\ui\ui-renderer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\editor.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\assets\assets.h">
@@ -584,9 +536,6 @@
     <ClInclude Include="engine\core\renderer\ui\ui-mask.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\boo-editor.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\editor-main.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -600,9 +549,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\layout\scene\editor-scene-layout.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\config\editor-config.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\cache\editor-assets-cache.h">
@@ -650,107 +596,78 @@
     <ClInclude Include="engine\core\assets\texture-asset.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\cache\editor-cache.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\cache\editor-cache-task.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\loading\editor-loading.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\assets\asset-struct.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-buffer-ubo.h">
+    <ClInclude Include="editor\cache\assets\editor-asset-util.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-context.h">
+    <ClInclude Include="editor\cache\assets\editor-cache-assets.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-material.h">
+    <ClInclude Include="editor\cache\assets\editor-cache-assets-task.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-mesh.h">
+    <ClInclude Include="editor\cache\scene\editor-cache-scene.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-mgr.h">
+    <ClInclude Include="editor\cache\setting\editor-cache-setting.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-pass.h">
+    <ClInclude Include="editor\cache\editor-cache.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-pipeline-struct.h">
+    <ClInclude Include="editor\config\editor-config.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-pipeline.h">
+    <ClInclude Include="editor\loading\editor-loading.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-push-constants.h">
+    <ClInclude Include="editor\main\assets\editor-assets.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-render-texture.h">
+    <ClInclude Include="editor\main\assets\editor-assets-layout.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-renderer.h">
+    <ClInclude Include="editor\main\hierarchy\editor-hierarchy.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-shader-struct.h">
+    <ClInclude Include="editor\main\hierarchy\editor-hierarchy-layout.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-shader.h">
+    <ClInclude Include="editor\main\property\editor-property.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-struct.h">
+    <ClInclude Include="editor\main\property\editor-property-layout.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-texture.h">
+    <ClInclude Include="editor\main\scene\editor-scene.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx.h">
+    <ClInclude Include="editor\main\scene\editor-scene-layout.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\ui\gfx-batch-ui.h">
+    <ClInclude Include="editor\main\editor-layout.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\ui\gfx-pass-ui.h">
+    <ClInclude Include="editor\main\editor-main.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\ui\gfx-pipeline-ui.h">
+    <ClInclude Include="editor\boo-editor.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\ui\gfx-queue-ui.h">
+    <ClInclude Include="editor\editor.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\ui\gfx-renderer-ui.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\renderer\camera.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-buffer-instance.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\gfx-buffer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-batch-builtin.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-pass-builtin.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-pipeline-builtin.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-queue-builtin.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\gfx\pipeline\builtin\gfx-renderer-builtin.h">
+    <ClInclude Include="editor\editor-boot.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="engine\readme.md" />
+    <None Include="engine\core\gfx\readme.md" />
   </ItemGroup>
 </Project>
