@@ -7,7 +7,7 @@
 #include "../engine/engine.h"
 #include "editor-boot.h"
 
-#ifdef defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #elif defined(__APPLE__)
 #include <limits.h>
@@ -18,13 +18,14 @@
 
 Editor::Editor() {
 	Boo::Editor = true;
-#ifdef defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8); // 也设置输入编码为 UTF-8，保持统一
 
 	char exePath[MAX_PATH];
 	GetModuleFileNameA(NULL, exePath, MAX_PATH);
 	BooEditor::editorPath =std::filesystem::path(exePath).parent_path().string();
+	std::cout << "Editor path:" << BooEditor::editorPath << std::endl;
 #elif defined(__APPLE__) && defined(__MACH__)
 #if TARGET_OS_MAC
 	// macOS 平台
@@ -37,7 +38,7 @@ Editor::Editor() {
 			BooEditor::editorPath = std::filesystem::path(appPath).parent_path().string();
 		}
 		catch (const std::filesystem::filesystem_error& ex) {
-			std::cerr << "文件系统错误: " << ex.what() << std::endl;
+			std::cerr << "file system error: " << ex.what() << std::endl;
 		}
 	}
 #elif TARGET_OS_IPHONE
