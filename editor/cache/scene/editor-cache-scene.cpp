@@ -167,15 +167,13 @@ void EditorCacheScene::saveScene()
     std::cout << "EditorCacheScene::saveScene: " << sceneSavePath << std::endl;
     std::cout << "EditorCacheScene::saveScene: " << assetPath << std::endl;
 
-     std::cout << "EditorCacheScene::saveScene: " << this->_currentSceneAssetMate->at("name").get<std::string>() << "    ,  " << sceneData << std::endl;
+    std::cout << "EditorCacheScene::saveScene: " << this->_currentSceneAssetMate->at("name").get<std::string>() << "    ,  " << sceneData << std::endl;
     // 序列化场景保存
     FileUtil::saveJsonToBinary(sceneSavePath, sceneData);
     // 更新资产库
     EditorAssetUtil::updateLibraryAsset(assetPath, *this->_currentSceneAssetMate);
 
     (*this->_settingConfig)["scene"] = this->_currentSceneAssetMate->at("name").get<std::string>();
-
-   
 }
 
 std::string EditorCacheScene::_preSavePath()
@@ -236,23 +234,10 @@ void EditorCacheScene::_serializeSceneData(Scene *scene, json &sceneData)
             nodeData["_children"].push_back(childData);
         }
     };
-
-    // _serializeNode(scene, sceneData["_scene"]);
-
-    // root3d
-    Node3D *root3d = scene->getRoot3D();
-    json root3dData = json::object();
-    _serializeNode(root3d, root3dData);
-    // root2d
-    Node2D *root2d = scene->getRoot2D();
-    json root2dData = json::object();
-    _serializeNode(root2d, root2dData);
-
     sceneData["_name"] = scene->getName();
     sceneData["_type"] = "SceneAsset";
     sceneData["_scene"] = json::object();
-    sceneData["_scene"]["_root3d"] = root3dData;
-    sceneData["_scene"]["_root2d"] = root2dData;
+    _serializeNode(scene, sceneData["_scene"]);
 }
 
 EditorCacheScene::~EditorCacheScene()

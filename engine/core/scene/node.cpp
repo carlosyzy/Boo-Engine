@@ -294,7 +294,7 @@ void Node::clearNodeFrameFlag()
  */
 void Node::removeFromParent()
 {
-	if (this->_parent)
+	if (this->_parent!=nullptr)
 	{
 		this->_parent->removeChild(this);
 	}
