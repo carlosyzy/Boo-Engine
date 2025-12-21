@@ -415,6 +415,7 @@ void EditorHierarchyNodeTree::_refreshTreeItemState(Node2D *ndItem, int state)
         if (this->_selectTreeItem != nullptr && this->_selectTreeItem->uuid == _tree->uuid)
         {
             // 重命名
+            this->_refreshTreeItemUI(this->_selectTreeItem, 1);
         }
         else
         {
