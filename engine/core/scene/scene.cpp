@@ -32,6 +32,8 @@ void Scene::createRoot2D()
 	this->_root2D->_isLocked = true;
 	this->_root2D->setVisibility(uint32_t(NodeVisibility::Node2D));
 	this->addChild(this->_root2D);
+
+	Boo::game->input()->setRoot2D(this->_root2D);
 }
 void Scene::createRoot3D()
 {

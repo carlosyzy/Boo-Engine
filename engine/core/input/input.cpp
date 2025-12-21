@@ -3,6 +3,8 @@
 #include "../game.h"
 #include "../scene/node.h"
 #include "../scene/node-2d.h"
+#include "../math/mat4.h"
+#include "../math/vec3.h"
 
 Input::Input()
 {
@@ -10,7 +12,7 @@ Input::Input()
 void Input::init()
 {
 }
-void Input::setRoot(Node2D *root)
+void Input::setRoot2D(Node2D *root)
 {
     this->_root = root;
 }
@@ -22,7 +24,7 @@ void Input::setRoot(Node2D *root)
  */
 void Input::onMouseButton(int button, int action, int mods)
 {
-    // std::cout << "Input::onMouseButton  button: " << button << " action: " << action << " mods: " << mods << std::endl;
+    std::cout << "Input::onMouseButton  button: " << button << " action: " << action << " mods: " << mods << std::endl;
     if (this->_root == nullptr)
     {
         return;
@@ -118,7 +120,7 @@ void Input::onCursorPos(double xpos, double ypos)
  */
 void Input::onKey(int key, int scancode, int action, int mods)
 {
-   std::cout << "Input::onKey  key: " << key << " scancode: " << scancode << " action: " << action << " mods: " << mods << std::endl;
+    std::cout << "Input::onKey  key: " << key << " scancode: " << scancode << " action: " << action << " mods: " << mods << std::endl;
 }
 
 bool Input::_propagateEvent(Node *node, int button, int action)
@@ -138,11 +140,21 @@ bool Input::_propagateEvent(Node *node, int button, int action)
         bool isIn = node2d->inHitOnNode(this->_cursorX, this->_cursorY);
         if (isIn)
         {
+            Vec3 worldPos(this->_cursorX, this->_cursorY, 1.0f);
             NodeInputStruct &nodeInput = this->_nodeInputMap[node2d->getUuid()];
             nodeInput.status = 1;
-            nodeInput.touchResult.worldX = this->_cursorX;
-            nodeInput.touchResult.worldY = this->_cursorY;
+            nodeInput.touchResult.worldX = worldPos.getX();
+            nodeInput.touchResult.worldY = worldPos.getY();
             nodeInput.touchResult.button = button;
+            // 计算节点本地坐标
+            const Mat4 &worldMat = node2d->getWorldMatrix();
+            Mat4 localMat;
+            Mat4::inverse(worldMat, localMat);
+            Vec3 localPos;
+            Mat4::multiplyVec3(localMat, worldPos, localPos);
+            nodeInput.touchResult.localX = localPos.getX();
+            nodeInput.touchResult.localY = localPos.getY();
+
             std::map<int, std::function<void(NodeInputResult &)>> &touchStarts = this->_nodeInputMap[node2d->getUuid()].touchStarts;
             for (auto it = touchStarts.begin(); it != touchStarts.end(); ++it)
             {
@@ -156,11 +168,20 @@ bool Input::_propagateEvent(Node *node, int button, int action)
     }
     else if (action == 0) // 松开
     {
+        Vec3 worldPos(this->_cursorX, this->_cursorY, 1.0f);
         NodeInputStruct &nodeInput = this->_nodeInputMap[node2d->getUuid()];
         nodeInput.status = 0;
-        nodeInput.touchResult.worldX = this->_cursorX;
-        nodeInput.touchResult.worldY = this->_cursorY;
+        nodeInput.touchResult.worldX = worldPos.getX();
+        nodeInput.touchResult.worldY = worldPos.getY();
         nodeInput.touchResult.button = button;
+        // 计算节点本地坐标
+        const Mat4 &worldMat = node2d->getWorldMatrix();
+        Mat4 localMat;
+        Mat4::inverse(worldMat, localMat);
+        Vec3 localPos;
+        Mat4::multiplyVec3(localMat, worldPos, localPos);
+        nodeInput.touchResult.localX = localPos.getX();
+        nodeInput.touchResult.localY = localPos.getY();
         bool isIn = node2d->inHitOnNode(this->_cursorX, this->_cursorY);
         if (isIn)
         {
@@ -193,10 +214,19 @@ bool Input::_propagateEvent(Node *node, int button, int action)
     else if (action == 99) // 移动
     {
         NodeInputStruct &nodeInput = this->_nodeInputMap[node2d->getUuid()];
+        Vec3 worldPos(this->_cursorX, this->_cursorY, 1.0f);
         if (nodeInput.status == 1) // touch move事件触发
         {
-            nodeInput.touchResult.worldX = this->_cursorX;
-            nodeInput.touchResult.worldY = this->_cursorY;
+            nodeInput.touchResult.worldX = worldPos.getX();
+            nodeInput.touchResult.worldY = worldPos.getY();
+            // 计算节点本地坐标
+            const Mat4 &worldMat = node2d->getWorldMatrix();
+            Mat4 localMat;
+            Mat4::inverse(worldMat, localMat);
+            Vec3 localPos;
+            Mat4::multiplyVec3(localMat, worldPos, localPos);
+            nodeInput.touchResult.localX = localPos.getX();
+            nodeInput.touchResult.localY = localPos.getY();
             std::map<int, std::function<void(NodeInputResult &)>> &touchMoves = this->_nodeInputMap[node2d->getUuid()].touchMoves;
             for (auto it = touchMoves.begin(); it != touchMoves.end(); ++it)
             {
@@ -214,8 +244,16 @@ bool Input::_propagateEvent(Node *node, int button, int action)
             {
                 return false;
             }
-            nodeInput.touchResult.worldX = this->_cursorX;
-            nodeInput.touchResult.worldY = this->_cursorY;
+            nodeInput.touchResult.worldX = worldPos.getX();
+            nodeInput.touchResult.worldY = worldPos.getY();
+             // 计算节点本地坐标
+            const Mat4 &worldMat = node2d->getWorldMatrix();
+            Mat4 localMat;
+            Mat4::inverse(worldMat, localMat);
+            Vec3 localPos;
+            Mat4::multiplyVec3(localMat, worldPos, localPos);
+            nodeInput.touchResult.localX = localPos.getX();
+            nodeInput.touchResult.localY = localPos.getY();
             std::map<int, std::function<void(NodeInputResult &)>> &touchHover = this->_nodeInputMap[node2d->getUuid()].cursorHovers;
             for (auto it = touchHover.begin(); it != touchHover.end(); ++it)
             {
