@@ -27,8 +27,8 @@ void EditorBoot::_launchEditorLoading()
 {
     // 加载场景
     Scene *scene = new Scene("Editor-Loading-Scene");
-    Node2D *node2d = new Node2D("EditorLoading-Node2D");
-    scene->addChild(node2d);
+    scene->createRoot2D();
+    Node2D *node2d = scene->getRoot2D();
     EditorLoading *editorLoading = static_cast<EditorLoading *>(node2d->addComponent("EditorLoading"));
     std::cout << "EditorMain::init: scene: " << scene->getName() << std::endl;
     Boo::game->openScene(scene);
@@ -41,8 +41,8 @@ void EditorBoot::_launchEditorMain()
     std::cout << "EditorBoot::_launchEditor" << std::endl;
     // 加载场景
     Scene *scene = new Scene("Editor-Main-Scene");
-    Node2D *node2d = new Node2D("EditorLoading-Node2D");
-    scene->addChild(node2d);
+    scene->createRoot2D();
+    Node2D *node2d = scene->getRoot2D();
     EditorMain *editorMain = static_cast<EditorMain *>(node2d->addComponent("EditorMain"));
     std::cout << "EditorMain::openScene: scene: " << scene->getName() << std::endl;
     Boo::game->openScene(scene);

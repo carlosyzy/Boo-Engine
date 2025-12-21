@@ -24,22 +24,24 @@ void SceneAsset::create(std::string path)
 }
 void SceneAsset::_deserializeScene()
 {
-    std::cout << "SceneAsset::_deserializeScene:" << this->_sceneData << std::endl;
+    std::cout << "SceneAsset::_deserializeScene1:" << this->_sceneData << std::endl;
     std::function<void(Node *, json &)> _deserializeNodes = [&](Node *node, json &_childData)
     {
+        std::cout << "SceneAsset::_deserializeScene: " << node->getName()<< "  " << _childData << std::endl;
         for (json &childData : _childData)
         {
-            if (childData["_layer"] == NodeLayer::Node2D)
+            std::cout << "SceneAsset::_deserializeScene **1: " <<childData["_name"]<<"   " << childData["_layer"] << std::endl;
+            if (childData["_layer"] ==  uint32_t(NodeLayer::Node2D))
             {
                 Node2D *child2D = new Node2D(childData["_name"].get<std::string>(), childData["_uuid"].get<std::string>());
                 node->addChild(child2D);
                 this->_deserializeNode(child2D, childData["_children"]);
                 this->_deserializeComponent(child2D, childData);
 
-                std::cout << "SceneAsset::_deserializeScene: " << child2D->getName() << std::endl;
+                std::cout << "SceneAsset::_deserializeScene **2: " << child2D->getName() << std::endl;
                 _deserializeNodes(child2D, childData["_children"]);
             }
-            else if (childData["_layer"] == NodeLayer::Node3D)
+            else if (childData["_layer"] ==  uint32_t(NodeLayer::Node3D))
             {
                 Node3D *child3D = new Node3D(childData["_name"].get<std::string>(), childData["_uuid"].get<std::string>());
                 node->addChild(child3D);
@@ -52,7 +54,8 @@ void SceneAsset::_deserializeScene()
     };
     json &sceneData = this->_sceneData["_scene"];
     this->_scene = new Scene(sceneData["_name"].get<std::string>(), sceneData["_uuid"].get<std::string>());
-    _deserializeNodes(this->_scene, sceneData["_scene"]["_children"]);
+    std::cout << "SceneAsset::_deserializeScene2:" << this->_sceneData << std::endl;
+    _deserializeNodes(this->_scene,sceneData["_children"]);
     std::cout << "SceneAsset::_deserializeScene: " << this->_scene << std::endl;
 }
 void SceneAsset::_deserializeNode(Node *node, json &_nodeData)

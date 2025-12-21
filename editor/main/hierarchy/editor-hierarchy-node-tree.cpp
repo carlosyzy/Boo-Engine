@@ -82,7 +82,7 @@ void EditorHierarchyNodeTree::_setTrees(Node *root, NodeTreeStructure &uiTreeDat
     std::cout << "EditorHierarchyNodeTree::_setTrees: " << root->getName() << std::endl;
     uiTreeData.name = root->getName();
     uiTreeData.uuid = root->getUuid();
-    uiTreeData.isFold = true;
+    uiTreeData.isFold = false;
     uiTreeData.ndBind = nullptr;
     uiTreeData.layer = layer;
     uiTreeData.children.resize(root->getChildren().size());

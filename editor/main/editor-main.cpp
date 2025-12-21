@@ -75,6 +75,8 @@ void EditorMain::_initScene()
   
 
     this->_hierarchy->setScene(this->_scene);
+    // this->_scene->createRoot2D();
+    // this->_scene->createRoot3D();
 
     // Node2D *rootNode = this->_scene->getRoot2D();
     // Node2D *ndNodeTree = new Node2D("test");
@@ -82,9 +84,9 @@ void EditorMain::_initScene()
     // ndNodeTree->setSize(100.0f, 100.0f);
     // std::cout << "EditorMain::add test _initScene: " << ndNodeTree << std::endl;
 
-    //   ctrl+S 保存
-    BooEditor::cache->SceneCache()->saveScene();
-    BooEditor::cache->SettingCache()->saveSetting();
+    // //   ctrl+S 保存
+    // BooEditor::cache->SceneCache()->saveScene();
+    // BooEditor::cache->SettingCache()->saveSetting();
     
 }
 
