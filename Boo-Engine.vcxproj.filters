@@ -147,9 +147,6 @@
     <ClCompile Include="engine\core\component\component-factory.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\component\ui\ui-tree\ui-node-tree.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="engine\core\assets\material-asset.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -220,6 +217,90 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\editor-boot.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\assets\mesh-asset.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\assets\shader-asset.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\main\hierarchy\editor-hierarchy-node-tree.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\base\gfx-buffer-instance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\base\gfx-buffer-ubo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\base\gfx-buffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\base\gfx-material.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\base\gfx-mesh.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\base\gfx-pipeline.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\base\gfx-push-constants.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\base\gfx-render-pass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\base\gfx-render-texture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\base\gfx-shader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\base\gfx-texture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\builtin\gfx-batch-builtin.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\builtin\gfx-pipeline-builtin.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\builtin\gfx-queue-builtin.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\builtin\gfx-render-pass-builtin.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\builtin\gfx-renderer-builtin.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\default\gfx-pipeline-default.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\default\gfx-queue-default.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\default\gfx-render-pass-default.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\default\gfx-renderer-default.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-context.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-mgr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx-renderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\gfx\gfx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\renderer\renderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -581,9 +662,6 @@
     <ClInclude Include="engine\core\component\component-register.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\component\ui\ui-tree\ui-node-tree.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="engine\core\component\component-property-reflect.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -663,6 +741,111 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\editor-boot.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\assets\mesh-asset.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\assets\shader-asset.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\main\hierarchy\editor-hierarchy-node-tree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-buffer-instance.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-buffer-ubo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-buffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-material.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-mesh-struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-mesh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-pipeline-struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-pipeline.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-push-constants.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-render-pass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-render-texture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-shader-struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-shader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\base\gfx-texture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\builtin\gfx-batch-builtin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\builtin\gfx-pipeline-builtin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\builtin\gfx-queue-builtin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\builtin\gfx-render-pass-builtin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\builtin\gfx-renderer-builtin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\default\gfx-pipeline-default.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\default\gfx-queue-default.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\default\gfx-render-pass-default.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\default\gfx-renderer-default.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-context.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-mgr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx-renderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\gfx\gfx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\renderer\camera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\renderer\renderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\scene\node-struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\input\input-struct.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
