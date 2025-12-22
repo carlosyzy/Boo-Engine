@@ -64,6 +64,13 @@ private:
     void _setTrees(Node *root, NodeTreeStructure &uiTreeData, int layer);
     void _updateTreeContent();
     void _updateTreesItems(NodeTreeStructure &uiTreeData);
+    void _createNodeItem(NodeTreeStructure &tree);
+
+    void _updateTreeItemSelect(Node2D *ndItem,NodeTreeStructure &uiTreeData);
+    void _updateTreeItemFold();
+    void _updateTreeItemIcon();
+    void _updateTreeItemName();
+    
 
 private:
     NodeTreeStructure *_hoverTreeItem = nullptr;
@@ -75,6 +82,11 @@ private:
      */
     void _refreshTreeItemState(Node2D *ndItem, int state);
     void _refreshTreeItemUI(NodeTreeStructure *tree, int state);
+    bool _checkInItem(Node2D *ndItem, float touchX, float touchY);
+    bool _checkInItemFold(Node2D *ndItem, float touchX, float touchY);
+   
+
+private:
 
 protected:
     void _deserialized() override;
