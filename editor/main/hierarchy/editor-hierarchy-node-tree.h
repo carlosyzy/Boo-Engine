@@ -56,6 +56,8 @@ private:
     NodeTreeStructure _uiTreeData; // 节点树数据
     int _nodeIndex;
     float _itemHeight = 20.0f;
+    float _itemOffset = 15.0f;
+    float _itemElemBorder = 3.0f;
     std::vector<Node2D *> _nodePools;
     std::vector<Node2D *> _treeNodes; // 节点-节点树item 映射
     std::map<std::string, NodeTreeStructure *> _treeNodeDataMap;
@@ -64,13 +66,15 @@ private:
     void _setTrees(Node *root, NodeTreeStructure &uiTreeData, int layer);
     void _updateTreeContent();
     void _updateTreesItems(NodeTreeStructure &uiTreeData);
-    void _createNodeItem(NodeTreeStructure &tree);
+    void _createNodeItem();
 
-    void _updateTreeItemSelect(Node2D *ndItem,NodeTreeStructure &uiTreeData);
-    void _updateTreeItemFold();
-    void _updateTreeItemIcon();
-    void _updateTreeItemName();
-    
+    void _updateTreeItemSelect(Node2D *ndItem, NodeTreeStructure &uiTreeData);
+    void _updateTreeItemFold(Node2D *ndItem, NodeTreeStructure &uiTreeData, float &_width);
+    void _updateTreeItemIcon(Node2D *ndItem, NodeTreeStructure &uiTreeData, float &_width);
+    void _updateTreeItemName(Node2D *ndItem, NodeTreeStructure &uiTreeData, float &_width);
+
+    void _onTreeItemTouchEvent(NodeInputResult &result);
+    // void _onTreeContentHoverEvent(NodeInputResult &result);
 
 private:
     NodeTreeStructure *_hoverTreeItem = nullptr;
@@ -84,10 +88,8 @@ private:
     void _refreshTreeItemUI(NodeTreeStructure *tree, int state);
     bool _checkInItem(Node2D *ndItem, float touchX, float touchY);
     bool _checkInItemFold(Node2D *ndItem, float touchX, float touchY);
-   
 
 private:
-
 protected:
     void _deserialized() override;
 

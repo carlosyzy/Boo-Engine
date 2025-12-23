@@ -91,6 +91,7 @@
         "*.hpp11": "cpp",
         "cinttypes": "cpp",
         "version": "cpp",
-        "*.ds_store": "cpp"
+        "*.ds_store": "cpp",
+        "any": "cpp"
     }
 }
