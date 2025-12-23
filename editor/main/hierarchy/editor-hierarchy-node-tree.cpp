@@ -174,252 +174,201 @@ void EditorHierarchyNodeTree::_updateTreeContent()
 }
 void EditorHierarchyNodeTree::_updateTreesItems(NodeTreeStructure &uiTreeData)
 {
+    Node2D *root = dynamic_cast<Node2D *>(this->_node);
+    const Size &rootSize = root->getSize();
     uiTreeData.ndBind = nullptr;
     for (int i = this->_nodePools.size(); i <= this->_nodeIndex; i++)
     {
         this->_createNodeItem();
     }
     Node2D *node = this->_nodePools[this->_nodeIndex];
+    float _width = 0;
+    node->setName(uiTreeData.name);
     node->setActive(true);
-    this->_updateTreeItemSelect(node,uiTreeData);
+    uiTreeData.ndBind = node;
 
-}
-void EditorHierarchyNodeTree::_updateTreeItemSelect(Node2D *ndItem,NodeTreeStructure &uiTreeData)
-{
-     Node *ndSelect = ndItem->getChildByName("NodeTreeItemSelect");
-      Node2D *ndSelect2d = dynamic_cast<Node2D *>(ndSelect);
-      UISprite *spSelect = dynamic_cast<UISprite *>(ndSelect2d->getComponent("UISprite"));
-    if(this->_selectTreeItem!=nullptr && uiTreeData.uuid == this->_selectTreeItem->uuid){
-      spSelect->setColor(9.0f / 250.0f, 74.0f / 255.0f, 93.0f / 255.0f, 1.0f);
-      return;
+    this->_treeNodes.push_back(node);
+    this->_treeNodeDataMap.emplace(node->getUuid(), &uiTreeData);
+
+    this->_updateTreeItemSelect(node, uiTreeData);
+    this->_updateTreeItemFold(node, uiTreeData, _width);
+    this->_updateTreeItemIcon(node, uiTreeData, _width);
+    this->_updateTreeItemName(node, uiTreeData, _width);
+
+    if (_width > rootSize.getWidth() - 3)
+    {
+        _width = rootSize.getWidth() - 3;
     }
-    if(this->_hoverTreeItem!=nullptr && uiTreeData.uuid == this->_hoverTreeItem->uuid){
-      spSelect->setColor(9.0f / 250.0f, 74.0f / 255.0f, 93.0f / 255.0f, 0.3f);
-      return;
+    node->setSize(_width, this->_itemHeight);
+    node->setPosition(0.0f, -this->_itemHeight / 2.0f - this->_nodeIndex * this->_itemHeight, 0.0f);
+
+    if (_width > this->_contentWidth)
+    {
+        this->_contentWidth = _width;
+    }
+    this->_nodeIndex++;
+    if (!uiTreeData.isFold)
+    {
+        for (int i = 0; i < uiTreeData.children.size(); i++)
+        {
+            this->_updateTreesItems(uiTreeData.children[i]);
+        }
+    }
+}
+void EditorHierarchyNodeTree::_createNodeItem()
+{
+    // item 节点
+    Node2D *node = new Node2D("NodeTreeItem");
+    node->setAnchor(0.0f, 0.5f);
+    this->_ndContent->addChild(node);
+    // 后续删除
+    // sp = dynamic_cast<UISprite *>(node->addComponent("UISprite"));
+    // sp->setColor(340.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
+    // sp->setTextureAsset("resources/texture/ic-default.png");
+    // sp->setMaterialAsset(nullptr);
+    // node->onNodeInputEvent(NodeInput::TOUCH_END, &UITree::_onTreeItemTouchEvent, this);
+    // node->onNodeInputEvent(NodeInput::CURSOR_HOVER, &UITree::_onTreeItemCursorHoverEvent, this);
+    // 选择框
+    Node2D *ndSelect = new Node2D("NodeTreeItemSelect");
+    node->addChild(ndSelect);
+    ndSelect->setSize(1000.0f, this->_itemHeight);
+    UISprite *spSelect = dynamic_cast<UISprite *>(ndSelect->addComponent("UISprite"));
+    spSelect->setColor(0.0f / 250.0f, 74.0f / 255.0f, 93.0f / 255.0f, 0.0f);
+    // 折叠符号
+    Node2D *ndFold = new Node2D("NodeTreeItemFold");
+    node->addChild(ndFold);
+    ndFold->setSize(this->_itemHeight * 0.8, this->_itemHeight * 0.8);
+    UISprite *spFold = dynamic_cast<UISprite *>(ndFold->addComponent("UISprite"));
+    spFold->setMaterialAsset(nullptr);
+    // 图标
+    Node2D *ndIcon = new Node2D("NodeTreeItemIcon");
+    node->addChild(ndIcon);
+    ndIcon->setSize(this->_itemHeight * 0.8, this->_itemHeight * 0.8);
+    UISprite *spIcon = dynamic_cast<UISprite *>(ndIcon->addComponent("UISprite"));
+    spIcon->setMaterialAsset(nullptr);
+    // 名字
+    Node2D *ndName = new Node2D("NodeTreeItemName");
+    ndName->setSize(this->_itemHeight * 0.8, this->_itemHeight * 0.8);
+    node->addChild(ndName);
+    UIText *txtName = dynamic_cast<UIText *>(ndName->addComponent("UIText"));
+    txtName->setColor(204.0f / 255.0f, 207.0f / 255.0f, 213.0f / 255.0f, 1.0f);
+    txtName->setMaterialAsset(nullptr);
+    this->_nodePools.push_back(node);
+
+    // node->onNodeInputEvent(NodeInput::TOUCH_END, &EditorHierarchyNodeTree::_onTreeItemTouchEvent, this);
+}
+void EditorHierarchyNodeTree::_updateTreeItemSelect(Node2D *ndItem, NodeTreeStructure &uiTreeData)
+{
+    Node *ndSelect = ndItem->getChildByName("NodeTreeItemSelect");
+    Node2D *ndSelect2d = dynamic_cast<Node2D *>(ndSelect);
+    UISprite *spSelect = dynamic_cast<UISprite *>(ndSelect2d->getComponent("UISprite"));
+    if (this->_selectTreeItem != nullptr && uiTreeData.uuid == this->_selectTreeItem->uuid)
+    {
+        spSelect->setColor(9.0f / 250.0f, 74.0f / 255.0f, 93.0f / 255.0f, 1.0f);
+        return;
+    }
+    if (this->_hoverTreeItem != nullptr && uiTreeData.uuid == this->_hoverTreeItem->uuid)
+    {
+        spSelect->setColor(9.0f / 250.0f, 74.0f / 255.0f, 93.0f / 255.0f, 0.3f);
+        return;
     }
     spSelect->setColor(82.0f / 250.0f, 82.0f / 255.0f, 82.0f / 255.0f, 0.0f);
 }
-
-    // /* std::random_device rd;
-    //  std::mt19937 gen(rd());
-    //  std::uniform_real_distribution<double> randomGet(0.0, 1.0);*/
-
-    // Node2D *root = dynamic_cast<Node2D *>(this->_node);
-    // const Size &size = root->getSize();
-
-    // float offset = 10.0f;
-    // float width = 0;
-    // // float itemWidth = 10.0f;
-    // // float itemHeight = 22.0f;
-    // Node2D *node = nullptr;
-    // UISprite *sp = nullptr;
-    // Node2D *ndSelect = nullptr;
-    // UISprite *spSelect = nullptr;
-    // Node2D *ndFold = nullptr;
-    // UISprite *spFold = nullptr;
-    // Node2D *ndIcon = nullptr;
-    // UISprite *spIcon = nullptr;
-    // Node2D *ndName = nullptr;
-    // UIText *txtName = nullptr;
-
-    // if (this->_nodeIndex >= this->_nodePools.size())
-    // {
-    //    for (int i = 0; i < uiTreeData.children.size(); i++)
-    //    {
-    //        this->_createNodeItem(uiTreeData.children[i]);
-    //    }
-    // }
-    // else
-    // {
-    //     node = this->_nodePools[this->_nodeIndex];
-    //     Node *select = node->getChildByName("NodeTreeItemSelect");
-    //     Node *fold = node->getChildByName("NodeTreeItemFold");
-    //     Node *icon = node->getChildByName("NodeTreeItemIcon");
-    //     Node *name = node->getChildByName("NodeTreeItemName");
-    //     if (select != nullptr)
-    //     {
-    //         ndSelect = dynamic_cast<Node2D *>(select);
-    //         spSelect = dynamic_cast<UISprite *>(ndSelect->getComponent("UISprite"));
-    //     }
-    //     if (fold != nullptr)
-    //     {
-    //         ndFold = dynamic_cast<Node2D *>(fold);
-    //         spFold = dynamic_cast<UISprite *>(ndFold->getComponent("UISprite"));
-    //     }
-    //     if (icon != nullptr)
-    //     {
-    //         ndIcon = dynamic_cast<Node2D *>(icon);
-    //         spIcon = dynamic_cast<UISprite *>(ndIcon->getComponent("UISprite"));
-    //     }
-    //     if (name != nullptr)
-    //     {
-    //         ndName = dynamic_cast<Node2D *>(name);
-    //         txtName = dynamic_cast<UIText *>(ndName->getComponent("UIText"));
-    //     }
-    // }
-    // node->setName(uiTreeData.name);
-    // uiTreeData.ndBind = node;
-    // uiTreeData.index = this->_nodeIndex;
-    // this->_treeNodes.push_back(node);
-    // this->_treeNodeDataMap.emplace(node->getUuid(), &uiTreeData);
-    // // this->_foldUIMap.emplace(ndFold->getUuid(), &uiTreeData);
-    // node->setActive(true);
-    // ndSelect->setSize(1000.0f, this->_itemHeight);
-    // ndSelect->setPosition(0.0f, 0.0f, 0.0f);
-    // width += (uiTreeData.layer * offset);
-    // // 折叠图标
-    // ndFold->setSize(this->_itemHeight * 0.8, this->_itemHeight * 0.8);
-    // if (uiTreeData.isFold)
-    // {
-    //     TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-right.png");
-    //     spFold->setTextureAsset(tex);
-    // }
-    // else
-    // {
-    //     TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-bottom.png");
-    //     spFold->setTextureAsset(tex);
-    // }
-    // if (uiTreeData.children.size() > 0)
-    // {
-    //     ndFold->setActive(true);
-    // }
-    // else
-    // {
-    //     ndFold->setActive(false);
-    // }
-
-    // width += ndFold->getSize().getWidth();
-    // // 图标
-    // ndIcon->setSize(this->_itemHeight * 0.8, this->_itemHeight * 0.8);
-    // TextureAsset *tex = BooEditor::cache->getEditorTexture(uiTreeData.icon);
-    // spIcon->setTextureAsset(tex);
-
-    // width += ndIcon->getSize().getWidth();
-    // // 创建名字
-    // txtName->setText(uiTreeData.name);
-    // float itemNameWidth = ndName->getSize().getWidth();
-    // float itemNameHight = ndName->getSize().getHeight();
-    // ndName->setSize(itemNameWidth, itemNameHight);
-    // width += itemNameWidth;
-    // width += 5.0f * 3;
-
-    // // 设置总宽度
-    // if (width < size.getWidth() - 3)
-    // {
-    //     width = size.getWidth() - 3;
-    // }
-    // // 折叠按钮
-    // float startX = -width / 2.0 + (uiTreeData.layer * offset);
-    // ndFold->setPosition(startX + ndFold->getSize().getWidth() / 2.0, 0.0f, 0.0f);
-    // // 图标
-    // startX += ndFold->getSize().getWidth() + 5.0f;
-    // ndIcon->setPosition(startX + ndIcon->getSize().getWidth() / 2.0, 0.0f, 0.0f);
-    // // 名字
-    // startX += ndIcon->getSize().getWidth() + 5.0f;
-    // ndName->setPosition(startX + itemNameWidth / 2.0, 0.0f, 0.0f);
-
-    // node->setSize(width, this->_itemHeight);
-    // node->setPosition(width / 2.0f, -this->_itemHeight / 2.0f - this->_nodeIndex * this->_itemHeight, 0.0f);
-    // if (width > this->_contentWidth)
-    // {
-    //     this->_contentWidth = width;
-    // }
-    // // 递归更新子节点
-    // this->_nodeIndex++;
-    // if (!uiTreeData.isFold)
-    // {
-    //     for (int i = 0; i < uiTreeData.children.size(); i++)
-    //     {
-    //         this->_updateTreesItems(uiTreeData.children[i]);
-    //     }
-    // }
-// }
-void EditorHierarchyNodeTree::_createNodeItem(NodeTreeStructure &tree)
+void EditorHierarchyNodeTree::_updateTreeItemFold(Node2D *ndItem, NodeTreeStructure &uiTreeData, float &_width)
 {
-        // item 节点
-       Node2D *node = new Node2D("NodeTreeItem");
-        this->_ndContent->addChild(node);
-        // 后续删除
-        // sp = dynamic_cast<UISprite *>(node->addComponent("UISprite"));
-        // sp->setColor(340.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
-        // sp->setTextureAsset("resources/texture/ic-default.png");
-        // sp->setMaterialAsset(nullptr);
-        // node->onNodeInputEvent(NodeInput::TOUCH_END, &UITree::_onTreeItemTouchEvent, this);
-        // node->onNodeInputEvent(NodeInput::CURSOR_HOVER, &UITree::_onTreeItemCursorHoverEvent, this);
-        // 选择框
-        Node2D *ndSelect = new Node2D("NodeTreeItemSelect");
-        node->addChild(ndSelect);
-        ndSelect->setSize(1000.0f, this->_itemHeight);
-       UISprite *spSelect = dynamic_cast<UISprite *>(ndSelect->addComponent("UISprite"));
-        spSelect->setColor(0.0f / 250.0f, 74.0f / 255.0f, 93.0f / 255.0f, 0.0f);
-        // 折叠符号
-       Node2D * ndFold = new Node2D("NodeTreeItemFold");
-        node->addChild(ndFold);
-        ndFold->setSize(this->_itemHeight * 0.8, this->_itemHeight * 0.8);
-       UISprite * spFold = dynamic_cast<UISprite *>(ndFold->addComponent("UISprite"));
-        spFold->setMaterialAsset(nullptr);
-=        // 图标
-       Node2D * ndIcon = new Node2D("NodeTreeItemIcon");
-        node->addChild(ndIcon);
-        ndIcon->setSize(this->_itemHeight * 0.8, this->_itemHeight * 0.8);
-       UISprite * spIcon = dynamic_cast<UISprite *>(ndIcon->addComponent("UISprite"));
-        spIcon->setMaterialAsset(nullptr);
-        // 名字
-      Node2D *  ndName = new Node2D("NodeTreeItemName");
-        ndName->setSize(this->_itemHeight * 0.7, this->_itemHeight * 0.7);
-        node->addChild(ndName);
-       UIText * txtName = dynamic_cast<UIText *>(ndName->addComponent("UIText"));
-        txtName->setColor(204.0f / 255.0f, 207.0f / 255.0f, 213.0f / 255.0f, 1.0f);
-        txtName->setMaterialAsset(nullptr);
-        this->_nodePools.push_back(node);
+    Node2D *ndFold = dynamic_cast<Node2D *>(ndItem->getChildByName("NodeTreeItemFold"));
+    UISprite *spFold = dynamic_cast<UISprite *>(ndFold->getComponent("UISprite"));
+    if (uiTreeData.children.size() > 0)
+    {
+        ndFold->setActive(true);
+        if (uiTreeData.isFold)
+        {
+            TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-right.png");
+            spFold->setTextureAsset(tex);
+        }
+        else
+        {
+            TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-bottom.png");
+            spFold->setTextureAsset(tex);
+        }
+    }
+    else
+    {
+        ndFold->setActive(false);
+    }
+    _width += this->_itemElemBorder;
+    const Size &size = ndFold->getSize();
+    float offset = this->_itemOffset * uiTreeData.layer;
+    ndFold->setPosition(offset + size.getWidth() / 2.0f, 0.0f, 0.0f);
+    _width += size.getWidth() + offset;
+    std::cout << "EditorHierarchyNodeTree::_updateTreeItemFold: " << uiTreeData.name << " width: " << _width << " layer: " << uiTreeData.layer << " offset: " << offset << std::endl;
 }
-
-
-
-
-
+void EditorHierarchyNodeTree::_updateTreeItemIcon(Node2D *ndItem, NodeTreeStructure &uiTreeData, float &_width)
+{
+    Node2D *ndIcon = dynamic_cast<Node2D *>(ndItem->getChildByName("NodeTreeItemIcon"));
+    UISprite *spIcon = dynamic_cast<UISprite *>(ndIcon->getComponent("UISprite"));
+    TextureAsset *tex = BooEditor::cache->getEditorTexture(uiTreeData.icon);
+    spIcon->setTextureAsset(tex);
+    _width += this->_itemElemBorder;
+    const Size &size = ndIcon->getSize();
+    ndIcon->setPosition(_width + size.getWidth() / 2.0f, 0.0f, 0.0f);
+    _width += size.getWidth();
+}
+void EditorHierarchyNodeTree::_updateTreeItemName(Node2D *ndItem, NodeTreeStructure &uiTreeData, float &_width)
+{
+    Node2D *ndName = dynamic_cast<Node2D *>(ndItem->getChildByName("NodeTreeItemName"));
+    UIText *txtName = dynamic_cast<UIText *>(ndName->getComponent("UIText"));
+    txtName->setText(uiTreeData.name);
+    _width += this->_itemElemBorder;
+    const Size &size = ndName->getSize();
+    float itemNameWidth = ndName->getSize().getWidth();
+    float itemNameHight = ndName->getSize().getHeight();
+    ndName->setSize(itemNameWidth, itemNameHight);
+    ndName->setPosition(_width + size.getWidth() / 2.0f, 0.0f, 0.0f);
+    _width += size.getWidth();
+}
 
 void EditorHierarchyNodeTree::_onTreeContentTouchEvent(NodeInputResult &result)
 {
-    Node2D *root = dynamic_cast<Node2D *>(this->_node);
-    const Size &size = root->getSize();
-    std::string uuid = result.node->getUuid();
-    std::string name = result.node->getName();
-    float worldX = result.worldX;
-    float worldY = result.worldY;
-    float localX = result.localX;
-    float localY = result.localY;
-    for (auto node : this->_treeNodes)
-    {
-        std::string name = node->getName();
-        float h = size.getHeight();
-        float _y = node->getPosition().getY();
-        _y = _y - this->_topLen;
-        _y = _y + h / 2.0f;
-        if (localY >= _y - this->_itemHeight / 2.0f && localY <= _y + this->_itemHeight / 2.0f)
-        {
-            NodeTreeStructure *_tree = this->_treeNodeDataMap[node->getUuid()];
-            // if (_tree != nullptr && _tree->children.size() > 0)
-            // {
-            //     // 判断是否点击了折叠按钮
-            //     float foldX = -1 * node->getSize().getWidth() / 2.0f + _tree->layer * 10;
-            //     float foldY = _y;
-            //     if (localX >= foldX && localX <= foldX + ndFold->getSize().getWidth())
-            //     {
-            //         _tree->isFold = !_tree->isFold;
-            //         this->_updateTreesItems(*_tree);
-            //     }
-            //     // if(localX>=startX&&localX<=startX+ndFold->getSize().getWidth()){
-            //     //     _tree->isFold=!_tree->isFold;
-            //     //     this->_updateTreesItems(*_tree);
-            //     // }
-            // }
-            this->_refreshTreeItemState(node, 1);
-            return;
-        }
-    }
-    std::cout << "click null node: " << std::endl;
-    this->_refreshTreeItemState(nullptr, 0);
+    // Node2D *root = dynamic_cast<Node2D *>(this->_node);
+    // const Size &size = root->getSize();
+    // std::string uuid = result.node->getUuid();
+    // std::string name = result.node->getName();
+    // float worldX = result.worldX;
+    // float worldY = result.worldY;
+    // float localX = result.localX;
+    // float localY = result.localY;
+    // for (auto node : this->_treeNodes)
+    // {
+    //     std::string name = node->getName();
+    //     float h = size.getHeight();
+    //     float _y = node->getPosition().getY();
+    //     _y = _y - this->_topLen;
+    //     _y = _y + h / 2.0f;
+    //     if (localY >= _y - this->_itemHeight / 2.0f && localY <= _y + this->_itemHeight / 2.0f)
+    //     {
+    //         NodeTreeStructure *_tree = this->_treeNodeDataMap[node->getUuid()];
+    //         // if (_tree != nullptr && _tree->children.size() > 0)
+    //         // {
+    //         //     // 判断是否点击了折叠按钮
+    //         //     float foldX = -1 * node->getSize().getWidth() / 2.0f + _tree->layer * 10;
+    //         //     float foldY = _y;
+    //         //     if (localX >= foldX && localX <= foldX + ndFold->getSize().getWidth())
+    //         //     {
+    //         //         _tree->isFold = !_tree->isFold;
+    //         //         this->_updateTreesItems(*_tree);
+    //         //     }
+    //         //     // if(localX>=startX&&localX<=startX+ndFold->getSize().getWidth()){
+    //         //     //     _tree->isFold=!_tree->isFold;
+    //         //     //     this->_updateTreesItems(*_tree);
+    //         //     // }
+    //         // }
+    //         this->_refreshTreeItemState(node, 1);
+    //         return;
+    //     }
+    // }
+    // std::cout << "click null node: " << std::endl;
+    // this->_refreshTreeItemState(nullptr, 0);
 }
 void EditorHierarchyNodeTree::_onTreeContentHoverEvent(NodeInputResult &result)
 {
@@ -433,18 +382,32 @@ void EditorHierarchyNodeTree::_onTreeContentHoverEvent(NodeInputResult &result)
     float localY = result.localY;
     for (auto node : this->_treeNodes)
     {
-        std::string name = node->getName();
-        float h = size.getHeight();
-        float _y = node->getPosition().getY();
-        _y = _y - this->_topLen;
-        _y = _y + h / 2.0f;
-        if (localY >= _y - this->_itemHeight / 2.0f && localY <= _y + this->_itemHeight / 2.0f)
+        if (this->_checkInItem(node, localX, localY))
         {
             this->_refreshTreeItemState(node, 2);
             return;
         }
     }
     this->_refreshTreeItemState(nullptr, 2);
+}
+bool EditorHierarchyNodeTree::_checkInItem(Node2D *ndItem, float touchX, float touchY)
+{
+    if (ndItem == nullptr)
+    {
+        return false;
+    }
+    Node2D *root = dynamic_cast<Node2D *>(this->_node);
+    const Size &rootSize = root->getSize();
+    // 检查点击是否在节点上
+    const Vec3 &pos = ndItem->getPosition();
+    const Size &size = ndItem->getSize();
+    float top = pos.getY() - this->_topLen + rootSize.getHeight() / 2.0f + size.getHeight() / 2.0f;
+    float bottom = pos.getY() - this->_topLen + rootSize.getHeight() / 2.0f - size.getHeight() / 2.0f;
+    if (touchY >= bottom && touchY <= top)
+    {
+        return true;
+    }
+    return false;
 }
 void EditorHierarchyNodeTree::_refreshTreeItemState(Node2D *ndItem, int state)
 {
@@ -547,7 +510,6 @@ void EditorHierarchyNodeTree::_refreshTreeItemUI(NodeTreeStructure *tree, int st
     {
         return;
     }
-
     if (state == 0)
     {
         // 正常
@@ -579,6 +541,141 @@ void EditorHierarchyNodeTree::destroy()
 EditorHierarchyNodeTree::~EditorHierarchyNodeTree()
 {
 }
+
+// /* std::random_device rd;
+//  std::mt19937 gen(rd());
+//  std::uniform_real_distribution<double> randomGet(0.0, 1.0);*/
+
+// Node2D *root = dynamic_cast<Node2D *>(this->_node);
+// const Size &size = root->getSize();
+
+// float offset = 10.0f;
+// float width = 0;
+// // float itemWidth = 10.0f;
+// // float itemHeight = 22.0f;
+// Node2D *node = nullptr;
+// UISprite *sp = nullptr;
+// Node2D *ndSelect = nullptr;
+// UISprite *spSelect = nullptr;
+// Node2D *ndFold = nullptr;
+// UISprite *spFold = nullptr;
+// Node2D *ndIcon = nullptr;
+// UISprite *spIcon = nullptr;
+// Node2D *ndName = nullptr;
+// UIText *txtName = nullptr;
+
+// if (this->_nodeIndex >= this->_nodePools.size())
+// {
+//    for (int i = 0; i < uiTreeData.children.size(); i++)
+//    {
+//        this->_createNodeItem(uiTreeData.children[i]);
+//    }
+// }
+// else
+// {
+//     node = this->_nodePools[this->_nodeIndex];
+//     Node *select = node->getChildByName("NodeTreeItemSelect");
+//     Node *fold = node->getChildByName("NodeTreeItemFold");
+//     Node *icon = node->getChildByName("NodeTreeItemIcon");
+//     Node *name = node->getChildByName("NodeTreeItemName");
+//     if (select != nullptr)
+//     {
+//         ndSelect = dynamic_cast<Node2D *>(select);
+//         spSelect = dynamic_cast<UISprite *>(ndSelect->getComponent("UISprite"));
+//     }
+//     if (fold != nullptr)
+//     {
+//         ndFold = dynamic_cast<Node2D *>(fold);
+//         spFold = dynamic_cast<UISprite *>(ndFold->getComponent("UISprite"));
+//     }
+//     if (icon != nullptr)
+//     {
+//         ndIcon = dynamic_cast<Node2D *>(icon);
+//         spIcon = dynamic_cast<UISprite *>(ndIcon->getComponent("UISprite"));
+//     }
+//     if (name != nullptr)
+//     {
+//         ndName = dynamic_cast<Node2D *>(name);
+//         txtName = dynamic_cast<UIText *>(ndName->getComponent("UIText"));
+//     }
+// }
+// node->setName(uiTreeData.name);
+// uiTreeData.ndBind = node;
+// uiTreeData.index = this->_nodeIndex;
+// this->_treeNodes.push_back(node);
+// this->_treeNodeDataMap.emplace(node->getUuid(), &uiTreeData);
+// // this->_foldUIMap.emplace(ndFold->getUuid(), &uiTreeData);
+// node->setActive(true);
+// ndSelect->setSize(1000.0f, this->_itemHeight);
+// ndSelect->setPosition(0.0f, 0.0f, 0.0f);
+// width += (uiTreeData.layer * offset);
+// // 折叠图标
+// ndFold->setSize(this->_itemHeight * 0.8, this->_itemHeight * 0.8);
+// if (uiTreeData.isFold)
+// {
+//     TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-right.png");
+//     spFold->setTextureAsset(tex);
+// }
+// else
+// {
+//     TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-bottom.png");
+//     spFold->setTextureAsset(tex);
+// }
+// if (uiTreeData.children.size() > 0)
+// {
+//     ndFold->setActive(true);
+// }
+// else
+// {
+//     ndFold->setActive(false);
+// }
+
+// width += ndFold->getSize().getWidth();
+// // 图标
+// ndIcon->setSize(this->_itemHeight * 0.8, this->_itemHeight * 0.8);
+// TextureAsset *tex = BooEditor::cache->getEditorTexture(uiTreeData.icon);
+// spIcon->setTextureAsset(tex);
+
+// width += ndIcon->getSize().getWidth();
+// // 创建名字
+// txtName->setText(uiTreeData.name);
+// float itemNameWidth = ndName->getSize().getWidth();
+// float itemNameHight = ndName->getSize().getHeight();
+// ndName->setSize(itemNameWidth, itemNameHight);
+// width += itemNameWidth;
+// width += 5.0f * 3;
+
+// // 设置总宽度
+// if (width < size.getWidth() - 3)
+// {
+//     width = size.getWidth() - 3;
+// }
+// // 折叠按钮
+// float startX = -width / 2.0 + (uiTreeData.layer * offset);
+// ndFold->setPosition(startX + ndFold->getSize().getWidth() / 2.0, 0.0f, 0.0f);
+// // 图标
+// startX += ndFold->getSize().getWidth() + 5.0f;
+// ndIcon->setPosition(startX + ndIcon->getSize().getWidth() / 2.0, 0.0f, 0.0f);
+// // 名字
+// startX += ndIcon->getSize().getWidth() + 5.0f;
+// ndName->setPosition(startX + itemNameWidth / 2.0, 0.0f, 0.0f);
+
+// node->setSize(width, this->_itemHeight);
+// node->setPosition(width / 2.0f, -this->_itemHeight / 2.0f - this->_nodeIndex * this->_itemHeight, 0.0f);
+// if (width > this->_contentWidth)
+// {
+//     this->_contentWidth = width;
+// }
+// // 递归更新子节点
+// this->_nodeIndex++;
+// if (!uiTreeData.isFold)
+// {
+//     for (int i = 0; i < uiTreeData.children.size(); i++)
+//     {
+//         this->_updateTreesItems(uiTreeData.children[i]);
+//     }
+// }
+// }
 
 // // json j;
 // //     // 添加键值对
