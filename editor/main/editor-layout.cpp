@@ -35,7 +35,7 @@ void EditorLayout::init()
     this->_initMainUI();
     this->_initMenuUI();
     this->_initHierarchyUI();
-    // this->_initAssetsUI();
+    this->_initAssetsUI();
     // this->_initPropertyUI();
     // this->_initSceneUI();
     // this->_initToolUI();
@@ -89,7 +89,7 @@ void EditorLayout::_initAssetsUI()
     this->_spriteAsset = dynamic_cast<UISprite *>(this->_ndAsset->addComponent("UISprite"));
     if (this->_spriteAsset != nullptr)
     {
-        this->_spriteAsset->setColor("#0A2F36");
+        this->_spriteAsset->setColor(EditorConfig::theme);
     }
 }
 void EditorLayout::_initPropertyUI()

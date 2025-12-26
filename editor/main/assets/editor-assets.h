@@ -1,18 +1,18 @@
-// #pragma once
-// #include <string>
-// #include <iostream>
-// #include "../ipc/editor-ipc.h"
-// class EditorAssetsLayout;
-// class Node2D;
-// class EditorAssets
-// {
-// private:
-//     EditorAssetsLayout *_layout;
-//     void _onFocusEvent(const EventValue& value);
+#pragma once
+#include <string>
+#include <iostream>
+class EditorAssetsLayout;
+class Node2D;
+class EditorAssets
+{
+private:
+    Node2D *_rootNode;
+    EditorAssetsLayout *_layout;
 
-// public:
-//     EditorAssets(Node2D *root);
-//     void setRoot(std::string root);
-//     void update(float dt);
-//     ~EditorAssets();
-// };
+public:
+    EditorAssets(Node2D *root);
+    void init();
+    void setRoot(std::string root);
+    void update(float dt);
+    ~EditorAssets();
+};

@@ -9,6 +9,9 @@
 
 #include "editor-layout.h"
 #include "hierarchy/editor-hierarchy.h"
+#include "assets/editor-assets.h"
+
+
 
 #include "../../engine/boo.h"
 #include "../../engine/core/game.h"
@@ -37,6 +40,7 @@ void EditorMain::Awake()
     this->_initCamera();
     this->_initLayout();
     this->_initHierarchy();
+    this->_initAssets();
     this->_initScene();
 }
 void EditorMain::Enable()
@@ -66,6 +70,15 @@ void EditorMain::_initHierarchy()
     this->_hierarchy = new EditorHierarchy(this->_layout->getHierarchy());
     this->_hierarchy->init();
 }
+void EditorMain::_initAssets()
+{
+    this->_assets = new EditorAssets(this->_layout->getAssets());
+    this->_assets->init();
+    this->_assets->setRoot(BooEditor::projectPath + "/assets");
+}
+
+
+
 
 void EditorMain::_initScene()
 {

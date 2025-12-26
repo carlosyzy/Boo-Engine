@@ -12,6 +12,7 @@ class Camera;
 class EditorLayout;
 
 class EditorHierarchy;
+class EditorAssets;
 
 class EditorMain : public Component
 {
@@ -24,9 +25,14 @@ private:
 
 	EditorHierarchy *_hierarchy;
 	void _initHierarchy();
+
+	EditorAssets *_assets;
+	void _initAssets();
 	
 	Scene *_scene;
 	void _initScene();
+
+	
 
 protected:
 	void _deserialized() override;
