@@ -73,7 +73,6 @@ private:
     void _updateTreeItemIcon(Node2D *ndItem, NodeTreeStructure &uiTreeData, float &_width);
     void _updateTreeItemName(Node2D *ndItem, NodeTreeStructure &uiTreeData, float &_width);
 
-    void _onTreeItemTouchEvent(NodeInputResult &result);
     // void _onTreeContentHoverEvent(NodeInputResult &result);
 
 private:
@@ -86,8 +85,9 @@ private:
      */
     void _refreshTreeItemState(Node2D *ndItem, int state);
     void _refreshTreeItemUI(NodeTreeStructure *tree, int state);
-    bool _checkInItem(Node2D *ndItem, float touchX, float touchY);
-    bool _checkInItemFold(Node2D *ndItem, float touchX, float touchY);
+
+    void _onTreeItemTouchEvent(NodeInputResult &result);
+    void _onTreeItemCursorHoverEvent(NodeInputResult &result);
 
 private:
 protected:

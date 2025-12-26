@@ -5,7 +5,7 @@
 #include "../../core/component/component.h"
 
 template <typename T, typename Method>
-int Node2D::onNodeInputEvent(NodeInput input, Method method, T *instance, bool useCapture)
+int Node2D::onNodeInputEvent(NodeInput input, Method method, T *instance, bool isIntercept)
 {
-    return Boo::game->input()->onNodeInputEvent(this, input, method, instance, useCapture);
+    return Boo::game->input()->onNodeInputEvent(this, input, method, instance, isIntercept);
 }

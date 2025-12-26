@@ -64,17 +64,25 @@ void Node2D::setSize(float width, float height)
 void Node2D::_updateWorldTransform()
 {
 	Node::_updateWorldTransform();
+	//坐标
+	float x = this->_worldMatrix.getM30() + (0.5 - this->_anchor.getX()) * this->_size.getWidth();
+	float y = this->_worldMatrix.getM31() + (0.5 - this->_anchor.getY()) * this->_size.getHeight();
 	// 尺寸
-	this->_uiWorldMatrix.set(this->_worldMatrix);
-	float _x = this->_uiWorldMatrix.getM30() + (0.5 - this->_anchor.getX()) * this->_size.getWidth();
-	float _y = this->_uiWorldMatrix.getM31() + (0.5 - this->_anchor.getY()) * this->_size.getHeight();
-	float _width = this->_uiWorldMatrix.getM00() * this->_size.getWidth();
-	float _height = this->_uiWorldMatrix.getM11() * this->_size.getHeight();
-	// 锚点
-	this->_uiWorldMatrix.setM30(_x);
-	this->_uiWorldMatrix.setM31(_y);
-	this->_uiWorldMatrix.setM00(_width); // 宽高和缩放进行相乘
-	this->_uiWorldMatrix.setM11(_height);
+	float width = this->_worldMatrix.getM00() * this->_size.getWidth();
+	float height = this->_worldMatrix.getM11() * this->_size.getHeight();
+
+	//
+	this->_uiWorldMatrix.setM30(x);
+	this->_uiWorldMatrix.setM31(y);
+	this->_uiWorldMatrix.setM00(width); // 宽高和缩放进行相乘
+	this->_uiWorldMatrix.setM11(height);
+
+	// this->_uiWorldMatrix.set(this->_worldMatrix);
+	// float _x = this->_uiWorldMatrix.getM30() + (0.5 - this->_anchor.getX()) * this->_size.getWidth();
+	// float _y = this->_uiWorldMatrix.getM31() + (0.5 - this->_anchor.getY()) * this->_size.getHeight();
+	// float _width = this->_uiWorldMatrix.getM00() * this->_size.getWidth();
+	// float _height = this->_uiWorldMatrix.getM11() * this->_size.getHeight();
+	// // 锚点
 }
 Component *Node2D::addComponent(std::string name, std::string uuid)
 {
@@ -181,7 +189,7 @@ bool Node2D::inHitOnNode(float x, float y)
 	float _right = _x + _width / 2.0;
 	float _top = _y - _height / 2.0;
 	float _bottom = _y + _height / 2.0;
-	// std::cout << "Node2D::inHitOnNode: " << this->_name << " left: " << _left << " right: " << _right << " top: " << _top << " bottom: " << _bottom  << "width: " << _width << " height: " << _height << std::endl;
+	// std::cout << "Node2D::inHitOnNode: " << this->_name << " x: " << x << " y: " << y << " left: " << _left << " right: " << _right << " top: " << _top << " bottom: " << _bottom  << "width: " << _width << " height: " << _height << std::endl;
 	if (x >= _left && x <= _right && y >= _top && y <= _bottom)
 	{
 		// std::cout << "Node2D::inHitOnNode: " << this->_name << " is hit" << std::endl;
