@@ -36,7 +36,7 @@ private:
     UISprite *_spriteNodeTree;
     EditorHierarchyNodeTree *_nodeTree;
     void _initNodeTree();
-    // void _onNodeTreeSelectEvent(std::string uuid);
+    void _onNodeTreeSelectEvent(std::string uuid);
     // void _onNodeTreeMenuEvent(std::string uuid, int x, int y);
 
 public:

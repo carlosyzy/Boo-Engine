@@ -17,6 +17,9 @@ struct NodeInputResult
 	float localY = 0;
 	float worldX = 0;
 	float worldY = 0;
+	/**
+	 * 鼠标按钮 0: 左键 1: 右键 2: 中键
+	 */
 	int button = 0;
 };
 enum class NodeInput

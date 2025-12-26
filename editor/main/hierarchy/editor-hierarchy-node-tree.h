@@ -38,6 +38,8 @@ private:
     int _contentHoverID = -1;
     void _onTreeContentTouchEvent(NodeInputResult &result);
     void _onTreeContentHoverEvent(NodeInputResult &result);
+    // 选择事件回调
+    std::function<void(std::string)> _selectCallback;
 
 private:
     float _topLen;
@@ -102,6 +104,7 @@ public:
     void setNode(Node *node);
     void setScene(Scene *scene);
     void updateTree();
+    void onSelectEvent(std::function<void(std::string)> callback);
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
     void Disable() override;
