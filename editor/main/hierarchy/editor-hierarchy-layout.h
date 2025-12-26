@@ -6,7 +6,7 @@ class Node2D;
 class Scene;
 class UISprite;
 class EditorHierarchyNodeTree;
-// struct UITreeStructure;
+
 
 class EditorHierarchyLayout
 {

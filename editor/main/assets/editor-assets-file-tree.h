@@ -12,7 +12,7 @@ class Node2D;
 class UISprite;
 class Scene;
 
-struct NodeTreeStructure
+struct FileTreeStructure
 {
     /** 节点名称 */
     std::string name = "";
@@ -28,10 +28,10 @@ struct NodeTreeStructure
     // 节点树中的显示节点
     Node2D *ndBind;
     /** 子节点 */
-    std::vector<NodeTreeStructure> children;
+    std::vector<FileTreeStructure> children;
 };
 
-class EditorHierarchyNodeTree : public Component
+class EditorAssetsFileTree : public Component
 {
 private:
     int _contentTouchID = -1;
@@ -53,39 +53,39 @@ private:
     void _initContent();
 
 private:
-    Node *_rootNode = nullptr;
-    Scene *_rootScene = nullptr;   // 改为弱引用，不拥
-    NodeTreeStructure _uiTreeData; // 节点树数据
+    std::string _root;
+    FileTreeStructure _uiTreeData; // 节点树数据
     int _nodeIndex;
     float _itemHeight = 20.0f;
     float _itemOffset = 15.0f;
     float _itemElemBorder = 3.0f;
     std::vector<Node2D *> _nodePools;
     std::vector<Node2D *> _treeNodes; // 节点-节点树item 映射
-    std::map<std::string, NodeTreeStructure *> _treeNodeDataMap;
+    std::map<std::string, FileTreeStructure *> _treeNodeDataMap;
     /** 是否需要刷新 */
     bool _isDirty = true;
-    void _setTrees(Node *root, NodeTreeStructure &uiTreeData, int layer);
+    void _setTrees(std::filesystem::directory_entry entry, FileTreeStructure &uiTreeData, int layer);
     void _updateTreeContent();
-    void _updateTreesItems(NodeTreeStructure &uiTreeData);
+    void _updateTreesItems(FileTreeStructure &uiTreeData);
     void _createNodeItem();
 
-    void _updateTreeItemSelect(Node2D *ndItem, NodeTreeStructure &uiTreeData);
-    void _updateTreeItemFold(Node2D *ndItem, NodeTreeStructure &uiTreeData, float &_width);
-    void _updateTreeItemIcon(Node2D *ndItem, NodeTreeStructure &uiTreeData, float &_width);
-    void _updateTreeItemName(Node2D *ndItem, NodeTreeStructure &uiTreeData, float &_width);
+    void _updateTreeItemSelect(Node2D *ndItem, FileTreeStructure &uiTreeData);
+    void _updateTreeItemFold(Node2D *ndItem, FileTreeStructure &uiTreeData, float &_width);
+    void _updateTreeItemIcon(Node2D *ndItem, FileTreeStructure &uiTreeData, float &_width);
+    void _updateTreeItemName(Node2D *ndItem, FileTreeStructure &uiTreeData, float &_width);
 
+    // void _onTreeContentHoverEvent(NodeInputResult &result);
 
 private:
-    NodeTreeStructure *_hoverTreeItem = nullptr;
-    NodeTreeStructure *_selectTreeItem = nullptr;
+    FileTreeStructure *_hoverTreeItem = nullptr;
+    FileTreeStructure *_selectTreeItem = nullptr;
     /**
      * 刷新节点树item的UI
      * @param ndItem 节点树item
      * @param state 刷新状态 0-正常 1-选中 2-悬浮
      */
     void _refreshTreeItemState(Node2D *ndItem, int state);
-    void _refreshTreeItemUI(NodeTreeStructure *tree, int state);
+    void _refreshTreeItemUI(FileTreeStructure *tree, int state);
 
     void _onTreeItemTouchEvent(NodeInputResult &result);
     void _onTreeItemCursorHoverEvent(NodeInputResult &result);
@@ -96,19 +96,18 @@ protected:
     void _deserialized() override;
 
 public:
-    EditorHierarchyNodeTree(std::string name, Node *node, std::string uuid = "");
+    EditorAssetsFileTree(std::string name, Node *node, std::string uuid = "");
 
     // 组件生命周期
     void Awake() override;
     void Enable() override;
-    void setNode(Node *node);
-    void setScene(Scene *scene);
+    void setRoot(std::string root);
     void updateTree();
     void onSelectEvent(std::function<void(std::string)> callback);
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
     void Disable() override;
     void destroy() override;
-    ~EditorHierarchyNodeTree();
+    ~EditorAssetsFileTree();
 };
-REGISTER_COMPONENT(EditorHierarchyNodeTree, "Editor Hierarchy Node Tree Component");
+REGISTER_COMPONENT(EditorAssetsFileTree, "Editor Assets File Tree Component");

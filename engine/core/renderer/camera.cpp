@@ -30,7 +30,7 @@ void Camera::_createRenderPipeline()
     GfxMgr::getInstance()->initRenderQueue(this->_uuid, this->_renderTexture);
     if (this->_width > 0 && this->_height > 0)
     {
-        this->_renderTexture->resize(this->_width*2.0f, this->_height*2.0f);
+        this->_renderTexture->resize(this->_width * 2.0f, this->_height * 2.0f);
     }
 }
 void Camera::Enable()
@@ -50,7 +50,7 @@ void Camera::resize(int width, int height)
     this->_height = height;
     if (this->_width > 0 && this->_height > 0 && this->_renderTexture != nullptr)
     {
-        this->_renderTexture->resize(this->_width*2.0f, this->_height*2.0f);
+        this->_renderTexture->resize(this->_width * 2.0f, this->_height * 2.0f);
     }
     this->_matProj.setM00(2.0f / (float)this->_width);
     this->_matProj.setM11(2.0f / (float)this->_height);
