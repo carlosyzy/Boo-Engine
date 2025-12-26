@@ -195,11 +195,7 @@ void EditorHierarchyNodeTree::_updateTreesItems(NodeTreeStructure &uiTreeData)
     this->_updateTreeItemIcon(node, uiTreeData, _width);
     this->_updateTreeItemName(node, uiTreeData, _width);
 
-    if (_width > rootSize.getWidth() - 3)
-    {
-        _width = rootSize.getWidth() - 3;
-    }
-    node->setSize(_width, this->_itemHeight);
+    node->setSize(1000.0f, this->_itemHeight);
     node->setPosition(0.0f, -this->_itemHeight / 2.0f - this->_nodeIndex * this->_itemHeight, 0.0f);
 
     if (_width > this->_contentWidth)
@@ -226,8 +222,8 @@ void EditorHierarchyNodeTree::_createNodeItem()
     // sp->setColor(340.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
     // sp->setTextureAsset("resources/texture/ic-default.png");
     // sp->setMaterialAsset(nullptr);
-    // node->onNodeInputEvent(NodeInput::TOUCH_END, &UITree::_onTreeItemTouchEvent, this);
-    // node->onNodeInputEvent(NodeInput::CURSOR_HOVER, &UITree::_onTreeItemCursorHoverEvent, this);
+    node->onNodeInputEvent(NodeInput::TOUCH_END, &EditorHierarchyNodeTree::_onTreeItemTouchEvent, this);
+    node->onNodeInputEvent(NodeInput::CURSOR_HOVER, &EditorHierarchyNodeTree::_onTreeItemCursorHoverEvent, this);
     // 选择框
     Node2D *ndSelect = new Node2D("NodeTreeItemSelect");
     node->addChild(ndSelect);
@@ -330,85 +326,26 @@ void EditorHierarchyNodeTree::_updateTreeItemName(Node2D *ndItem, NodeTreeStruct
 
 void EditorHierarchyNodeTree::_onTreeContentTouchEvent(NodeInputResult &result)
 {
-    // Node2D *root = dynamic_cast<Node2D *>(this->_node);
-    // const Size &size = root->getSize();
-    // std::string uuid = result.node->getUuid();
-    // std::string name = result.node->getName();
-    // float worldX = result.worldX;
-    // float worldY = result.worldY;
-    // float localX = result.localX;
-    // float localY = result.localY;
-    // for (auto node : this->_treeNodes)
-    // {
-    //     std::string name = node->getName();
-    //     float h = size.getHeight();
-    //     float _y = node->getPosition().getY();
-    //     _y = _y - this->_topLen;
-    //     _y = _y + h / 2.0f;
-    //     if (localY >= _y - this->_itemHeight / 2.0f && localY <= _y + this->_itemHeight / 2.0f)
-    //     {
-    //         NodeTreeStructure *_tree = this->_treeNodeDataMap[node->getUuid()];
-    //         // if (_tree != nullptr && _tree->children.size() > 0)
-    //         // {
-    //         //     // 判断是否点击了折叠按钮
-    //         //     float foldX = -1 * node->getSize().getWidth() / 2.0f + _tree->layer * 10;
-    //         //     float foldY = _y;
-    //         //     if (localX >= foldX && localX <= foldX + ndFold->getSize().getWidth())
-    //         //     {
-    //         //         _tree->isFold = !_tree->isFold;
-    //         //         this->_updateTreesItems(*_tree);
-    //         //     }
-    //         //     // if(localX>=startX&&localX<=startX+ndFold->getSize().getWidth()){
-    //         //     //     _tree->isFold=!_tree->isFold;
-    //         //     //     this->_updateTreesItems(*_tree);
-    //         //     // }
-    //         // }
-    //         this->_refreshTreeItemState(node, 1);
-    //         return;
-    //     }
-    // }
-    // std::cout << "click null node: " << std::endl;
-    // this->_refreshTreeItemState(nullptr, 0);
+    std::cout << "EditorHierarchyNodeTree::_onTreeContentTouchEvent: " << result.node->getName() << std::endl;
+    this->_refreshTreeItemState(nullptr, 0);
+}
+void EditorHierarchyNodeTree::_onTreeItemTouchEvent(NodeInputResult &result)
+{
+    std::cout << "EditorHierarchyNodeTree::_onTreeItemTouchEvent: " << result.node->getName() << std::endl;
+    Node2D *ndItem = dynamic_cast<Node2D *>(result.node);
+    this->_refreshTreeItemState(ndItem, 1);
+}
+void EditorHierarchyNodeTree::_onTreeItemCursorHoverEvent(NodeInputResult &result)
+{
+    std::cout << "EditorHierarchyNodeTree::_onTreeItemCursorHoverEvent: " << result.node->getName() << std::endl;
+    Node2D *ndItem = dynamic_cast<Node2D *>(result.node);
+    this->_refreshTreeItemState(ndItem, 2);
 }
 void EditorHierarchyNodeTree::_onTreeContentHoverEvent(NodeInputResult &result)
 {
-    Node2D *root = dynamic_cast<Node2D *>(this->_node);
-    const Size &size = root->getSize();
-    std::string uuid = result.node->getUuid();
-    std::string name = result.node->getName();
-    float worldX = result.worldX;
-    float worldY = result.worldY;
-    float localX = result.localX;
-    float localY = result.localY;
-    for (auto node : this->_treeNodes)
-    {
-        if (this->_checkInItem(node, localX, localY))
-        {
-            this->_refreshTreeItemState(node, 2);
-            return;
-        }
-    }
     this->_refreshTreeItemState(nullptr, 2);
 }
-bool EditorHierarchyNodeTree::_checkInItem(Node2D *ndItem, float touchX, float touchY)
-{
-    if (ndItem == nullptr)
-    {
-        return false;
-    }
-    Node2D *root = dynamic_cast<Node2D *>(this->_node);
-    const Size &rootSize = root->getSize();
-    // 检查点击是否在节点上
-    const Vec3 &pos = ndItem->getPosition();
-    const Size &size = ndItem->getSize();
-    float top = pos.getY() - this->_topLen + rootSize.getHeight() / 2.0f + size.getHeight() / 2.0f;
-    float bottom = pos.getY() - this->_topLen + rootSize.getHeight() / 2.0f - size.getHeight() / 2.0f;
-    if (touchY >= bottom && touchY <= top)
-    {
-        return true;
-    }
-    return false;
-}
+
 void EditorHierarchyNodeTree::_refreshTreeItemState(Node2D *ndItem, int state)
 {
     if (state == 0)
@@ -542,6 +479,62 @@ EditorHierarchyNodeTree::~EditorHierarchyNodeTree()
 {
 }
 
+
+
+// bool EditorHierarchyNodeTree::_checkInItem(Node2D *ndItem, float touchX, float touchY)
+// {
+//     if (ndItem == nullptr)
+//     {
+//         return false;
+//     }
+//     Node2D *root = dynamic_cast<Node2D *>(this->_node);
+//     const Size &rootSize = root->getSize();
+//     // 检查点击是否在节点上
+//     const Vec3 &pos = ndItem->getPosition();
+//     const Size &size = ndItem->getSize();
+//     float top = pos.getY() - this->_topLen + rootSize.getHeight() / 2.0f + size.getHeight() / 2.0f;
+//     float bottom = pos.getY() - this->_topLen + rootSize.getHeight() / 2.0f - size.getHeight() / 2.0f;
+//     std::cout << "EditorHierarchyNodeTree::_checkInItem: " << ndItem->getName() << " touchX: " << touchX << " touchY: " << touchY << " top: " << top << " bottom: " << bottom << std::endl;
+//     if (touchY >= bottom && touchY <= top)
+//     {
+//         std::cout << "EditorHierarchyNodeTree::_checkInItem: " << ndItem->getName() << " in range: " << std::endl;
+//         return true;
+//     }
+//     return false;
+// }
+// bool EditorHierarchyNodeTree::_checkInItem(Node2D *ndItem, float touchX, float touchY)
+// {
+//     if (ndItem == nullptr)
+//     {
+//         return false;
+//     }
+//     Node2D *root = dynamic_cast<Node2D *>(this->_node);
+//     const Size &rootSize = root->getSize();
+//     Node2D *ndFold = dynamic_cast<Node2D *>(ndItem->getChildByName("NodeTreeItemFold"));
+//     if (ndFold == nullptr)
+//     {
+//         return false;
+//     }
+//     // 检查点击是否在节点上
+//     const Vec3 &pos = ndItem->getPosition();
+//     const Size &size = ndItem->getSize();
+//     // 检查点击是否在折叠图标上
+//     const Vec3 &foldPos = ndFold->getPosition();
+//     const Size &foldSize = ndFold->getSize();
+
+//     float top = pos.getY() - this->_topLen + foldPos.getY() / 2.0f + foldSize.getHeight() / 2.0f;
+//     float bottom = pos.getY() - this->_topLen + foldPos.getY() / 2.0f - foldSize.getHeight() / 2.0f;
+
+//     float left = pos.getX() - this->_leftLen + foldPos.getX() / 2.0f - foldSize.getWidth() / 2.0f;
+//     float right = pos.getX() - this->_leftLen + foldPos.getX() / 2.0f + foldSize.getWidth() / 2.0f;
+
+//     if (touchY >= bottom && touchY <= top && touchX >= left && touchX <= right)
+//     {
+//         return true;
+//     }
+
+//     return false;
+// }
 // /* std::random_device rd;
 //  std::mt19937 gen(rd());
 //  std::uniform_real_distribution<double> randomGet(0.0, 1.0);*/
