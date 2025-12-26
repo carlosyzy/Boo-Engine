@@ -206,9 +206,9 @@ void EditorHierarchyLayout::_initNodeTree()
     widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
     widget->setVertical(WidgetVertical::ALL, paramVertical);
     this->_nodeTree = dynamic_cast<EditorHierarchyNodeTree *>(this->_ndNodeTree->addComponent("EditorHierarchyNodeTree"));
+    this->_nodeTree->onSelectEvent([this](std::string uuid)
+                                       { this->_onNodeTreeSelectEvent(uuid); });
 }
-
-
 void EditorHierarchyLayout::setScene(Scene *scene)
 {
     if (this->_nodeTree != nullptr)
@@ -216,6 +216,11 @@ void EditorHierarchyLayout::setScene(Scene *scene)
         this->_nodeTree->setScene(scene);
     }
 }
+void EditorHierarchyLayout::_onNodeTreeSelectEvent(std::string uuid)
+{
+    std::cout << "EditorHierarchyLayout _onNodeTreeSelectEvent:" << uuid << std::endl;
+}
+
 
 // void EditorHierarchyLayout::_initTitle()
 // {

@@ -297,7 +297,7 @@ void EditorHierarchyNodeTree::_updateTreeItemFold(Node2D *ndItem, NodeTreeStruct
     float offset = this->_itemOffset * uiTreeData.layer;
     ndFold->setPosition(offset + size.getWidth() / 2.0f, 0.0f, 0.0f);
     _width += size.getWidth() + offset;
-    std::cout << "EditorHierarchyNodeTree::_updateTreeItemFold: " << uiTreeData.name << " width: " << _width << " layer: " << uiTreeData.layer << " offset: " << offset << std::endl;
+    // std::cout << "EditorHierarchyNodeTree::_updateTreeItemFold: " << uiTreeData.name << " width: " << _width << " layer: " << uiTreeData.layer << " offset: " << offset << std::endl;
 }
 void EditorHierarchyNodeTree::_updateTreeItemIcon(Node2D *ndItem, NodeTreeStructure &uiTreeData, float &_width)
 {
@@ -326,18 +326,23 @@ void EditorHierarchyNodeTree::_updateTreeItemName(Node2D *ndItem, NodeTreeStruct
 
 void EditorHierarchyNodeTree::_onTreeContentTouchEvent(NodeInputResult &result)
 {
-    std::cout << "EditorHierarchyNodeTree::_onTreeContentTouchEvent: " << result.node->getName() << std::endl;
+    // std::cout << "EditorHierarchyNodeTree::_onTreeContentTouchEvent: " << result.node->getName() << std::endl;
     this->_refreshTreeItemState(nullptr, 0);
 }
 void EditorHierarchyNodeTree::_onTreeItemTouchEvent(NodeInputResult &result)
 {
-    std::cout << "EditorHierarchyNodeTree::_onTreeItemTouchEvent: " << result.node->getName() << std::endl;
+    // std::cout << "EditorHierarchyNodeTree::_onTreeItemTouchEvent: " << result.node->getName() << std::endl;
     Node2D *ndItem = dynamic_cast<Node2D *>(result.node);
     this->_refreshTreeItemState(ndItem, 1);
+    if (this->_selectTreeItem != nullptr && result.button == 1)
+    {
+        // 弹出菜单界面
+        std::cout << "EditorHierarchyNodeTree::_onTreeItemTouchEvent: show menu panel" <<  std::endl;
+    }
 }
 void EditorHierarchyNodeTree::_onTreeItemCursorHoverEvent(NodeInputResult &result)
 {
-    std::cout << "EditorHierarchyNodeTree::_onTreeItemCursorHoverEvent: " << result.node->getName() << std::endl;
+    // std::cout << "EditorHierarchyNodeTree::_onTreeItemCursorHoverEvent: " << result.node->getName() << std::endl;
     Node2D *ndItem = dynamic_cast<Node2D *>(result.node);
     this->_refreshTreeItemState(ndItem, 2);
 }
@@ -355,6 +360,10 @@ void EditorHierarchyNodeTree::_refreshTreeItemState(Node2D *ndItem, int state)
         this->_refreshTreeItemUI(this->_selectTreeItem, 0);
         this->_hoverTreeItem = nullptr;
         this->_selectTreeItem = nullptr;
+        if (this->_selectCallback != nullptr)
+        {
+            this->_selectCallback("");
+        }
     }
     else if (state == 1)
     {
@@ -374,6 +383,10 @@ void EditorHierarchyNodeTree::_refreshTreeItemState(Node2D *ndItem, int state)
             this->_refreshTreeItemUI(this->_selectTreeItem, 0);
             this->_selectTreeItem = _tree;
             this->_refreshTreeItemUI(this->_selectTreeItem, 1);
+            if (this->_selectCallback != nullptr)
+            {
+                this->_selectCallback(_tree->uuid);
+            }
         }
     }
     else if (state == 2)
@@ -463,6 +476,10 @@ void EditorHierarchyNodeTree::_refreshTreeItemUI(NodeTreeStructure *tree, int st
         spSelect->setColor(9.0f / 250.0f, 74.0f / 255.0f, 93.0f / 255.0f, 0.3f);
     }
 }
+void EditorHierarchyNodeTree::onSelectEvent(std::function<void(std::string)> callback)
+{
+    this->_selectCallback = callback;
+}
 
 void EditorHierarchyNodeTree::Disable()
 {
@@ -478,8 +495,6 @@ void EditorHierarchyNodeTree::destroy()
 EditorHierarchyNodeTree::~EditorHierarchyNodeTree()
 {
 }
-
-
 
 // bool EditorHierarchyNodeTree::_checkInItem(Node2D *ndItem, float touchX, float touchY)
 // {
