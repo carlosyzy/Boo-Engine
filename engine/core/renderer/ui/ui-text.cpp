@@ -27,7 +27,6 @@ void UIText::_deserialized()
 {
   UIRenderer::_deserialized();
   this->setText(this->_text);
-  // this->setMaterialAsset(this->_material);
 }
 void UIText::Awake()
 {
@@ -90,26 +89,26 @@ void UIText::setAlpha(float alpha)
   this->_setColor(c.getR(), c.getG(), c.getB(), c.getA());
 }
 
-void UIText::setMaterialAsset(std::string mtl)
-{
-  /*MaterialAsset *mtlAsset =
-      dynamic_cast<MaterialAsset *>(Boo::game->assetsManager()->get(mtl));
-  if (mtlAsset == nullptr) {
-    std::cout << "UISprite::setMaterial: material " << mtl << " not found"
-              << std::endl;
-    return;
-  }
-  this->_setMaterial(mtlAsset);*/
-}
-void UIText::setMaterialAsset(MaterialAsset *mtl)
-{
-  if (mtl == nullptr)
-  {
-    std::cout << "UIText::setMaterialAsset: material is nullptr" << std::endl;
-    return;
-  }
-  this->_setMaterial(mtl);
-}
+// void UIText::setMaterialAsset(std::string mtl)
+// {
+//   /*MaterialAsset *mtlAsset =
+//       dynamic_cast<MaterialAsset *>(Boo::game->assetsManager()->get(mtl));
+//   if (mtlAsset == nullptr) {
+//     std::cout << "UISprite::setMaterial: material " << mtl << " not found"
+//               << std::endl;
+//     return;
+//   }
+//   this->_setMaterial(mtlAsset);*/
+// }
+// void UIText::setMaterialAsset(MaterialAsset *mtl)
+// {
+//   if (mtl == nullptr)
+//   {
+//     std::cout << "UIText::setMaterialAsset: material is nullptr" << std::endl;
+//     return;
+//   }
+//   this->_setMaterial(mtl);
+// }
 
 // void UIText::_updateRendererState() { UIRenderer::_updateRendererState(); }
 // /**

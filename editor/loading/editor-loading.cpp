@@ -85,7 +85,7 @@ void EditorLoading::_initLogo()
 		this->_spriteLogo = dynamic_cast<UISprite *>(compLogo);
 		this->_spriteLogo->setEnabled(true);
 		this->_spriteLogo->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-		this->_spriteLogo->setTextureAsset(texture);
+		this->_spriteLogo->setTexture(texture);
 	}
 	// 初始化logo大小
 	this->_updateLogoSize(this->_width, this->_height);

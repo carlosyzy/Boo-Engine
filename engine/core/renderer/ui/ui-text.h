@@ -58,8 +58,8 @@ public:
     void setColor(std::string color);
     void setColor(float r, float g, float b, float a);
     void setAlpha(float alpha);
-    void setMaterialAsset(std::string mtl);
-    void setMaterialAsset(MaterialAsset *mtl);
+    // void setMaterialAsset(std::string mtl);
+    // void setMaterialAsset(MaterialAsset *mtl);
 
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;

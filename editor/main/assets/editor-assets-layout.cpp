@@ -84,8 +84,7 @@ void EditorAssetsLayout::_initOperate()
 
     UISprite *sprite = dynamic_cast<UISprite *>(this->_ndOperate->addComponent("UISprite"));
     sprite->setColor(EditorConfig::operate);
-    sprite->setTextureAsset(EditorConfig::txDefault);
-    sprite->setMaterialAsset(nullptr);
+    sprite->setTexture(EditorConfig::txDefault);
     // 添加wedget组件
     UIWidget *widget = dynamic_cast<UIWidget *>(this->_ndOperate->addComponent("UIWidget"));
     WidgetHorizontalParam paramHorizontal{};
@@ -107,8 +106,7 @@ void EditorAssetsLayout::_initOperateAdd()
     this->_ndOperate->addChild(this->_ndAdd);
     this->_ndAdd->setSize(16.0f, 16.0f);
     this->_spriteAdd = dynamic_cast<UISprite *>(this->_ndAdd->addComponent("UISprite"));
-    // this->_spriteAdd->setTextureAsset("resources/texture/ic-add.png");
-    // this->_spriteAdd->setMaterialAsset(nullptr);
+    // this->_spriteAdd->setTexture("resources/texture/ic-add.png");
     TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-add.png");
     this->_spriteAdd->setTexture(tex);
 
@@ -130,8 +128,7 @@ void EditorAssetsLayout::_initOperateFold()
     this->_ndOperate->addChild(this->_ndFold);
     this->_ndFold->setSize(16, 16);
     this->_spriteFold = dynamic_cast<UISprite *>(this->_ndFold->addComponent("UISprite"));
-    // this->_spriteFold->setTextureAsset("resources/texture/icon/ic-flod.png");
-    // this->_spriteFold->setMaterialAsset(nullptr);
+    // this->_spriteFold->setTexture("resources/texture/icon/ic-flod.png");
     TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-flod.png");
     this->_spriteFold->setTexture(tex);
     // 添加wedget组件
@@ -153,8 +150,7 @@ void EditorAssetsLayout::_initOperateSearch()
     // 渲染组件
     UISprite *sprite = static_cast<UISprite *>(ndSearchBg->addComponent("UISprite"));
     sprite->setColor("#151e2bff");
-    sprite->setTextureAsset(EditorConfig::txDefault);
-    sprite->setMaterialAsset(nullptr);
+    sprite->setTexture(EditorConfig::txDefault);
     UIWidget *widget = static_cast<UIWidget *>(ndSearchBg->addComponent("UIWidget"));
     WidgetHorizontalParam paramHorizontal{};
     paramHorizontal.left = 28.0f;
@@ -165,7 +161,6 @@ void EditorAssetsLayout::_initOperateSearch()
     this->_ndOperate->addChild(this->_ndSearchIcon);
     this->_ndSearchIcon->setSize(14.0f, 14.0f);
     this->_spriteSearchIcon = dynamic_cast<UISprite *>(this->_ndSearchIcon->addComponent("UISprite"));
-    // this->_spriteSearchIcon->setMaterialAsset(nullptr);
     TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-search.png");
     this->_spriteSearchIcon->setTexture(tex);
     // 添加wedget组件
@@ -179,9 +174,8 @@ void EditorAssetsLayout::_initOperateSearch()
     this->_ndOperate->addChild(this->_ndSearchBox);
     this->_ndSearchBox->setSize(100.0f, 18.0f);
     this->_spriteSearchBox = dynamic_cast<UISprite *>(this->_ndSearchBox->addComponent("UISprite"));
-    this->_spriteSearchBox->setMaterialAsset(nullptr);
     this->_spriteSearchBox->setColor("#ffffffff");
-    this->_spriteSearchBox->setTextureAsset(EditorConfig::txDefault);
+    this->_spriteSearchBox->setTexture(EditorConfig::txDefault);
     // 添加wedget组件
     UIWidget *widget1 = dynamic_cast<UIWidget *>(this->_ndSearchBox->addComponent("UIWidget"));
     WidgetHorizontalParam paramHorizontal1{};
@@ -281,7 +275,7 @@ EditorAssetsLayout::~EditorAssetsLayout()
 //     ndIcon->setPosition(-width / 2.0 + 5.0f + iconWidth / 2.0, 0.0, 0.0);
 //     Sprite *spriteIcon = ndIcon->addComponent<Sprite>("Sprite");
 //     spriteIcon->setColor(EditorConfig::iconColor);
-//     spriteIcon->setTextureAsset("resources/textures/ic-title-assets.png");
+//     spriteIcon->setTexture("resources/textures/ic-title-assets.png");
 //     // name
 //     float nameWidth = 72.0f;
 //     float nameHeight = 16.0f;
@@ -319,7 +313,7 @@ EditorAssetsLayout::~EditorAssetsLayout()
 //     ndOperateAdd->setSize(14.0f, 14.0f);
 //     Sprite *spriteAdd = ndOperateAdd->addComponent<Sprite>("Sprite");
 //     spriteAdd->setColor(EditorConfig::iconColor);
-//     spriteAdd->setTextureAsset("resources/textures/ic-add.png");
+//     spriteAdd->setTexture("resources/textures/ic-add.png");
 //     UIWidget *widgetAdd = ndOperateAdd->addComponent<UIWidget>("UIWidget");
 //     WidgetHorizontalParam paramHorizontal{};
 //     paramHorizontal.left = 5.0f;
@@ -330,7 +324,7 @@ EditorAssetsLayout::~EditorAssetsLayout()
 //     ndOperateCollapse->setSize(14.0f, 14.0f);
 //     Sprite *spriteCollaps = ndOperateCollapse->addComponent<Sprite>("Sprite");
 //     spriteCollaps->setColor(EditorConfig::iconColor);
-//     spriteCollaps->setTextureAsset("resources/textures/ic-flod.png");
+//     spriteCollaps->setTexture("resources/textures/ic-flod.png");
 //     UIWidget *widgetCollaps = ndOperateCollapse->addComponent<UIWidget>("UIWidget");
 //     WidgetHorizontalParam widgetCollapsHParam{};
 //     widgetCollapsHParam.right = 5.0f;

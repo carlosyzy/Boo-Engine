@@ -73,7 +73,7 @@
 //     ndIcon->setPosition(-width / 2.0 + 5.0f + iconWidth / 2.0, 0.0, 0.0);
 //     Sprite *spriteIcon = ndIcon->addComponent<Sprite>("Sprite");
 //     spriteIcon->setColor(EditorConfig::iconColor);
-//     spriteIcon->setTextureAsset("resources/textures/ic-title-assets.png");
+//     spriteIcon->setTexture("resources/textures/ic-title-assets.png");
 //     // name
 //     float nameWidth = 72.0f;
 //     float nameHeight = 16.0f;
@@ -118,7 +118,7 @@
 //     this->_content->addChild(this->_ndScrollBarBg);
 //     this->_ndScrollBarBg->setAnchor(0.5, 0.5);
 //     this->_spScrollBarBg = this->_ndScrollBarBg->addComponent<Sprite>("Sprite");
-//     this->_spScrollBarBg->setTextureAsset("resources/textures/ic-default.png");
+//     this->_spScrollBarBg->setTexture("resources/textures/ic-default.png");
 //     this->_spScrollBarBg->setColor(24.0f / 255.0f, 32.0f / 255.0f, 43.0f / 255.0f, 1.0f);
 //     this->_scrollBarBgWidth = 8.0f;
 //     this->_scrollBarBgHeight = 100.0f;
@@ -131,7 +131,7 @@
 //     this->_ndScrollBar->setAnchor(0.5, 0.5);
 //     this->_ndScrollBarBg->addChild(this->_ndScrollBar);
 //     this->_spScrollBar = this->_ndScrollBar->addComponent<Sprite>("Sprite");
-//     this->_spScrollBar->setTextureAsset("resources/textures/ic-default.png");
+//     this->_spScrollBar->setTexture("resources/textures/ic-default.png");
 //     this->_spScrollBar->setColor(140.0f / 255.0f, 210.0f / 255.0f, 240.0f / 255.0f, 1.0f);
 //     this->_scrollBarWidth = this->_scrollBarBgWidth - 1.0f;
 //     this->_scrollBarHeight = 20.0f;

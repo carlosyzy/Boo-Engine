@@ -39,8 +39,6 @@ public:
     void Awake() override;
     void Enable() override;
 
-    void setMaterialAsset(std::string mtl);
-    void setMaterialAsset(MaterialAsset *mtl);
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
     void Render(Camera *camera) override;
