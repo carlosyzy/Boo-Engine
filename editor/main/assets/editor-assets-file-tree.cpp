@@ -240,8 +240,7 @@ void EditorAssetsFileTree::_createNodeItem()
     // 后续删除
     // sp = dynamic_cast<UISprite *>(node->addComponent("UISprite"));
     // sp->setColor(340.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
-    // sp->setTextureAsset("resources/texture/ic-default.png");
-    // sp->setMaterialAsset(nullptr);
+    // sp->setTexture("resources/texture/ic-default.png");
     node->onNodeInputEvent(NodeInput::TOUCH_END, &EditorAssetsFileTree::_onTreeItemTouchEvent, this);
     node->onNodeInputEvent(NodeInput::CURSOR_HOVER, &EditorAssetsFileTree::_onTreeItemCursorHoverEvent, this);
     // 选择框
@@ -255,7 +254,6 @@ void EditorAssetsFileTree::_createNodeItem()
     node->addChild(ndFold);
     ndFold->setSize(this->_itemHeight * 0.8, this->_itemHeight * 0.8);
     UISprite *spFold = dynamic_cast<UISprite *>(ndFold->addComponent("UISprite"));
-    spFold->setMaterialAsset(nullptr);
     ndFold->onNodeInputEvent(NodeInput::TOUCH_END, &EditorAssetsFileTree::_onTreeItemFoldTouchEvent, this);
 
     // 图标
@@ -263,14 +261,12 @@ void EditorAssetsFileTree::_createNodeItem()
     node->addChild(ndIcon);
     ndIcon->setSize(this->_itemHeight * 0.8, this->_itemHeight * 0.8);
     UISprite *spIcon = dynamic_cast<UISprite *>(ndIcon->addComponent("UISprite"));
-    spIcon->setMaterialAsset(nullptr);
     // 名字
     Node2D *ndName = new Node2D("NodeTreeItemName");
     ndName->setSize(this->_itemHeight * 0.8, this->_itemHeight * 0.8);
     node->addChild(ndName);
     UIText *txtName = dynamic_cast<UIText *>(ndName->addComponent("UIText"));
     txtName->setColor(204.0f / 255.0f, 207.0f / 255.0f, 213.0f / 255.0f, 1.0f);
-    txtName->setMaterialAsset(nullptr);
     this->_nodePools.push_back(node);
 
     // node->onNodeInputEvent(NodeInput::TOUCH_END, &EditorHierarchyNodeTree::_onTreeItemTouchEvent, this);
@@ -302,12 +298,12 @@ void EditorAssetsFileTree::_updateTreeItemFold(Node2D *ndItem, FileTreeStructure
         if (uiTreeData.isFold)
         {
             TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-right.png");
-            spFold->setTextureAsset(tex);
+            spFold->setTexture(tex);
         }
         else
         {
             TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-bottom.png");
-            spFold->setTextureAsset(tex);
+            spFold->setTexture(tex);
         }
     }
     else
@@ -326,7 +322,7 @@ void EditorAssetsFileTree::_updateTreeItemIcon(Node2D *ndItem, FileTreeStructure
     Node2D *ndIcon = dynamic_cast<Node2D *>(ndItem->getChildByName("NodeTreeItemIcon"));
     UISprite *spIcon = dynamic_cast<UISprite *>(ndIcon->getComponent("UISprite"));
     TextureAsset *tex = BooEditor::cache->getEditorTexture(uiTreeData.icon);
-    spIcon->setTextureAsset(tex);
+    spIcon->setTexture(tex);
     _width += this->_itemElemBorder;
     const Size &size = ndIcon->getSize();
     ndIcon->setPosition(_width + size.getWidth() / 2.0f, 0.0f, 0.0f);
@@ -665,12 +661,12 @@ EditorAssetsFileTree::~EditorAssetsFileTree()
 // if (uiTreeData.isFold)
 // {
 //     TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-right.png");
-//     spFold->setTextureAsset(tex);
+//     spFold->setTexture(tex);
 // }
 // else
 // {
 //     TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-bottom.png");
-//     spFold->setTextureAsset(tex);
+//     spFold->setTexture(tex);
 // }
 // if (uiTreeData.children.size() > 0)
 // {
@@ -685,7 +681,7 @@ EditorAssetsFileTree::~EditorAssetsFileTree()
 // // 图标
 // ndIcon->setSize(this->_itemHeight * 0.8, this->_itemHeight * 0.8);
 // TextureAsset *tex = BooEditor::cache->getEditorTexture(uiTreeData.icon);
-// spIcon->setTextureAsset(tex);
+// spIcon->setTexture(tex);
 
 // width += ndIcon->getSize().getWidth();
 // // 创建名字

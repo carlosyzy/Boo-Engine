@@ -286,7 +286,7 @@ EditorCacheScene::~EditorCacheScene()
 //     if (spriteMain != nullptr)
 //     {
 //         std::cout << "EditorLayout::_initMainUI1" << std::endl;
-//         // spriteMain->setTextureAsset("resources/texture/ic-default.png");
+//         // spriteMain->setTexture("resources/texture/ic-default.png");
 //         // spriteMain->setMaterialAsset(nullptr);
 //         spriteMain->setColor(0.1f, 0.1f, 0.1f, 1.0f);
 //     }

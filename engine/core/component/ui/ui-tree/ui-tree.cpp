@@ -59,7 +59,7 @@
 //     // if (this->_spContent != nullptr)
 //     // {
 //     //     this->_spContent->setColor(34.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
-//     //     this->_spContent->setTextureAsset("resources/texture/ic-default.png");
+//     //     this->_spContent->setTexture("resources/texture/ic-default.png");
 //     //     this->_spContent->setMaterialAsset(nullptr);
 //     // }
 // }
@@ -84,7 +84,7 @@
 // //     // this->_ndContent->addChild(this->_ndSelect);
 // //     // this->_ndSelect->setAnchor(0.5, 0.5);
 // //     // this->_spSelect = this->_ndSelect->addComponent<Sprite>("Sprite");
-// //     // this->_spSelect->setTextureAsset("resources/textures/ic-default.png");
+// //     // this->_spSelect->setTexture("resources/textures/ic-default.png");
 // //     // this->_spSelect->setColor(9.0f / 250.0f, 74.0f / 255.0f, 53.0f / 255.0f, 1.0f);
 // //     // this->_selectWidth = 100.0f;
 // //     // this->_selectHeight = 20.0f;
@@ -99,7 +99,7 @@
 // //     // this->_node->addChild(this->_ndScrollBarBg);
 // //     // this->_ndScrollBarBg->setAnchor(0.5, 0.5);
 // //     // this->_spScrollBarBg = this->_ndScrollBarBg->addComponent<Sprite>("Sprite");
-// //     // this->_spScrollBarBg->setTextureAsset("resources/textures/ic-default.png");
+// //     // this->_spScrollBarBg->setTexture("resources/textures/ic-default.png");
 // //     // this->_spScrollBarBg->setColor(24.0f / 255.0f, 32.0f / 255.0f, 43.0f / 255.0f, 1.0f);
 // //     // this->_scrollBarBgWidth = 8.0f;
 // //     // this->_scrollBarBgHeight = 20.0f;
@@ -108,7 +108,7 @@
 // //     // this->_ndScrollBar->setAnchor(0.5, 0.5);
 // //     // this->_ndScrollBarBg->addChild(this->_ndScrollBar);
 // //     // this->_spScrollBar = this->_ndScrollBar->addComponent<Sprite>("Sprite");
-// //     // this->_spScrollBar->setTextureAsset("resources/textures/ic-default.png");
+// //     // this->_spScrollBar->setTexture("resources/textures/ic-default.png");
 // //     // this->_spScrollBar->setColor(140.0f / 255.0f, 210.0f / 255.0f, 240.0f / 255.0f, 1.0f);
 // //     // this->_scrollBarWidth = this->_scrollBarBgWidth - 1.0f;
 // //     // this->_scrollBarHeight = 20;
@@ -305,7 +305,7 @@
 //         // 后续删除
 //         // sp = dynamic_cast<UISprite *>(node->addComponent("UISprite"));
 //         // sp->setColor(340.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
-//         // sp->setTextureAsset("resources/texture/ic-default.png");
+//         // sp->setTexture("resources/texture/ic-default.png");
 //         // sp->setMaterialAsset(nullptr);
 //         node->onNodeInputEvent(NodeInput::TOUCH_END, &UITree::_onTreeItemTouchEvent, this);
 //         node->onNodeInputEvent(NodeInput::CURSOR_HOVER, &UITree::_onTreeItemCursorHoverEvent, this);
@@ -314,7 +314,7 @@
 //         node->addChild(ndSelect);
 //         ndSelect->setSize(1000.0f, itemHeight - 4);
 //         spSelect = dynamic_cast<UISprite *>(ndSelect->addComponent("UISprite"));
-//         spSelect->setTextureAsset("resources/texture/ic-default.png");
+//         spSelect->setTexture("resources/texture/ic-default.png");
 //         spSelect->setMaterialAsset(nullptr);
 //         spSelect->setColor(9.0f / 250.0f, 74.0f / 255.0f, 93.0f / 255.0f, 0.0f);
 //         // 折叠符号
@@ -380,11 +380,11 @@
 //     // std::cout << "UITree UITree::name: " << uiTreeData.name << " fold: " << uiTreeData.isFold << std::endl;
 //     if (uiTreeData.isFold)
 //     {
-//         spFold->setTextureAsset("resources/texture/ic-arrow-right.png");
+//         spFold->setTexture("resources/texture/ic-arrow-right.png");
 //     }
 //     else
 //     {
-//         spFold->setTextureAsset("resources/texture/ic-arrow-bottom.png");
+//         spFold->setTexture("resources/texture/ic-arrow-bottom.png");
 //     }
 //     if (uiTreeData.children.size() > 0)
 //     {
@@ -398,7 +398,7 @@
 //     itemWidth += ndFold->getSize().getWidth();
 //     // 图标
 //     ndIcon->setSize(16.0f, 16.0f);
-//     //spIcon->setTextureAsset(uiTreeData.iconKey);
+//     //spIcon->setTexture(uiTreeData.iconKey);
 //     itemWidth += ndIcon->getSize().getWidth();
 //     // 创建名字
 //     txtName->setText(uiTreeData.name);

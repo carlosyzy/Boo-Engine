@@ -27,7 +27,7 @@ UILayoutHorizontal::UILayoutHorizontal(std::string name, Node *node, std::string
     //     if (spriteLeft != nullptr)
     //     {
     //         std::cout << "EditorLayout::_initLayoutUI1 UISprite" << std::endl;
-    //         spriteLeft->setTextureAsset("resources/texture/ic-default.png");
+    //         spriteLeft->setTexture("resources/texture/ic-default.png");
     //         spriteLeft->setMaterialAsset(nullptr);
     //         spriteLeft->setColor(0.3f, 0.1f, 0.1f, 1.0);
     //     }
@@ -68,8 +68,7 @@ void UILayoutHorizontal::setSize(int size)
     //    if (spriteContent != nullptr)
     //    {
     //        std::cout << "EditorLayout::_initLayoutUI1 UISprite" << std::endl;
-    //        spriteContent->setTextureAsset("resources/texture/ic-default.png");
-    //        spriteContent->setMaterialAsset(nullptr);
+    //        spriteContent->setTexture("resources/texture/ic-default.png");
     //        spriteContent->setColor(0.3f, 0.1f, 0.1f, 1.0);
     //    }
     //    // ndContent->setSize(ndSize.getWidth() / this->_size, ndSize.getHeight());

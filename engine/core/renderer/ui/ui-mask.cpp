@@ -44,7 +44,7 @@ UIMask::UIMask(std::string name, Node *node, std::string uuid) : UIRenderer(name
     // GfxMgr::getInstance()->setObjectPipeline(this->_subUuid, "built-ui-mask-sub");
     // GfxMgr::getInstance()->setObjectUIMaskBehavior(this->_addUuid, 1);
     // GfxMgr::getInstance()->setObjectUIMaskBehavior(this->_subUuid, 0);
-    // this->setTextureAsset("resources/texture/ic-default.png");
+    // this->setTexture("resources/texture/ic-default.png");
 }
 void UIMask::_deserialized()
 {
@@ -63,25 +63,25 @@ void UIMask::Enable()
     // this->_updateRendererState();
     // this->_updateModelMatrix();
 }
-void UIMask::setMaterialAsset(std::string mtl)
-{
-    // MaterialAsset *mtlAsset = dynamic_cast<MaterialAsset *>(Boo::game->assetsManager()->get(mtl));
-    // if (mtlAsset == nullptr)
-    // {
-    //     std::cout << "UIMask::setMaterialAsset: material " << mtl << " not found" << std::endl;
-    //     return;
-    // }
-    // this->_setMaterial(mtlAsset);
-}
-void UIMask::setMaterialAsset(MaterialAsset *mtl)
-{
-    if (mtl == nullptr)
-    {
-        std::cout << "UIMask::setMaterialAsset: material is nullptr" << std::endl;
-        return;
-    }
-    this->_setMaterial(mtl);
-}
+// void UIMask::setMaterialAsset(std::string mtl)
+// {
+//     // MaterialAsset *mtlAsset = dynamic_cast<MaterialAsset *>(Boo::game->assetsManager()->get(mtl));
+//     // if (mtlAsset == nullptr)
+//     // {
+//     //     std::cout << "UIMask::setMaterialAsset: material " << mtl << " not found" << std::endl;
+//     //     return;
+//     // }
+//     // this->_setMaterial(mtlAsset);
+// }
+// void UIMask::setMaterialAsset(MaterialAsset *mtl)
+// {
+//     if (mtl == nullptr)
+//     {
+//         std::cout << "UIMask::setMaterialAsset: material is nullptr" << std::endl;
+//         return;
+//     }
+//     this->_setMaterial(mtl);
+// }
 
 // void UIMask::_updateRendererState()
 // {
