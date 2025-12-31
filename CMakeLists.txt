@@ -13,27 +13,28 @@ endif()
 
 set(ENGINE_SOURCES
     editor/boo-editor.cpp
-    editor/cache/editor-cache-task.cpp
+    editor/cache/assets/editor-asset-util.cpp
+    editor/cache/assets/editor-cache-assets-task.cpp
+    editor/cache/assets/editor-cache-assets.cpp
     editor/cache/editor-cache.cpp
-    editor/cache/old/editor-assets-cache.cpp
-    editor/cache/old/editor-config-cache.cpp
-    editor/cache/old/editor-project-cache.cpp
-    editor/cache/old/editor-scene-cache.cpp
+    editor/cache/scene/editor-cache-scene.cpp
+    editor/cache/setting/editor-cache-setting.cpp
     editor/config/editor-config.cpp
-    editor/editor-main.cpp
+    editor/editor-boot.cpp
     editor/editor.cpp
-    editor/layout/assets/editor-assets-layout.cpp
-    editor/layout/assets/editor-assets.cpp
-    editor/layout/editor-layout.cpp
-    editor/layout/hierarchy/editor-hierarchy-layout.cpp
-    editor/layout/hierarchy/editor-hierarchy.cpp
-    editor/layout/property/editor-property-layout.cpp
-    editor/layout/property/editor-property.cpp
-    editor/layout/property/out/editor-property-image-layout.cpp
-    editor/layout/property/out/editor-property-node-layout.cpp
-    editor/layout/scene/editor-scene-layout.cpp
-    editor/layout/scene/editor-scene.cpp
     editor/loading/editor-loading.cpp
+    editor/main/assets/editor-assets-file-tree.cpp
+    editor/main/assets/editor-assets-layout.cpp
+    editor/main/assets/editor-assets.cpp
+    editor/main/editor-layout.cpp
+    editor/main/editor-main.cpp
+    editor/main/hierarchy/editor-hierarchy-layout.cpp
+    editor/main/hierarchy/editor-hierarchy-node-tree.cpp
+    editor/main/hierarchy/editor-hierarchy.cpp
+    editor/main/property/editor-property-layout.cpp
+    editor/main/property/editor-property.cpp
+    editor/main/scene/editor-scene-layout.cpp
+    editor/main/scene/editor-scene.cpp
     engine/boo.cpp
     engine/core/alpha/alpha.cpp
     engine/core/assets/asset-cache.cpp
@@ -42,30 +43,44 @@ set(ENGINE_SOURCES
     engine/core/assets/asset.cpp
     engine/core/assets/assets-manager.cpp
     engine/core/assets/material-asset.cpp
+    engine/core/assets/mesh-asset.cpp
     engine/core/assets/scene-asset.cpp
-    engine/core/assets/shader.cpp
+    engine/core/assets/shader-asset.cpp
     engine/core/assets/texture-asset.cpp
     engine/core/component/component-factory.cpp
     engine/core/component/component.cpp
     engine/core/component/ui/ui-layout-horizontal.cpp
     engine/core/component/ui/ui-layout-vertical.cpp
     engine/core/component/ui/ui-tree/file-tree.cpp
-    engine/core/component/ui/ui-tree/ui-node-tree.cpp
     engine/core/component/ui/ui-tree/ui-tree.cpp
     engine/core/component/ui/ui-widget.cpp
     engine/core/event/event.cpp
     engine/core/font/freetype-mgr.cpp
     engine/core/game.cpp
+    engine/core/gfx/base/gfx-buffer-instance.cpp
+    engine/core/gfx/base/gfx-buffer-ubo.cpp
+    engine/core/gfx/base/gfx-buffer.cpp
+    engine/core/gfx/base/gfx-material.cpp
+    engine/core/gfx/base/gfx-mesh.cpp
+    engine/core/gfx/base/gfx-pipeline.cpp
+    engine/core/gfx/base/gfx-push-constants.cpp
+    engine/core/gfx/base/gfx-render-pass.cpp
+    engine/core/gfx/base/gfx-render-texture.cpp
+    engine/core/gfx/base/gfx-shader.cpp
+    engine/core/gfx/base/gfx-texture.cpp
+    engine/core/gfx/builtin/gfx-batch-builtin.cpp
+    engine/core/gfx/builtin/gfx-pipeline-builtin.cpp
+    engine/core/gfx/builtin/gfx-queue-builtin.cpp
+    engine/core/gfx/builtin/gfx-render-pass-builtin.cpp
+    engine/core/gfx/builtin/gfx-renderer-builtin.cpp
+    engine/core/gfx/default/gfx-pipeline-default.cpp
+    engine/core/gfx/default/gfx-queue-default.cpp
+    engine/core/gfx/default/gfx-render-pass-default.cpp
+    engine/core/gfx/default/gfx-renderer-default.cpp
     engine/core/gfx/gfx-context.cpp
     engine/core/gfx/gfx-mgr.cpp
-    engine/core/gfx/gfx-object.cpp
-    engine/core/gfx/gfx-pass.cpp
-    engine/core/gfx/gfx-pipeline.cpp
-    engine/core/gfx/gfx-queue.cpp
     engine/core/gfx/gfx-renderer.cpp
-    engine/core/gfx/gfx-shader-compile.cpp
-    engine/core/gfx/gfx-shader.cpp
-    engine/core/gfx/gfx-texture.cpp
+    engine/core/gfx/gfx.cpp
     engine/core/global/global.cpp
     engine/core/input/input.cpp
     engine/core/math/color.cpp
@@ -74,6 +89,8 @@ set(ENGINE_SOURCES
     engine/core/math/size.cpp
     engine/core/math/vec2.cpp
     engine/core/math/vec3.cpp
+    engine/core/renderer/camera.cpp
+    engine/core/renderer/renderer.cpp
     engine/core/renderer/ui/ui-mask.cpp
     engine/core/renderer/ui/ui-renderer.cpp
     engine/core/renderer/ui/ui-sprite.cpp
