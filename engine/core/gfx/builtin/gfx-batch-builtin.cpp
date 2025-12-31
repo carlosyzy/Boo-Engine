@@ -134,6 +134,13 @@ void GfxBatchBuiltin::render(VkCommandBuffer &queueCommandBuffer, GfxBuffer *ubo
         0,                    // 第一个实例的索引 从第 0 个实例开始绘制
         0                     // 实例偏移
     );
+    //  vkCmdDraw(
+    //         queueCommandBuffer,
+    //         this->_mesh->getVertexCount(),                    // 只绘制3个索引（第一个三角形）
+    //         this->_instanceCount, // 实例数 （2的话代表绘制2个实例，也就是绘制两次）
+    //         0,                    // 第一个顶点的索引 每个 UI 元素占用 6 个顶点
+    //         0                    // 第一个实例的索引 从第 0 个实例开始绘制
+    //     );
 }
 void GfxBatchBuiltin::_bindPipeline(VkCommandBuffer &queueCommandBuffer, GfxPipelineBuiltin *pipeline)
 {

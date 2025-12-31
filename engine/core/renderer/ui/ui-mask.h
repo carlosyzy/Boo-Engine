@@ -16,24 +16,17 @@ class Camera;
 class UIMask : public UIRenderer
 {
 private:
-    std::string _addUuid;
-    std::string _subUuid;
+    MaterialAsset *_addMaterialAsset;
+    MaterialAsset *_subMaterialAsset;
+    GfxMesh *_maskMesh;
 
+    void _updateNodeMask();
 protected:
     /**
      * @brief 反序列化组件属性-配置
      * 反序列化成功
      */
     void _deserialized() override;
-    // /**
-    //  * 更新渲染状态
-    //  */
-    // void _updateRendererState() override;
-    // /**
-    //  * 更新模型矩阵
-    //  */
-    // void _updateModelMatrix() override;
-
 public:
     UIMask(std::string name, Node *node, std::string uuid = "");
     void Awake() override;

@@ -18,6 +18,9 @@ UIText::UIText(std::string name, Node *node, std::string uuid) : UIRenderer(name
   this->_fontSize = 30;
   // 行高
   this->_lineHeight = 30;
+
+  this->_materialAsset = new MaterialAsset();
+  this->_materialAsset->createUITest();
 }
 /**
  * @brief 反序列化组件属性-配置
@@ -88,34 +91,6 @@ void UIText::setAlpha(float alpha)
   c.setA(alpha);
   this->_setColor(c.getR(), c.getG(), c.getB(), c.getA());
 }
-
-// void UIText::setMaterialAsset(std::string mtl)
-// {
-//   /*MaterialAsset *mtlAsset =
-//       dynamic_cast<MaterialAsset *>(Boo::game->assetsManager()->get(mtl));
-//   if (mtlAsset == nullptr) {
-//     std::cout << "UISprite::setMaterial: material " << mtl << " not found"
-//               << std::endl;
-//     return;
-//   }
-//   this->_setMaterial(mtlAsset);*/
-// }
-// void UIText::setMaterialAsset(MaterialAsset *mtl)
-// {
-//   if (mtl == nullptr)
-//   {
-//     std::cout << "UIText::setMaterialAsset: material is nullptr" << std::endl;
-//     return;
-//   }
-//   this->_setMaterial(mtl);
-// }
-
-// void UIText::_updateRendererState() { UIRenderer::_updateRendererState(); }
-// /**
-//  * 更新模型矩阵
-//  */
-// void UIText::_updateModelMatrix() { UIRenderer::_updateModelMatrix(); }
-
 void UIText::Update(float deltaTime) { UIRenderer::Update(deltaTime); }
 void UIText::LateUpdate(float deltaTime) { UIRenderer::LateUpdate(deltaTime); }
 void UIText::Render(Camera *camera) { UIRenderer::Render(camera); }

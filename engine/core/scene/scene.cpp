@@ -50,7 +50,6 @@ Node3D *Scene::getRoot3D()
 {
 	if (this->_root3D == nullptr)
 	{
-		// this->createRoot3D();
 		std::cout << "Scene::getRoot3D: root3D is null" << std::endl;
 		return nullptr;
 	}
@@ -60,7 +59,6 @@ Node2D *Scene::getRoot2D()
 {
 	if (this->_root2D == nullptr)
 	{
-		// this->createRoot2D();
 		std::cout << "Scene::getRoot2D: root2D is null" << std::endl;
 		return nullptr;
 	}

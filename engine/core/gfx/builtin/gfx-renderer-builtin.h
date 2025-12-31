@@ -56,7 +56,7 @@ private:
 	VkDescriptorPool _uiDescriptorPool;
 	// 3d渲染器描述符池
 	VkDescriptorPool _3DDescriptorPool;
-	
+
 	std::vector<GfxRenderxUIDescriptorSet> _gfxUIDescriptorSets;
 	std::vector<GfxRenderx3DDescriptorSet> _gfx3DDescriptorSets;
 
@@ -78,6 +78,9 @@ private:
 	std::map<std::string, GfxPipelineBuiltin *> _pipelines;
 	void _initDefaultPipeline();
 	void _initDefaultUIPipeline();
+	void _initDefaultUIMaskAddPipeline();
+	void _initDefaultUIMaskSubPipeline();
+
 	/**
 	 * @brief 渲染队列
 	 * 渲染队列
@@ -95,8 +98,6 @@ public:
 	VkDescriptorSet getUIDescriptorSet();
 	GfxBufferUBO *getUniformBuffer();
 
-
-
 	void createPipeline(std::string name, GfxPipelineStruct pipelineStruct);
 
 	void initRenderQueue(std::string renderId, GfxRenderTexture *renderTexture);
@@ -106,7 +107,7 @@ public:
 	void getOffScreenOutds(std::vector<std::string> &pipelineOutds);
 	void frameRendererBefore();
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
-	void frameRendererAfter();	
+	void frameRendererAfter();
 
 	void _cleanRendererState();
 	void _resetRendererState();

@@ -55,7 +55,8 @@ public:
 	MaterialAsset(const std::string uuid);
 
 	void create(std::string path) override;
-	void createTest();
+	void createUITest();
+	void createUIMaskTest(int maskType);
 	void setTextures(const std::vector<std::string> textures);
 	void setTexture(int index, std::string texture);
 

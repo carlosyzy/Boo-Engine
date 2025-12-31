@@ -26,7 +26,6 @@ void GfxMesh::_createVertexBuffers()
         this->_vertices.size() * sizeof(float), // 总字节数
         this->_vertices.data()                  // 数据指针
     );
-
     // 索引缓冲区（不变）
     GfxMgr::getInstance()->createBuffer(
         VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -101,6 +100,10 @@ VkBuffer GfxMesh::getVertexBuffer()
 VkBuffer GfxMesh::getIndexBuffer()
 {
     return this->_indexBuffer;
+}
+uint32_t GfxMesh::getIndexCount()
+{
+    return this->_indices.size();
 }
 int GfxMesh::getIndexSize()
 {

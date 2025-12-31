@@ -8,6 +8,7 @@
 #include "../math/vec3.h"
 #include "../math/color.h"
 #include "ui/ui-renderer.h"
+#include "ui/ui-mask.h"
 
 Renderer::Renderer(/* args */)
 {
@@ -34,76 +35,74 @@ void Renderer::render(std::unordered_map<std::string, Camera *> &cameras, Scene 
 }
 void Renderer::_renderCameras(Camera *camera, Scene *scene)
 {
-    camera->Render();
-    const std::vector<Node *> &nodes = scene->getChildren();
-    for (auto node : nodes)
+    if (camera == nullptr)
     {
-        this->_walkNode(camera, node);
+        return;
     }
+    if (scene == nullptr)
+    {
+        return;
+    }
+    if (!camera->isEnabledInHierarchy())
+    {
+        return;
+    }
+    camera->Render();
+    // this->_walkNode3D(camera, scene->getRoot3D());
+    this->_walkNode2D(camera, scene->getRoot2D());
 }
-void Renderer::_walkNode(Camera *camera, Node *node)
+void Renderer::_walkNode3D(Camera *camera, Node *node)
 {
+}
+void Renderer::_walkNode2D(Camera *camera, Node2D *node)
+{
+    if (node == nullptr)
+    {
+        return;
+    }
     if (!node->isActiveInHierarchy())
     {
-        // 层级不可见
         return;
     }
     if (!(node->getVisibility() | camera->getVisibility()))
     {
-        // 摄像机不可见
         return;
     }
     Vec3 worldScale = node->getWorldScale();
-
-    if (node->getLayer() == NodeLayer::Node3D)
+    if (worldScale.getX() == 0 || worldScale.getY() == 0)
     {
-        // 3D节点
-        if (worldScale.getX() == 0 || worldScale.getY() == 0 || worldScale.getZ() == 0)
+        // 缩放为0 不渲染
+        return;
+    }
+    UIRenderer *uiRenderer = node->getUIRenderComponent();
+    if (uiRenderer != nullptr && uiRenderer->isEnabledInHierarchy())
+    {
+        const Color &color = uiRenderer->getColor();
+        float alpha = color.getA();
+        if (alpha <= 0.0f)
         {
-            // 缩放为0 不渲染
+            // 透明度为0 不渲染
             return;
         }
-        Node3D *node3D = dynamic_cast<Node3D *>(node);
-        if (node3D == nullptr)
+        uiRenderer->Render(camera);
+        const std::vector<Node *> &nodes = node->getChildren();
+        for (auto node : nodes)
         {
-            // 3D节点 类型错误
-            return;
+            this->_walkNode2D(camera, dynamic_cast<Node2D *>(node));
+        }
+        UIMask *uiMask = dynamic_cast<UIMask *>(uiRenderer);
+        if (uiMask != nullptr)
+        {
+            uiMask->lateRender();
         }
     }
-    else if (node->getLayer() == NodeLayer::Node2D)
+    else
     {
-        // 2D节点
-        if (worldScale.getX() == 0 || worldScale.getY() == 0)
+        const std::vector<Node *> &nodes = node->getChildren();
+        for (auto node : nodes)
         {
-            // 缩放为0 不渲染
-            return;
+            this->_walkNode2D(camera, dynamic_cast<Node2D *>(node));
         }
-        Node2D *node2D = dynamic_cast<Node2D *>(node);
-        if (node2D == nullptr)
-        {
-            // 2D节点 类型错误
-            return;
-        }
-        UIRenderer *uiRenderer = dynamic_cast<UIRenderer *>(node2D->getUIRenderComponent());
-        if (uiRenderer != nullptr && uiRenderer->isEnabledInHierarchy())
-        {
-            // std::cout << "Renderer::_walkNode5:" << node->getName() << std::endl;
-            // 存在UI渲染器
-            const Color &color = uiRenderer->getColor();
-            float alpha = color.getA();
-            if (alpha <= 0.0f)
-            {
-                // 透明度为0 不渲染
-                return;
-            }
-            // 渲染UI
-            uiRenderer->Render(camera);
-        }
-    }
-    const std::vector<Node *> &nodes = node->getChildren();
-    for (auto node : nodes)
-    {
-        this->_walkNode(camera, node);
     }
 }
 Renderer::~Renderer()

@@ -13,12 +13,16 @@ class Node;
 
 class Camera;
 class Node;
+class Node2D;
+
+
 
 class Renderer
 {
 private:
     void _renderCameras(Camera *camera, Scene *scene);
-    void _walkNode(Camera *camera,Node *node);
+    void _walkNode3D(Camera *camera,Node *node);
+    void _walkNode2D(Camera *camera,Node2D *node);
 public:
     Renderer(/* args */);
     void init();

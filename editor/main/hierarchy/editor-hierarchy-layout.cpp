@@ -199,6 +199,10 @@ void EditorHierarchyLayout::_initNodeTree()
     paramVertical.bottom = 0.0f;
     widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
     widget->setVertical(WidgetVertical::ALL, paramVertical);
+    //添加mask组件
+    UIMask *mask = dynamic_cast<UIMask *>(this->_ndNodeTree->addComponent("UIMask"));
+
+
     this->_nodeTree = dynamic_cast<EditorHierarchyNodeTree *>(this->_ndNodeTree->addComponent("EditorHierarchyNodeTree"));
     this->_nodeTree->onSelectEvent([this](std::string uuid)
                                        { this->_onNodeTreeSelectEvent(uuid); });

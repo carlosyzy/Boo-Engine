@@ -15,11 +15,11 @@
 class GfxMaterial
 {
 private:
-    /**
-     * @brief 渲染通道
-     * 最重要的
-     */
-    std::string _pass;
+    // /**
+    //  * @brief 渲染通道
+    //  * 最重要的
+    //  */
+    // std::string _pass;
     /**
      * @brief 渲染管线结构体
      */
@@ -36,7 +36,7 @@ private:
 
 public:
     GfxMaterial();
-    void setRenderPass(const std::string pass);
+    // void setRenderPass(const std::string pass);
     void setPipelineStruct(const GfxPipelineStruct pipelineStruct);
     void setTextures(const std::vector<std::string> textures);
     void setPushConstants(const GfxPushConstants pushConstants);

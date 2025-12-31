@@ -1,8 +1,10 @@
 #include "ui-mask.h"
 #include "../../../boo.h"
 #include "../../gfx/gfx-mgr.h"
+#include "../../gfx/base/gfx-mesh.h"
 #include "../../scene/node.h"
 #include "../../scene/node-2d.h"
+#include "../../math/size.h"
 #include "../../assets/texture-asset.h"
 #include "../../assets/assets-manager.h"
 #include "../../renderer/camera.h"
@@ -32,8 +34,8 @@ UIMask::UIMask(std::string name, Node *node, std::string uuid) : UIRenderer(name
     // this->_indices = {
     //     0, 1, 2,
     //     0, 2, 3};
-    this->_addUuid = this->_uuid + "-add";
-    this->_subUuid = this->_uuid + "-sub";
+    // this->_addUuid = this->_uuid + "-add";
+    // this->_subUuid = this->_uuid + "-sub";
 
     // // 默认裁剪区域为整个UI对象
     // GfxMgr::getInstance()->createUIMaskObject(this->_addUuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
@@ -45,6 +47,13 @@ UIMask::UIMask(std::string name, Node *node, std::string uuid) : UIRenderer(name
     // GfxMgr::getInstance()->setObjectUIMaskBehavior(this->_addUuid, 1);
     // GfxMgr::getInstance()->setObjectUIMaskBehavior(this->_subUuid, 0);
     // this->setTexture("resources/texture/ic-default.png");
+
+    this->_addMaterialAsset = new MaterialAsset();
+    this->_addMaterialAsset->createUIMaskTest(0);
+    this->_subMaterialAsset = new MaterialAsset();
+    this->_subMaterialAsset->createUIMaskTest(1);
+    std::string uuid = this->_uuid + "-mask";
+    this->_maskMesh = new GfxMesh(uuid);
 }
 void UIMask::_deserialized()
 {
@@ -58,41 +67,35 @@ void UIMask::Awake()
 void UIMask::Enable()
 {
     Component::Enable();
-    // GfxMgr::getInstance()->createUIMaskObject(this->_addUuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
-    // GfxMgr::getInstance()->createUIMaskObject(this->_subUuid, this->_positions, this->_colors, this->_normals, this->_uvs, this->_indices);
-    // this->_updateRendererState();
-    // this->_updateModelMatrix();
 }
-// void UIMask::setMaterialAsset(std::string mtl)
-// {
-//     // MaterialAsset *mtlAsset = dynamic_cast<MaterialAsset *>(Boo::game->assetsManager()->get(mtl));
-//     // if (mtlAsset == nullptr)
-//     // {
-//     //     std::cout << "UIMask::setMaterialAsset: material " << mtl << " not found" << std::endl;
-//     //     return;
-//     // }
-//     // this->_setMaterial(mtlAsset);
-// }
-// void UIMask::setMaterialAsset(MaterialAsset *mtl)
-// {
-//     if (mtl == nullptr)
-//     {
-//         std::cout << "UIMask::setMaterialAsset: material is nullptr" << std::endl;
-//         return;
-//     }
-//     this->_setMaterial(mtl);
-// }
-
-// void UIMask::_updateRendererState()
-// {
-// }
-// void UIMask::_updateModelMatrix()
-// {
-//     Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
-//     // GfxMgr::getInstance()->setObjectModelMatrix(this->_addUuid, node2D->uiWorldMatrix().data());
-//     // GfxMgr::getInstance()->setObjectModelMatrix(this->_subUuid, node2D->uiWorldMatrix().data());
-// }
-
+void UIMask::_updateNodeMask()
+{
+    Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
+    if (node2D == nullptr)
+    {
+        std::cout << "UIMask::_updateNodeMask: node is not Node2D" << std::endl;
+        return;
+    }
+    const Size &size = node2D->getSize();
+    const Mat4 &worldMatrix = node2D->getWorldMatrix();
+    Vec3 leftTop = Vec3(-size.getWidth() / 2.0f, size.getHeight() / 2.0f, 0.0f);
+    Vec3 leftBottom = Vec3(-size.getWidth() / 2.0f, -size.getHeight() / 2.0f, 0.0f);
+    Vec3 rightBottom = Vec3(size.getWidth() / 2.0f, -size.getHeight() / 2.0f, 0.0f);
+    Vec3 rightTop = Vec3(size.getWidth() / 2.0f, size.getHeight() / 2.0f, 0.0f);
+    Mat4::multiplyVec3(worldMatrix, leftTop, leftTop);
+    Mat4::multiplyVec3(worldMatrix, leftBottom, leftBottom);
+    Mat4::multiplyVec3(worldMatrix, rightBottom, rightBottom);
+    Mat4::multiplyVec3(worldMatrix, rightTop, rightTop);
+    std::vector<float> positions = {
+        leftTop.getX(), leftTop.getY(), 0.0f, 0.0f, 0.0f,
+        leftBottom.getX(), leftBottom.getY(), 0.0f, 0.0f, 1.0f,
+        rightBottom.getX(), rightBottom.getY(), 0.0f, 1.0f, 1.0f,
+        rightTop.getX(), rightTop.getY(), 0.0f, 1.0f, 0.0f};
+    std::vector<uint32_t> indices = {
+        0, 1, 2,
+        0, 2, 3};
+    this->_maskMesh->setInputVertices(positions, indices);
+}
 void UIMask::Update(float deltaTime)
 {
     Component::Update(deltaTime);
@@ -103,16 +106,33 @@ void UIMask::LateUpdate(float deltaTime)
 }
 void UIMask::Render(Camera *camera)
 {
-    // if (this->_node->hasFrameTransformFlag())
-    // {
-    //     this->_updateModelMatrix();
-    // }
-    // 提交遮罩状态到渲染器
-    // GfxMgr::getInstance()->submitObjectRender(this->_addUuid);
+    if (camera == nullptr)
+    {
+        return; // 相机为空
+    }
+    Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
+    if (node2D == nullptr)
+    {
+        return; // 节点不是Node2D类型
+    }
+    if (node2D->getSize().getHeight() <= 0 || node2D->getSize().getWidth() <= 0)
+    {
+        return; // 节点不可见
+    }
+    std::cout << "UIRenderer::Render:" << node2D->getName() << std::endl;
+    // 提交渲染对象
+    this->_instanceData.clear();
+    this->_instanceData.reserve(16 + 4);
+    // 1. 先添加模型矩阵 (16个float)
+    const auto &matrix = node2D->getWorldMatrix().data();
+    _instanceData.insert(_instanceData.end(), matrix.begin(), matrix.end());
+    // 2. 再添加颜色 (4个float)
+    _instanceData.insert(_instanceData.end(), {1.0f, 1.0f, 1.0f, 1.0f});
+
+    GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_addMaterialAsset->getGfxMaterial(), this->_maskMesh, this->_instanceData);
 }
 void UIMask::lateRender()
 {
-    // GfxMgr::getInstance()->submitObjectRender(this->_subUuid);
 }
 void UIMask::Disable()
 {
@@ -121,8 +141,6 @@ void UIMask::Disable()
 void UIMask::destroy()
 {
     Component::destroy();
-    // GfxMgr::getInstance()->destroyObject(this->_addUuid);
-    // GfxMgr::getInstance()->destroyObject(this->_subUuid);
 }
 UIMask::~UIMask()
 {
