@@ -14,6 +14,9 @@ UISprite::UISprite(std::string name, Node *node, std::string uuid) : UIRenderer(
     this->_texture = "";
     // 材质路径
     this->_material = "";
+
+    this->_materialAsset = new MaterialAsset();
+	this->_materialAsset->createUITest();
 }
 /**
  * @brief 反序列化组件属性-配置
@@ -73,26 +76,26 @@ void UISprite::setAlpha(float alpha)
     c.setA(alpha);
     this->_setColor(c.getR(), c.getG(), c.getB(), c.getA());
 }
+void UISprite::setMaterial(std::string material)
+{
+    // MaterialAsset *mtl = dynamic_cast<MaterialAsset *>(Boo::game->assetsManager()->getAssetByPath(material));
+    // if (mtl == nullptr)
+    // {
+    //     std::cout << "UISprite::setMaterial: material " << material << " not found" << std::endl;
+    //     return;
+    // }
+    // this->_setMaterial(mtl);
+}
+void UISprite::setMaterial(MaterialAsset *material)
+{
+    if (material == nullptr)
+    {
+        std::cout << "UISprite::setMaterial: material " << material << " not found" << std::endl;
+        return;
+    }
+    this->_setMaterial(material);
+}
 
-// void UISprite::setTexture(std::string path)
-// {
-//     // TextureAsset *tex = dynamic_cast<TextureAsset *>(Boo::game->assetsManager()->getAssetByPath(texture));
-//     // if (tex == nullptr)
-//     // {
-//     //     std::cout << "UISprite::setTexture: texture " << texture << " not found" << std::endl;
-//     //     return;
-//     // }
-//     // this->_setTexture(tex);
-// }
-// void UISprite::setTexture(TextureAsset *texture)
-// {
-//     if (texture == nullptr)
-//     {
-//         std::cout << "UISprite::setTexture: texture " << texture << " not found" << std::endl;
-//         return;
-//     }
-//     this->_setTexture(texture);
-// }
 
 void UISprite::setTexture(std::string path)
 {
@@ -113,38 +116,6 @@ void UISprite::setTexture(TextureAsset *texture)
     }
     this->_setTexture(texture);
 }
-
-
-// void UISprite::setMaterialAsset(std::string mtl)
-// {
-//     // MaterialAsset *mtlAsset = dynamic_cast<MaterialAsset *>(Boo::game->assetsManager()->get(mtl));
-//     // if (mtlAsset == nullptr)
-//     // {
-//     //     std::cout << "UISprite::setMaterial: material " << mtl << " not found" << std::endl;
-//     //     return;
-//     // }
-//     // this->_setMaterial(mtlAsset);
-// }
-// void UISprite::setMaterialAsset(MaterialAsset *mtl)
-// {
-//     // if (mtl == nullptr)
-//     // {
-//     //     std::cout << "UISprite::setMaterial: material " << mtl << " not found" << std::endl;
-//     //     return;
-//     // }
-//     // this->_setMaterial(mtl);
-// }
-
-
-// void UISprite::_updateRendererState()
-// {
-//     UIRenderer::_updateRendererState();
-// }
-// void UISprite::_updateModelMatrix()
-// {
-//     UIRenderer::_updateModelMatrix();
-// }
-
 void UISprite::Update(float deltaTime)
 {
     UIRenderer::Update(deltaTime);

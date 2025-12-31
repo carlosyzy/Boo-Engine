@@ -20,7 +20,7 @@ GfxRendererBuiltin::GfxRendererBuiltin(std::string name)
 }
 void GfxRendererBuiltin::init()
 {
-    std::cout << "[Gfx : GfxRendererBuiltin] :: init "<< this->_name << std::endl;
+    std::cout << "[Gfx : GfxRendererBuiltin] :: init " << this->_name << std::endl;
     this->_initDescriptorSetLayout();
     this->_initDescriptorSets();
     this->_initDefaultRenderPass();
@@ -101,23 +101,6 @@ void GfxRendererBuiltin::_initUIDescriptorSets()
         return;
     }
     std::cout << "[Gfx : GfxRendererBuiltin] :: create descriptor pool success " << std::endl;
-    // for (uint32_t i = 0; i < 100; i++)
-    // {
-    //     VkDescriptorSet descriptorSet;
-    //     std::vector<VkDescriptorSetLayout> layouts(1, this->_descriptorSetLayout);
-    //     VkDescriptorSetAllocateInfo allocInfo{};
-    //     allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO; // VK_STRUCTURE_TYPE_DESCRIPT1OR_SET_ALLOCATE_INFO
-    //     allocInfo.descriptorPool = this->_descriptorPool;
-    //     allocInfo.descriptorSetCount = 1;
-    //     allocInfo.pSetLayouts = layouts.data();
-    //     if (vkAllocateDescriptorSets(Gfx::context->getVkDevice(), &allocInfo, &descriptorSet) != VK_SUCCESS)
-    //     {
-    //         std::cout << "Gfx : Descriptor ::create descriptor sets failed " << std::endl;
-    //         return;
-    //     }
-    //     GfxRenderxDescriptorSet renderxDescriptorSet = {descriptorSet, false};
-    //     this->_gfxDescriptorSets.push_back(renderxDescriptorSet);
-    // }
 }
 void GfxRendererBuiltin::_init3DDescriptorSets()
 {
@@ -170,6 +153,18 @@ void GfxRendererBuiltin::_initDefaultShader()
     shader = new GfxShader(shaderFragName);
     shader->createShaderModule(GfxShaderUIFragSPV, GfxShaderUIFragSPVSize);
     Gfx::shaders[shaderFragName] = shader;
+
+    // 内置默认ui 遮罩 顶点着色器
+    std::string shaderMaskVertName = "builtin-ui-mask.vert";
+    shader = new GfxShader(shaderMaskVertName);
+    shader->createShaderModule(GfxShaderUIMaskVertSPV, GfxShaderUIMaskVertSPVSzie);
+    Gfx::shaders[shaderMaskVertName] = shader;
+
+    // 内置默认ui 遮罩 片元着色器
+    std::string shaderMaskFragName = "builtin-ui-mask.frag";
+    shader = new GfxShader(shaderMaskFragName);
+    shader->createShaderModule(GfxShaderUIMaskFragSPV, GfxShaderUIMaskFragSPVSzie);
+    Gfx::shaders[shaderMaskFragName] = shader;
 }
 /**
  * 创建内置默认的ui pipeline
@@ -177,6 +172,8 @@ void GfxRendererBuiltin::_initDefaultShader()
 void GfxRendererBuiltin::_initDefaultPipeline()
 {
     this->_initDefaultUIPipeline();
+    this->_initDefaultUIMaskAddPipeline();
+    this->_initDefaultUIMaskSubPipeline();
 }
 void GfxRendererBuiltin::_initDefaultUIPipeline()
 {
@@ -187,7 +184,7 @@ void GfxRendererBuiltin::_initDefaultUIPipeline()
     // 多边形模式 填充
     uiPipeline.polygonMode = GfxPipelinePolygonMode::Fill;
     // 剔除模式 背面
-    uiPipeline.cullMode = GfxPipelineCullMode::Back;
+    uiPipeline.cullMode = GfxPipelineCullMode::None;
     // 深度测试 开启
     uiPipeline.depthTest = 1;
     // 深度写入 开启
@@ -218,6 +215,75 @@ void GfxRendererBuiltin::_initDefaultUIPipeline()
     this->createPipeline(uiPipeline.generateKey(), uiPipeline);
 }
 
+void GfxRendererBuiltin::_initDefaultUIMaskAddPipeline()
+{
+    GfxPipelineStruct uiMaskAddPipeline = {};
+    uiMaskAddPipeline.render = uint32_t(GfxPipelineRender::_UI);
+    uiMaskAddPipeline.vert = "builtin-ui-mask.vert";
+    uiMaskAddPipeline.frag = "builtin-ui-mask.frag";
+    // 多边形模式 填充
+    uiMaskAddPipeline.polygonMode = GfxPipelinePolygonMode::Fill;
+    // 剔除模式 背面
+    uiMaskAddPipeline.cullMode = GfxPipelineCullMode::None;
+    // 深度测试 开启
+    uiMaskAddPipeline.depthTest = 1;
+    // 深度写入 开启
+    uiMaskAddPipeline.depthWrite = 1;
+    // 深度比较操作 小于等于
+    uiMaskAddPipeline.depthCompareOp = GfxPipelineCompareOp::Always;
+    // 模版测试 启用（用于UI遮罩）
+    uiMaskAddPipeline.stencilTest = 1;
+    uiMaskAddPipeline.stencilFrontCompareOp = GfxPipelineCompareOp::Always;     // 总是通过测试
+    uiMaskAddPipeline.stencilFrontFailOp = GfxPipelineStencilOp::Keep;          // 测试失败：保持
+    uiMaskAddPipeline.stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep;     // 深度失败：保持
+    uiMaskAddPipeline.stencilFrontPassOp = GfxPipelineStencilOp::Increment_Add; // 测试通过：替换模板值为1（表示遮罩区域）
+    uiMaskAddPipeline.stencilBackCompareOp = GfxPipelineCompareOp::Equal;
+    uiMaskAddPipeline.stencilBackFailOp = GfxPipelineStencilOp::Keep;
+    uiMaskAddPipeline.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
+    uiMaskAddPipeline.stencilBackPassOp = GfxPipelineStencilOp::Increment_Add; // 测试通过：替换模板值为1（表示遮罩区域）
+
+    uiMaskAddPipeline.colorBlend = 0;
+    
+    // 推送常量 开启
+    uiMaskAddPipeline.pushConstant = 1;
+    uiMaskAddPipeline.pushConstantSize = 0;
+    this->createPipeline(uiMaskAddPipeline.generateKey(), uiMaskAddPipeline);
+}
+void GfxRendererBuiltin::_initDefaultUIMaskSubPipeline()
+{
+    GfxPipelineStruct uiMaskAddPipeline = {};
+    uiMaskAddPipeline.render = uint32_t(GfxPipelineRender::_UI);
+    uiMaskAddPipeline.vert = "builtin-ui-mask.vert";
+    uiMaskAddPipeline.frag = "builtin-ui-mask.frag";
+    // 多边形模式 填充
+    uiMaskAddPipeline.polygonMode = GfxPipelinePolygonMode::Fill;
+    // 剔除模式 背面
+    uiMaskAddPipeline.cullMode = GfxPipelineCullMode::None;
+    // 深度测试 开启
+    uiMaskAddPipeline.depthTest = 1;
+    // 深度写入 开启
+    uiMaskAddPipeline.depthWrite = 1;
+    // 深度比较操作 小于等于
+    uiMaskAddPipeline.depthCompareOp = GfxPipelineCompareOp::Always;
+    // 模版测试 启用（用于UI遮罩）
+    uiMaskAddPipeline.stencilTest = 1;
+    uiMaskAddPipeline.stencilFrontCompareOp = GfxPipelineCompareOp::Always;          // 总是通过测试
+    uiMaskAddPipeline.stencilFrontFailOp = GfxPipelineStencilOp::Keep;               // 测试失败：保持
+    uiMaskAddPipeline.stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep;          // 深度失败：保持
+    uiMaskAddPipeline.stencilFrontPassOp = GfxPipelineStencilOp::Decrement_Subtract; // 测试通过：替换模板值为1（表示遮罩区域）
+    uiMaskAddPipeline.stencilBackCompareOp = GfxPipelineCompareOp::Equal;
+    uiMaskAddPipeline.stencilBackFailOp = GfxPipelineStencilOp::Keep;
+    uiMaskAddPipeline.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
+    uiMaskAddPipeline.stencilBackPassOp = GfxPipelineStencilOp::Decrement_Subtract; // 测试通过：替换模板值为1（表示遮罩区域）
+
+    uiMaskAddPipeline.colorBlend = 0;
+
+    // 推送常量 开启
+    uiMaskAddPipeline.pushConstant = 1;
+    uiMaskAddPipeline.pushConstantSize = 0;
+    this->createPipeline(uiMaskAddPipeline.generateKey(), uiMaskAddPipeline);
+}
+
 void GfxRendererBuiltin::createPipeline(std::string name, GfxPipelineStruct pipelineStruct)
 {
     if (Gfx::shaders.find(pipelineStruct.vert) == Gfx::shaders.end())
@@ -245,6 +311,7 @@ void GfxRendererBuiltin::createPipeline(std::string name, GfxPipelineStruct pipe
     {
         pipeline->create(this->_pass, Gfx::shaders[pipelineStruct.vert], Gfx::shaders[pipelineStruct.frag], this->_uiDescriptorSetLayout, pipelineStruct);
         this->_pipelines[name] = pipeline;
+        std::cout << "[Gfx : GfxRendererBuiltin] :: createPipeline:ui pipeline created:" << name << std::endl;
     }
     else if (pipelineStruct.render == uint32_t(GfxPipelineRender::_3D))
     {

@@ -41,9 +41,20 @@ public:
      * @param alpha
      */
     void setAlpha(float alpha);
-
+    /**
+     * @brief 设置渲染器的纹理
+     *
+     * @param texture
+     */
     void setTexture(std::string texture);
     void setTexture(TextureAsset *texture);
+    /**
+     * @brief 设置渲染器的材质
+     *
+     * @param material
+     */
+    void setMaterial(std::string material);
+    void setMaterial(MaterialAsset *material);
 
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;

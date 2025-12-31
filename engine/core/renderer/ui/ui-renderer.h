@@ -52,15 +52,6 @@ protected:
      *
      */
     void _setColor(float r, float g, float b, float a);
-    // /**
-    //  * 更新渲染状态
-    //  */
-    // virtual void _updateRendererState();
-    // /**
-    //  * 更新模型矩阵
-    //  */
-    // virtual void _updateModelMatrix();
-
 public:
     UIRenderer(std::string name, Node *node, std::string uuid = "");
 

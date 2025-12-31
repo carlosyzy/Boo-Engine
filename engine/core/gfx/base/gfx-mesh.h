@@ -29,7 +29,9 @@ public:
     GfxMesh(std::string uuid);
     void setInputVertices(std::vector<float> vertices, std::vector<uint32_t> indices);
     VkBuffer getVertexBuffer();
+    uint32_t getVertexCount();
     VkBuffer getIndexBuffer();
+    uint32_t getIndexCount();
     int getIndexSize();
     bool equals(const GfxMesh *mesh) const;
 };
