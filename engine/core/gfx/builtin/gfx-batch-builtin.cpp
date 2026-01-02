@@ -37,17 +37,8 @@ void GfxBatchBuiltin::addObject(std::vector<float> &instanceData)
 }
 void GfxBatchBuiltin::render(VkCommandBuffer &queueCommandBuffer, GfxBuffer *ubo)
 {
-
     const GfxPipelineStruct &pipelineStruct = this->_material->getPipelineStruct();
     GfxPipelineBuiltin *pipeline = this->_renderer->getPipeline(pipelineStruct.generateKey());
-    if (pipelineStruct.render == uint32_t(GfxPipelineRender::_UI))
-    {
-        this->_bindUIDescriptorSets(queueCommandBuffer, pipeline, ubo);
-    }
-    else if (pipelineStruct.render == uint32_t(GfxPipelineRender::_3D))
-    {
-        this->_bind3DDescriptorSets(queueCommandBuffer, pipeline, ubo);
-    }
 
     if (pipeline == nullptr)
     {
@@ -55,50 +46,37 @@ void GfxBatchBuiltin::render(VkCommandBuffer &queueCommandBuffer, GfxBuffer *ubo
     }
     this->_bindPipeline(queueCommandBuffer, pipeline);
 
-    // VkDescriptorSet &descriptor = this->_renderer->getDescriptorSet();
-    // std::array<VkWriteDescriptorSet, 5> descriptorWrites{};
-    // // 绑定ubo
-    // VkDescriptorBufferInfo bufferInfo{};
-    // bufferInfo.buffer = ubo->getBuffer();
-    // bufferInfo.offset = 0;
-    // bufferInfo.range = sizeof(float) * (16 + 16 + 1); // 视图矩阵+投影矩阵+全局时间
-    // descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    // descriptorWrites[0].dstSet = descriptor;
-    // descriptorWrites[0].dstBinding = 0;
-    // descriptorWrites[0].dstArrayElement = 0;
-    // descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    // descriptorWrites[0].descriptorCount = 1;
-    // descriptorWrites[0].pBufferInfo = &bufferInfo;
-    // // 绑定采样器
-    // std::array<VkDescriptorImageInfo, 4> imageInfos;
-    // for (size_t i = 0; i < 4; i++)
-    // {
-    //     imageInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    //     std::string textureUuid = "550e8400-e29b-41d4-a716-446655440000";
-    //     if (i < this->_material->getTextures().size())
-    //     {
-    //         textureUuid = this->_material->getTextures()[i];
-    //     }
-    //     GfxTexture *texture = Gfx::renderer->getTexture(textureUuid);
-    //     if (texture != nullptr)
-    //     {
-    //         imageInfos[i].imageView = texture->getImageView();
-    //         imageInfos[i].sampler = texture->getSampler();
-    //     }else{
-    //         imageInfos[i].imageView = VK_NULL_HANDLE;
-    //         imageInfos[i].sampler = VK_NULL_HANDLE;
-    //     }
-    //     descriptorWrites[i + 1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    //     descriptorWrites[i + 1].dstSet = descriptor;
-    //     descriptorWrites[i + 1].dstBinding = static_cast<uint32_t>(i + 1);
-    //     descriptorWrites[i + 1].dstArrayElement = 0;
-    //     descriptorWrites[i + 1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    //     descriptorWrites[i + 1].descriptorCount = 1;
-    //     descriptorWrites[i + 1].pImageInfo = &imageInfos[i];
-    // }
-
-    // vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-    // vkCmdBindDescriptorSets(queueCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptor, 0, nullptr);
+    if (pipelineStruct.render == uint32_t(GfxPipelineRender::_UI))
+    {
+        if (pipelineStruct.stencilFrontPassOp == GfxPipelineStencilOp::Increment_Add)
+        {
+            GfxRendererBuiltin::StencilRef++;
+            vkCmdSetStencilReference(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 1);      // 增加和减少每次都是固定值1
+            vkCmdSetStencilCompareMask(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
+            vkCmdSetStencilWriteMask(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);   // 写入所有位
+            std::cout << "GfxBatchBuiltin::render() stencilFrontPassOp is Increment_Add, StencilRef is " << GfxRendererBuiltin::StencilRef << std::endl;
+        }
+        else if (pipelineStruct.stencilFrontPassOp == GfxPipelineStencilOp::Decrement_Subtract)
+        {
+            GfxRendererBuiltin::StencilRef--;
+            vkCmdSetStencilReference(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 1);      // 增加和减少每次都是固定值1
+            vkCmdSetStencilCompareMask(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
+            vkCmdSetStencilWriteMask(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);   // 写入所有位
+            std::cout << "GfxBatchBuiltin::render() stencilFrontPassOp is Decrement_Subtract, StencilRef is " << GfxRendererBuiltin::StencilRef << std::endl;
+        }
+        else
+        {
+            vkCmdSetStencilReference(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, GfxRendererBuiltin::StencilRef);
+            vkCmdSetStencilCompareMask(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
+            vkCmdSetStencilWriteMask(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0x00);   // 不写入模板（保持遮罩）
+            std::cout << "GfxBatchBuiltin::render() stencilFrontPassOp is None, StencilRef is " << GfxRendererBuiltin::StencilRef << std::endl;
+        }
+        this->_bindUIDescriptorSets(queueCommandBuffer, pipeline, ubo);
+    }
+    else if (pipelineStruct.render == uint32_t(GfxPipelineRender::_3D))
+    {
+        this->_bind3DDescriptorSets(queueCommandBuffer, pipeline, ubo);
+    }
 
     GfxBuffer *instanceBuffer = Gfx::bufferInstance->getBuffer(this->_instanceDatas.size());
     memcpy(instanceBuffer->getMappedData(), this->_instanceDatas.data(), this->_instanceDatas.size() * sizeof(float));
@@ -209,6 +187,75 @@ void GfxBatchBuiltin::destroy()
 GfxBatchBuiltin::~GfxBatchBuiltin()
 {
 }
+
+//    vkCmdBindPipeline(this->_queueCommandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipeline());
+//     if (object->getType() == GfxObjectType::UI_MASK)
+//     {
+//         if (object->getUIMaskBehavior() == 1)
+//         {
+//             this->_stencilRef++;
+//         }
+//         else
+//         {
+//             this->_stencilRef--;
+//         }
+//         // std::cout << "GfxQueue : _renderObject UIMask " << object->getUuid() << " _stencilRef1  " << this->_stencilRef << std::endl;
+//         vkCmdSetStencilReference(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 1);      // 增加和减少每次都是固定值1
+//         vkCmdSetStencilCompareMask(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
+//         vkCmdSetStencilWriteMask(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);   // 写入所有位
+//         // std::cout << "GfxQueue : _renderObject UIMask " << object->getUuid() << " _stencilRef2   " << this->_stencilRef << std::endl;
+//     }
+//     else
+//     {
+//         // std::cout << "GfxQueue : _renderObject UI  _stencilRef" << this->_stencilRef << std::endl;
+//         vkCmdSetStencilReference(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, this->_stencilRef);
+//         vkCmdSetStencilCompareMask(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
+//         vkCmdSetStencilWriteMask(this->_queueCommandBuffers[imageIndex], VK_STENCIL_FACE_FRONT_AND_BACK, 0x00);   // 不写入模板（保持遮罩）
+//     }
+// VkDescriptorSet &descriptor = this->_renderer->getDescriptorSet();
+// std::array<VkWriteDescriptorSet, 5> descriptorWrites{};
+// // 绑定ubo
+// VkDescriptorBufferInfo bufferInfo{};
+// bufferInfo.buffer = ubo->getBuffer();
+// bufferInfo.offset = 0;
+// bufferInfo.range = sizeof(float) * (16 + 16 + 1); // 视图矩阵+投影矩阵+全局时间
+// descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+// descriptorWrites[0].dstSet = descriptor;
+// descriptorWrites[0].dstBinding = 0;
+// descriptorWrites[0].dstArrayElement = 0;
+// descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+// descriptorWrites[0].descriptorCount = 1;
+// descriptorWrites[0].pBufferInfo = &bufferInfo;
+// // 绑定采样器
+// std::array<VkDescriptorImageInfo, 4> imageInfos;
+// for (size_t i = 0; i < 4; i++)
+// {
+//     imageInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+//     std::string textureUuid = "550e8400-e29b-41d4-a716-446655440000";
+//     if (i < this->_material->getTextures().size())
+//     {
+//         textureUuid = this->_material->getTextures()[i];
+//     }
+//     GfxTexture *texture = Gfx::renderer->getTexture(textureUuid);
+//     if (texture != nullptr)
+//     {
+//         imageInfos[i].imageView = texture->getImageView();
+//         imageInfos[i].sampler = texture->getSampler();
+//     }else{
+//         imageInfos[i].imageView = VK_NULL_HANDLE;
+//         imageInfos[i].sampler = VK_NULL_HANDLE;
+//     }
+//     descriptorWrites[i + 1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+//     descriptorWrites[i + 1].dstSet = descriptor;
+//     descriptorWrites[i + 1].dstBinding = static_cast<uint32_t>(i + 1);
+//     descriptorWrites[i + 1].dstArrayElement = 0;
+//     descriptorWrites[i + 1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+//     descriptorWrites[i + 1].descriptorCount = 1;
+//     descriptorWrites[i + 1].pImageInfo = &imageInfos[i];
+// }
+
+// vkUpdateDescriptorSets(Gfx::context->getVkDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+// vkCmdBindDescriptorSets(queueCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->getVKPipelineLayout(), 0, 1, &descriptor, 0, nullptr);
 
 // GfxPipeline *pipeline = Gfx::renderer->getPipeline(this->_material->_pipelineStruct.generateKey());
 // if (pipeline == nullptr)

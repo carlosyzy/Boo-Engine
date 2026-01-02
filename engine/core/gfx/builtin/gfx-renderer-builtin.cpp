@@ -14,6 +14,8 @@
 #include "gfx-pipeline-builtin.h"
 #include "gfx-queue-builtin.h"
 
+uint32_t GfxRendererBuiltin::StencilRef = 0;
+
 GfxRendererBuiltin::GfxRendererBuiltin(std::string name)
 {
     this->_name = name;

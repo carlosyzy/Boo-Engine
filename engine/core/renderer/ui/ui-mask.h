@@ -7,6 +7,7 @@
 #include "../../scene/node.h"
 class TextureAsset;
 class Camera;
+class GfxMesh;
 
 /**
  * mask 组件继承与ui-renderer组件
@@ -35,7 +36,7 @@ public:
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
     void Render(Camera *camera) override;
-    void lateRender();
+    void lateRender(Camera *camera);
     void Disable() override;
     void destroy() override;
     ~UIMask() override;

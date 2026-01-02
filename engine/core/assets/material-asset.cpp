@@ -96,9 +96,9 @@ void MaterialAsset::createUIMaskTest(int maskType){
     uiPipeline.stencilBackFailOp = GfxPipelineStencilOp::Keep;
     uiPipeline.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
     if(maskType == 0){
-        uiPipeline.stencilBackPassOp = GfxPipelineStencilOp::Decrement_Subtract;
-    }else{
         uiPipeline.stencilBackPassOp = GfxPipelineStencilOp::Increment_Add;
+    }else{
+        uiPipeline.stencilBackPassOp = GfxPipelineStencilOp::Decrement_Subtract;
     }
     // 颜色混合 开启
     uiPipeline.colorBlend = 0;
