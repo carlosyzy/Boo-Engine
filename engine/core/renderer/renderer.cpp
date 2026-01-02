@@ -84,6 +84,7 @@ void Renderer::_walkNode2D(Camera *camera, Node2D *node)
             // 透明度为0 不渲染
             return;
         }
+        // std::cout << "********:" << node->getName() << "    " << uiRenderer->getName() << std::endl;
         uiRenderer->Render(camera);
         const std::vector<Node *> &nodes = node->getChildren();
         for (auto node : nodes)
@@ -93,7 +94,7 @@ void Renderer::_walkNode2D(Camera *camera, Node2D *node)
         UIMask *uiMask = dynamic_cast<UIMask *>(uiRenderer);
         if (uiMask != nullptr)
         {
-            uiMask->lateRender();
+            uiMask->lateRender(camera);
         }
     }
     else

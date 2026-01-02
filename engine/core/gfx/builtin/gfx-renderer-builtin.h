@@ -36,6 +36,9 @@ struct GfxRenderx3DDescriptorSet
 
 class GfxRendererBuiltin
 {
+public:
+	static uint32_t StencilRef;
+
 private:
 	/**
 	 * @brief 渲染器名称

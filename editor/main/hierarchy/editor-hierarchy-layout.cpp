@@ -187,8 +187,8 @@ void EditorHierarchyLayout::_initNodeTree()
     this->_ndNodeTree = new Node2D("NodeTree");
     this->_content->addChild(this->_ndNodeTree);
     this->_ndNodeTree->setSize(100.0f, 100.0f);
-    this->_spriteNodeTree = dynamic_cast<UISprite *>(this->_ndNodeTree->addComponent("UISprite"));
-    this->_spriteNodeTree->setColor(EditorConfig::content);
+    // this->_spriteNodeTree = dynamic_cast<UISprite *>(this->_ndNodeTree->addComponent("UISprite"));
+    // this->_spriteNodeTree->setColor(EditorConfig::content);
     // 添加wedget组件
     UIWidget *widget = dynamic_cast<UIWidget *>(this->_ndNodeTree->addComponent("UIWidget"));
     WidgetHorizontalParam paramHorizontal{};

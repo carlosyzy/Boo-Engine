@@ -52,8 +52,8 @@ UIMask::UIMask(std::string name, Node *node, std::string uuid) : UIRenderer(name
     this->_addMaterialAsset->createUIMaskTest(0);
     this->_subMaterialAsset = new MaterialAsset();
     this->_subMaterialAsset->createUIMaskTest(1);
-    std::string uuid = this->_uuid + "-mask";
-    this->_maskMesh = new GfxMesh(uuid);
+    std::string meshUuid = this->_uuid + "-mask";
+    this->_maskMesh = new GfxMesh(meshUuid);
 }
 void UIMask::_deserialized()
 {
@@ -63,10 +63,14 @@ void UIMask::_deserialized()
 void UIMask::Awake()
 {
     Component::Awake();
+    std::cout << "=================ui mask awake" << std::endl;
 }
 void UIMask::Enable()
 {
     Component::Enable();
+    std::cout << "=================ui mask enable" << std::endl;
+    this->_setColor(1.0, 1.0, 1.0, 1.0);
+    this->_updateNodeMask();
 }
 void UIMask::_updateNodeMask()
 {
@@ -119,7 +123,7 @@ void UIMask::Render(Camera *camera)
     {
         return; // 节点不可见
     }
-    std::cout << "UIRenderer::Render:" << node2D->getName() << std::endl;
+
     // 提交渲染对象
     this->_instanceData.clear();
     this->_instanceData.reserve(16 + 4);
@@ -131,8 +135,32 @@ void UIMask::Render(Camera *camera)
 
     GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_addMaterialAsset->getGfxMaterial(), this->_maskMesh, this->_instanceData);
 }
-void UIMask::lateRender()
+void UIMask::lateRender(Camera *camera)
 {
+    if (camera == nullptr)
+    {
+        return; // 相机为空
+    }
+    Node2D *node2D = dynamic_cast<Node2D *>(this->_node);
+    if (node2D == nullptr)
+    {
+        return; // 节点不是Node2D类型
+    }
+    if (node2D->getSize().getHeight() <= 0 || node2D->getSize().getWidth() <= 0)
+    {
+        return; // 节点不可见
+    }
+
+    // 提交渲染对象
+    this->_instanceData.clear();
+    this->_instanceData.reserve(16 + 4);
+    // 1. 先添加模型矩阵 (16个float)
+    const auto &matrix = node2D->getWorldMatrix().data();
+    _instanceData.insert(_instanceData.end(), matrix.begin(), matrix.end());
+    // 2. 再添加颜色 (4个float)
+    _instanceData.insert(_instanceData.end(), {1.0f, 1.0f, 1.0f, 1.0f});
+
+    GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_subMaterialAsset->getGfxMaterial(), this->_maskMesh, this->_instanceData);
 }
 void UIMask::Disable()
 {

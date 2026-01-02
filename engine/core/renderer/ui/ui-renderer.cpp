@@ -88,7 +88,7 @@ void UIRenderer::Render(Camera *camera)
 	{
 		return; // 节点不可见
 	}
-	std::cout << "UIRenderer::Render:" << node2D->getName() << std::endl;
+	// std::cout << "UIRenderer::Render:" << node2D->getName() << std::endl;
 	// 提交渲染对象
 	this->_instanceData.clear();
 	this->_instanceData.reserve(16 + 4);
