@@ -32,9 +32,9 @@ void MaterialAsset::createUITest()
     // 剔除模式 背面
     uiPipeline.cullMode = GfxPipelineCullMode::None;
     // 深度测试 开启
-    uiPipeline.depthTest = 1;
+    uiPipeline.depthTest = 0;
     // 深度写入 开启
-    uiPipeline.depthWrite = 1;
+    uiPipeline.depthWrite = 0;
     // 深度比较操作 小于等于
     uiPipeline.depthCompareOp = GfxPipelineCompareOp::Always;
 
@@ -76,9 +76,9 @@ void MaterialAsset::createUIMaskTest(int maskType){
     // 剔除模式 背面
     uiPipeline.cullMode = GfxPipelineCullMode::None;
     // 深度测试 开启
-    uiPipeline.depthTest = 1;
+    uiPipeline.depthTest = 0;
     // 深度写入 开启
-    uiPipeline.depthWrite = 1;
+    uiPipeline.depthWrite = 0;
     // 深度比较操作 小于等于
     uiPipeline.depthCompareOp = GfxPipelineCompareOp::Always;
 
@@ -92,7 +92,7 @@ void MaterialAsset::createUIMaskTest(int maskType){
     }else{
         uiPipeline.stencilFrontPassOp = GfxPipelineStencilOp::Decrement_Subtract;
     }
-    uiPipeline.stencilBackCompareOp = GfxPipelineCompareOp::Equal;
+    uiPipeline.stencilBackCompareOp = GfxPipelineCompareOp::Always;
     uiPipeline.stencilBackFailOp = GfxPipelineStencilOp::Keep;
     uiPipeline.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
     if(maskType == 0){
