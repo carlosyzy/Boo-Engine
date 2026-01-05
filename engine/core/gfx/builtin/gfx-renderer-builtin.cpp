@@ -188,9 +188,9 @@ void GfxRendererBuiltin::_initDefaultUIPipeline()
     // 剔除模式 背面
     uiPipeline.cullMode = GfxPipelineCullMode::None;
     // 深度测试 开启
-    uiPipeline.depthTest = 1;
+    uiPipeline.depthTest = 0;
     // 深度写入 开启
-    uiPipeline.depthWrite = 1;
+    uiPipeline.depthWrite = 0;
     // 深度比较操作 小于等于
     uiPipeline.depthCompareOp = GfxPipelineCompareOp::Always;
     // 模版测试 启用（用于UI遮罩）
@@ -228,9 +228,9 @@ void GfxRendererBuiltin::_initDefaultUIMaskAddPipeline()
     // 剔除模式 背面
     uiMaskAddPipeline.cullMode = GfxPipelineCullMode::None;
     // 深度测试 开启
-    uiMaskAddPipeline.depthTest = 1;
+    uiMaskAddPipeline.depthTest = 0;
     // 深度写入 开启
-    uiMaskAddPipeline.depthWrite = 1;
+    uiMaskAddPipeline.depthWrite = 0;
     // 深度比较操作 小于等于
     uiMaskAddPipeline.depthCompareOp = GfxPipelineCompareOp::Always;
     // 模版测试 启用（用于UI遮罩）
@@ -239,7 +239,7 @@ void GfxRendererBuiltin::_initDefaultUIMaskAddPipeline()
     uiMaskAddPipeline.stencilFrontFailOp = GfxPipelineStencilOp::Keep;          // 测试失败：保持
     uiMaskAddPipeline.stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep;     // 深度失败：保持
     uiMaskAddPipeline.stencilFrontPassOp = GfxPipelineStencilOp::Increment_Add; // 测试通过：替换模板值为1（表示遮罩区域）
-    uiMaskAddPipeline.stencilBackCompareOp = GfxPipelineCompareOp::Equal;
+    uiMaskAddPipeline.stencilBackCompareOp = GfxPipelineCompareOp::Always;
     uiMaskAddPipeline.stencilBackFailOp = GfxPipelineStencilOp::Keep;
     uiMaskAddPipeline.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
     uiMaskAddPipeline.stencilBackPassOp = GfxPipelineStencilOp::Increment_Add; // 测试通过：替换模板值为1（表示遮罩区域）
@@ -262,9 +262,9 @@ void GfxRendererBuiltin::_initDefaultUIMaskSubPipeline()
     // 剔除模式 背面
     uiMaskAddPipeline.cullMode = GfxPipelineCullMode::None;
     // 深度测试 开启
-    uiMaskAddPipeline.depthTest = 1;
+    uiMaskAddPipeline.depthTest = 0;
     // 深度写入 开启
-    uiMaskAddPipeline.depthWrite = 1;
+    uiMaskAddPipeline.depthWrite = 0;
     // 深度比较操作 小于等于
     uiMaskAddPipeline.depthCompareOp = GfxPipelineCompareOp::Always;
     // 模版测试 启用（用于UI遮罩）
@@ -273,7 +273,7 @@ void GfxRendererBuiltin::_initDefaultUIMaskSubPipeline()
     uiMaskAddPipeline.stencilFrontFailOp = GfxPipelineStencilOp::Keep;               // 测试失败：保持
     uiMaskAddPipeline.stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep;          // 深度失败：保持
     uiMaskAddPipeline.stencilFrontPassOp = GfxPipelineStencilOp::Decrement_Subtract; // 测试通过：替换模板值为1（表示遮罩区域）
-    uiMaskAddPipeline.stencilBackCompareOp = GfxPipelineCompareOp::Equal;
+    uiMaskAddPipeline.stencilBackCompareOp = GfxPipelineCompareOp::Always;
     uiMaskAddPipeline.stencilBackFailOp = GfxPipelineStencilOp::Keep;
     uiMaskAddPipeline.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
     uiMaskAddPipeline.stencilBackPassOp = GfxPipelineStencilOp::Decrement_Subtract; // 测试通过：替换模板值为1（表示遮罩区域）
