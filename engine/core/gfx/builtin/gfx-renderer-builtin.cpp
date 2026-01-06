@@ -167,6 +167,19 @@ void GfxRendererBuiltin::_initDefaultShader()
     shader = new GfxShader(shaderMaskFragName);
     shader->createShaderModule(GfxShaderUIMaskFragSPV, GfxShaderUIMaskFragSPVSzie);
     Gfx::shaders[shaderMaskFragName] = shader;
+
+
+    // 内置默认ui 遮罩 测试 顶点着色器
+    std::string shaderMaskTestVertName = "builtin-ui-mask-test.vert";
+    shader = new GfxShader(shaderMaskTestVertName);
+    shader->createShaderModule(GfxShaderUIMaskTestVertSPV, GfxShaderUIMaskTestVertSPVSzie);
+    Gfx::shaders[shaderMaskTestVertName] = shader;
+
+    // 内置默认ui 遮罩 测试 片元着色器
+    std::string shaderMaskTestFragName = "builtin-ui-mask-test.frag";
+    shader = new GfxShader(shaderMaskTestFragName);
+    shader->createShaderModule(GfxShaderUIMaskTestFragSPV, GfxShaderUIMaskTestFragSPVSzie);
+    Gfx::shaders[shaderMaskTestFragName] = shader;
 }
 /**
  * 创建内置默认的ui pipeline
@@ -215,6 +228,44 @@ void GfxRendererBuiltin::_initDefaultUIPipeline()
     uiPipeline.pushConstant = 1;
     uiPipeline.pushConstantSize = 0;
     this->createPipeline(uiPipeline.generateKey(), uiPipeline);
+
+    //mask test pipeline
+    GfxPipelineStruct uiMaskTestPipeline = {};
+    uiMaskTestPipeline.render = uint32_t(GfxPipelineRender::_UI);
+    uiMaskTestPipeline.vert = "builtin-ui-mask-test.vert";
+    uiMaskTestPipeline.frag = "builtin-ui-mask-test.frag";
+    // 多边形模式 填充
+    uiMaskTestPipeline.polygonMode = GfxPipelinePolygonMode::Fill;
+    // 剔除模式 背面
+    uiMaskTestPipeline.cullMode = GfxPipelineCullMode::None;
+    // 深度测试 开启
+    uiMaskTestPipeline.depthTest = 0;
+    // 深度写入 开启
+    uiMaskTestPipeline.depthWrite = 0;
+    // 深度比较操作 小于等于
+    uiMaskTestPipeline.depthCompareOp = GfxPipelineCompareOp::Always;
+    // 模版测试 启用（用于UI遮罩）
+    uiMaskTestPipeline.stencilTest = 1;         
+    uiMaskTestPipeline.stencilFrontCompareOp = GfxPipelineCompareOp::Equal;  // 只在模板值相等时绘制
+    uiMaskTestPipeline.stencilFrontFailOp = GfxPipelineStencilOp::Keep;      // 测试失败：保持
+    uiMaskTestPipeline.stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep; // 深度失败：保持
+    uiMaskTestPipeline.stencilFrontPassOp = GfxPipelineStencilOp::Keep;      // 测试通过：保持（不修改模板值）
+    uiMaskTestPipeline.stencilBackCompareOp = GfxPipelineCompareOp::Equal;
+    uiMaskTestPipeline.stencilBackFailOp = GfxPipelineStencilOp::Keep;
+    uiMaskTestPipeline.stencilBackDepthFailOp = GfxPipelineStencilOp::Keep;
+    uiMaskTestPipeline.stencilBackPassOp = GfxPipelineStencilOp::Keep;
+    // 颜色混合 开启
+    uiMaskTestPipeline.colorBlend = 1;
+    uiMaskTestPipeline.srcColorBlendFactor = GfxPipelineColorBlendFactor::SrcAlpha;
+    uiMaskTestPipeline.dstColorBlendFactor = GfxPipelineColorBlendFactor::OneMinusSrcAlpha;
+    uiMaskTestPipeline.colorBlendOp = GfxPipelineColorBlendOp::Add;
+    uiMaskTestPipeline.srcAlphaBlendFactor = GfxPipelineColorBlendFactor::One;
+    uiMaskTestPipeline.dstAlphaBlendFactor = GfxPipelineColorBlendFactor::OneMinusSrcAlpha;
+    uiMaskTestPipeline.alphaBlendOp = GfxPipelineColorBlendOp::Add;
+    // 推送常量 开启
+    uiMaskTestPipeline.pushConstant = 1;
+    uiMaskTestPipeline.pushConstantSize = 0;
+    this->createPipeline(uiMaskTestPipeline.generateKey(), uiMaskTestPipeline);
 }
 
 void GfxRendererBuiltin::_initDefaultUIMaskAddPipeline()
@@ -443,6 +494,7 @@ void GfxRendererBuiltin::frameRendererBefore()
     {
         descriptorSet.isOccupied = false;
     }
+    GfxRendererBuiltin::StencilRef = 0;
 }
 void GfxRendererBuiltin::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
@@ -453,6 +505,7 @@ void GfxRendererBuiltin::frameRenderer(uint32_t imageIndex, std::vector<VkComman
 }
 void GfxRendererBuiltin::frameRendererAfter()
 {
+    GfxRendererBuiltin::StencilRef = 0;
 }
 
 void GfxRendererBuiltin::_cleanRendererState()

@@ -57,6 +57,8 @@ public:
 	void create(std::string path) override;
 	void createUITest();
 	void createUIMaskTest(int maskType);
+	void createMaskUITest();
+		
 	void setTextures(const std::vector<std::string> textures);
 	void setTexture(int index, std::string texture);
 

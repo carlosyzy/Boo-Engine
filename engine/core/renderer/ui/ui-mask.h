@@ -8,6 +8,7 @@
 class TextureAsset;
 class Camera;
 class GfxMesh;
+class MaterialAsset;
 
 /**
  * mask 组件继承与ui-renderer组件
@@ -17,6 +18,7 @@ class GfxMesh;
 class UIMask : public UIRenderer
 {
 private:
+    MaterialAsset *_testMaterialAsset;
     MaterialAsset *_addMaterialAsset;
     MaterialAsset *_subMaterialAsset;
     GfxMesh *_maskMesh;

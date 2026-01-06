@@ -6,6 +6,7 @@
 #include "../../scene/node-2d.h"
 #include "../../math/size.h"
 #include "../../assets/texture-asset.h"
+#include "../../assets/material-asset.h"
 #include "../../assets/assets-manager.h"
 #include "../../renderer/camera.h"
 UIMask::UIMask(std::string name, Node *node, std::string uuid) : UIRenderer(name, node, uuid)
@@ -52,6 +53,11 @@ UIMask::UIMask(std::string name, Node *node, std::string uuid) : UIRenderer(name
     this->_addMaterialAsset->createUIMaskTest(0);
     this->_subMaterialAsset = new MaterialAsset();
     this->_subMaterialAsset->createUIMaskTest(1);
+
+
+    this->_testMaterialAsset = new MaterialAsset();
+    this->_testMaterialAsset->createMaskUITest();
+
     std::string meshUuid = this->_uuid + "-mask";
     this->_maskMesh = new GfxMesh(meshUuid);
 }
@@ -133,10 +139,12 @@ void UIMask::Render(Camera *camera)
     // 2. 再添加颜色 (4个float)
     _instanceData.insert(_instanceData.end(), {1.0f, 1.0f, 1.0f, 1.0f});
 
-    GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_addMaterialAsset->getGfxMaterial(), this->_maskMesh, this->_instanceData);
+    // GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_addMaterialAsset->getGfxMaterial(), this->_maskMesh, this->_instanceData);
+    GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_testMaterialAsset->getGfxMaterial(), this->_maskMesh, this->_instanceData);
 }
 void UIMask::lateRender(Camera *camera)
 {
+    return;
     if (camera == nullptr)
     {
         return; // 相机为空
