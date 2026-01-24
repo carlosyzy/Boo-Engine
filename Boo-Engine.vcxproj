@@ -165,6 +165,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClCompile Include="editor\editor-boot.cpp" />
     <ClCompile Include="editor\editor.cpp" />
     <ClCompile Include="editor\loading\editor-loading.cpp" />
+    <ClCompile Include="editor\main\assets\editor-assets-file-tree.cpp" />
     <ClCompile Include="editor\main\assets\editor-assets-layout.cpp" />
     <ClCompile Include="editor\main\assets\editor-assets.cpp" />
     <ClCompile Include="editor\main\editor-layout.cpp" />
@@ -272,6 +273,7 @@ if exist "$(ProjectDir)editor\res" (
     <ClInclude Include="editor\layout\scene\editor-scene-layout.h" />
     <ClInclude Include="editor\layout\scene\editor-scene.h" />
     <ClInclude Include="editor\loading\editor-loading.h" />
+    <ClInclude Include="editor\main\assets\editor-assets-file-tree.h" />
     <ClInclude Include="editor\main\assets\editor-assets-layout.h" />
     <ClInclude Include="editor\main\assets\editor-assets.h" />
     <ClInclude Include="editor\main\editor-layout.h" />

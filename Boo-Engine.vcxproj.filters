@@ -303,6 +303,9 @@
     <ClCompile Include="engine\core\renderer\renderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\main\assets\editor-assets-file-tree.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\core\math\color.h">
@@ -846,6 +849,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="engine\core\input\input-struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\main\assets\editor-assets-file-tree.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
