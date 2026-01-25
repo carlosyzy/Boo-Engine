@@ -172,7 +172,6 @@ void GfxPipelineBuiltin::_initUIVertexInputState()
 }
 void GfxPipelineBuiltin::_init3DVertexInputState()
 {
-    
 }
 
 void GfxPipelineBuiltin::_initInputAssemblyState()
@@ -189,7 +188,18 @@ void GfxPipelineBuiltin::_initDynamicState()
     // this->_dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
     // this->_dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(this->_dynamicStates.size());
     // this->_dynamicStateInfo.pDynamicStates = this->_dynamicStates.data();
-    GfxPipeline::_initDynamicState();
+    // GfxPipeline::_initDynamicState();
+    this->_dynamicStateInfo = {};
+    this->_dynamicStates = {
+        VK_DYNAMIC_STATE_VIEWPORT,
+        VK_DYNAMIC_STATE_SCISSOR,
+        VK_DYNAMIC_STATE_STENCIL_REFERENCE,
+		VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK,
+		VK_DYNAMIC_STATE_STENCIL_WRITE_MASK
+    };
+    this->_dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    this->_dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(this->_dynamicStates.size());
+    this->_dynamicStateInfo.pDynamicStates = this->_dynamicStates.data();
 }
 void GfxPipelineBuiltin::_initViewportState()
 {
