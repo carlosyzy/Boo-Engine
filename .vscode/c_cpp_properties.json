@@ -5,7 +5,7 @@
       "includePath": [
         "${workspaceFolder}/**",
         "E:/software/glfw/include",
-        "E:/software/vulkan/Include",
+        "E:/software/vulkan/Include"
       ],
       "compilerPath": "E:/software/msys64/mingw64/bin/gcc.exe",
       "cStandard": "c17",
