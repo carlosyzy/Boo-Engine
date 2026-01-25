@@ -251,7 +251,14 @@ void Node::lateUpdate(float dt)
 			if (uiWidget != nullptr)
 			{
 				uiWidget->updateWidget();
+				continue;
 			}
+			// UIMask *uiMask = dynamic_cast<UIMask *>(component);
+			// if (uiMask != nullptr)
+			// {
+			// 	uiMask->updateMask();
+			// 	continue;
+			// }
 		}
 	}
 	// 更新组件

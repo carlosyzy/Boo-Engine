@@ -54,7 +54,6 @@ UIMask::UIMask(std::string name, Node *node, std::string uuid) : UIRenderer(name
     this->_subMaterialAsset = new MaterialAsset();
     this->_subMaterialAsset->createUIMaskTest(1);
 
-
     this->_testMaterialAsset = new MaterialAsset();
     this->_testMaterialAsset->createMaskUITest();
 
@@ -92,10 +91,17 @@ void UIMask::_updateNodeMask()
     Vec3 leftBottom = Vec3(-size.getWidth() / 2.0f, -size.getHeight() / 2.0f, 0.0f);
     Vec3 rightBottom = Vec3(size.getWidth() / 2.0f, -size.getHeight() / 2.0f, 0.0f);
     Vec3 rightTop = Vec3(size.getWidth() / 2.0f, size.getHeight() / 2.0f, 0.0f);
+
     Mat4::multiplyVec3(worldMatrix, leftTop, leftTop);
     Mat4::multiplyVec3(worldMatrix, leftBottom, leftBottom);
     Mat4::multiplyVec3(worldMatrix, rightBottom, rightBottom);
     Mat4::multiplyVec3(worldMatrix, rightTop, rightTop);
+
+    std::cout << "leftTop: " << leftTop.getX() << ", " << leftTop.getY() << ", " << leftTop.getZ() << std::endl;
+    std::cout << "leftBottom: " << leftBottom.getX() << ", " << leftBottom.getY() << ", " << leftBottom.getZ() << std::endl;
+    std::cout << "rightBottom: " << rightBottom.getX() << ", " << rightBottom.getY() << ", " << rightBottom.getZ() << std::endl;
+    std::cout << "rightTop: " << rightTop.getX() << ", " << rightTop.getY() << ", " << rightTop.getZ() << std::endl;
+
     std::vector<float> positions = {
         leftTop.getX(), leftTop.getY(), 0.0f, 0.0f, 0.0f,
         leftBottom.getX(), leftBottom.getY(), 0.0f, 0.0f, 1.0f,
@@ -113,6 +119,10 @@ void UIMask::Update(float deltaTime)
 void UIMask::LateUpdate(float deltaTime)
 {
     Component::LateUpdate(deltaTime);
+    if (this->_node->hasFrameTransformFlag())
+    {
+        this->_updateNodeMask();
+    }
 }
 void UIMask::Render(Camera *camera)
 {
@@ -139,12 +149,11 @@ void UIMask::Render(Camera *camera)
     // 2. 再添加颜色 (4个float)
     _instanceData.insert(_instanceData.end(), {1.0f, 1.0f, 1.0f, 1.0f});
 
-    // GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_addMaterialAsset->getGfxMaterial(), this->_maskMesh, this->_instanceData);
-    GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_testMaterialAsset->getGfxMaterial(), this->_maskMesh, this->_instanceData);
+    GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_addMaterialAsset->getGfxMaterial(), this->_maskMesh, this->_instanceData);
+    // GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_testMaterialAsset->getGfxMaterial(), this->_maskMesh, this->_instanceData);
 }
 void UIMask::lateRender(Camera *camera)
 {
-    return;
     if (camera == nullptr)
     {
         return; // 相机为空
