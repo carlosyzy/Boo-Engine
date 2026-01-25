@@ -178,6 +178,7 @@ void UIMask::lateRender(Camera *camera)
     _instanceData.insert(_instanceData.end(), {1.0f, 1.0f, 1.0f, 1.0f});
 
     GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_subMaterialAsset->getGfxMaterial(), this->_maskMesh, this->_instanceData);
+    // GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_testMaterialAsset->getGfxMaterial(), this->_maskMesh, this->_instanceData);
 }
 void UIMask::Disable()
 {

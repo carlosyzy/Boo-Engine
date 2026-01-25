@@ -47,6 +47,7 @@ void Renderer::_renderCameras(Camera *camera, Scene *scene)
     {
         return;
     }
+    std::cout << "render camera: " << camera->getName() << std::endl;
     camera->Render();
     // this->_walkNode3D(camera, scene->getRoot3D());
     this->_walkNode2D(camera, scene->getRoot2D());
