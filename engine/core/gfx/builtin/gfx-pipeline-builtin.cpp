@@ -180,15 +180,6 @@ void GfxPipelineBuiltin::_initInputAssemblyState()
 }
 void GfxPipelineBuiltin::_initDynamicState()
 {
-    // this->_dynamicStateInfo = {};
-    // this->_dynamicStates = {
-    //     VK_DYNAMIC_STATE_VIEWPORT,
-    //     VK_DYNAMIC_STATE_SCISSOR,
-    // };
-    // this->_dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-    // this->_dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(this->_dynamicStates.size());
-    // this->_dynamicStateInfo.pDynamicStates = this->_dynamicStates.data();
-    // GfxPipeline::_initDynamicState();
     this->_dynamicStateInfo = {};
     this->_dynamicStates = {
         VK_DYNAMIC_STATE_VIEWPORT,
