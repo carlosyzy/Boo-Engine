@@ -54,7 +54,7 @@ void GfxBatchBuiltin::render(VkCommandBuffer &queueCommandBuffer, GfxBuffer *ubo
             vkCmdSetStencilReference(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 1);      // 增加和减少每次都是固定值1
             vkCmdSetStencilCompareMask(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
             vkCmdSetStencilWriteMask(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);   // 写入所有位
-            std::cout << "GfxBatchBuiltin::render() stencilFrontPassOp is Increment_Add, StencilRef is " << GfxRendererBuiltin::StencilRef << std::endl;
+            // std::cout << "GfxBatchBuiltin::render() stencilFrontPassOp is Increment_Add, StencilRef is " << GfxRendererBuiltin::StencilRef << std::endl;
         }
         else if (pipelineStruct.stencilFrontPassOp == GfxPipelineStencilOp::Decrement_Subtract)
         {
@@ -62,14 +62,14 @@ void GfxBatchBuiltin::render(VkCommandBuffer &queueCommandBuffer, GfxBuffer *ubo
             vkCmdSetStencilReference(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 1);      // 增加和减少每次都是固定值1
             vkCmdSetStencilCompareMask(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
             vkCmdSetStencilWriteMask(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF);   // 写入所有位
-            std::cout << "GfxBatchBuiltin::render() stencilFrontPassOp is Decrement_Subtract, StencilRef is " << GfxRendererBuiltin::StencilRef << std::endl;
+            // std::cout << "GfxBatchBuiltin::render() stencilFrontPassOp is Decrement_Subtract, StencilRef is " << GfxRendererBuiltin::StencilRef << std::endl;
         }
         else
         {
             vkCmdSetStencilReference(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, GfxRendererBuiltin::StencilRef);
             vkCmdSetStencilCompareMask(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0xFF); // 比较所有位
             vkCmdSetStencilWriteMask(queueCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, 0x00);   // 不写入模板（保持遮罩）
-            std::cout << "GfxBatchBuiltin::render() stencilFrontPassOp is None, StencilRef is " << GfxRendererBuiltin::StencilRef << std::endl;
+            // std::cout << "GfxBatchBuiltin::render() stencilFrontPassOp is None, StencilRef is " << GfxRendererBuiltin::StencilRef << std::endl;
         }
         this->_bindUIDescriptorSets(queueCommandBuffer, pipeline, ubo);
     }

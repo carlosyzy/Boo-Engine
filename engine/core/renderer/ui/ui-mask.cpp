@@ -54,8 +54,8 @@ UIMask::UIMask(std::string name, Node *node, std::string uuid) : UIRenderer(name
     this->_subMaterialAsset = new MaterialAsset();
     this->_subMaterialAsset->createUIMaskTest(1);
 
-    this->_testMaterialAsset = new MaterialAsset();
-    this->_testMaterialAsset->createMaskUITest();
+    // this->_testMaterialAsset = new MaterialAsset();
+    // this->_testMaterialAsset->createMaskUITest();
 
     std::string meshUuid = this->_uuid + "-mask";
     this->_maskMesh = new GfxMesh(meshUuid);
@@ -68,12 +68,12 @@ void UIMask::_deserialized()
 void UIMask::Awake()
 {
     Component::Awake();
-    std::cout << "=================ui mask awake" << std::endl;
+    // std::cout << "=================ui mask awake" << std::endl;
 }
 void UIMask::Enable()
 {
     Component::Enable();
-    std::cout << "=================ui mask enable" << std::endl;
+    // std::cout << "=================ui mask enable" << std::endl;
     this->_setColor(1.0, 1.0, 1.0, 1.0);
     this->_updateNodeMask();
 }
@@ -97,10 +97,10 @@ void UIMask::_updateNodeMask()
     Mat4::multiplyVec3(worldMatrix, rightBottom, rightBottom);
     Mat4::multiplyVec3(worldMatrix, rightTop, rightTop);
 
-    std::cout << "leftTop: " << leftTop.getX() << ", " << leftTop.getY() << ", " << leftTop.getZ() << std::endl;
-    std::cout << "leftBottom: " << leftBottom.getX() << ", " << leftBottom.getY() << ", " << leftBottom.getZ() << std::endl;
-    std::cout << "rightBottom: " << rightBottom.getX() << ", " << rightBottom.getY() << ", " << rightBottom.getZ() << std::endl;
-    std::cout << "rightTop: " << rightTop.getX() << ", " << rightTop.getY() << ", " << rightTop.getZ() << std::endl;
+    // std::cout << "leftTop: " << leftTop.getX() << ", " << leftTop.getY() << ", " << leftTop.getZ() << std::endl;
+    // std::cout << "leftBottom: " << leftBottom.getX() << ", " << leftBottom.getY() << ", " << leftBottom.getZ() << std::endl;
+    // std::cout << "rightBottom: " << rightBottom.getX() << ", " << rightBottom.getY() << ", " << rightBottom.getZ() << std::endl;
+    // std::cout << "rightTop: " << rightTop.getX() << ", " << rightTop.getY() << ", " << rightTop.getZ() << std::endl;
 
     std::vector<float> positions = {
         leftTop.getX(), leftTop.getY(), 0.0f, 0.0f, 0.0f,
