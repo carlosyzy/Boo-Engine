@@ -13,48 +13,44 @@ AssetLoad::AssetLoad(AssetsManager *mgr)
 {
     this->_mgr = mgr;
 }
-Asset *AssetLoad::loadAsset(const std::string &uuid)
+Asset *AssetLoad::loadAsset(const std::string &path)
 {
     AssetCache *cache = this->_mgr->getAssetsCache();
     Asset *asset = nullptr;
-    asset = cache->getAsset(uuid);
+    asset = cache->getAsset(path);
     if (asset != nullptr)
     {
         return asset;
     }
     int taskID = this->_TaskNextID++;
     AssetTask task(this->_mgr, taskID);
-    json *mate = cache->_getAssetMeta(uuid);
-    if(mate == nullptr){
-        return nullptr;
-    }
-    asset = task.load(mate);
+    asset = task.load(path);
     if(asset == nullptr){
         return nullptr;
     }
-    cache->addAsset(uuid,asset);
+    cache->addAsset(path,asset);
     return asset;
 }
-Asset *AssetLoad::loadAssetByPath(const std::string &path)
-{
-    // AssetCache *cache = this->_mgr->getAssetsCache();
-    // Asset *asset = nullptr;
-    // asset = cache->getAssetByPath(path);
-    // if (asset != nullptr)
-    // {
-    //     return asset;
-    // }
-    // int taskID = this->_TaskNextID++;
-    // AssetTask task(this->_mgr, taskID);
-    // AssetDB *db = cache->getAssetDBByPath(path);
-    // if(db == nullptr){
-    //     return nullptr;
-    // }
-    // asset = task.load(db);
-    // cache->addAsset(path,asset);
-    // return asset;
-    return nullptr;
-}
+// Asset *AssetLoad::loadAssetByPath(const std::string &path)
+// {
+//     // AssetCache *cache = this->_mgr->getAssetsCache();
+//     // Asset *asset = nullptr;
+//     // asset = cache->getAssetByPath(path);
+//     // if (asset != nullptr)
+//     // {
+//     //     return asset;
+//     // }
+//     // int taskID = this->_TaskNextID++;
+//     // AssetTask task(this->_mgr, taskID);
+//     // AssetDB *db = cache->getAssetDBByPath(path);
+//     // if(db == nullptr){
+//     //     return nullptr;
+//     // }
+//     // asset = task.load(db);
+//     // cache->addAsset(path,asset);
+//     // return asset;
+//     return nullptr;
+// }
 
 
 // Asset *AssetLoad::load(const std::string path)

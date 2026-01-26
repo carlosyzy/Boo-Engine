@@ -12,6 +12,44 @@
 
 EditorCache::EditorCache()
 {
+    // // 资产目录
+    // this->_assetsPath = (std::filesystem::path(BooEditor::projectPath) / "assets").generic_string();
+    // // 判断当前目录存在不,不存在创建
+    // if (!std::filesystem::exists(this->_assetsPath))
+    // {
+    //     std::filesystem::create_directories(this->_assetsPath);
+    // }
+    // // 配置目录
+    // this->_settingPath = (std::filesystem::path(BooEditor::projectPath) / "setting").generic_string();
+    // // 判断当前目录存在不,不存在创建
+    // if (!std::filesystem::exists(this->_settingPath))
+    // {
+    //     std::filesystem::create_directories(this->_settingPath);
+    // }
+    // // 临时缓存目录
+    // this->_libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library").generic_string();
+    // // 判断当前目录存在不,不存在创建
+    // if (!std::filesystem::exists(this->_libraryPath))
+    // {
+    //     std::filesystem::create_directories(this->_libraryPath);
+    // }
+
+    // this->_settingCache = new EditorCacheSetting();
+    // this->_assetsCache = new EditorCacheAssets();
+}
+void EditorCache::init()
+{
+    this->_initAssetsCache();
+    Boo::game->assetsManager()->setAssetsRoot(this->_assetsPath);
+    std::cout << "EditorCache::init: assetsPath: " << this->_assetsPath << std::endl;
+    // // 初始化
+    // this->_settingCache->init(this->_settingPath);
+    // this->_assetsCache->init(this->_assetsPath, this->_libraryPath);
+    // std::cout << "EditorCache::init" << std::endl;
+    // this->_sceneCache = new EditorCacheScene(this->_settingCache->getSettingConfig());
+}
+void EditorCache::_initAssetsCache()
+{
     // 资产目录
     this->_assetsPath = (std::filesystem::path(BooEditor::projectPath) / "assets").generic_string();
     // 判断当前目录存在不,不存在创建
@@ -19,33 +57,11 @@ EditorCache::EditorCache()
     {
         std::filesystem::create_directories(this->_assetsPath);
     }
-    // 配置目录
-    this->_settingPath = (std::filesystem::path(BooEditor::projectPath) / "setting").generic_string();
-    // 判断当前目录存在不,不存在创建
-    if (!std::filesystem::exists(this->_settingPath))
-    {
-        std::filesystem::create_directories(this->_settingPath);
-    }
-    // 临时缓存目录
-    this->_libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library").generic_string();
-    // 判断当前目录存在不,不存在创建
-    if (!std::filesystem::exists(this->_libraryPath))
-    {
-        std::filesystem::create_directories(this->_libraryPath);
-    }
-
-    this->_settingCache = new EditorCacheSetting();
     this->_assetsCache = new EditorCacheAssets();
+    this->_assetsCache->init(this->_assetsPath);
+    std::cout << "EditorCache::init: assetsCache init" << std::endl;
 }
-void EditorCache::init()
-{
-    Boo::game->assetsManager()->setAssetsRoot(this->_libraryPath);
-    // 初始化
-    this->_settingCache->init(this->_settingPath);
-    this->_assetsCache->init(this->_assetsPath, this->_libraryPath);
-    std::cout << "EditorCache::init" << std::endl;
-    this->_sceneCache = new EditorCacheScene(this->_settingCache->getSettingConfig());
-}
+
 void EditorCache::load(std::function<void(const float progress, std::string file)> progressCallback, std::function<void()> complete)
 {
     std::cout << "EditorCache::load" << std::endl;
@@ -183,5 +199,3 @@ TextureAsset *EditorCache::getEditorTexture(const std::string &path)
 //     std::cout << "EditorCache::saveAssetsDB: " << this->_assetsDBPath << std::endl;
 //     std::cout << "EditorCache::saveAssetsDB: " << content << std::endl;
 // }
-
-

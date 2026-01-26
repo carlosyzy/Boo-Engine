@@ -15,45 +15,26 @@ AssetTask::AssetTask(AssetsManager *mgr, int id)
 	this->_isComplete = false;
 	this->_id = id;
 }
-Asset *AssetTask::load(json *mate)
+Asset *AssetTask::load(const std::string &path)
 {
-	this->_type = AssetTaskType::Sync;
-	this->_assetMate = mate;
-	int type = _assetMate->at("type").get<int>();
-	if (type == (int)AssetType::Texture)
+	// this->_type = AssetTaskType::Sync;
+	this->_assetPath = path;
+	this->_assetExtension = std::filesystem::path(path).extension().string();
+	if (this->_assetExtension == ".png" || this->_assetExtension == ".PNG" || this->_assetExtension == ".jpg" || this->_assetExtension == ".JPG" || this->_assetExtension == ".jpeg" || this->_assetExtension == ".JPEG")
 	{
 		return this->_createTexture();
-	}else if(type == (int)AssetType::Scene){
+	}
+	else if (this->_assetExtension == ".scene" || this->_assetExtension == ".SCENE" || this->_assetExtension == ".Scene")
+	{
 		return this->_createScene();
 	}
-
-	// if(type == "Texture"){
-	// 	return this->_createTexture(_assetMate);
-	// }
-	// else if(type == "Scene"){
-	// 	return this->_createScene(_assetMate);
-	// }
-
-	// if (_assetDB->extension == ".png" || _assetDB->extension == ".PNG" || _assetDB->extension == ".jpg" || _assetDB->extension == ".JPG" || _assetDB->extension == ".jpeg" || _assetDB->extension == ".JPEG")
-	// {
-	// 	return this->_createTexture(_assetDB);
-	// }
-	// else if (_assetDB->extension == ".scene" || _assetDB->extension == ".SCENE" || _assetDB->extension == ".Scene")
-	// {
-	// 	return this->_createScene(_assetDB);
-	// }
 
 	return nullptr;
 }
 
 Asset *AssetTask::_createTexture()
 {
-	std::string filePath = "";
-	if (this->_assetMate->contains("uuid") && this->_assetMate->contains("extension"))
-	{
-		filePath = this->_assetMate->at("uuid").get<std::string>() + this->_assetMate->at("extension").get<std::string>();
-	}
-	std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / filePath).generic_string();
+	std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / this->_assetPath).generic_string();
 	if (!std::filesystem::exists(fullPath))
 	{
 		std::cerr << "AssetLoad:No such file or directory:" << fullPath << std::endl;
@@ -66,19 +47,13 @@ Asset *AssetTask::_createTexture()
 		this->_loadError();
 		return nullptr;
 	}
-	TextureAsset *texture = new TextureAsset(this->_assetMate->at("uuid").get<std::string>());
+	TextureAsset *texture = new TextureAsset(this->_assetPath);
 	texture->create(fullPath.string());
 	return texture;
 }
 Asset *AssetTask::_createScene()
 {
-	std::string filePath = "";
-	if (this->_assetMate->contains("uuid") && this->_assetMate->contains("extension"))
-	{
-		filePath = this->_assetMate->at("uuid").get<std::string>() + this->_assetMate->at("extension").get<std::string>();
-	}
-	std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / filePath).generic_string();
-
+	std::filesystem::path fullPath = (std::filesystem::path(this->_mgr->getAssetsRoot()) / this->_assetPath).generic_string();
 	if (!std::filesystem::exists(fullPath))
 	{
 		std::cerr << "AssetLoad:No such file or directory:" << fullPath << std::endl;
@@ -91,7 +66,7 @@ Asset *AssetTask::_createScene()
 		this->_loadError();
 		return nullptr;
 	}
-  	SceneAsset *scene = new SceneAsset(this->_assetMate->at("uuid").get<std::string>());
+	SceneAsset *scene = new SceneAsset(this->_assetPath);
 	scene->create(fullPath.string());
 	return scene;
 }
@@ -180,73 +155,73 @@ void AssetTask::clearCallback()
 
 void AssetTask::_loadComplete()
 {
-	this->_isComplete = true;
-	if (this->_type == AssetTaskType::Sync)
-	{
-		return;
-	}
-	else if (this->_type == AssetTaskType::AsyncOnce)
-	{
-		if (this->_callbackOnce != nullptr)
-		{
-			this->_callbackOnce();
-		}
-	}
-	else if (this->_type == AssetTaskType::AsyncList)
-	{
-		if (this->_result == nullptr)
-		{
-			return;
-		}
-		this->_result->complete++;
-		int complete = this->_result->complete;
-		int all = this->_result->all;
-		float progress = (float)complete / (float)all;
-		if (this->_callbackList != nullptr)
-		{
-			this->_callbackList(complete, all, progress);
-		}
-		if (complete >= all)
-		{
-			delete this->_result;
-			this->_result = nullptr;
-		}
-	}
+	// this->_isComplete = true;
+	// if (this->_type == AssetTaskType::Sync)
+	// {
+	// 	return;
+	// }
+	// else if (this->_type == AssetTaskType::AsyncOnce)
+	// {
+	// 	if (this->_callbackOnce != nullptr)
+	// 	{
+	// 		this->_callbackOnce();
+	// 	}
+	// }
+	// else if (this->_type == AssetTaskType::AsyncList)
+	// {
+	// 	if (this->_result == nullptr)
+	// 	{
+	// 		return;
+	// 	}
+	// 	this->_result->complete++;
+	// 	int complete = this->_result->complete;
+	// 	int all = this->_result->all;
+	// 	float progress = (float)complete / (float)all;
+	// 	if (this->_callbackList != nullptr)
+	// 	{
+	// 		this->_callbackList(complete, all, progress);
+	// 	}
+	// 	if (complete >= all)
+	// 	{
+	// 		delete this->_result;
+	// 		this->_result = nullptr;
+	// 	}
+	// }
 }
 void AssetTask::_loadError()
 {
-	this->_isComplete = true;
-	if (this->_type == AssetTaskType::Sync)
-	{
-		return;
-	}
-	else if (this->_type == AssetTaskType::AsyncOnce)
-	{
-		if (this->_callbackOnce != nullptr)
-		{
-			this->_callbackOnce();
-		}
-	}
-	else if (this->_type == AssetTaskType::AsyncList)
-	{
-		if (this->_result == nullptr)
-		{
-			return;
-		}
-		this->_result->complete++;
-		int complete = this->_result->complete;
-		int all = this->_result->all;
-		float progress = (float)complete / (float)all;
-		if (this->_callbackList != nullptr)
-		{
-			this->_callbackList(complete, all, progress);
-		}
-		if (complete >= all)
-		{
-			delete this->_result;
-			this->_result = nullptr;
-		}
-	}
+	// this->_isComplete = true;
+	// if (this->_type == AssetTaskType::Sync)
+	// {
+	// 	return;
+	// }
+	// else if (this->_type == AssetTaskType::AsyncOnce)
+	// {
+	// 	if (this->_callbackOnce != nullptr)
+	// 	{
+	// 		this->_callbackOnce();
+	// 	}
+	// }
+	// else if (this->_type == AssetTaskType::AsyncList)
+	// {
+	// 	if (this->_result == nullptr)
+	// 	{
+	// 		return;
+	// 	}
+	// 	this->_result->complete++;
+	// 	int complete = this->_result->complete;
+	// 	int all = this->_result->all;
+	// 	float progress = (float)complete / (float)all;
+	// 	if (this->_callbackList != nullptr)
+	// 	{
+	// 		this->_callbackList(complete, all, progress);
+	// 	}
+	// 	if (complete >= all)
+	// 	{
+	// 		delete this->_result;
+	// 		this->_result = nullptr;
+	// 	}
+	// }
 }
 
 AssetTask::~AssetTask()

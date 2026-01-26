@@ -7,8 +7,6 @@ class Scene;
 class EditorCacheScene
 {
 private:   
-    json* _settingConfig;
-    void _initSceneConfig();
     int _saveFlag = 0;
     Scene* _scene;
     json* _currentSceneAssetMate;

@@ -57,13 +57,17 @@ private:
      */
     int _id = 0;
     /**
-     * @brief 资产UUID
+     * @brief 资产路径
      */
-    json *_assetMate;
-    /**
-     * @brief 资产加载任务类型
+    std::string _assetPath;
+     /**
+     * @brief 资产扩展名
      */
-    AssetTaskType _type;
+    std::string _assetExtension;
+    // /**
+    //  * @brief 资产加载任务类型
+    //  */
+    // AssetTaskType _type;
     /**
      * @brief 是否完成加载
      */
@@ -93,27 +97,6 @@ private:
      * @param fullPath 资产路径
      */
     Asset *_createScene();
-    // /**
-    //  * @brief 创建GLSL着色器
-    //  *
-    //  * @param resKey 资产键值
-    //  * @param fullPath 资产路径
-    //  */
-    // void _createGlslShader(const std::string resKey, const std::string fullPath);
-    // /**
-    //  * @brief 创建SPIR-V着色器
-    //  *
-    //  * @param resKey 资产键值
-    //  * @param fullPath 资产路径
-    //  */
-    // void _createSpirvShader(const std::string resKey, const std::string fullPath);
-    // /**
-    //  * @brief 创建场景
-    //  *
-    //  * @param resKey 资产键值
-    //  * @param fullPath 资产路径
-    //  */
-    // void _createScene(const std::string resKey, const std::string fullPath);
 
     /**
      * @brief 加载完成
@@ -134,35 +117,7 @@ public:
     {
         return this->_id;
     }
-    Asset *load(json *mate);
-    // template <typename T, typename Func>
-    // void loadAsync(const std::string &path, Func callback, T *instance)
-    // {
-    //    /* this->_path = path;
-    //     this->_type = AssetTaskType::AsyncOnce;
-    //     this->_callbackOnce = [instance, callback]()
-    //     {
-    //         if (instance != nullptr && callback != nullptr)
-    //         {
-    //             (instance->*callback)();
-    //         }
-    //     };*/
-    // }
-    // template <typename T, typename Func>
-    // void loadASync(const std::string path, AssetLoadResult *result, Func callback, T *instance)
-    // {
-    //     /*this->_path = path;
-    //     this->_type = AssetTaskType::AsyncList;
-    //     this->_result = result;
-    //     this->_callbackList = [instance, callback](const int complete, const int all, const float progress)
-    //     {
-    //         if (instance != nullptr && callback != nullptr)
-    //         {
-    //             (instance->*callback)(complete, all, progress);
-    //         }
-    //     };*/
-    // }
-    // void run();
+    Asset *load(const std::string &path);
     void clearCallback();
     bool isComplete()
     {

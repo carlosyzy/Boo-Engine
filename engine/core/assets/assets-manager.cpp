@@ -28,11 +28,6 @@ void AssetsManager::_initDefaultBuiltinAssets()
 	logo->create(LogoTexture, sizeof(LogoTexture));
 	this->_assetsCache->addAsset("123e4567-e89b-12d3-a456-426614174000", logo);
 }
-
-void AssetsManager::initAssetsMeta(const std::string &path)
-{
-	this->_assetsCache->initAssetsMeta(path);
-}
 void AssetsManager::setAssetsRoot(const std::string &root)
 {
 	this->_assetsRoot = root;
@@ -54,32 +49,15 @@ void AssetsManager::setMaxLoadCount(int count)
 {
 	this->_assetsLoad->setMaxLoadCount(count);
 }
-Asset *AssetsManager::loadAsset(const std::string &uuid)
+Asset *AssetsManager::loadAsset(const std::string &path)
 {
-	return this->_assetsLoad->loadAsset(uuid);
+	return this->_assetsLoad->loadAsset(path);
 }
-Asset *AssetsManager::loadAssetByPath(const std::string &path)
-{
-	return this->_assetsLoad->loadAssetByPath(path);
-}
+
 Asset *AssetsManager::getAsset(const std::string &path)
 {
 	return this->_assetsCache->getAsset(path);
 }
-Asset *AssetsManager::getAssetByPath(const std::string &path)
-{
-	return nullptr;
-}
-/**
- * @brief 获取场景资产数据库
- * @param sceneName 场景名称
- * @return AssetDB 场景资产数据库
- */
-json* AssetsManager::_getSceneAssetMate(const std::string &sceneName)
-{
-	return this->_assetsCache->_getSceneAssetMate(sceneName);
-}
-
 void AssetsManager::update(float deltaTime)
 {
 	this->_assetsLoad->update(deltaTime);
@@ -88,8 +66,3 @@ void AssetsManager::update(float deltaTime)
 AssetsManager::~AssetsManager()
 {
 }
-
-// void AssetsManager::_initRoot()
-// {
-
-// }

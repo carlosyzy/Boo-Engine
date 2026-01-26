@@ -14,10 +14,12 @@
 
 EditorBoot::EditorBoot()
 {
+    std::cout << "EditorBoot::EditorBoot" << std::endl;
     this->_deltaTime = TimeUtil::nowTime();
     this->_frameRate = 30;
     BooEditor::cache = new EditorCache();
     BooEditor::cache->init();
+    std::cout << "EditorBoot::EditorBoot: cache init" << std::endl;
 }
 void EditorBoot::init()
 {

@@ -13,11 +13,9 @@
 EditorCacheAssets::EditorCacheAssets()
 {
 }
-void EditorCacheAssets::init(std::string assetsPath, std::string libraryPath)
+void EditorCacheAssets::init(std::string assetsPath)
 {
     this->_assetsPath = assetsPath;
-    this->_libraryPath = libraryPath;
-    // Boo::game->assetsManager()->initAssetsDB(this->_assetsDBPath);
 }
 void EditorCacheAssets::load(std::function<void(const float progress, std::string file)> progress, std::function<void()> complete)
 {
@@ -28,37 +26,13 @@ void EditorCacheAssets::load(std::function<void(const float progress, std::strin
     {
         if (std::filesystem::is_regular_file(entry))
         {
-            if (!this->_isAssetMateMapFile(entry))
-            {
-                EditorCacheAssetsTask task;
-                task.init(entry.path().generic_string());
-                this->_initAssetsTasks.push_back(task);
-            }
+            EditorCacheAssetsTask task;
+            task.init(entry.path().generic_string());
+            this->_initAssetsTasks.push_back(task);
         }
     }
     this->_initAssetsTaskAll = this->_initAssetsTasks.size();
     this->_initAssetsTaskComplete = 0;
-}
-bool EditorCacheAssets::_isAssetMateMapFile(std::filesystem::path path)
-{
-    if (path.extension()!=".mate")
-    {
-        return false;
-    }
-    else
-    {
-        // 读取文件,检测内容
-        json booConfig = FileUtil::readJsonFromText(path.generic_string());
-        if (booConfig.is_null())
-        {
-            return false;
-        }
-        if (!booConfig.contains("_type") || !booConfig.contains("uuid"))
-        {
-            return false;
-        }
-    }
-    return true;
 }
 
 void EditorCacheAssets::update(float deltaTime)
@@ -88,60 +62,9 @@ void EditorCacheAssets::update(float deltaTime)
             {
                 this->_completeCallback();
             }
-            // 清除旧资产库资产
-            // this->_clearOldLibraryAssets();
-            // this->saveAssetsDB();
         }
     }
 }
-void EditorCacheAssets::_clearOldLibraryAssets()
-{
-    // std::cout << "EditorCacheAssets::_clearOldLibraryAssets" << std::endl;
-    // AssetCache *assetCache = Boo::game->assetsManager()->getAssetsCache();
-    // for (const auto &entry : std::filesystem::recursive_directory_iterator(this->_libraryPath))
-    // {
-    //     if (std::filesystem::is_regular_file(entry))
-    //     {
-    //         std::string assetPath = entry.path().generic_string();
-    //         std::string assetName = std::filesystem::path(assetPath).stem().generic_string();
-    //         if (assetCache->getAssetDB(assetName) == nullptr)
-    //         {
-    //             std::cout << "EditorCacheAssetsDB::_clearOldLibraryAssets: " << assetPath << std::endl;
-    //             std::filesystem::remove(assetPath);
-    //         }
-    //     }
-    // }
-}
-// /**
-//  * @brief 保存资产数据库
-//  *
-//  */
-// void EditorCacheAssets::saveAssetsDB()
-// {
-//     // AssetCache *assetCache = Boo::game->assetsManager()->getAssetsCache();
-//     // std::unordered_map<std::string, std::vector<AssetDB *>> &pathAssetsDB = assetCache->getPathAssetsDB();
-//     // json content = json::object();
-//     // for (auto &pathAssetDB : pathAssetsDB)
-//     // {
-//     //     std::string path = pathAssetDB.first;                  // 相对于assets 目录的路径
-//     //     std::vector<AssetDB *> &assetDBs = pathAssetDB.second; // 当前目录包含子的子资源
-//     //     json subItems = json::array();
-//     //     for (auto &assetDB : assetDBs)
-//     //     {
-//     //         json subItem = json::object();
-//     //         subItem["name"] = assetDB->name;
-//     //         subItem["path"] = assetDB->path;
-//     //         subItem["uuid"] = assetDB->uuid;
-//     //         subItem["type"] = (int)assetDB->type;
-//     //         subItem["extension"] = assetDB->extension;
-//     //         subItems.push_back(subItem);
-//     //     }
-//     //     content[path] = subItems;
-//     // }
-//     // FileUtil::saveJsonToBinary(this->_assetsDBPath, content);
-//     // std::cout << "EditorCache::saveAssetsDB: " << this->_assetsDBPath << std::endl;
-//     // std::cout << "EditorCache::saveAssetsDB: " << content << std::endl;
-// }
 EditorCacheAssets::~EditorCacheAssets()
 {
 }

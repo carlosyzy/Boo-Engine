@@ -41,6 +41,9 @@ void EditorMain::Awake()
     this->_initLayout();
     this->_initHierarchy();
     this->_initAssets();
+    //属性面板
+
+
     this->_initScene();
 }
 void EditorMain::Enable()
@@ -83,11 +86,11 @@ void EditorMain::_initAssets()
 void EditorMain::_initScene()
 {
     BooEditor::cache->SceneCache()->openScene("");
-    this->_scene = BooEditor::cache->SceneCache()->getScene();
-    std::cout << "EditorMain::_initScene: " << this->_scene << std::endl;
+    // this->_scene = BooEditor::cache->SceneCache()->getScene();
+    // std::cout << "EditorMain::_initScene: " << this->_scene << std::endl;
   
 
-    this->_hierarchy->setScene(this->_scene);
+    // this->_hierarchy->setScene(this->_scene);
     // this->_scene->createRoot2D();
     // this->_scene->createRoot3D();
 
