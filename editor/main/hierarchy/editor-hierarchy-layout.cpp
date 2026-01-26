@@ -187,8 +187,8 @@ void EditorHierarchyLayout::_initNodeTree()
     this->_ndNodeTree = new Node2D("NodeTree");
     this->_content->addChild(this->_ndNodeTree);
     this->_ndNodeTree->setSize(100.0f, 100.0f);
-    // this->_spriteNodeTree = dynamic_cast<UISprite *>(this->_ndNodeTree->addComponent("UISprite"));
-    // this->_spriteNodeTree->setColor(EditorConfig::content);
+    this->_spriteNodeTree = dynamic_cast<UISprite *>(this->_ndNodeTree->addComponent("UISprite"));
+    this->_spriteNodeTree->setColor(EditorConfig::content);
     // 添加wedget组件
     UIWidget *widget = dynamic_cast<UIWidget *>(this->_ndNodeTree->addComponent("UIWidget"));
     WidgetHorizontalParam paramHorizontal{};
@@ -199,10 +199,8 @@ void EditorHierarchyLayout::_initNodeTree()
     paramVertical.bottom = 0.0f;
     widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
     widget->setVertical(WidgetVertical::ALL, paramVertical);
-    //添加mask组件
-    UIMask *mask = dynamic_cast<UIMask *>(this->_ndNodeTree->addComponent("UIMask"));
-
-
+    // //添加mask组件
+    // 
     this->_nodeTree = dynamic_cast<EditorHierarchyNodeTree *>(this->_ndNodeTree->addComponent("EditorHierarchyNodeTree"));
     this->_nodeTree->onSelectEvent([this](std::string uuid)
                                        { this->_onNodeTreeSelectEvent(uuid); });

@@ -6,7 +6,9 @@
 #include "../../../engine/core/scene/node-2d.h"
 #include "../../../engine/core/renderer/ui/ui-sprite.h"
 #include "../../../engine/core/renderer/ui/ui-text.h"
+#include "../../../engine/core/renderer/ui/ui-mask.h"
 #include "../../../engine/core/input/input.h"
+#include "../../../engine/core/component/ui/ui-widget.h"
 
 EditorHierarchyNodeTree::EditorHierarchyNodeTree(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
 {
@@ -27,9 +29,33 @@ void EditorHierarchyNodeTree::Awake()
 }
 void EditorHierarchyNodeTree::_initContent()
 {
-    // 在当前组件的子节点中获取第一个名字为Content的节点
-    // 获取失败时创建
-    Node *content = this->_node->getChildByName("Content");
+    this->_ndMask = dynamic_cast<Node2D *>(this->_node->getChildByName("Content"));
+    if (this->_ndMask == nullptr)
+    {
+        this->_ndMask = new Node2D("Content");
+        this->_node->addChild(this->_ndMask);
+        // 添加widget组件
+        UIWidget *widget = dynamic_cast<UIWidget *>(this->_ndMask->addComponent("UIWidget"));
+        WidgetHorizontalParam paramHorizontal{};
+        paramHorizontal.left = 0.0f;
+        paramHorizontal.right = 0.0f;
+        WidgetVerticalParam paramVertical{};
+        paramVertical.top = 0.0f;
+        paramVertical.bottom = 0.0f;
+        widget->setHorizontal(WidgetHorizontal::ALL, paramHorizontal);
+        widget->setVertical(WidgetVertical::ALL, paramVertical);
+        // 添加mask组件
+        UIMask *mask = dynamic_cast<UIMask *>(this->_ndMask->addComponent("UIMask"));
+    }
+    else
+    {
+        UIMask *mask = dynamic_cast<UIMask *>(this->_ndMask->getComponent("UIMask"));
+        if (mask == nullptr)
+        {
+            mask = dynamic_cast<UIMask *>(this->_ndMask->addComponent("UIMask"));
+        }
+    }
+    Node *content = this->_ndMask->getChildByName("Content");
     if (content != nullptr)
     {
         this->_ndContent = dynamic_cast<Node2D *>(content);
@@ -37,13 +63,10 @@ void EditorHierarchyNodeTree::_initContent()
     else
     {
         this->_ndContent = new Node2D("Content");
-        this->_node->addChild(this->_ndContent);
+        this->_ndMask->addChild(this->_ndContent);
     }
     this->_ndContent->setAnchor(0, 1);
     this->_ndContent->setSize(300.0f, 200.0f);
-    // 确定后不需要渲染组件
-    // this->_spContent = static_cast<UISprite *>(this->_ndContent->addComponent("UISprite"));
-    // this->_spContent->setColor(34.0f / 255.0f, 42.0f / 255.0f, 53.0f / 255.0f, 1.0f);
 }
 
 void EditorHierarchyNodeTree::Enable()
@@ -332,7 +355,7 @@ void EditorHierarchyNodeTree::_onTreeItemTouchEvent(NodeInputResult &result)
     if (this->_selectTreeItem != nullptr && result.button == 1)
     {
         // 弹出菜单界面
-        std::cout << "EditorHierarchyNodeTree::_onTreeItemTouchEvent: show menu panel" <<  std::endl;
+        std::cout << "EditorHierarchyNodeTree::_onTreeItemTouchEvent: show menu panel" << std::endl;
     }
 }
 void EditorHierarchyNodeTree::_onTreeItemCursorHoverEvent(NodeInputResult &result)

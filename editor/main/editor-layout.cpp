@@ -35,7 +35,7 @@ void EditorLayout::init()
     this->_initMainUI();
     this->_initMenuUI();
     this->_initHierarchyUI();
-    // this->_initAssetsUI();
+    this->_initAssetsUI();
     // this->_initPropertyUI();
     // this->_initSceneUI();
     // this->_initToolUI();

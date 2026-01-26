@@ -11,6 +11,10 @@ class Node;
 class Node2D;
 class UISprite;
 class Scene;
+class UIMask;
+class UIWidget;
+
+
 
 struct NodeTreeStructure
 {
@@ -44,6 +48,8 @@ private:
 private:
     float _topLen;
     float _leftLen;
+    Node2D *_ndMask;
+    
     Node2D *_ndContent;
     UISprite *_spContent;
     float _contentWidth;
