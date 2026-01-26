@@ -40,132 +40,46 @@ void EditorCacheScene::openScene(std::string path)
         this->_assetPath = "";
         std::string uuid = UuidUtil::generateUUID();
         this->_scene = new Scene("NewScene", uuid);
+        this->_saveFlag = 1;
     }
     else
     {
-        // this->_currentSceneAssetMate = sceneMate;
-        // std::string uuid = sceneMate->at("uuid").get<std::string>();
-        // Asset *asset = Boo::game->assetsManager()->getAsset(uuid);
-        // if (asset == nullptr)
-        // {
-        //     this->_scene = nullptr;
-        //     // 当前资产对应的场景不存在,删除当前资产数据库,打开一个新场景
-        //     std::cout << "EditorCacheScene::_openOldScene: 场景不存在, uuid: " << uuid << ", name: " << this->_currentSceneAssetMate->at("name").get<std::string>() << std::endl;
-        //     return;
-        // }
-        // SceneAsset *sceneAsset = dynamic_cast<SceneAsset *>(asset);
-        // if (sceneAsset == nullptr)
-        // {
-        //     this->_scene = nullptr;
-        //     std::cout << "EditorCacheScene::_openOldScene: 场景资产不存在, uuid: " << uuid << ", name: " << this->_currentSceneAssetMate->at("name").get<std::string>() << std::endl;
-        //     return;
-        // }
-        // this->_saveFlag = 0;
-        // this->_scene = sceneAsset->getScene();
+        Asset *asset = Boo::game->assetsManager()->getAsset(path);
+        if (asset == nullptr)
+        {
+            this->_scene = nullptr;
+            std::cout << "EditorCacheScene::openScene: 场景资产不存在, path: " << path << std::endl;
+            return;
+        }
+        SceneAsset *sceneAsset = dynamic_cast<SceneAsset *>(asset);
+        if (sceneAsset == nullptr)
+        {
+            this->_scene = nullptr;
+            std::cout << "EditorCacheScene::openScene: 场景资产不存在, path: " << path << std::endl;
+            return;
+        }
+        this->_saveFlag = 0;
+        this->_assetPath = path;
+        this->_scene = sceneAsset->getScene();
     }
 }
-// void EditorCacheScene::_create()
-// {
-//     std::string name = "";
-//     for (int i = 0; i < 20; i++)
-//     {
-//         if (i == 0)
-//         {
-//             name = "NewScene";
-//         }
-//         else
-//         {
-//             name = "NewScene" + std::to_string(i);
-//         }
-//         std::string scenePath = (std::filesystem::path(BooEditor::projectPath) / "assets" / (name + ".scene")).generic_string();
-//         if (!std::filesystem::exists(scenePath))
-//         {
-//             // asset根目录下没有这个场景,则创建
-//             // 检测全局有没有这个名字的场景
-//             json *sceneMate = Boo::game->assetsManager()->_getSceneAssetMate(name);
-//             if (sceneMate == nullptr)
-//             {
-//                 break;
-//             }
-//         }
-//     }
-//     std::cout << "EditorCacheScene::_create a new scene: " << name << std::endl;
-//     std::string uuid = UuidUtil::generateUUID();
-//     // // 序列化场景保存
-//     Scene *newScene = new Scene(name, uuid);
-//     // json sceneData;
-//     // this->_serializeSceneData(newScene, sceneData);
-//     // std::string sceneSavePath = (std::filesystem::path(BooEditor::projectPath) / "assets" / (name + ".scene")).generic_string();
-//     // FileUtil::saveJsonToBinary(sceneSavePath, sceneData);
-
-//     // // 创建一个新的场景资产元数据
-//     // json newSceneAssetMate = json::object();
-//     // newSceneAssetMate["name"] = name;
-//     // newSceneAssetMate["uuid"] = uuid;
-//     // newSceneAssetMate["type"] = uint32_t(AssetType::Scene);
-//     // newSceneAssetMate["extension"] = ".scene";
-//     // newSceneAssetMate["path"] = "";
-
-//     // // 更新资产元数据
-//     // EditorAssetUtil::updateAssetMeta(name + ".scene", newSceneAssetMate);
-//     // // 更新资产库
-//     // EditorAssetUtil::updateLibraryAsset(name + ".scene", newSceneAssetMate);
-//     // // 更新资产缓存
-//     // EditorAssetUtil::updateAssetMap(name + ".scene", newSceneAssetMate);
-//     // // 加载资产
-//     // Boo::game->assetsManager()->loadAsset(newSceneAssetMate["uuid"].get<std::string>());
-
-//     // json *newSceneMate = Boo::game->assetsManager()->_getSceneAssetMate(name);
-//     // if (newSceneMate != nullptr)
-//     // {
-//     //     this->_open(newSceneMate);
-//     //     return;
-//     // }
-// }
-
-// void EditorCacheScene::_open(json *sceneMate)
-// {
-//     this->_currentSceneAssetMate = sceneMate;
-//     std::string uuid = sceneMate->at("uuid").get<std::string>();
-//     Asset *asset = Boo::game->assetsManager()->getAsset(uuid);
-//     if (asset == nullptr)
-//     {
-//         this->_scene = nullptr;
-//         // 当前资产对应的场景不存在,删除当前资产数据库,打开一个新场景
-//         std::cout << "EditorCacheScene::_openOldScene: 场景不存在, uuid: " << uuid << ", name: " << this->_currentSceneAssetMate->at("name").get<std::string>() << std::endl;
-//         return;
-//     }
-//     SceneAsset *sceneAsset = dynamic_cast<SceneAsset *>(asset);
-//     if (sceneAsset == nullptr)
-//     {
-//         this->_scene = nullptr;
-//         std::cout << "EditorCacheScene::_openOldScene: 场景资产不存在, uuid: " << uuid << ", name: " << this->_currentSceneAssetMate->at("name").get<std::string>() << std::endl;
-//         return;
-//     }
-//     this->_saveFlag = 0;
-//     this->_scene = sceneAsset->getScene();
-// }
-
 Scene *EditorCacheScene::getScene()
 {
     return this->_scene;
 }
 void EditorCacheScene::saveScene()
 {
-    // json sceneData;
-    // this->_serializeSceneData(this->_scene, sceneData);
-    // std::string assetPath = this->_currentSceneAssetMate->at("path").get<std::string>();
-    // std::string sceneSavePath = (std::filesystem::path(BooEditor::projectPath) / "assets" / assetPath).generic_string();
-    // std::cout << "EditorCacheScene::saveScene: " << sceneSavePath << std::endl;
-    // std::cout << "EditorCacheScene::saveScene: " << assetPath << std::endl;
-
-    // std::cout << "EditorCacheScene::saveScene: " << this->_currentSceneAssetMate->at("name").get<std::string>() << "    ,  " << sceneData << std::endl;
-    // // 序列化场景保存
-    // FileUtil::saveJsonToBinary(sceneSavePath, sceneData);
-    // // 更新资产库
-    // EditorAssetUtil::updateLibraryAsset(assetPath, *this->_currentSceneAssetMate);
-
-    // (*this->_settingConfig)["scene"] = this->_currentSceneAssetMate->at("name").get<std::string>();
+    json sceneData;
+    this->_serializeSceneData(this->_scene, sceneData);
+    if(this->_assetPath.empty()){
+        this->_assetPath = this->_preSavePath();
+    }
+    // 检查资产路径是否为空
+    if(this->_assetPath.empty()){
+        return;
+    }
+    std::string sceneSavePath = (std::filesystem::path(BooEditor::projectPath) / "assets" / this->_assetPath).generic_string();
+    FileUtil::saveJsonToBinary(sceneSavePath, sceneData);
 }
 
 std::string EditorCacheScene::_preSavePath()
@@ -235,257 +149,3 @@ void EditorCacheScene::_serializeSceneData(Scene *scene, json &sceneData)
 EditorCacheScene::~EditorCacheScene()
 {
 }
-
-// void EditorCacheScene::_openOldScene()
-// {
-//     std::string uuid = this->_currentSceneAssetMate->at("uuid").get<std::string>();
-//     Asset *asset = Boo::game->assetsManager()->getAsset(uuid);
-//     if (asset == nullptr)
-//     {
-//         this->_scene = nullptr;
-//         // 当前资产对应的场景不存在,删除当前资产数据库,打开一个新场景
-//         std::cout << "EditorCacheScene::_openOldScene: 场景不存在, uuid: " << uuid << ", name: " << this->_currentSceneAssetMate->at("name").get<std::string>() << std::endl;
-//         return;
-//     }
-//     SceneAsset *sceneAsset = dynamic_cast<SceneAsset *>(asset);
-//     if (sceneAsset == nullptr)
-//     {
-//         this->_scene = nullptr;
-//         std::cout << "EditorCacheScene::_openOldScene: 场景资产不存在, uuid: " << uuid << ", name: " << this->_currentSceneAssetMate->at("name").get<std::string>() << std::endl;
-//         return;
-//     }
-//     this->_saveFlag = 0;
-//     this->_scene = sceneAsset->getScene();
-// }
-// void EditorCacheScene::_openNewScene()
-// {
-//     std::string name = "New Scene";
-//     std::string uuid = UuidUtil::generateUUID();
-//     this->_tempNewSceneAssetMate = json::object();
-//     this->_tempNewSceneAssetMate["name"] = name;
-//     this->_tempNewSceneAssetMate["uuid"] = uuid;
-//     this->_tempNewSceneAssetMate["path"] = "";
-//     this->_tempNewSceneAssetMate["type"] = uint32_t(AssetType::Scene);
-//     this->_tempNewSceneAssetMate["extension"] = "";
-
-//     this->_scene = new Scene(name, uuid);
-//     // 测试代码
-//     Node2D *node2d = this->_scene->getRoot2D();
-//     Node2D *ndMain = new Node2D("Editor-Main");
-//     ndMain->setSize(100.0f, 100.0f);
-//     node2d->addChild(ndMain);
-//     UISprite *spriteMain = dynamic_cast<UISprite *>(ndMain->addComponent("UISprite"));
-//     if (spriteMain != nullptr)
-//     {
-//         std::cout << "EditorLayout::_initMainUI1" << std::endl;
-//         // spriteMain->setTexture("resources/texture/ic-default.png");
-//         // spriteMain->setMaterialAsset(nullptr);
-//         spriteMain->setColor(0.1f, 0.1f, 0.1f, 1.0f);
-//     }
-
-//     this->_saveFlag++;
-// }
-
-// std::string currentScene = "";
-// if (sceneName.empty())
-// {
-//     if (this->_settingConfig->contains("scene"))
-//     {
-//         currentScene = this->_settingConfig->at("scene").get<std::string>();
-//     }
-// }else{
-//     currentScene = sceneName;
-// }
-// // 检查场景是否存在
-// json *sceneMate = Boo::game->assetsManager()->_getSceneAssetMate(currentScene);
-// if (sceneMate == nullptr)
-// {
-//     std::cout << "EditorCacheScene:: mei you zhi ding chang jing,qie mei you mo ren qi dong chang jing"<< std::endl;
-//     return;
-// }
-
-// if (!sceneName.empty())
-// {
-//     json *sceneMate = Boo::game->assetsManager()->_getSceneAssetMate(sceneName);
-//     if (sceneMate != nullptr)
-//     {
-//         currentScene = sceneName;
-//     }
-
-//     // // 没有指定场景名称，使用当前配置场景
-//     // if (this->_settingConfig->contains("scene"))
-//     // {
-//     //     currentScene = this->_settingConfig->at("scene").get<std::string>();
-//     // }else{
-//     //     //随机拿去一个场景
-
-//     // }
-// }
-
-// if (sceneName.empty() || !this->_settingConfig->contains("scene") || this->_settingConfig->at("scene").empty())
-// {
-//     currentScene = ""; // 打开一个空场景
-// }
-// else
-// {
-//     currentScene = this->_settingConfig->at("scene").get<std::string>();
-// }
-// std::cout << "EditorCacheScene::openScene: sceneName: " << sceneName << ", currentScene: " << currentScene << std::endl;
-// json *sceneMate = Boo::game->assetsManager()->_getSceneAssetMate(currentScene);
-// if (sceneMate == nullptr)
-// {
-//     this->_openNewScene();
-// }
-// else
-// {
-//     this->_currentSceneAssetMate = sceneMate;
-//     this->_openOldScene();
-// }
-// void EditorCacheScene::saveScene()
-// {
-//     // std::cout << "EditorCacheScene::saveScene 1" << std::endl;
-//     // if (this->_saveFlag == 0)
-//     // {
-//     //     return;
-//     // }
-//     // this->_saveFlag = 0;
-//     // std::string relativePath = "";
-//     // if (this->_currentSceneAssetMate == nullptr)
-//     // {
-//     //     relativePath = this->_preSavePath();
-//     //     std::string name = std::filesystem::path(relativePath).stem().generic_string();
-//     //     this->_tempNewSceneAssetMate["path"] = relativePath;
-//     //     this->_tempNewSceneAssetMate["name"] = name;
-//     //     this->_tempNewSceneAssetMate["extension"] = ".scene";
-
-//     //     this->_scene->setName(name);
-//     // }
-//     // else
-//     // {
-//     //     relativePath = Boo::game->assetsManager()->getAssetsCache()->_getAssetPathByUuid(this->_currentSceneAssetMate->at("uuid").get<std::string>());
-//     // }
-//     // if (relativePath.empty())
-//     // {
-//     //     return;
-//     // }
-//     // std::cout << "EditorCacheScene::_preSavePath: " << relativePath << std::endl;
-//     // json sceneData;
-//     // this->_serializeSceneData(this->_scene, sceneData);
-//     // std::cout << "EditorSceneCache::_saveScene: " << sceneData << std::endl;
-//     // std::string scenePath = (std::filesystem::path(BooEditor::projectPath) / "assets" / relativePath).generic_string();
-//     // FileUtil::saveJsonToBinary(scenePath, sceneData);
-//     // if (this->_currentSceneAssetMate == nullptr)
-//     // {
-//     //     std::cout << "EditorCacheScene::_saveScene: scenePath: 1" << std::endl;
-//     //     // 更新资产对应的mate文件,
-//     //     std::string assetMateMapPath = scenePath + ".mate";
-//     //     // 更新存储到本地
-//     //     FileUtil::saveJsonToText(assetMateMapPath, this->_tempNewSceneAssetMate);
-//     //     // 更新资产库
-//     //     std::string fileName = this->_tempNewSceneAssetMate["uuid"].get<std::string>() + ".scene";
-//     //     std::string libraryPath = (std::filesystem::path(BooEditor::projectPath) / "library" / fileName).generic_string();
-//     //     FileUtil::copyFile(scenePath, libraryPath);
-
-//     //     std::cout << "EditorCacheScene::_saveScene: scenePath: 2" << std::endl;
-
-//     //     // 更新资产缓存
-//     //     Boo::game->assetsManager()->getAssetsCache()->_updateAssetMateCache(this->_tempNewSceneAssetMate["uuid"].get<std::string>(), this->_tempNewSceneAssetMate);
-//     //     Boo::game->assetsManager()->getAssetsCache()->_updateAssetPathCache(this->_tempNewSceneAssetMate["uuid"].get<std::string>(), relativePath);
-//     //     // 加载资产
-//     //     Boo::game->assetsManager()->loadAsset(this->_tempNewSceneAssetMate["uuid"].get<std::string>());
-
-//     //     std::cout << "EditorCacheScene::_saveScene: scenePath: 3" << std::endl;
-
-//     //     this->_currentSceneAssetMate = Boo::game->assetsManager()->_getSceneAssetMate(this->_tempNewSceneAssetMate["uuid"].get<std::string>());
-
-//     //     std::cout << "EditorCacheScene::_saveScene: scenePath: 31: " << this->_currentSceneAssetMate << std::endl;
-//     //     std::cout << "EditorCacheScene::_saveScene: scenePath: 32: " << (*this->_currentSceneAssetMate) << std::endl;
-//     // }
-//     // std::cout << "EditorCacheScene::_saveScene: scenePath: 4: " << (*this->_currentSceneAssetMate) << std::endl;
-//     // (*this->_settingConfig)["scene"] = this->_currentSceneAssetMate->at("name").get<std::string>();
-// }
-// /**
-//  * @brief 获取当前场景
-//  * @return std::string 当前场景
-//  */
-// std::string EditorCacheScene::getCurrentScene()
-// {
-
-//     return this->_settingConfig["scene"]["current"];
-// }
-// /**
-//  * @brief 设置当前场景
-//  * @param scene 场景
-//  */
-// void EditorCacheScene::setCurrentScene(std::string scene)
-// {
-//     this->_settingConfig["scene"]["current"] = scene;
-// }
-// void EditorSceneCache::save()
-// {
-//     if (this->_saveFlag == 0)
-//     {
-//         return;
-//     }
-//     this->_saveFlag = 0;
-//     std::string path = this->_preSavePath();
-//     if (path.empty())
-//     {
-//         return;
-//     }
-//     this->_scenePath = std::filesystem::relative(std::filesystem::path(path), std::filesystem::path(BooEditor::projectPath)).generic_string();
-//     json sceneData;
-//     this->_serializeSceneData(this->_scene, sceneData);
-//     std::cout << "EditorSceneCache::_saveScene: " << sceneData << std::endl;
-//     FileUtil::saveJsonToBinary(path, sceneData);
-// }
-
-// void EditorSceneCache::_serializeSceneData(Scene *scene, json &sceneData)
-// {
-//     std::function<void(Node *, json &)> _serializeNode = [&](Node *node, json &nodeData)
-//     {
-//         // 节点数据
-//         nodeData["_name"] = node->getName();
-//         nodeData["_layer"] = node->getLayer();
-//         nodeData["_uuid"] = node->getUuid();
-//         nodeData["_visible"] = 0;
-//         nodeData["_active"] = node->isActive() ? 1 : 0;
-//         nodeData["_position"] = {node->getPosition().getX(), node->getPosition().getY(), node->getPosition().getZ()};
-//         nodeData["_rotation"] = {node->getEulerAngles().getX(), node->getEulerAngles().getY(), node->getEulerAngles().getZ()};
-//         nodeData["_scale"] = {node->getScale().getX(), node->getScale().getY(), node->getScale().getZ()};
-//         if (node->getLayer() == NodeLayer::Node2D && dynamic_cast<Node2D *>(node) != nullptr)
-//         {
-//             Node2D *node2d = dynamic_cast<Node2D *>(node);
-//             if (node2d != nullptr)
-//             {
-//                 nodeData["_size"] = {node2d->getSize().getWidth(), node2d->getSize().getHeight()};
-//             }
-//         }
-//         // 组件数据
-//         json compsData = json::array();
-//         for (Component *comp : node->getComponents())
-//         {
-//             json compData;
-//             compData["_name"] = comp->getName();
-//             compData["_uuid"] = comp->getUuid();
-//             compData["_enable"] = comp->isEnabled() ? 1 : 0;
-//             compData = ReflectionRegistry::getInstance().serializeToJson((void *)comp, comp->getName());
-//             compsData.push_back(compData);
-//         }
-//         nodeData["_components"] = compsData;
-//         for (Node *child : node->getChildren())
-//         {
-//             json childData;
-//             _serializeNode(child, childData);
-//             nodeData["_children"].push_back(childData);
-//         }
-//     };
-//     sceneData["_name"] = scene->getName();
-//     sceneData["_type"] = "SceneAsset";
-//     sceneData["_node"] = json::object();
-//     _serializeNode(scene, sceneData["_node"]);
-// }
-// std::string EditorSceneCache::getSceneName()
-// {
-//     return this->_sceneName;
-// }
