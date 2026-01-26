@@ -232,7 +232,37 @@ void GfxPipelineBuiltin::_initMultisampleState()
 }
 void GfxPipelineBuiltin::_initDepthStencilState()
 {
-    GfxPipeline::_initDepthStencilState();
+    this->_depthStencilInfo = {};
+    this->_depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+
+    // 根据配置启用深度测试
+    this->_depthStencilInfo.depthTestEnable = this->_pipelineStruct.depthTest != 0 ? VK_TRUE : VK_FALSE;
+    this->_depthStencilInfo.depthWriteEnable = this->_pipelineStruct.depthWrite != 0 ? VK_TRUE : VK_FALSE;
+    this->_depthStencilInfo.depthCompareOp = this->_getCompareOp(this->_pipelineStruct.depthCompareOp);
+
+    // 根据配置启用Stencil测试
+    this->_depthStencilInfo.stencilTestEnable = this->_pipelineStruct.stencilTest != 0 ? VK_TRUE : VK_FALSE;
+
+    if (this->_pipelineStruct.stencilTest != 0)
+    {
+        // 配置正面Stencil操作
+        this->_depthStencilInfo.front.failOp = this->_getStencilOp(this->_pipelineStruct.stencilFrontFailOp);
+        this->_depthStencilInfo.front.depthFailOp = this->_getStencilOp(this->_pipelineStruct.stencilFrontDepthFailOp);
+        this->_depthStencilInfo.front.passOp = this->_getStencilOp(this->_pipelineStruct.stencilFrontPassOp);
+        this->_depthStencilInfo.front.compareOp = this->_getCompareOp(this->_pipelineStruct.stencilFrontCompareOp);
+        this->_depthStencilInfo.front.compareMask = this->_pipelineStruct.stencilFrontCompareMask;
+        this->_depthStencilInfo.front.writeMask = this->_pipelineStruct.stencilFrontWriteMask;
+        this->_depthStencilInfo.front.reference = this->_pipelineStruct.stencilFrontRreference;
+
+        // 配置背面Stencil操作
+        this->_depthStencilInfo.back.failOp = this->_getStencilOp(this->_pipelineStruct.stencilBackFailOp);
+        this->_depthStencilInfo.back.depthFailOp = this->_getStencilOp(this->_pipelineStruct.stencilBackDepthFailOp);
+        this->_depthStencilInfo.back.passOp = this->_getStencilOp(this->_pipelineStruct.stencilBackPassOp);
+        this->_depthStencilInfo.back.compareOp = this->_getCompareOp(this->_pipelineStruct.stencilBackCompareOp);
+        this->_depthStencilInfo.back.compareMask = this->_pipelineStruct.stencilBackCompareMask;
+        this->_depthStencilInfo.back.writeMask = this->_pipelineStruct.stencilBackWriteMask;
+        this->_depthStencilInfo.back.reference = this->_pipelineStruct.stencilBackRreference;
+    }
 }
 void GfxPipelineBuiltin::_initColorBlendState()
 {

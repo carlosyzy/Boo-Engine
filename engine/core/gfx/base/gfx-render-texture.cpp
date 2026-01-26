@@ -127,14 +127,14 @@ void GfxRenderTexture::_createTextures()
     this->_depthTexture = new GfxTexture(this->_depthUuid);
     this->_depthTexture->createImage(
         this->_width, this->_height,
-        VK_FORMAT_D32_SFLOAT,
+        VK_FORMAT_D32_SFLOAT_S8_UINT,  // 32位深度 + 8位模板
         VK_IMAGE_TILING_OPTIMAL,
         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
         VK_SAMPLE_COUNT_1_BIT);
     this->_depthTexture->createImageView(
-        VK_FORMAT_D32_SFLOAT,
-        VK_IMAGE_ASPECT_DEPTH_BIT);
+        VK_FORMAT_D32_SFLOAT_S8_UINT,  // 32位深度 + 8位模板
+        VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT);  // 包含深度和模板aspect
     this->_depthTexture->crateImageSampler();
     Gfx::renderer->insertTexture(this->_colorUuid, this->_colorTexture);
     Gfx::renderer->insertTexture(this->_depthUuid, this->_depthTexture);
