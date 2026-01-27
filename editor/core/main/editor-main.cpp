@@ -79,7 +79,7 @@ void EditorMain::_initAssets()
 }
 void EditorMain::_initScene()
 {
-    this->_scene = new EditorScene();
+    this->_scene = new EditorScene(this->_layout->getScene());
     this->_scene->init();
 }
 

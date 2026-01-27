@@ -23,6 +23,7 @@ class GfxQueueBuiltin
 private:
 	GfxRendererBuiltin *_renderer;
 	GfxRenderTexture *_renderTexture;
+	bool _isOnScreen;
 	std::array<float, 16> _viewMatrix;
 	std::array<float, 16> _projMatrix;
 
@@ -54,8 +55,9 @@ private:
 public:
 	GfxQueueBuiltin(GfxRendererBuiltin *renderer, GfxRenderTexture *renderTexture);
 	void init();
-	void submitMat(const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
+	void submitData(const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix, bool isOnScreen);
 	void submitObject(GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData);
+	bool getIsOnScreen();
 	void render(std::vector<VkCommandBuffer> &commandBuffers);
 	GfxRenderTexture *getRenderTexture();
 	void _clean();

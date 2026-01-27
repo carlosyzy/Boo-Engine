@@ -201,9 +201,9 @@ void GfxRenderer::delRenderQueue(std::string renderId)
 {
     this->_builtinRenderer->delRenderQueue(renderId);
 }
-void GfxRenderer::submitRenderMat(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix)
+void GfxRenderer::submitRenderData(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix, bool isOnScreen)
 {
-    this->_builtinRenderer->submitRenderMat(renderId, viewMatrix, projMatrix);
+    this->_builtinRenderer->submitRenderData(renderId, viewMatrix, projMatrix, isOnScreen);
 }
 void GfxRenderer::submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData)
 {

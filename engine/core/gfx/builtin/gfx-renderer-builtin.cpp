@@ -168,7 +168,6 @@ void GfxRendererBuiltin::_initDefaultShader()
     shader->createShaderModule(GfxShaderUIMaskFragSPV, GfxShaderUIMaskFragSPVSzie);
     Gfx::shaders[shaderMaskFragName] = shader;
 
-
     // 内置默认ui 遮罩 测试 顶点着色器
     std::string shaderMaskTestVertName = "builtin-ui-mask-test.vert";
     shader = new GfxShader(shaderMaskTestVertName);
@@ -245,7 +244,7 @@ void GfxRendererBuiltin::_initDefaultUIPipeline()
     // // 深度比较操作 小于等于
     // uiMaskTestPipeline.depthCompareOp = GfxPipelineCompareOp::Always;
     // // 模版测试 启用（用于UI遮罩）
-    // uiMaskTestPipeline.stencilTest = 1;         
+    // uiMaskTestPipeline.stencilTest = 1;
     // uiMaskTestPipeline.stencilFrontCompareOp = GfxPipelineCompareOp::Equal;  // 只在模板值相等时绘制
     // uiMaskTestPipeline.stencilFrontFailOp = GfxPipelineStencilOp::Keep;      // 测试失败：保持
     // uiMaskTestPipeline.stencilFrontDepthFailOp = GfxPipelineStencilOp::Keep; // 深度失败：保持
@@ -296,7 +295,7 @@ void GfxRendererBuiltin::_initDefaultUIMaskAddPipeline()
     uiMaskAddPipeline.stencilBackPassOp = GfxPipelineStencilOp::Increment_Add; // 测试通过：替换模板值为1（表示遮罩区域）
 
     uiMaskAddPipeline.colorBlend = 0;
-    
+
     // 推送常量 开启
     uiMaskAddPipeline.pushConstant = 1;
     uiMaskAddPipeline.pushConstantSize = 0;
@@ -438,14 +437,14 @@ void GfxRendererBuiltin::delRenderQueue(std::string renderId)
     delete this->_renderQueues[renderId];
     this->_renderQueues.erase(renderId);
 }
-void GfxRendererBuiltin::submitRenderMat(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix)
+void GfxRendererBuiltin::submitRenderData(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix, bool isOnScreen)
 {
     if (this->_renderQueues.find(renderId) == this->_renderQueues.end())
     {
         std::cout << "[Gfx : GfxRendererBuiltin] :: submitRenderMat:renderId not found:" << renderId << std::endl;
         return;
     }
-    this->_renderQueues[renderId]->submitMat(viewMatrix, projMatrix);
+    this->_renderQueues[renderId]->submitData(viewMatrix, projMatrix, isOnScreen);
 }
 void GfxRendererBuiltin::submitRenderObject(std::string renderId, GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData)
 {
@@ -470,6 +469,10 @@ void GfxRendererBuiltin::getOffScreenOutds(std::vector<std::string> &pipelineOut
 {
     for (auto &renderQueue : this->_renderQueues)
     {
+        if (!renderQueue.second->getIsOnScreen())
+        {
+            continue;
+        }
         GfxRenderTexture *renderTexture = renderQueue.second->getRenderTexture();
         if (renderTexture == nullptr)
         {

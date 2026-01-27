@@ -21,10 +21,15 @@ GfxQueueBuiltin::GfxQueueBuiltin(GfxRendererBuiltin *renderer, GfxRenderTexture 
 void GfxQueueBuiltin::init()
 {
 }
-void GfxQueueBuiltin::submitMat(const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix)
+void GfxQueueBuiltin::submitData(const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix, bool isOnScreen)
 {
     this->_viewMatrix = viewMatrix;
     this->_projMatrix = projMatrix;
+    this->_isOnScreen = isOnScreen;
+}
+bool GfxQueueBuiltin::getIsOnScreen()
+{
+    return this->_isOnScreen;
 }
 void GfxQueueBuiltin::submitObject(GfxMaterial *material, GfxMesh *mesh, std::vector<float> &instanceData)
 {

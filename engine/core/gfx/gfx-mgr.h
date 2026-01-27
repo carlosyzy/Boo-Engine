@@ -86,7 +86,7 @@ public:
 	 */
 	void delRenderQueue(std::string renderId);
 	
-	void submitRenderMat(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix);
+	void submitRenderData(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix, bool isOnScreen);
 	/**
 	 * @brief 提交渲染对象
 	 *

@@ -22,7 +22,10 @@ private:
      * 相机是否可见
      */
     int _visibility = 1;
-
+    /**
+     * 相机是否在屏幕上
+     */
+    bool _isOnScreen = false;
 protected:
     /**
      * 相机渲染目标宽度
@@ -50,6 +53,13 @@ public:
     Camera(std::string name, Node *node, std::string uuid = "");
     void Awake() override;
     void Enable() override;
+    /**
+     * @brief 设置相机是否在屏幕上
+     *
+     * @param isOnScreen
+     */
+    void setIsOnScreen(bool isOnScreen);
+    bool getIsOnScreen();
     void setPriority(int priority);
     int getPriority();
     void setVisibility(int visibility);

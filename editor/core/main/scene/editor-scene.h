@@ -1,20 +1,41 @@
 #pragma once
-class Scene;
+#include "../../../../engine/core/math/mat4.h"
 
+class Scene;
+class Node2D;
+class GfxRenderTexture;
 class EditorScene
 {
 private:
-    /* data */
+    Node2D *_rootNode;
+    /**
+     * 相机渲染目标宽度
+     */
+    int _width = 0;
+    /**
+     * 相机渲染目标高度
+     */
+    int _height = 0;
+    /**
+     * 视图矩阵
+     * 将3D世界空间 → 3D相机空间
+     */
+    Mat4 _matView = Mat4::identity();
+    /**
+     * 投影矩阵
+     * 将3D观察空间 → 2D裁剪空间（NDC空间：-1到1）
+     */
+    Mat4 _matProj = Mat4::identity();
+    GfxRenderTexture *_renderTexture = nullptr;
+
 public:
-    EditorScene(/* args */);
+    EditorScene(Node2D *root);
     void init();
     void update(float deltaTime);
     // void openScene(Scene *scene);
 
     ~EditorScene();
 };
-
-
 
 /**
  * 有两个摄像机

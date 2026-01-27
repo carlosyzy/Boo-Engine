@@ -121,5 +121,9 @@ public:
 	{
 		return this->_ndBottom;
 	}
+	Node2D *getScene()
+	{
+		return this->_ndScene;
+	}
 	~EditorLayout();
 };

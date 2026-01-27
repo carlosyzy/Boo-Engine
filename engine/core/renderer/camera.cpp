@@ -9,7 +9,7 @@
 #include "../gfx/gfx-mgr.h"
 #include "../gfx/base/gfx-render-texture.h"
 
-Camera::Camera(std::string name, Node *node, std::string uuid) : Component(name, node, uuid)
+Camera::Camera(std::string name, Node *node, std::string uuid) : Component(name, node, uuid),_isOnScreen(true)
 {
     this->_layer = NodeLayer::Default;
 }
@@ -37,6 +37,14 @@ void Camera::Enable()
 {
     Component::Enable();
     Boo::game->extractCamera(this);
+}
+void Camera::setIsOnScreen(bool isOnScreen)
+{
+    this->_isOnScreen = isOnScreen;
+}
+bool Camera::getIsOnScreen()
+{
+    return this->_isOnScreen;
 }
 
 void Camera::resize(int width, int height)
@@ -89,7 +97,7 @@ void Camera::LateUpdate(float deltaTime)
 }
 void Camera::Render()
 {
-    GfxMgr::getInstance()->submitRenderMat(this->_uuid, this->_matView.data(), this->_matProj.data());
+    GfxMgr::getInstance()->submitRenderData(this->_uuid, this->_matView.data(), this->_matProj.data(),this->_isOnScreen);
 }
 void Camera::Disable()
 {
