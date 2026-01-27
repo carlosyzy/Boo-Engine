@@ -60,7 +60,6 @@ void EditorMain::_initCamera()
     node2d->addChild(ndCamera);
     ndCamera->setPosition(0.0f, 0.0f, -100.0f);
     this->_uiCamera = dynamic_cast<Camera *>(ndCamera->addComponent("Camera"));
-    this->_uiCamera->setIsEditorCamera(true);
 }
 void EditorMain::_initLayout()
 {
@@ -96,6 +95,7 @@ void EditorMain::Update(float deltaTime)
     Component::Update(deltaTime);
     this->_layout->update(deltaTime);
     this->_hierarchy->update(deltaTime);
+    this->_scene->update(deltaTime);
 }
 void EditorMain::LateUpdate(float deltaTime)
 {

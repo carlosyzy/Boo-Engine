@@ -8,7 +8,7 @@ private:
 public:
     EditorScene(/* args */);
     void init();
-
+    void update(float deltaTime);
     // void openScene(Scene *scene);
 
     ~EditorScene();

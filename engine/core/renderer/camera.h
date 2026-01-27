@@ -23,8 +23,6 @@ private:
      */
     int _visibility = 1;
 
-    bool _isEditorCamera = false;
-
 protected:
     /**
      * 相机渲染目标宽度
@@ -52,7 +50,6 @@ public:
     Camera(std::string name, Node *node, std::string uuid = "");
     void Awake() override;
     void Enable() override;
-    void setIsEditorCamera(bool isEditorCamera);
     void setPriority(int priority);
     int getPriority();
     void setVisibility(int visibility);
