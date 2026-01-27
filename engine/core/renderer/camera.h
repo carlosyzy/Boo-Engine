@@ -12,9 +12,7 @@ class GfxRenderTexture;
 class Camera : public Component
 {
 public:
-
 private:
-   
     /**
      * 相机渲染优先级
      * 优先级越低，越先渲染
@@ -24,6 +22,10 @@ private:
      * 相机是否可见
      */
     int _visibility = 1;
+
+    bool _isEditorCamera = false;
+
+protected:
     /**
      * 相机渲染目标宽度
      */
@@ -42,16 +44,15 @@ private:
      * 将3D观察空间 → 2D裁剪空间（NDC空间：-1到1）
      */
     Mat4 _matProj = Mat4::identity();
-
     GfxRenderTexture *_renderTexture = nullptr;
-    void _createRenderPipeline();
-protected:
     void _deserialized() override;
+    virtual void _createRenderPipeline();
 
 public:
     Camera(std::string name, Node *node, std::string uuid = "");
     void Awake() override;
     void Enable() override;
+    void setIsEditorCamera(bool isEditorCamera);
     void setPriority(int priority);
     int getPriority();
     void setVisibility(int visibility);
@@ -61,7 +62,7 @@ public:
     void resize(int width, int height);
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
-    void Render();
+    virtual void Render();
     void Disable() override;
     void destroy() override;
     ~Camera();

@@ -13,28 +13,27 @@ endif()
 
 set(ENGINE_SOURCES
     editor/boo-editor.cpp
-    editor/cache/assets/editor-asset-util.cpp
-    editor/cache/assets/editor-cache-assets-task.cpp
-    editor/cache/assets/editor-cache-assets.cpp
-    editor/cache/editor-cache.cpp
-    editor/cache/scene/editor-cache-scene.cpp
-    editor/cache/setting/editor-cache-setting.cpp
-    editor/config/editor-config.cpp
-    editor/editor-boot.cpp
+    editor/core/cache/assets/editor-cache-assets-task.cpp
+    editor/core/cache/assets/editor-cache-assets.cpp
+    editor/core/cache/editor-cache.cpp
+    editor/core/cache/scene/editor-cache-scene.cpp
+    editor/core/config/editor-config.cpp
+    editor/core/editor-boot.cpp
+    editor/core/editor-camera.cpp
+    editor/core/loading/editor-loading.cpp
+    editor/core/main/assets/editor-assets-file-tree.cpp
+    editor/core/main/assets/editor-assets-layout.cpp
+    editor/core/main/assets/editor-assets.cpp
+    editor/core/main/editor-layout.cpp
+    editor/core/main/editor-main.cpp
+    editor/core/main/hierarchy/editor-hierarchy-layout.cpp
+    editor/core/main/hierarchy/editor-hierarchy-node-tree.cpp
+    editor/core/main/hierarchy/editor-hierarchy.cpp
+    editor/core/main/property/editor-property-layout.cpp
+    editor/core/main/property/editor-property.cpp
+    editor/core/main/scene/editor-scene-layout.cpp
+    editor/core/main/scene/editor-scene.cpp
     editor/editor.cpp
-    editor/loading/editor-loading.cpp
-    editor/main/assets/editor-assets-file-tree.cpp
-    editor/main/assets/editor-assets-layout.cpp
-    editor/main/assets/editor-assets.cpp
-    editor/main/editor-layout.cpp
-    editor/main/editor-main.cpp
-    editor/main/hierarchy/editor-hierarchy-layout.cpp
-    editor/main/hierarchy/editor-hierarchy-node-tree.cpp
-    editor/main/hierarchy/editor-hierarchy.cpp
-    editor/main/property/editor-property-layout.cpp
-    editor/main/property/editor-property.cpp
-    editor/main/scene/editor-scene-layout.cpp
-    editor/main/scene/editor-scene.cpp
     engine/boo.cpp
     engine/core/alpha/alpha.cpp
     engine/core/assets/asset-cache.cpp

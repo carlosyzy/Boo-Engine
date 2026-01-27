@@ -55,6 +55,10 @@ void Camera::resize(int width, int height)
     this->_matProj.setM00(2.0f / (float)this->_width);
     this->_matProj.setM11(2.0f / (float)this->_height);
 }
+void Camera::setIsEditorCamera(bool isEditorCamera)
+{
+    this->_isEditorCamera = isEditorCamera;
+}
 void Camera::setPriority(int priority)
 {
     this->_priority = priority;
@@ -89,6 +93,13 @@ void Camera::LateUpdate(float deltaTime)
 }
 void Camera::Render()
 {
+    if (Boo::Editor)
+    {
+        if (!this->_isEditorCamera)
+        {
+            return;
+        }
+    }
     GfxMgr::getInstance()->submitRenderMat(this->_uuid, this->_matView.data(), this->_matProj.data());
 }
 void Camera::Disable()

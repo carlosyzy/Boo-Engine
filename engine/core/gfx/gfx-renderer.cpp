@@ -229,20 +229,6 @@ void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer
 
     // 离屏渲染队列
     this->_builtinRenderer->frameRenderer(imageIndex, commandBuffers);
-
-    // this->_pipelineOutds.clear();
-    // // 渲染3d队列
-    // // 渲染ui队列
-    // this->_renderPipelineUI->frameRenderer(imageIndex, commandBuffers, this->_pipelineOutds);
-
-    // // 渲染默认队列屏幕输出
-    // for (auto &out : this->_pipelineOutds)
-    // {
-    //     // std::cout << "Gfx : Renderer :: Rendering builtin pipeline output: " << out << std::endl;
-    //     this->_renderPipelineBuiltin->submitRenderObject(out);
-    // }
-    // // this->_renderPipelineBuiltin->submitRenderObject("default-texture");
-    // this->_renderPipelineBuiltin->frameRenderer(imageIndex, commandBuffers);
 }
 void GfxRenderer::frameRendererAfter()
 {

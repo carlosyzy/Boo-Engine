@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 
-#include "cache/editor-cache.h"
+#include "core/cache/editor-cache.h"
 
 namespace BooEditor
 {

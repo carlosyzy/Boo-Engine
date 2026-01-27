@@ -1,11 +1,11 @@
 #include "editor.h"
 #include "boo-editor.h"
 
-#include "cache/editor-cache.h"
+#include "core/cache/editor-cache.h"
 
 #include "../engine/boo.h"
 #include "../engine/engine.h"
-#include "editor-boot.h"
+#include "core/editor-boot.h"
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
