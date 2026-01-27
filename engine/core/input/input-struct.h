@@ -24,11 +24,30 @@ struct NodeInputResult
 };
 enum class NodeInput
 {
+	/**
+	 * 触摸开始
+	 */
 	TOUCH_START,
+	/**
+	 * 触摸移动
+	 */
 	TOUCH_MOVE,
+	/**
+	 * 触摸结束
+	 */
 	TOUCH_END,
+	/**
+	 * 触摸取消
+	 */
 	TOUCH_CANCEL,
+	/**
+	 * 光标悬停
+	 */
 	CURSOR_HOVER,
+	/**
+	 * 在节点外悬停
+	 */
+	CURSOR_HOVER_OUT,
 };
 
 /**
@@ -51,4 +70,5 @@ struct NodeInputStruct
 	std::map<int, std::function<void(NodeInputResult &)>> touchEnds;
 	std::map<int, std::function<void(NodeInputResult &)>> touchCancels;
 	std::map<int, std::function<void(NodeInputResult &)>> cursorHovers;
+	std::map<int, std::function<void(NodeInputResult &)>> cursorHoverOuts;
 };

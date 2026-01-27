@@ -40,8 +40,10 @@ class EditorHierarchyNodeTree : public Component
 private:
     int _contentTouchID = -1;
     int _contentHoverID = -1;
+    int _contentHoverOutID = -1;
     void _onTreeContentTouchEvent(NodeInputResult &result);
-    void _onTreeContentHoverEvent(NodeInputResult &result);
+    void _onTreeContentCursorHoverEvent(NodeInputResult &result);
+    void _onTreeContentCursorHoverOutEvent(NodeInputResult &result);
     // 选择事件回调
     std::function<void(std::string)> _selectCallback;
 

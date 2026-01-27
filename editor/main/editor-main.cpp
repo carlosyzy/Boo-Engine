@@ -11,8 +11,6 @@
 #include "hierarchy/editor-hierarchy.h"
 #include "assets/editor-assets.h"
 
-
-
 #include "../../engine/boo.h"
 #include "../../engine/core/game.h"
 #include "../../engine/core/input/input.h"
@@ -41,8 +39,7 @@ void EditorMain::Awake()
     this->_initLayout();
     this->_initHierarchy();
     this->_initAssets();
-    //属性面板
-
+    
 
     this->_initScene();
 }
@@ -80,30 +77,11 @@ void EditorMain::_initAssets()
     this->_assets->setRoot(BooEditor::projectPath + "/assets");
 }
 
-
-
-
 void EditorMain::_initScene()
 {
     BooEditor::cache->SceneCache()->openScene("");
-    // this->_scene = BooEditor::cache->SceneCache()->getScene();
-    // std::cout << "EditorMain::_initScene: " << this->_scene << std::endl;
-  
-
-    // this->_hierarchy->setScene(this->_scene);
-    // this->_scene->createRoot2D();
-    // this->_scene->createRoot3D();
-
-    // Node2D *rootNode = this->_scene->getRoot2D();
-    // Node2D *ndNodeTree = new Node2D("test");
-    // rootNode->addChild(ndNodeTree);
-    // ndNodeTree->setSize(100.0f, 100.0f);
-    // std::cout << "EditorMain::add test _initScene: " << ndNodeTree << std::endl;
-
-    // //   ctrl+S 保存
-    // BooEditor::cache->SceneCache()->saveScene();
-    // BooEditor::cache->SettingCache()->saveSetting();
-    
+    this->_scene = BooEditor::cache->SceneCache()->getScene();
+    this->_hierarchy->setScene(this->_scene);
 }
 
 void EditorMain::Update(float deltaTime)

@@ -76,7 +76,8 @@ void EditorAssetsFileTree::Enable()
     // 事件系统
     Node2D *node2d = dynamic_cast<Node2D *>(this->_node);
     this->_contentTouchID = node2d->onNodeInputEvent(NodeInput::TOUCH_END, &EditorAssetsFileTree::_onTreeContentTouchEvent, this);
-    this->_contentHoverID = node2d->onNodeInputEvent(NodeInput::CURSOR_HOVER, &EditorAssetsFileTree::_onTreeContentHoverEvent, this);
+    this->_contentHoverID = node2d->onNodeInputEvent(NodeInput::CURSOR_HOVER, &EditorAssetsFileTree::_onTreeContentCursorHoverEvent, this);
+    this->_contentCursorHoverID = node2d->onNodeInputEvent(NodeInput::CURSOR_HOVER_OUT, &EditorAssetsFileTree::_onTreeContentCursorHoverOutEvent, this);
 }
 void EditorAssetsFileTree::setRoot(std::string root)
 {
@@ -370,6 +371,16 @@ void EditorAssetsFileTree::_onTreeContentTouchEvent(NodeInputResult &result)
     // std::cout << "EditorAssetsFileTree::_onTreeContentTouchEvent: " << result.node->getName() << std::endl;
     this->_refreshTreeItemState(nullptr, 0);
 }
+void EditorAssetsFileTree::_onTreeContentCursorHoverEvent(NodeInputResult &result)
+{
+    this->_refreshTreeItemState(nullptr, 2);
+}
+void EditorAssetsFileTree::_onTreeContentCursorHoverOutEvent(NodeInputResult &result)
+{
+    this->_refreshTreeItemUI(this->_hoverTreeItem, 0);
+    this->_hoverTreeItem = nullptr;
+}
+
 void EditorAssetsFileTree::_onTreeItemTouchEvent(NodeInputResult &result)
 {
     // std::cout << "EditorAssetsFileTree::_onTreeItemTouchEvent: " << result.node->getName() << std::endl;
@@ -387,10 +398,7 @@ void EditorAssetsFileTree::_onTreeItemCursorHoverEvent(NodeInputResult &result)
     Node2D *ndItem = dynamic_cast<Node2D *>(result.node);
     this->_refreshTreeItemState(ndItem, 2);
 }
-void EditorAssetsFileTree::_onTreeContentHoverEvent(NodeInputResult &result)
-{
-    this->_refreshTreeItemState(nullptr, 2);
-}
+
 
 void EditorAssetsFileTree::_refreshTreeItemState(Node2D *ndItem, int state)
 {

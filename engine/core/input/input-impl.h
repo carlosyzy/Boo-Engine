@@ -44,5 +44,9 @@ int Input::onNodeInputEvent(Node2D *node, NodeInput input, Func func, T *instanc
     {
         this->_nodeInputMap[node->getUuid()].cursorHovers.emplace(id, callback);
     }
+    else if (input == NodeInput::CURSOR_HOVER_OUT)
+    {
+        this->_nodeInputMap[node->getUuid()].cursorHoverOuts.emplace(id, callback);
+    }
     return id;
 }

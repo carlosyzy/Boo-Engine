@@ -48,6 +48,7 @@ void EditorBoot::_launchEditorMain()
     EditorMain *editorMain = static_cast<EditorMain *>(node2d->addComponent("EditorMain"));
     std::cout << "EditorMain::openScene: scene: " << scene->getName() << std::endl;
     Boo::game->openScene(scene);
+    Boo::game->input()->setRoot2D(node2d);
 }
 void EditorBoot::tick()
 {

@@ -19,7 +19,7 @@
 #include "../../../engine/core/component/component-property-reflect.h"
 
 // 引用初始化
-EditorCacheScene::EditorCacheScene(json *settingConfig)
+EditorCacheScene::EditorCacheScene() : _scene(nullptr)
 {
 }
 /**
@@ -28,22 +28,29 @@ EditorCacheScene::EditorCacheScene(json *settingConfig)
  */
 void EditorCacheScene::openScene(std::string path)
 {
+    std::cout << "EditorCacheScene::openScene: 打开场景, path: " << path << "  " << this->_scene << std::endl;
+    // 清空已打开场景
     if (this->_scene != nullptr)
     {
+        std::cout << "EditorCacheScene::openScene: 销毁已打开场景" << std::endl;
         this->_scene->destroy();
         delete this->_scene;
         this->_scene = nullptr;
     }
-
+    std::cout << "EditorCacheScene::openScene: 打开场景1, path: " << path << std::endl;
     if (path.empty())
     {
+        std::cout << "EditorCacheScene::openScene: 新建场景" << std::endl;
         this->_assetPath = "";
         std::string uuid = UuidUtil::generateUUID();
         this->_scene = new Scene("NewScene", uuid);
+        this->_scene->createRoot3D();
+        this->_scene->createRoot2D();
         this->_saveFlag = 1;
     }
     else
     {
+        std::cout << "EditorCacheScene::openScene: 加载场景资产, path: " << path << std::endl;
         Asset *asset = Boo::game->assetsManager()->getAsset(path);
         if (asset == nullptr)
         {
@@ -71,11 +78,13 @@ void EditorCacheScene::saveScene()
 {
     json sceneData;
     this->_serializeSceneData(this->_scene, sceneData);
-    if(this->_assetPath.empty()){
+    if (this->_assetPath.empty())
+    {
         this->_assetPath = this->_preSavePath();
     }
     // 检查资产路径是否为空
-    if(this->_assetPath.empty()){
+    if (this->_assetPath.empty())
+    {
         return;
     }
     std::string sceneSavePath = (std::filesystem::path(BooEditor::projectPath) / "assets" / this->_assetPath).generic_string();

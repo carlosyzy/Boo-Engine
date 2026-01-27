@@ -6,23 +6,20 @@ class Scene;
 
 class EditorCacheScene
 {
-private:   
+private:
     int _saveFlag = 0;
     std::string _assetPath = "";
-    Scene* _scene;
-   
-    
-
+    Scene *_scene = nullptr;
     /**
      * @brief 获取场景保存路径
      * @return std::string 场景保存路径
      */
     std::string _preSavePath();
-    void _serializeSceneData(Scene* scene, json& sceneData);
+    void _serializeSceneData(Scene *scene, json &sceneData);
 public:
-    EditorCacheScene(json* settingConfig);
+    EditorCacheScene();
     void openScene(std::string path);
     void saveScene();
-    Scene* getScene();
+    Scene *getScene();
     ~EditorCacheScene();
 };

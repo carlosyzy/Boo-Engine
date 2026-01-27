@@ -40,6 +40,7 @@ EditorCache::EditorCache()
 void EditorCache::init()
 {
     this->_initAssetsCache();
+    this->_initSceneCache();
     Boo::game->assetsManager()->setAssetsRoot(this->_assetsPath);
     std::cout << "EditorCache::init: assetsPath: " << this->_assetsPath << std::endl;
     // // 初始化
@@ -60,6 +61,10 @@ void EditorCache::_initAssetsCache()
     this->_assetsCache = new EditorCacheAssets();
     this->_assetsCache->init(this->_assetsPath);
     std::cout << "EditorCache::init: assetsCache init" << std::endl;
+}
+void EditorCache::_initSceneCache()
+{
+     this->_sceneCache = new EditorCacheScene();
 }
 
 void EditorCache::load(std::function<void(const float progress, std::string file)> progressCallback, std::function<void()> complete)

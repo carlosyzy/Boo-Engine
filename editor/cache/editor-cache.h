@@ -36,6 +36,7 @@ class EditorCache
     std::unordered_map<std::string, TextureAsset *> _editorTextures;
 
     void _initAssetsCache();
+    void _initSceneCache();
 
 public:
     EditorCache();

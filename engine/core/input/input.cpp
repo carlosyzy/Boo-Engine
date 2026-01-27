@@ -78,11 +78,6 @@ void Input::onCursorPos(double xpos, double ypos)
         // 超出范围，不处理
         return;
     }
-    // std::cout << "Input::onCursorPos  cursorX: " << this->_cursorX << " cursorY: " << this->_cursorY << std::endl;
-
-    // this->_cursorX = xpos;
-    // this->_cursorY = ypos;
-
     // 触发所有节点的touchMove事件
     // 正向遍历，拿到所有的节点
     std::vector<Node *> _nodes;
@@ -239,30 +234,59 @@ bool Input::_propagateEvent(Node *node, int button, int action)
         }
         else if (nodeInput.status == 0) // 不在节点范围内，触发touch cancel事件
         {
+            //
+
             bool isIn = node2d->inHitOnNode(this->_cursorX, this->_cursorY);
-            if (!isIn)
+            if (isIn)
             {
-                return false;
-            }
-            nodeInput.touchResult.worldX = worldPos.getX();
-            nodeInput.touchResult.worldY = worldPos.getY();
-             // 计算节点本地坐标
-            const Mat4 &worldMat = node2d->getWorldMatrix();
-            Mat4 localMat;
-            Mat4::inverse(worldMat, localMat);
-            Vec3 localPos;
-            Mat4::multiplyVec3(localMat, worldPos, localPos);
-            nodeInput.touchResult.localX = localPos.getX();
-            nodeInput.touchResult.localY = localPos.getY();
-            std::map<int, std::function<void(NodeInputResult &)>> &touchHover = this->_nodeInputMap[node2d->getUuid()].cursorHovers;
-            for (auto it = touchHover.begin(); it != touchHover.end(); ++it)
-            {
-                if (it->second)
+                std::map<int, std::function<void(NodeInputResult &)>> &touchHover = this->_nodeInputMap[node2d->getUuid()].cursorHovers;
+                if (touchHover.size() > 0)
                 {
-                    it->second(this->_nodeInputMap[node2d->getUuid()].touchResult);
+                    nodeInput.touchResult.worldX = worldPos.getX();
+                    nodeInput.touchResult.worldY = worldPos.getY();
+                    // 计算节点本地坐标
+                    const Mat4 &worldMat = node2d->getWorldMatrix();
+                    Mat4 localMat;
+                    Mat4::inverse(worldMat, localMat);
+                    Vec3 localPos;
+                    Mat4::multiplyVec3(localMat, worldPos, localPos);
+                    nodeInput.touchResult.localX = localPos.getX();
+                    nodeInput.touchResult.localY = localPos.getY();
+                    for (auto it = touchHover.begin(); it != touchHover.end(); ++it)
+                    {
+                        if (it->second)
+                        {
+                            it->second(this->_nodeInputMap[node2d->getUuid()].touchResult);
+                        }
+                    }
+                    return nodeInput.isIntercept;
                 }
             }
-            return true;
+            else
+            {
+                std::map<int, std::function<void(NodeInputResult &)>> &touchHoverOuts = this->_nodeInputMap[node2d->getUuid()].cursorHoverOuts;
+                if (touchHoverOuts.size() > 0)
+                {
+                    nodeInput.touchResult.worldX = worldPos.getX();
+                    nodeInput.touchResult.worldY = worldPos.getY();
+                    // 计算节点本地坐标
+                    const Mat4 &worldMat = node2d->getWorldMatrix();
+                    Mat4 localMat;
+                    Mat4::inverse(worldMat, localMat);
+                    Vec3 localPos;
+                    Mat4::multiplyVec3(localMat, worldPos, localPos);
+                    nodeInput.touchResult.localX = localPos.getX();
+                    nodeInput.touchResult.localY = localPos.getY();
+                    for (auto it = touchHoverOuts.begin(); it != touchHoverOuts.end(); ++it)
+                    {
+                        if (it->second)
+                        {
+                            it->second(this->_nodeInputMap[node2d->getUuid()].touchResult);
+                        }
+                    }
+                    return nodeInput.isIntercept;
+                }
+            }
         }
     }
     else
