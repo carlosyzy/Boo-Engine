@@ -468,6 +468,7 @@ bool GfxTexture::saveToFile(std::string filePath, uint32_t width, uint32_t heigh
 
 GfxTexture::~GfxTexture()
 {
+    std::cout << "[Gfx : Texture]::~Texture: uuid:" << this->_uuid << std::endl;
    /*  // 销毁采样器 */
     if (this->_textureSampler != VK_NULL_HANDLE)
     {

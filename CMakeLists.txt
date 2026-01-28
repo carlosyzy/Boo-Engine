@@ -19,7 +19,6 @@ set(ENGINE_SOURCES
     editor/core/cache/scene/editor-cache-scene.cpp
     editor/core/config/editor-config.cpp
     editor/core/editor-boot.cpp
-    editor/core/editor-camera.cpp
     editor/core/loading/editor-loading.cpp
     editor/core/main/assets/editor-assets-file-tree.cpp
     editor/core/main/assets/editor-assets-layout.cpp

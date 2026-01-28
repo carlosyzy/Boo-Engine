@@ -128,6 +128,7 @@ void Window::onKey(int key, int scancode, int action, int mods)
 void Window::onWindowSize()
 {
 	glfwGetWindowSize(this->_window, &this->_width, &this->_height);
+	// std::cout << "onWindowSize: width:" << this->_width << " height:" << this->_height << std::endl;
 	if (Boo::game == nullptr)
 		return;
 	Boo::game->resizeView(this->_width, this->_height);

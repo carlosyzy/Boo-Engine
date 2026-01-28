@@ -21,16 +21,20 @@
 #include "utils/file-util.h"
 
 Game::Game() : _assetsManager(nullptr),
-			   _curScene(nullptr)
+			   _curScene(nullptr), _view(nullptr)
 {
 }
 
-void Game::init()
+void Game::init(const int width, const int height)
 {
+	// 初始化视图大小
+	this->_view = new View();
+	this->_view->width = width;
+	this->_view->height = height;
+	// 初始化模块
 	this->_initGFX();
 	this->_initEvent();
 	this->_initInput();
-	this->_initView();
 	this->_initFont();
 	this->_initAssets();
 	this->_initRenderer();
@@ -48,12 +52,6 @@ void Game::_initInput()
 {
 	this->_input = new Input();
 	this->_input->init();
-}
-void Game::_initView()
-{
-	this->_view = new View();
-	this->_view->width = 0;
-	this->_view->height = 0;
 }
 void Game::_initFont()
 {
@@ -79,38 +77,15 @@ void Game::_initAlpha()
 }
 void Game::resizeView(const int width, const int height)
 {
-	std::cout << "resizeView: width:" << width << " height:" << height << std::endl;
+	// std::cout << "resizeView: width:" << width << " height:" << height << std::endl;
 	if (this->_view->width == width && this->_view->height == height)
 	{
 		return;
 	}
-	if (this->_view->width == 0 || this->_view->height == 0)
-	{
-		// 初始化视图尺寸
-		this->_view->width = width;
-		this->_view->height = height;
-		this->_viewChanged = false;
-		GfxMgr::getInstance()->setLockRender(false);
-	}
-	else
-	{
-		// 视图尺寸变化
-		this->_view->width = width;
-		this->_view->height = height;
-		this->_viewChanged = true;
-		GfxMgr::getInstance()->setLockRender(true);
-	}
-}
-void Game::_viewChangeEnd()
-{
-	this->_viewChanged = false;
-	GfxMgr::getInstance()->setLockRender(false);
-	// 重置交换链
-	GfxMgr::getInstance()->resetSwapChain();
-	for (auto &camera : this->_cameras)
-	{
-		camera.second->resize(this->_view->width, this->_view->height);
-	}
+	this->_view->width = width;
+	this->_view->height = height;
+	this->_viewChanged = true;
+	this->_viewChangedTime = TimeUtil::nowTime();
 }
 /**
  * @brief 取消调度
@@ -221,6 +196,15 @@ void Game::_lateUpdate(float dt)
 }
 void Game::_render(float dt)
 {
+	if(this->_viewChanged){
+		if(TimeUtil::nowTime() - this->_viewChangedTime >= 0.2f){
+			this->_viewChanged = false;
+			for (auto &camera : this->_cameras)
+			{
+				camera.second->resize(this->_view->width, this->_view->height);
+			}
+		}
+	}
 	// 更新渲染器
 	this->_renderer->render(this->_cameras, this->_curScene);
 	GfxMgr::getInstance()->update(dt);
@@ -309,12 +293,6 @@ void Game::_updateClearCaches()
 void Game::updateMouseState(int button, int action, int mods)
 {
 	this->_input->onMouseButton(button, action, mods);
-	// 左键拖动释放
-	if (action == GLFW_RELEASE && button == GLFW_MOUSE_BUTTON_LEFT && this->_viewChanged)
-	{
-		std::cout << "Game::updateMouseState: left mouse button release" << std::endl;
-		this->_viewChangeEnd();
-	}
 }
 void Game::updateMousePos(double xpos, double ypos)
 {

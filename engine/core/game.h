@@ -91,6 +91,7 @@ private:
     std::unordered_map<std::string, Camera *> _cameras;
 
     bool _viewChanged = false;
+    long long _viewChangedTime = 0;
 
     Renderer *_renderer;
 
@@ -107,10 +108,6 @@ private:
      */
     void _initInput();
     /**
-     * @brief 初始化视图系统
-     */
-    void _initView();
-    /**
      * @brief 初始化字体系统
      */
     void _initFont();
@@ -126,7 +123,6 @@ private:
      */
     void _initAlpha();
 
-    void _viewChangeEnd();
     void _update(float dt);
     void _updateSchedules(float dt);
     void _lateUpdate(float dt);
@@ -141,8 +137,8 @@ public:
     /**
      * @brief 初始化游戏
      */
-    void init();
-    void resizeView(const int width, const int height);
+    void init(const int width, const int height);
+    
     View *view()
     {
         return this->_view;
@@ -170,6 +166,8 @@ public:
     }
     void openScene(Scene *scene);
     void destroyScene();
+
+    void resizeView(const int width, const int height);
     /**
      * @brief 挂在相机到游戏中
      *

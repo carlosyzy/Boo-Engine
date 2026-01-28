@@ -20,7 +20,6 @@ private:
 	GfxMgr &operator=(const GfxMgr &) = delete; /* // 禁用赋值操作符 */
 	GfxMgr();
 	~GfxMgr();
-	bool _lockRender = false;
 	size_t _currentFrame = 0;
 
 public:
@@ -33,7 +32,6 @@ public:
 	void update(float dt);
 	void resetSwapChain();
 
-	void setLockRender(bool lock);
 	/**
 	 * @brief 创建纹理
 	 *

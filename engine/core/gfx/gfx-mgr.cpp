@@ -36,20 +36,10 @@ void GfxMgr::init()
     Gfx::renderer = new GfxRenderer();
     Gfx::renderer->init();
 }
-void GfxMgr::setLockRender(bool lock)
-{
-    this->_lockRender = lock;
-}
-
 void GfxMgr::update(float dt)
 {
     Gfx::time += dt;
     
-    if (this->_lockRender)
-    {
-        return;
-    }
-
     // Gfx::renderer->clearDestroyObjects();
     // std::cout << "renderer update" << std::endl;
     Gfx::context->frameFencesPrepare(this->_currentFrame);

@@ -88,6 +88,17 @@ VkCommandBuffer &GfxRenderTexture::getCommandBuffer()
 void GfxRenderTexture::resize(uint32_t width, uint32_t height)
 {
     std::cout << "[Gfx : GfxRenderTexture]::resize: width:" << width << " height:" << height << std::endl;
+    if (this->_colorTexture)
+    {
+        Gfx::renderer->destroyTexture(this->_colorUuid);
+        this->_colorTexture = nullptr;
+    }
+    if (this->_depthTexture)
+    {
+        Gfx::renderer->destroyTexture(this->_depthUuid);
+        this->_depthTexture = nullptr;
+    }
+
     this->_width = width;
     this->_height = height;
     this->_createTextures();
@@ -110,7 +121,7 @@ const uint32_t &GfxRenderTexture::getHeight() const
  */
 void GfxRenderTexture::_createTextures()
 {
-    this->_clear();
+
     this->_colorTexture = new GfxTexture(this->_colorUuid);
     this->_colorTexture->createImage(
         this->_width, this->_height,
@@ -127,14 +138,14 @@ void GfxRenderTexture::_createTextures()
     this->_depthTexture = new GfxTexture(this->_depthUuid);
     this->_depthTexture->createImage(
         this->_width, this->_height,
-        VK_FORMAT_D32_SFLOAT_S8_UINT,  // 32位深度 + 8位模板
+        VK_FORMAT_D32_SFLOAT_S8_UINT, // 32位深度 + 8位模板
         VK_IMAGE_TILING_OPTIMAL,
         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
         VK_SAMPLE_COUNT_1_BIT);
     this->_depthTexture->createImageView(
-        VK_FORMAT_D32_SFLOAT_S8_UINT,  // 32位深度 + 8位模板
-        VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT);  // 包含深度和模板aspect
+        VK_FORMAT_D32_SFLOAT_S8_UINT,                             // 32位深度 + 8位模板
+        VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT); // 包含深度和模板aspect
     this->_depthTexture->crateImageSampler();
     Gfx::renderer->insertTexture(this->_colorUuid, this->_colorTexture);
     Gfx::renderer->insertTexture(this->_depthUuid, this->_depthTexture);
@@ -249,23 +260,23 @@ const std::string &GfxRenderTexture::getColorTextureUuid() const
     return this->_colorUuid;
 }
 
-void GfxRenderTexture::_clear()
-{
-    if (this->_colorTexture)
-    {
-        delete this->_colorTexture;
-        this->_colorTexture = nullptr;
-    }
-    if (this->_depthTexture)
-    {
-        delete this->_depthTexture;
-        this->_depthTexture = nullptr;
-    }
-}
-void GfxRenderTexture::_reset()
-{
-    this->_createTextures();
-}
+// void GfxRenderTexture::_clear()
+// {
+//     if (this->_colorTexture)
+//     {
+//         delete this->_colorTexture;
+//         this->_colorTexture = nullptr;
+//     }
+//     if (this->_depthTexture)
+//     {
+//         delete this->_depthTexture;
+//         this->_depthTexture = nullptr;
+//     }
+// }
+// void GfxRenderTexture::_reset()
+// {
+//     this->_createTextures();
+// }
 bool GfxRenderTexture::saveToFile1(std::string filePath)
 {
     if (this->_colorTexture == nullptr)

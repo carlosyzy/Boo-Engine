@@ -16,8 +16,7 @@ void Engine::init(Window *window, Platform platform)
 	Boo::platform = platform;
 	Boo::window = window;
 	Boo::game = new Game();
-	Boo::game->init();
-	Boo::game->resizeView(window->getWidth(), window->getHeight());
+	Boo::game->init(window->getWidth(), window->getHeight());
 	this->_deltaTime = TimeUtil::nowTime();
 }
 /**

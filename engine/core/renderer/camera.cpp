@@ -28,10 +28,6 @@ void Camera::_createRenderPipeline()
 {
     this->_renderTexture = new GfxRenderTexture(this->_uuid);
     GfxMgr::getInstance()->initRenderQueue(this->_uuid, this->_renderTexture);
-    if (this->_width > 0 && this->_height > 0)
-    {
-        this->_renderTexture->resize(this->_width * 2.0f, this->_height * 2.0f);
-    }
 }
 void Camera::Enable()
 {
@@ -46,14 +42,13 @@ bool Camera::getIsOnScreen()
 {
     return this->_isOnScreen;
 }
-
 void Camera::resize(int width, int height)
 {
     if (this->_width == width && this->_height == height)
     {
         return;
     }
-    std::cout << "Camera::resize: width:" << width << " height:" << height << std::endl;
+    // std::cout << "Camera::resize: width:" << width << " height:" << height << std::endl;
     this->_width = width;
     this->_height = height;
     if (this->_width > 0 && this->_height > 0 && this->_renderTexture != nullptr)
