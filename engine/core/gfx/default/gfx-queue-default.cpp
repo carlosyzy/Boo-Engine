@@ -198,7 +198,7 @@ void GfxQueueDefault::_beginRenderPass(uint32_t imageIndex)
     renderPassInfo.renderArea.offset = {0, 0};
 
     VkClearValue clearColor{};
-    clearColor.color = {{0.0f, 0.0f, 0.0f, 0.0f}};
+    clearColor.color = {{0.0f, 0.0f, 0.0f, 1.0f}};
     renderPassInfo.pClearValues = &clearColor;
     renderPassInfo.clearValueCount = 1;
 

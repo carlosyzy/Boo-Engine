@@ -197,7 +197,7 @@ void Game::_lateUpdate(float dt)
 void Game::_render(float dt)
 {
 	if(this->_viewChanged){
-		if(TimeUtil::nowTime() - this->_viewChangedTime >= 0.2f){
+		if(TimeUtil::nowTime() - this->_viewChangedTime >= 100){
 			this->_viewChanged = false;
 			for (auto &camera : this->_cameras)
 			{

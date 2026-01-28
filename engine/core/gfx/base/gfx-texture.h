@@ -82,10 +82,6 @@ public:
     ~GfxTexture();
 };
 
-/* // // 创建单通道字体纹理
-// auto fontTexture = std::make_shared<Texture>(context, 256, 256, VK_FORMAT_R8_UNORM);
-// fontTexture->uploadData(fontData);
-
 // // 创建RGBA纹理
 // auto colorTexture = std::make_shared<Texture>(context, 512, 512, VK_FORMAT_R8G8B8A8_UNORM);
 // colorTexture->uploadData(colorData);
