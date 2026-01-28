@@ -21,7 +21,7 @@ public:
      */
     void init(Window *window, Platform platform);
 
-    void tick();
+    void tick(float deltaTime);
     void updateViewSize(float width, float height);
     /**
      * @brief 更新鼠标状态

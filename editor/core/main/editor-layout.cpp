@@ -4,7 +4,6 @@
 #include "../../boo-editor.h"
 #include "../config/editor-config.h"
 
-
 #include "../../../engine/boo.h"
 #include "../../../engine/core/game.h"
 #include "../../../engine/core/input/input.h"
@@ -16,22 +15,22 @@
 #include "../../../engine/core/assets/assets-manager.h"
 #include "../../../engine/core/component/ui/ui-widget.h"
 
-EditorLayout::EditorLayout() 
+EditorLayout::EditorLayout()
 {
-    
 }
 void EditorLayout::init()
 {
     Scene *scene = Boo::game->getScene();
-	if (scene == nullptr)
-	{
-		return;
-	}
-	this->_node  = scene->getRoot2D();
-	if (this->_node == nullptr)
-	{
-		return;
-	}
+    if (scene == nullptr)
+    {
+        return;
+    }
+    this->_node = scene->getRoot2D();
+    if (this->_node == nullptr)
+    {
+        return;
+    }
+    this->_updateModuleSize();
     this->_initMainUI();
     this->_initMenuUI();
     this->_initHierarchyUI();
@@ -146,15 +145,16 @@ void EditorLayout::update(float dt)
     View *view = Boo::game->view();
     if (this->_width != view->width || this->_height != view->height)
     {
-        this->_width = view->width;
-        this->_height = view->height;
-        std::cout << "EditorLayout::update:" << this->_width << " " << this->_height << std::endl;
         this->_updateModuleSize();
     }
 };
 
 void EditorLayout::_updateModuleSize()
 {
+    View *view = Boo::game->view();
+    this->_width = view->width;
+    this->_height = view->height;
+    std::cout << "EditorLayout::update:" << this->_width << " " << this->_height << std::endl;
     // 基于左上角为0，0点的坐标
     //  菜单
     this->_border = 3.0f;
@@ -176,7 +176,7 @@ void EditorLayout::_updateModuleSize()
     this->hierarchy_y = std::ceil(this->_height / 2.0 - this->menu_height - this->_border - this->hierarchy_height / 2.0);
     // 资产
     this->asset_width = this->hierarchy_width;
-    this->asset_height = std::ceil(this->_height - this->menu_height - this->_border - this->hierarchy_height - this->_border - this->bottom_height-this->_border);
+    this->asset_height = std::ceil(this->_height - this->menu_height - this->_border - this->hierarchy_height - this->_border - this->bottom_height - this->_border);
     this->asset_x = -this->_width / 2.0 + this->asset_width / 2.0;
     this->asset_y = std::ceil(this->_height / 2.0 - this->menu_height - this->_border - this->hierarchy_height - this->_border - this->asset_height / 2.0);
 

@@ -15,8 +15,6 @@
 EditorBoot::EditorBoot()
 {
     std::cout << "EditorBoot::EditorBoot" << std::endl;
-    this->_deltaTime = TimeUtil::nowTime();
-    this->_frameRate = 30;
     BooEditor::cache = new EditorCache();
     BooEditor::cache->init();
     std::cout << "EditorBoot::EditorBoot: cache init" << std::endl;
@@ -50,22 +48,9 @@ void EditorBoot::_launchEditorMain()
     Boo::game->openScene(scene);
     Boo::game->input()->setRoot2D(node2d);
 }
-void EditorBoot::tick()
+void EditorBoot::tick(float deltaTime)
 {
-    long long deltaTime = TimeUtil::nowTime();
-    long long t = deltaTime - this->_deltaTime;
-    if (t > (1000.0f / this->_frameRate))
-    {
-        this->update(t / 1000.0f);
-        this->_deltaTime = deltaTime;
-    }
-}
-void EditorBoot::update(float deltaTime)
-{
-    if (BooEditor::cache)
-    {
-        BooEditor::cache->update(deltaTime);
-    }
+     BooEditor::cache->update(deltaTime);
 }
 
 EditorBoot::~EditorBoot()

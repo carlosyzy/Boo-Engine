@@ -22,19 +22,11 @@ void Engine::init(Window *window, Platform platform)
 /**
  * @brief 引擎更新
  */
-void Engine::tick()
+void Engine::tick(float deltaTime)
 {
 	if (Boo::game == nullptr)
 		return;
-	
-	long long deltaTime = TimeUtil::nowTime();
-	long long t = deltaTime - this->_deltaTime;
-	if (t > (1000.0f / this->_frameRate))
-	{
-		
-		Boo::game->tick(t / 1000.0f);
-		this->_deltaTime = deltaTime;
-	}
+	Boo::game->tick(deltaTime);
 }
 
 Engine::~Engine()

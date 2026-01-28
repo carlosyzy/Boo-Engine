@@ -14,9 +14,14 @@ private:
     Engine *_engine;
     EditorBoot *_boot;
 
+    long long _deltaTime;
+    int _frameRate;
+
     void _initWindow();
     void _initEngine();
     void _initEditorMain();
+
+    void _tick();
 public:
     Editor();
 

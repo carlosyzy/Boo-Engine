@@ -177,6 +177,17 @@ void Game::tick(float dt)
 }
 void Game::_update(float dt)
 {
+	//重置相机渲染纹理大小
+	if(this->_viewChanged){
+		if(TimeUtil::nowTime() - this->_viewChangedTime >= 100){
+			this->_viewChanged = false;
+			for (auto &camera : this->_cameras)
+			{
+				camera.second->resize(this->_view->width, this->_view->height);
+			}
+		}
+	}
+
 	if (this->_curScene)
 	{
 		this->_curScene->update(dt);
@@ -196,15 +207,6 @@ void Game::_lateUpdate(float dt)
 }
 void Game::_render(float dt)
 {
-	if(this->_viewChanged){
-		if(TimeUtil::nowTime() - this->_viewChangedTime >= 100){
-			this->_viewChanged = false;
-			for (auto &camera : this->_cameras)
-			{
-				camera.second->resize(this->_view->width, this->_view->height);
-			}
-		}
-	}
 	// 更新渲染器
 	this->_renderer->render(this->_cameras, this->_curScene);
 	GfxMgr::getInstance()->update(dt);

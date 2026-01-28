@@ -7,13 +7,15 @@
 
 class Node;
 class Camera;
+class GfxRenderTexture;
 
 class UISprite : public UIRenderer
 {
 public:
     REGISTER_PROPERTY_TEXTURE(UISprite, _texture, "纹理");
     REGISTER_PROPERTY_MATERIAL(UISprite, _material, "材质");
-    
+private:
+    GfxRenderTexture *_renderTexture = nullptr;
 protected:
     /**
      * @brief 反序列化组件属性-配置
@@ -48,6 +50,13 @@ public:
      */
     void setTexture(std::string texture);
     void setTexture(TextureAsset *texture);
+    /**
+     * @brief 设置渲染器的渲染目标
+     *
+     * @param renderTexture
+     */
+    void setRenderTexture(GfxRenderTexture *renderTexture);
+    
     /**
      * @brief 设置渲染器的材质
      *

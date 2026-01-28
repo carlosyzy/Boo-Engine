@@ -5,13 +5,21 @@
 class Scene;
 class Node2D;
 class GfxRenderTexture;
+class MaterialAsset;
+class GfxMesh;
+class GfxMaterial;
+class UISprite;
+
 class EditorScene
 {
-private: //view
+private: // view
     Node2D *_rootNode;
+    UISprite *_uiSprite = nullptr;
     int _viewWidth = 0;
     int _viewHeight = 0;
-
+    bool _isViewChanged = false;
+    long long _viewChangedTime = 0;
+    void _checkViewSizeChange();
 
 private: // camera相关
     std::string _cameraUuid = "";
@@ -35,8 +43,27 @@ private: // camera相关
      */
     Mat4 _cameraMatProj = Mat4::identity();
 
-    void _initRenderCamera();
+    /**
+     * 渲染类型
+     * 0：2D渲染
+     * 1：3D渲染
+     */
+    int _renderType = 0;
 
+    void _initRenderCamera();
+    void _updateRenderCamera();
+
+private:
+    Mat4 _refLineWorldMat = Mat4::identity();
+    // 参考线网格
+    GfxMesh *_refLineGfxMesh = nullptr;
+    // 参考线材质
+    GfxMaterial *_refLineGfxMtl = nullptr;
+    MaterialAsset *_refLineAssetMtl = nullptr;
+
+    std::vector<float> _refLineInstanceData;
+
+    void _initRefLineGfx();
 public:
     EditorScene(Node2D *root);
     void init();

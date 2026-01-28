@@ -232,6 +232,9 @@ GfxQueueDefault::~GfxQueueDefault()
 {
 }
 
+
+
+
 // void GfxQueue::updateUniformBuffer(uint32_t frame, std::array<float, 16> &viewMat, std::array<float, 16> &projMat, float time)
 // {
 //     UniformBufferObject *ubo = (UniformBufferObject *)this->_uniformBuffersMapped[frame];

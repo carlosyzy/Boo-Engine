@@ -36,9 +36,10 @@ public:
 	GfxRenderTexture(std::string uuid);
 	VkFramebuffer& getFramebuffer();
 	VkCommandBuffer& getCommandBuffer();
+	const std::string& getUuid() const;
+	const std::string& getColorTextureUuid() const;
 	const uint32_t& getWidth() const;
 	const uint32_t& getHeight() const;
-	const std::string& getColorTextureUuid() const;
 	void bindRenderPass(GfxRenderPass* pass);
 
 	void resize(uint32_t width, uint32_t height);

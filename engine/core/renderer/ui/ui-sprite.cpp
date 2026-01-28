@@ -7,6 +7,7 @@
 #include "../../assets/texture-asset.h"
 #include "../../assets/material-asset.h"
 #include "../../renderer/camera.h"
+#include "../../gfx/base/gfx-render-texture.h"
 
 UISprite::UISprite(std::string name, Node *node, std::string uuid) : UIRenderer(name, node, uuid)
 {
@@ -16,7 +17,7 @@ UISprite::UISprite(std::string name, Node *node, std::string uuid) : UIRenderer(
     this->_material = "";
 
     this->_materialAsset = new MaterialAsset();
-	this->_materialAsset->createUITest();
+    this->_materialAsset->createUITest();
 }
 /**
  * @brief 反序列化组件属性-配置
@@ -39,12 +40,13 @@ void UISprite::Enable()
 
 void UISprite::setColor(Color &color)
 {
-   if(color.getR() == this->_color.getR() &&
-      color.getG() == this->_color.getG() &&
-      color.getB() == this->_color.getB() &&
-      color.getA() == this->_color.getA()){
+    if (color.getR() == this->_color.getR() &&
+        color.getG() == this->_color.getG() &&
+        color.getB() == this->_color.getB() &&
+        color.getA() == this->_color.getA())
+    {
         return;
-   }
+    }
     this->_setColor(color.getR(), color.getG(), color.getB(), color.getA());
 }
 void UISprite::setColor(std::string color)
@@ -96,16 +98,8 @@ void UISprite::setMaterial(MaterialAsset *material)
     this->_setMaterial(material);
 }
 
-
 void UISprite::setTexture(std::string path)
 {
-    // TextureAsset *tex = dynamic_cast<TextureAsset *>(Boo::game->assetsManager()->getAssetByPath(texture));
-    // if (tex == nullptr)
-    // {
-    //     std::cout << "UISprite::setTexture: texture " << texture << " not found" << std::endl;
-    //     return;
-    // }
-    // this->_setTexture(tex);
 }
 void UISprite::setTexture(TextureAsset *texture)
 {
@@ -116,6 +110,15 @@ void UISprite::setTexture(TextureAsset *texture)
     }
     this->_setTexture(texture);
 }
+void UISprite::setRenderTexture(GfxRenderTexture *renderTexture)
+{
+    this->_renderTexture = renderTexture;
+    if (this->_renderTexture != nullptr)
+    {
+        this->_materialAsset->setTexture(0, this->_renderTexture->getColorTextureUuid());
+    }
+}
+
 void UISprite::Update(float deltaTime)
 {
     UIRenderer::Update(deltaTime);

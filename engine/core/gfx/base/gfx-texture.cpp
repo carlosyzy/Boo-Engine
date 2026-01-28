@@ -342,6 +342,8 @@ void GfxTexture::setBindlessIndex(uint32_t index)
 bool GfxTexture::saveToFile(std::string filePath, uint32_t width, uint32_t height)
 {
     /* // 1. 创建 staging buffer 用于从 GPU 复制数据到 CPU */
+    // std::cout << "GfxTexture::saveToFile width: " << width << std::endl;
+    // std::cout << "GfxTexture::saveToFile height: " << height << std::endl;
     VkDeviceSize imageSize = width * height * 4; /* // RGBA 格式 */
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
