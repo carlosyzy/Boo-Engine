@@ -253,14 +253,14 @@ void GfxRenderTexture::_initializeRenderTexture()
 
 const std::string &GfxRenderTexture::getColorTextureUuid() const
 {
-    if (this->_colorTexture == nullptr)
-    {
-        return "";
-    }
-    if (this->_colorTexture->getImageView() == VK_NULL_HANDLE || this->_depthTexture->getSampler() == VK_NULL_HANDLE)
-    {
-        return "";
-    }
+    // if (this->_colorTexture == nullptr)
+    // {
+    //     return "";
+    // }
+    // if (this->_colorTexture->getImageView() == VK_NULL_HANDLE || this->_depthTexture->getSampler() == VK_NULL_HANDLE)
+    // {
+    //     return "";
+    // }
     return this->_colorUuid;
 }
 

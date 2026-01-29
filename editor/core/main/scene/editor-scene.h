@@ -25,16 +25,6 @@ private: // view
 
 private:
     EditorSceneRenderer *_renderer = nullptr;
-    // Mat4 _refLineWorldMat = Mat4::identity();
-    // // 参考线网格
-    // GfxMesh *_refLineGfxMesh = nullptr;
-    // // 参考线材质
-    // GfxMaterial *_refLineGfxMtl = nullptr;
-    // MaterialAsset *_refLineAssetMtl = nullptr;
-
-    // std::vector<float> _refLineInstanceData;
-
-    // void _initRefLineGfx();
 public:
     EditorScene(Node2D *root);
     void init();

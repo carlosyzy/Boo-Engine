@@ -20,7 +20,6 @@ EditorScene::EditorScene(Node2D *root)
     this->_uiSprite = dynamic_cast<UISprite *>(this->_rootNode->getComponent("UISprite"));
     this->_viewWidth = this->_rootNode->getSize().getWidth();
     this->_viewHeight = this->_rootNode->getSize().getHeight();
-    // this->_refLineWorldMat = Mat4::identity();
 }
 void EditorScene::init()
 {
@@ -28,27 +27,6 @@ void EditorScene::init()
     this->_renderer->init(this->_uiSprite);
     this->_renderer->resize(this->_viewWidth, this->_viewHeight);
 }
-// void EditorScene::_initRefLineGfx()
-// {
-//     //
-//     this->_refLineGfxMesh = new GfxMesh("RefLine_GfxMesh");
-//     this->_refLineGfxMesh->setInputVertices({-0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-//                                              -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-//                                              0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-//                                              0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
-//                                             {0, 1, 2, 0, 2, 3});
-//     this->_refLineAssetMtl = new MaterialAsset();
-//     this->_refLineAssetMtl->createUITest();
-//     //
-//     this->_refLineWorldMat.setM00(this->_cameraRenderTextureWidth);
-//     this->_refLineWorldMat.setM11(this->_cameraRenderTextureHeight);
-//     //
-//     this->_refLineInstanceData.clear();
-//     this->_refLineInstanceData.reserve(16 + 4);
-//     const auto &matrix = this->_refLineWorldMat.data();
-//     this->_refLineInstanceData.insert(this->_refLineInstanceData.end(), matrix.begin(), matrix.end());
-//     this->_refLineInstanceData.insert(this->_refLineInstanceData.end(), {1.0f, 1.0f, 1.0f, 1.0f});
-// }
 void EditorScene::update(float deltaTime)
 {
     this->_checkViewSizeChange();

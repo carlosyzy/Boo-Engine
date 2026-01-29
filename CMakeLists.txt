@@ -31,6 +31,8 @@ set(ENGINE_SOURCES
     editor/core/main/property/editor-property-layout.cpp
     editor/core/main/property/editor-property.cpp
     editor/core/main/scene/editor-scene-renderer.cpp
+    editor/core/main/scene/editor-scene-renderer2d.cpp
+    editor/core/main/scene/editor-scene-renderer3d.cpp
     editor/core/main/scene/editor-scene.cpp
     editor/editor.cpp
     engine/boo.cpp

@@ -2,6 +2,8 @@
 #include <iostream>
 #include "../../../../engine/core/math/mat4.h"
 
+class EditorSceneRenderer2D;
+class EditorSceneRenderer3D;
 class GfxRenderTexture;
 class UISprite;
 
@@ -34,6 +36,9 @@ private:
 
     void _initRenderCamera();
     void _updateRenderCamera();
+
+    EditorSceneRenderer2D *_renderer2D = nullptr;
+    EditorSceneRenderer3D *_renderer3D = nullptr;
 
 protected:
 public:

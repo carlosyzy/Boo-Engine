@@ -1,4 +1,6 @@
 #include "editor-scene-renderer.h"
+#include "editor-scene-renderer2d.h"
+#include "editor-scene-renderer3d.h"
 
 #include "../../../../engine/core/assets/material-asset.h"
 #include "../../../../engine/core/scene/scene.h"
@@ -15,11 +17,14 @@ EditorSceneRenderer::EditorSceneRenderer()
 {
     this->_cameraMatView = Mat4::identity();
     this->_cameraMatProj = Mat4::identity();
+    this->_renderer2D = new EditorSceneRenderer2D();
+    // this->_renderer3D = new EditorSceneRenderer3D();
 }
 void EditorSceneRenderer::init(UISprite *target)
 {
     this->_target = target;
     this->_initRenderCamera();
+    this->_renderer2D->init();
 }
 void EditorSceneRenderer::_initRenderCamera()
 {
@@ -35,12 +40,14 @@ void EditorSceneRenderer::resize(int width, int height)
     this->_cameraRenderTexture->resize(this->_cameraRenderTextureWidth, this->_cameraRenderTextureHeight);
     this->_cameraMatProj.setM00(2.0f / (float)this->_cameraRenderTextureWidth);
     this->_cameraMatProj.setM11(2.0f / (float)this->_cameraRenderTextureHeight);
+
+    this->_renderer2D->resize(width, height);
 }
 void EditorSceneRenderer::render()
 {
     GfxMgr::getInstance()->submitRenderData(this->_cameraUuid, this->_cameraMatView.data(), this->_cameraMatProj.data(), false);
-    // // 提交渲染数据
-    //  GfxMgr::getInstance()->submitRenderObject(this->_cameraUuid, this->_refLineAssetMtl->getGfxMaterial(), this->_refLineGfxMesh, this->_refLineInstanceData);
+    // 提交渲染数据
+    this->_renderer2D->render(this->_cameraUuid);
 }
 EditorSceneRenderer::~EditorSceneRenderer()
 {

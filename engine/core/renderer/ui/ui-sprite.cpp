@@ -115,6 +115,7 @@ void UISprite::setRenderTexture(GfxRenderTexture *renderTexture)
     this->_renderTexture = renderTexture;
     if (this->_renderTexture != nullptr)
     {
+        // std::cout << "UISprite::setRenderTexture: renderTexture: " << this->_renderTexture->getColorTextureUuid() << std::endl;
         this->_materialAsset->setTexture(0, this->_renderTexture->getColorTextureUuid());
     }
 }
