@@ -1,5 +1,8 @@
 
 #include "editor-scene.h"
+
+#include "editor-scene-renderer.h"
+
 #include "../../../../engine/core/assets/material-asset.h"
 #include "../../../../engine/core/scene/scene.h"
 #include "../../../../engine/core/utils/time-util.h"
@@ -17,50 +20,35 @@ EditorScene::EditorScene(Node2D *root)
     this->_uiSprite = dynamic_cast<UISprite *>(this->_rootNode->getComponent("UISprite"));
     this->_viewWidth = this->_rootNode->getSize().getWidth();
     this->_viewHeight = this->_rootNode->getSize().getHeight();
-    this->_cameraMatView = Mat4::identity();
-    this->_cameraMatProj = Mat4::identity();
-    this->_refLineWorldMat = Mat4::identity();
+    // this->_refLineWorldMat = Mat4::identity();
 }
 void EditorScene::init()
 {
-    this->_initRenderCamera();
-    this->_initRefLineGfx();
-   
+    this->_renderer = new EditorSceneRenderer();
+    this->_renderer->init(this->_uiSprite);
+    this->_renderer->resize(this->_viewWidth, this->_viewHeight);
 }
-void EditorScene::_initRenderCamera()
-{
-    this->_cameraUuid = "Editor_Scene_Camera";
-    this->_cameraRenderTexture = new GfxRenderTexture(this->_cameraUuid);
-    GfxMgr::getInstance()->initRenderQueue(this->_cameraUuid, this->_cameraRenderTexture);
-    this->_cameraRenderTextureWidth = this->_viewWidth;
-    this->_cameraRenderTextureHeight = this->_viewHeight;
-    this->_cameraRenderTexture->resize(this->_cameraRenderTextureWidth, this->_cameraRenderTextureHeight);
-    this->_cameraMatProj.setM00(2.0f / (float)this->_cameraRenderTextureWidth);
-    this->_cameraMatProj.setM11(2.0f / (float)this->_cameraRenderTextureHeight);
-    //设置渲染rt到uiSprite
-    this->_uiSprite->setRenderTexture(this->_cameraRenderTexture);
-}
-void EditorScene::_initRefLineGfx()
-{
-    //
-    this->_refLineGfxMesh = new GfxMesh("RefLine_GfxMesh");
-    this->_refLineGfxMesh->setInputVertices({-0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-                                             -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-                                             0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-                                             0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
-                                            {0, 1, 2, 0, 2, 3});
-    this->_refLineAssetMtl = new MaterialAsset();
-    this->_refLineAssetMtl->createUITest();
-    //
-    this->_refLineWorldMat.setM00(this->_cameraRenderTextureWidth);
-    this->_refLineWorldMat.setM11(this->_cameraRenderTextureHeight);
-    //
-    this->_refLineInstanceData.clear();
-    this->_refLineInstanceData.reserve(16 + 4);
-    const auto &matrix = this->_refLineWorldMat.data();
-    this->_refLineInstanceData.insert(this->_refLineInstanceData.end(), matrix.begin(), matrix.end());
-    this->_refLineInstanceData.insert(this->_refLineInstanceData.end(), {1.0f, 1.0f, 1.0f, 1.0f});
-}
+// void EditorScene::_initRefLineGfx()
+// {
+//     //
+//     this->_refLineGfxMesh = new GfxMesh("RefLine_GfxMesh");
+//     this->_refLineGfxMesh->setInputVertices({-0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+//                                              -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+//                                              0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+//                                              0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
+//                                             {0, 1, 2, 0, 2, 3});
+//     this->_refLineAssetMtl = new MaterialAsset();
+//     this->_refLineAssetMtl->createUITest();
+//     //
+//     this->_refLineWorldMat.setM00(this->_cameraRenderTextureWidth);
+//     this->_refLineWorldMat.setM11(this->_cameraRenderTextureHeight);
+//     //
+//     this->_refLineInstanceData.clear();
+//     this->_refLineInstanceData.reserve(16 + 4);
+//     const auto &matrix = this->_refLineWorldMat.data();
+//     this->_refLineInstanceData.insert(this->_refLineInstanceData.end(), matrix.begin(), matrix.end());
+//     this->_refLineInstanceData.insert(this->_refLineInstanceData.end(), {1.0f, 1.0f, 1.0f, 1.0f});
+// }
 void EditorScene::update(float deltaTime)
 {
     this->_checkViewSizeChange();
@@ -85,17 +73,10 @@ void EditorScene::_updateRenderCamera()
         if (TimeUtil::nowTime() - this->_viewChangedTime >= 100)
         {
             this->_isViewChanged = false;
-            this->_cameraRenderTextureWidth = this->_viewWidth;
-            this->_cameraRenderTextureHeight = this->_viewHeight;
-            this->_cameraRenderTexture->resize(this->_cameraRenderTextureWidth, this->_cameraRenderTextureHeight);
-            this->_cameraMatProj.setM00(2.0f / (float)this->_cameraRenderTextureWidth);
-            this->_cameraMatProj.setM11(2.0f / (float)this->_cameraRenderTextureHeight);
+            this->_renderer->resize(this->_viewWidth, this->_viewHeight);
         }
     }
-    GfxMgr::getInstance()->submitRenderData(this->_cameraUuid, this->_cameraMatView.data(), this->_cameraMatProj.data(), false);
-    // 提交渲染数据
-    GfxMgr::getInstance()->submitRenderObject(this->_cameraUuid, this->_refLineAssetMtl->getGfxMaterial(), this->_refLineGfxMesh, this->_refLineInstanceData);
-    
+    this->_renderer->render();
 }
 
 EditorScene::~EditorScene()

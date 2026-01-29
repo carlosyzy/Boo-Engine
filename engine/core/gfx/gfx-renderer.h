@@ -31,6 +31,7 @@ private:
 	GfxRendererDefault *_defaultRenderer;
 	GfxRendererBuiltin *_builtinRenderer;
 
+	std::vector<GfxTexture *> _destroyTextureCaches;
 public:
 	GfxRenderer();
 	void init();
@@ -72,8 +73,10 @@ public:
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
 	void frameRendererAfter();
 
+	void _clearDestroyTextureCaches();
 	void _cleanRendererState();
 	void _resetRendererState();
+	
 
 	~GfxRenderer();
 };

@@ -91,7 +91,7 @@ VkCommandBuffer &GfxRenderTexture::getCommandBuffer()
 
 void GfxRenderTexture::resize(uint32_t width, uint32_t height)
 {
-    std::cout << "[Gfx : GfxRenderTexture]::resize:" << this->_uuid << " width:" << width << " height:" << height << std::endl;
+    // std::cout << "[Gfx : GfxRenderTexture]::resize:" << this->_uuid << " width:" << width << " height:" << height << std::endl;
     if (this->_colorTexture)
     {
         Gfx::renderer->destroyTexture(this->_colorUuid);

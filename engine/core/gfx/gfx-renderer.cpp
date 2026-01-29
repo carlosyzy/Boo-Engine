@@ -44,7 +44,9 @@ void GfxRenderer::createTexture(std::string textureUuid, uint32_t width, uint32_
     {
         GfxTexture *texture = new GfxTexture(textureUuid, pixels, width, height, channels);
         Gfx::textures[textureUuid] = texture;
-    }else{
+    }
+    else
+    {
         std::cout << "Gfx : Renderer :: createTexture:uuid:" << textureUuid << " already exists" << std::endl;
     }
 }
@@ -61,7 +63,8 @@ void GfxRenderer::destroyTexture(std::string textureUuid)
 {
     if (Gfx::textures.find(textureUuid) != Gfx::textures.end())
     {
-        delete Gfx::textures[textureUuid];
+        // 加入销毁队列
+        this->_destroyTextureCaches.push_back(Gfx::textures[textureUuid]);
         Gfx::textures.erase(textureUuid);
     }
 }
@@ -71,6 +74,10 @@ bool GfxRenderer::isExistTexture(std::string textureUuid)
 }
 GfxTexture *GfxRenderer::getTexture(std::string uuid)
 {
+    if (uuid.empty())
+    {
+        return nullptr;
+    }
     if (Gfx::textures.find(uuid) == Gfx::textures.end())
     {
         std::cout << "Gfx : Renderer :: Texture not found:" << uuid << std::endl;
@@ -219,6 +226,8 @@ void GfxRenderer::frameRendererBefore()
     Gfx::bufferInstance->clear();
     this->_defaultRenderer->frameRendererBefore();
     this->_builtinRenderer->frameRendererBefore();
+    // 清空销毁纹理队列
+    this->_clearDestroyTextureCaches();
 }
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
@@ -235,6 +244,27 @@ void GfxRenderer::frameRendererAfter()
     this->_defaultRenderer->frameRendererAfter();
     this->_builtinRenderer->frameRendererAfter();
 }
+void GfxRenderer::_clearDestroyTextureCaches()
+{
+    // 清空销毁纹理队列
+    for (auto &texture : this->_destroyTextureCaches)
+    {
+        texture->destroy();
+        delete texture;
+        texture = nullptr;
+    }
+    this->_destroyTextureCaches.clear();
+}
+void GfxRenderer::_cleanRendererState()
+{
+    this->_defaultRenderer->_cleanRendererState();
+}
+void GfxRenderer::_resetRendererState()
+{
+    this->_defaultRenderer->_resetRendererState();
+}
+
+
 GfxRenderer::~GfxRenderer()
 {
 }
@@ -258,14 +288,6 @@ GfxRenderer::~GfxRenderer()
 //     // // }
 // }
 
-void GfxRenderer::_cleanRendererState()
-{
-    this->_defaultRenderer->_cleanRendererState();
-}
-void GfxRenderer::_resetRendererState()
-{
-    this->_defaultRenderer->_resetRendererState();
-}
 // void GfxRenderer::_initDescriptor()
 // {
 //     this->_initDescriptorPool();

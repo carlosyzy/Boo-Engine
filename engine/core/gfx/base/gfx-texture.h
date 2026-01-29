@@ -77,7 +77,7 @@ public:
     uint32_t getBindlessIndex();
     void setBindlessIndex(uint32_t index);
 
-    
+    void destroy();
 
     ~GfxTexture();
 };
