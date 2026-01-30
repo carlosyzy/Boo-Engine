@@ -3,13 +3,10 @@
 GfxMaterial::GfxMaterial()
 {
 }
-// void GfxMaterial::setRenderPass(const std::string pass)
-// {
-//     this->_pass = pass;
-// }
 void GfxMaterial::setPipelineStruct(const GfxPipelineStruct pipelineStruct)
 {
     this->_pipelineStruct = pipelineStruct;
+    
 }
 void GfxMaterial::setTextures(const std::vector<std::string> textures)
 {
@@ -28,10 +25,6 @@ void GfxMaterial::setPushConstants(const GfxPushConstants pushConstants)
  */
 bool GfxMaterial::equals(const GfxMaterial *material) const
 {
-    // if (this->_pass != material->_pass)
-    // {
-    //     return false;
-    // }
     if (this->_pipelineStruct.generateKey() != material->_pipelineStruct.generateKey())
     {
         return false;

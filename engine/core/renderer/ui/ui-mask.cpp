@@ -50,9 +50,10 @@ UIMask::UIMask(std::string name, Node *node, std::string uuid) : UIRenderer(name
     // this->setTexture("resources/texture/ic-default.png");
 
     this->_addMaterialAsset = new MaterialAsset();
-    this->_addMaterialAsset->createUIMaskTest(0);
     this->_subMaterialAsset = new MaterialAsset();
-    this->_subMaterialAsset->createUIMaskTest(1);
+
+    // this->_addMaterialAsset->createUIMaskTest(0);
+    // this->_subMaterialAsset->createUIMaskTest(1);
 
     // this->_testMaterialAsset = new MaterialAsset();
     // this->_testMaterialAsset->createMaskUITest();

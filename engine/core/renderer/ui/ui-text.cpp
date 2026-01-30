@@ -20,7 +20,7 @@ UIText::UIText(std::string name, Node *node, std::string uuid) : UIRenderer(name
   this->_lineHeight = 30;
 
   this->_materialAsset = new MaterialAsset();
-  this->_materialAsset->createUITest();
+  // this->_materialAsset->createUITest();
 }
 /**
  * @brief 反序列化组件属性-配置

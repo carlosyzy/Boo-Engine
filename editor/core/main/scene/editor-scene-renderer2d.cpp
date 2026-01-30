@@ -28,7 +28,7 @@ void EditorSceneRenderer2D::_initRefLineGfx()
                                              0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
                                             {0, 1, 2, 0, 2, 3});
     this->_refLineAssetMtl = new MaterialAsset();
-    this->_refLineAssetMtl->createUITest();
+    // this->_refLineAssetMtl->createUITest();
 }
 void EditorSceneRenderer2D::resize(int width, int height)
 {

@@ -17,7 +17,7 @@ UISprite::UISprite(std::string name, Node *node, std::string uuid) : UIRenderer(
     this->_material = "";
 
     this->_materialAsset = new MaterialAsset();
-    this->_materialAsset->createUITest();
+    // this->_materialAsset->createUITest();
 }
 /**
  * @brief 反序列化组件属性-配置

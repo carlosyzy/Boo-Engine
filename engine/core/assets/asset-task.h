@@ -99,6 +99,22 @@ private:
     Asset *_createScene(const std::string &rootPath,const std::string &assetPath);
 
     /**
+     * @brief 创建着色器
+     *
+     * @param resKey 资产键值
+     * @param fullPath 资产路径
+     */
+    Asset *_createShader(const std::string &rootPath,const std::string &assetPath);
+
+    /**
+     * @brief 创建材质
+     *
+     * @param resKey 资产键值
+     * @param fullPath 资产路径
+     */
+    Asset *_createMaterial(const std::string &rootPath,const std::string &assetPath);
+
+    /**
      * @brief 加载完成
      */
     void _loadComplete();

@@ -20,14 +20,17 @@ void AssetsManager::init()
 }
 void AssetsManager::_initDefaultBuiltinAssets()
 {
-	//_private/default.png
-	// 123e4567-e89b-12d3-a456-426614174000
+	//默认纹理
 	TextureAsset *texture = new TextureAsset("_private/default.png");
 	texture->create(GfxTextureDefault, sizeof(GfxTextureDefault));
 	this->_assetsCache->addAsset("_private/default.png", texture);
 	TextureAsset *logo = new TextureAsset("_private/logo.png");
 	logo->create(GfxTextureLogo, sizeof(GfxTextureLogo));
 	this->_assetsCache->addAsset("_private/logo.png", logo);
+	// 默认材质
+	// MaterialAsset *material = new MaterialAsset("_private/default");
+	// material->create();
+	// this->_assetsCache->addAsset("_private/default", material);
 
 }
 void AssetsManager::setAssetsRoot(const std::string &root)

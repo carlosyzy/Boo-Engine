@@ -37,6 +37,12 @@ void GfxRenderer::init()
     this->_defaultRenderer->init();
     this->_builtinRenderer->init();
 }
+
+void GfxRenderer::createPipeline(std::string name, GfxPipelineStruct pipelineStruct)
+{
+    this->_builtinRenderer->createPipeline(name, pipelineStruct);
+}
+
 void GfxRenderer::createTexture(std::string textureUuid, uint32_t width, uint32_t height, uint32_t channels, const std::vector<uint8_t> *pixels)
 {
     if (Gfx::textures.find(textureUuid) == Gfx::textures.end())

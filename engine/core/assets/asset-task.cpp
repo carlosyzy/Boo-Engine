@@ -14,33 +14,37 @@ AssetTask::AssetTask(int id)
 	this->_isComplete = false;
 	this->_id = id;
 }
-Asset *AssetTask::load(const std::string &rootPath,const std::string &assetPath)
+Asset *AssetTask::load(const std::string &rootPath, const std::string &assetPath)
 {
 	// this->_assetPath = path;
 	std::string assetExtension = std::filesystem::path(assetPath).extension().string();
 	if (assetExtension == ".png" || assetExtension == ".PNG" || assetExtension == ".jpg" || assetExtension == ".JPG" || assetExtension == ".jpeg" || assetExtension == ".JPEG")
 	{
-		return this->_createTexture(rootPath,assetPath);
+		return this->_createTexture(rootPath, assetPath);
 	}
 	else if (assetExtension == ".scene" || assetExtension == ".SCENE" || assetExtension == ".Scene")
 	{
-		return this->_createScene(rootPath,assetPath);
+		return this->_createScene(rootPath, assetPath);
 	}
-
-	
-	// if (this->_assetExtension == ".png" || this->_assetExtension == ".PNG" || this->_assetExtension == ".jpg" || this->_assetExtension == ".JPG" || this->_assetExtension == ".jpeg" || this->_assetExtension == ".JPEG")
-	// {
-	// 	return this->_createTexture();
-	// }
-	// else if (this->_assetExtension == ".scene" || this->_assetExtension == ".SCENE" || this->_assetExtension == ".Scene")
-	// {
-	// 	return this->_createScene();
-	// }
-
+	else if (assetExtension == ".spv" || assetExtension == ".SPV")
+	{
+		// 编译后的shader文件
+		return nullptr;
+	}
+	else if (assetExtension == ".vert" || assetExtension == ".VERT" || assetExtension == ".frag" || assetExtension == ".FRAG")
+	{
+		// 未编译的shader文件
+		return nullptr;
+	}
+	else if (assetExtension == ".mtl" || assetExtension == ".MTL")
+	{
+		// 未编译的material文件
+		return nullptr;
+	}
 	return nullptr;
 }
 
-Asset *AssetTask::_createTexture(const std::string &rootPath,const std::string &assetPath)
+Asset *AssetTask::_createTexture(const std::string &rootPath, const std::string &assetPath)
 {
 	std::filesystem::path fullPath = (std::filesystem::path(rootPath) / assetPath).generic_string();
 	if (!std::filesystem::exists(fullPath))
@@ -59,7 +63,7 @@ Asset *AssetTask::_createTexture(const std::string &rootPath,const std::string &
 	texture->create(fullPath.string());
 	return texture;
 }
-Asset *AssetTask::_createScene(const std::string &rootPath,const std::string &assetPath)
+Asset *AssetTask::_createScene(const std::string &rootPath, const std::string &assetPath)
 {
 	std::filesystem::path fullPath = (std::filesystem::path(rootPath) / assetPath).generic_string();
 	if (!std::filesystem::exists(fullPath))
@@ -79,6 +83,29 @@ Asset *AssetTask::_createScene(const std::string &rootPath,const std::string &as
 	return scene;
 }
 
+Asset *AssetTask::_createShader(const std::string &rootPath, const std::string &assetPath)
+{
+	return nullptr;
+}
+Asset *AssetTask::_createMaterial(const std::string &rootPath, const std::string &assetPath)
+{
+	std::filesystem::path fullPath = (std::filesystem::path(rootPath) / assetPath).generic_string();
+	if (!std::filesystem::exists(fullPath))
+	{
+		std::cerr << "AssetLoad:No such file or directory:" << fullPath << std::endl;
+		this->_loadError();
+		return nullptr;
+	}
+	if (!std::filesystem::is_regular_file(fullPath))
+	{
+		std::cerr << "AssetLoad:Not a regular file:" << fullPath << std::endl;
+		this->_loadError();
+		return nullptr;
+	}
+	MaterialAsset *material = new MaterialAsset(assetPath);
+	material->create(fullPath.string());
+	return material;
+}
 // void AssetTask::run()
 // {
 // 	std::string file=this->_assetDB.uuid + this->_assetDB.extension;

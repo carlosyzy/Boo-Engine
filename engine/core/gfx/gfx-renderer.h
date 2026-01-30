@@ -45,6 +45,9 @@ private:
 public:
 	GfxRenderer();
 	void init();
+
+	void createPipeline(std::string name, GfxPipelineStruct pipelineStruct);
+
 	/**
 	 * 创建 or 销毁渲染纹理
 	 */
