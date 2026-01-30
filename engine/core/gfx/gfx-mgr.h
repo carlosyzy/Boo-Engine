@@ -67,7 +67,8 @@ public:
 	/**
 	 * @brief 创建SPIR-V着色器
 	 */
-	void createSpirvShader(const std::string &shaderName, const std::vector<char> &data);
+	void createSpirvShader(const std::string &shaderName, const std::vector<uint32_t> &data);
+	void destroyShader(std::string shaderName);
 
 	/**
 	 * @brief 初始化渲染队列

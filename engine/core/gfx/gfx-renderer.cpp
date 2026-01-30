@@ -2,7 +2,6 @@
 #include "gfx.h"
 #include "gfx-context.h"
 #include "base/gfx-shader.h"
-#include "base/gfx-shader-struct.h"
 #include "base/gfx-texture.h"
 #include "base/gfx-render-pass.h"
 #include "base/gfx-material.h"
@@ -85,7 +84,17 @@ GfxTexture *GfxRenderer::getTexture(std::string uuid)
     }
     return Gfx::textures.at(uuid);
 }
-
+void GfxRenderer::createSpirvShader(const std::string &shaderName, const std::vector<uint32_t> &data)
+{
+    if (Gfx::shaders.find(shaderName) != Gfx::shaders.end())
+    {
+        std::cout << "Gfx : Renderer :: Shader already exists: " << shaderName << std::endl;
+        return;
+    }
+    GfxShader *shader = new GfxShader(shaderName);
+    shader->createShaderModule(data);
+    Gfx::shaders[shaderName] = shader;
+}
 void GfxRenderer::createGlslShader(const std::string &shaderName, const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros)
 {
     // 生成唯一的缓存键：shaderName + 宏定义
@@ -117,7 +126,7 @@ void GfxRenderer::createGlslShader(const std::string &shaderName, const std::str
     // 创建着色器
     try
     {
-        std::vector<uint32_t> spirvCode = this->compileShaderGlslToSpirv(shaderType, finalCacheKey, data, macros);
+        std::vector<uint32_t> spirvCode = this->_compileShaderGlslToSpirv(shaderType, finalCacheKey, data, macros);
         GfxShader *shader = new GfxShader(finalCacheKey);
         shader->createShaderModule(spirvCode);
         Gfx::shaders[finalCacheKey] = shader;
@@ -129,18 +138,16 @@ void GfxRenderer::createGlslShader(const std::string &shaderName, const std::str
     }
 }
 
-void GfxRenderer::createSpirvShader(const std::string &shaderName, const std::vector<char> &data)
+void GfxRenderer::destroyShader(std::string shaderName)
 {
     if (Gfx::shaders.find(shaderName) != Gfx::shaders.end())
     {
-        std::cout << "Gfx : Renderer :: Shader already exists: " << shaderName << std::endl;
-        return;
+        // 加入销毁队列
+        this->_destroyShaderCaches.push_back(Gfx::shaders[shaderName]);
+        Gfx::shaders.erase(shaderName);
     }
-    GfxShader *shader = new GfxShader(shaderName);
-    shader->createShaderModule(data);
-    Gfx::shaders[shaderName] = shader;
 }
-std::vector<uint32_t> GfxRenderer::compileShaderGlslToSpirv(const std::string &type, const std::string &cacheKey, const std::string &source, const std::map<std::string, std::string> &macros)
+std::vector<uint32_t> GfxRenderer::_compileShaderGlslToSpirv(const std::string &type, const std::string &cacheKey, const std::string &source, const std::map<std::string, std::string> &macros)
 {
     shaderc::Compiler _compiler;
     // 配置编译选项
@@ -226,8 +233,8 @@ void GfxRenderer::frameRendererBefore()
     Gfx::bufferInstance->clear();
     this->_defaultRenderer->frameRendererBefore();
     this->_builtinRenderer->frameRendererBefore();
-    // 清空销毁纹理队列
-    this->_clearDestroyTextureCaches();
+    // 清空销毁队列
+    this->_clearDestroyCaches();
 }
 void GfxRenderer::frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers)
 {
@@ -244,7 +251,7 @@ void GfxRenderer::frameRendererAfter()
     this->_defaultRenderer->frameRendererAfter();
     this->_builtinRenderer->frameRendererAfter();
 }
-void GfxRenderer::_clearDestroyTextureCaches()
+void GfxRenderer::_clearDestroyCaches()
 {
     // 清空销毁纹理队列
     for (auto &texture : this->_destroyTextureCaches)
@@ -254,6 +261,14 @@ void GfxRenderer::_clearDestroyTextureCaches()
         texture = nullptr;
     }
     this->_destroyTextureCaches.clear();
+    // 清空销毁着色器队列
+    for (auto &shader : this->_destroyShaderCaches)
+    {
+        shader->destroy();
+        delete shader;
+        shader = nullptr;
+    }
+    this->_destroyShaderCaches.clear();
 }
 void GfxRenderer::_cleanRendererState()
 {

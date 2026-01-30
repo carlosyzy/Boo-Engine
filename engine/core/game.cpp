@@ -166,6 +166,7 @@ void Game::addNodeClearCaches(Node *node)
 void Game::tick(float dt)
 {
 
+	// std::cout << "Game::tick: dt: " << dt << std::endl;
 	long long start = TimeUtil::nowTime();
 	this->_update(dt);
 	this->_lateUpdate(dt);
@@ -196,6 +197,7 @@ void Game::_lateUpdate(float dt)
 }
 void Game::_render(float dt)
 {
+	// std::cout << "Game::_render: dt: " << dt << std::endl;
 	//重置相机渲染纹理大小
 	if(this->_viewChanged){
 		if(TimeUtil::nowTime() - this->_viewChangedTime >= 100){

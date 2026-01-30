@@ -131,7 +131,7 @@ void GfxQueueDefault::render(uint32_t imageIndex, std::vector<VkCommandBuffer> &
     }
     commandBuffers.push_back(this->_commandBuffers[imageIndex]);
 }
-// 550e8400-e29b-41d4-a716-446655440000
+// _private/default.png
 void GfxQueueDefault::_draw(uint32_t imageIndex, GfxTexture *texture, GfxPipelineDefault *pipeline)
 {
     std::vector<VkDescriptorSet> descriptorSets = this->_renderer->getDescriptorSets();

@@ -20,13 +20,15 @@ void AssetsManager::init()
 }
 void AssetsManager::_initDefaultBuiltinAssets()
 {
-	TextureAsset *texture = new TextureAsset("550e8400-e29b-41d4-a716-446655440000");
-	texture->create(DefaultTexture, sizeof(DefaultTexture));
-	this->_assetsCache->addAsset("550e8400-e29b-41d4-a716-446655440000", texture);
+	//_private/default.png
+	// 123e4567-e89b-12d3-a456-426614174000
+	TextureAsset *texture = new TextureAsset("_private/default.png");
+	texture->create(GfxTextureDefault, sizeof(GfxTextureDefault));
+	this->_assetsCache->addAsset("_private/default.png", texture);
+	TextureAsset *logo = new TextureAsset("_private/logo.png");
+	logo->create(GfxTextureLogo, sizeof(GfxTextureLogo));
+	this->_assetsCache->addAsset("_private/logo.png", logo);
 
-	TextureAsset *logo = new TextureAsset("123e4567-e89b-12d3-a456-426614174000");
-	logo->create(LogoTexture, sizeof(LogoTexture));
-	this->_assetsCache->addAsset("123e4567-e89b-12d3-a456-426614174000", logo);
 }
 void AssetsManager::setAssetsRoot(const std::string &root)
 {

@@ -67,8 +67,8 @@ void EditorHierarchyLayout::_initTitle()
     ndTitleName->setPosition(-5.0f, 0.0f, 0.0f);
     UISprite *spriteName = dynamic_cast<UISprite *>(ndTitleName->addComponent("UISprite"));
     spriteName->setColor("#ffffffff");
-    TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-title-hierarchy.png");
-    spriteName->setTexture(tex);
+    // TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-title-hierarchy.png");
+    // spriteName->setTexture(tex);
     // 计算尺寸
     float width = ndTitle->getSize().getWidth() * 0.95f;
     float scale = width / 300.0f;
@@ -104,9 +104,8 @@ void EditorHierarchyLayout::_initOperateAdd()
     this->_ndOperate->addChild(this->_ndAdd);
     this->_ndAdd->setSize(16.0f, 16.0f);
     this->_spriteAdd = dynamic_cast<UISprite *>(this->_ndAdd->addComponent("UISprite"));
-    // this->_spriteAdd->setTexture("resources/texture/ic-add.png");
-    TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-add.png");
-    this->_spriteAdd->setTexture(tex);
+    // TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-add.png");
+    // this->_spriteAdd->setTexture(tex);
 
     // 添加wedget组件
     UIWidget *widget = dynamic_cast<UIWidget *>(this->_ndAdd->addComponent("UIWidget"));
@@ -127,8 +126,8 @@ void EditorHierarchyLayout::_initOperateFold()
     this->_ndFold->setSize(16, 16);
     this->_spriteFold = dynamic_cast<UISprite *>(this->_ndFold->addComponent("UISprite"));
     // this->_spriteFold->setTexture("resources/texture/icon/ic-flod.png");
-    TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-flod.png");
-    this->_spriteFold->setTexture(tex);
+    // TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-flod.png");
+    // this->_spriteFold->setTexture(tex);
     // 添加wedget组件
     UIWidget *widget = dynamic_cast<UIWidget *>(this->_ndFold->addComponent("UIWidget"));
     WidgetHorizontalParam paramHorizontal{};
@@ -159,8 +158,8 @@ void EditorHierarchyLayout::_initOperateSearch()
     this->_ndOperate->addChild(this->_ndSearchIcon);
     this->_ndSearchIcon->setSize(14.0f, 14.0f);
     this->_spriteSearchIcon = dynamic_cast<UISprite *>(this->_ndSearchIcon->addComponent("UISprite"));
-    TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-search.png");
-    this->_spriteSearchIcon->setTexture(tex);
+    // TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-search.png");
+    // this->_spriteSearchIcon->setTexture(tex);
     // 添加wedget组件
     UIWidget *widget0 = dynamic_cast<UIWidget *>(this->_ndSearchIcon->addComponent("UIWidget"));
     WidgetHorizontalParam paramHorizontal0{};

@@ -13,22 +13,22 @@ AssetLoad::AssetLoad(AssetsManager *mgr)
 {
     this->_mgr = mgr;
 }
-Asset *AssetLoad::loadAsset(const std::string &path)
+Asset *AssetLoad::loadAsset(const std::string &assetPath)
 {
     AssetCache *cache = this->_mgr->getAssetsCache();
     Asset *asset = nullptr;
-    asset = cache->getAsset(path);
+    asset = cache->getAsset(assetPath);
     if (asset != nullptr)
     {
         return asset;
     }
     int taskID = this->_TaskNextID++;
-    AssetTask task(this->_mgr, taskID);
-    asset = task.load(path);
+    AssetTask task(taskID);
+    asset = task.load(this->_mgr->getAssetsRoot(),assetPath);
     if(asset == nullptr){
         return nullptr;
     }
-    cache->addAsset(path,asset);
+    cache->addAsset(assetPath,asset);
     return asset;
 }
 // Asset *AssetLoad::loadAssetByPath(const std::string &path)

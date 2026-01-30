@@ -119,10 +119,15 @@ void GfxMgr::createGlslShader(const std::string &shaderName, const std::string &
 {
     Gfx::renderer->createGlslShader(shaderName, shaderType, data, macros);
 }
-void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<char> &data)
+void GfxMgr::createSpirvShader(const std::string &shaderName, const std::vector<uint32_t> &data)
 {
     Gfx::renderer->createSpirvShader(shaderName, data);
 }
+void GfxMgr::destroyShader(std::string shaderName)
+{
+    Gfx::renderer->destroyShader(shaderName);
+}
+
 void GfxMgr::initRenderQueue(std::string renderId, GfxRenderTexture *renderTexture)
 {
     Gfx::renderer->initRenderQueue(renderId, renderTexture);

@@ -12,9 +12,9 @@
 EditorCacheAssetsTask::EditorCacheAssetsTask()
 {
 }
-void EditorCacheAssetsTask::init(const std::string originalPath)
+void EditorCacheAssetsTask::init(const std::string assetPath)
 {
-    this->_originalPath = originalPath;
+    this->_originalPath = assetPath;
     this->_assetPath = std::filesystem::relative(this->_originalPath, std::filesystem::path(BooEditor::projectPath) / "assets").generic_string();
     this->_assetExtension = std::filesystem::path(this->_originalPath).extension().generic_string();
     // this->_assetType = this->getAssetType(this->_originalPath);
@@ -30,20 +30,13 @@ std::string EditorCacheAssetsTask::getAssetPath()
 void EditorCacheAssetsTask::run()
 {
     Boo::game->assetsManager()->loadAsset(this->_assetPath);
-    // if (this->_assetType == AssetType::Texture)
-    // {
-    //     // this->_parseTextureAssetDB();
-
-    // }
-    // else if (this->_assetType == AssetType::Material)
-    // {
-    //     this->_parseMaterialAssetDB();
-    // }
-    // else if (this->_assetType == AssetType::Scene)
-    // {
-    //     this->_parseSceneAssetDB();
-    // }
 }
+
+EditorCacheAssetsTask::~EditorCacheAssetsTask()
+{
+
+}
+
 // void EditorCacheAssetsTask::_parseTextureAssetDB()
 // {
 //     // // 读取对应的.mate文件
@@ -142,7 +135,3 @@ void EditorCacheAssetsTask::run()
 //     }
 //     return AssetType::None;
 // }
-
-EditorCacheAssetsTask::~EditorCacheAssetsTask()
-{
-}

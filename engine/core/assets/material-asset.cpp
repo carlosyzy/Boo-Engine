@@ -61,7 +61,7 @@ void MaterialAsset::createUITest()
     this->_gfxMaterial = new GfxMaterial();
     this->_gfxMaterial->setPipelineStruct(uiPipeline);
     std::vector<std::string> aaas;
-    aaas.push_back("550e8400-e29b-41d4-a716-446655440000");
+    aaas.push_back("_private/default.png");
     this->_gfxMaterial->setTextures(aaas);
 }
 void MaterialAsset::createUIMaskTest(int maskType)
@@ -114,7 +114,7 @@ void MaterialAsset::createUIMaskTest(int maskType)
     this->_gfxMaterial = new GfxMaterial();
     this->_gfxMaterial->setPipelineStruct(uiPipeline);
     std::vector<std::string> aaas;
-    aaas.push_back("550e8400-e29b-41d4-a716-446655440000");
+    aaas.push_back("_private/default.png");
     this->_gfxMaterial->setTextures(aaas);
 }
 void MaterialAsset::createMaskUITest()
@@ -159,7 +159,7 @@ void MaterialAsset::createMaskUITest()
     this->_gfxMaterial = new GfxMaterial();
     this->_gfxMaterial->setPipelineStruct(uiPipeline);
     std::vector<std::string> aaas;
-    aaas.push_back("550e8400-e29b-41d4-a716-446655440000");
+    aaas.push_back("_private/default.png");
     this->_gfxMaterial->setTextures(aaas);
 }
 

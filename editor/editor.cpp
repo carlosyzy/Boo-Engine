@@ -49,6 +49,7 @@ Editor::Editor()
 			std::cerr << "file system error: " << ex.what() << std::endl;
 		}
 	}
+	std::cout << "Editor path:" << BooEditor::editorPath << std::endl;
 #elif TARGET_OS_IPHONE
 #if TARGET_IPHONE_SIMULATOR
 	// iOS 模拟器平台
@@ -62,7 +63,6 @@ Editor::Editor()
 #else
 	std::cerr << "其他平台暂不支持" << std::endl;
 #endif
-	std::cout << "Assets root:" << BooEditor::projectPath << std::endl;
 }
 void Editor::init()
 {

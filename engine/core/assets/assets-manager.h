@@ -60,29 +60,16 @@ public:
 	AssetCache *getAssetsCache();
 
 	Asset *loadAsset(const std::string &uuid);
-	Asset *loadAssetByPath(const std::string &path);
-
 	Asset *getAsset(const std::string &uuid);
-	Asset *getAssetByPath(const std::string &path);
-	/**
-	 * @brief 通过获取场景配置
-	 * @param sceneName 场景名称
-	 */
-	json* _getSceneAssetMate(const std::string &sceneName);
+	
+	// /**
+	//  * @brief 通过获取场景配置
+	//  * @param sceneName 场景名称
+	//  */
+	// json* _getSceneAssetMate(const std::string &sceneName);
+	// Asset *getAssetByPath(const std::string &path);
+	// Asset *loadAssetByPath(const std::string &path);
 
-	// Asset *loadByPath(const std::string &path);
-	// Asset *getByPath(const std::string &path);
-
-	// template <typename T, typename Func>
-	// int loadAsync(const std::string &path, Func callback, T *instance)
-	// {
-	// 	return this->_assetLoad->loadAsync(path, callback, instance);
-	// }
-	// template <typename T, typename Func>
-	// int loadListAsync(const std::vector<std::string> &paths, Func callback, T *instance)
-	// {
-	// 	return this->_assetLoad->loadListAsync(paths, callback, instance);
-	// }
 	void clearLoadCall(const int loadId);
 
 	void update(float deltaTime);

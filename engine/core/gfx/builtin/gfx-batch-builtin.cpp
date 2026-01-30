@@ -145,7 +145,7 @@ void GfxBatchBuiltin::_bindUIDescriptorSets(VkCommandBuffer &queueCommandBuffer,
     for (size_t i = 0; i < 4; i++)
     {
         imageInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        std::string textureUuid = "550e8400-e29b-41d4-a716-446655440000";
+        std::string textureUuid = "_private/default.png";
         if (i < this->_material->getTextures().size())
         {
             textureUuid = this->_material->getTextures()[i];
@@ -231,7 +231,7 @@ GfxBatchBuiltin::~GfxBatchBuiltin()
 // for (size_t i = 0; i < 4; i++)
 // {
 //     imageInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-//     std::string textureUuid = "550e8400-e29b-41d4-a716-446655440000";
+//     std::string textureUuid = "_private/default.png";
 //     if (i < this->_material->getTextures().size())
 //     {
 //         textureUuid = this->_material->getTextures()[i];

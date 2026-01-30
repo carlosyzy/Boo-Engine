@@ -2,13 +2,13 @@
 #include "../gfx.h"
 #include "../gfx-context.h"
 #include "../base/gfx-shader.h"
-#include "../base/gfx-shader-struct.h"
 #include "../base/gfx-texture.h"
 #include "../base/gfx-render-texture.h"
 #include "../base/gfx-mesh.h"
 #include "../base/gfx-material.h"
 #include "../base/gfx-buffer-ubo.h"
 #include "../base/gfx-buffer-instance.h"
+#include "../base/gfx-shader-struct.h"
 #include "../../math/mat4.h"
 #include "gfx-render-pass-builtin.h"
 #include "gfx-pipeline-builtin.h"
@@ -148,37 +148,29 @@ void GfxRendererBuiltin::_initDefaultShader()
 {
     std::string shaderVertName = "builtin-ui.vert";
     GfxShader *shader = new GfxShader(shaderVertName);
-    shader->createShaderModule(GfxShaderUIVertSPV, GfxShaderUIVertSPVSize);
+     std::vector<uint32_t> vertSPV(std::begin(GfxShaderUIVertSPV), std::end(GfxShaderUIVertSPV));
+    shader->createShaderModule(vertSPV);
     Gfx::shaders[shaderVertName] = shader;
 
     std::string shaderFragName = "builtin-ui.frag";
     shader = new GfxShader(shaderFragName);
-    shader->createShaderModule(GfxShaderUIFragSPV, GfxShaderUIFragSPVSize);
+     std::vector<uint32_t> fragSPV(std::begin(GfxShaderUIFragSPV), std::end(GfxShaderUIFragSPV));
+    shader->createShaderModule(fragSPV);
     Gfx::shaders[shaderFragName] = shader;
 
     // 内置默认ui 遮罩 顶点着色器
     std::string shaderMaskVertName = "builtin-ui-mask.vert";
     shader = new GfxShader(shaderMaskVertName);
-    shader->createShaderModule(GfxShaderUIMaskVertSPV, GfxShaderUIMaskVertSPVSzie);
+    std::vector<uint32_t> maskVertSPV(std::begin(GfxShaderUIMaskVertSPV), std::end(GfxShaderUIMaskVertSPV));
+    shader->createShaderModule(maskVertSPV);
     Gfx::shaders[shaderMaskVertName] = shader;
 
     // 内置默认ui 遮罩 片元着色器
     std::string shaderMaskFragName = "builtin-ui-mask.frag";
     shader = new GfxShader(shaderMaskFragName);
-    shader->createShaderModule(GfxShaderUIMaskFragSPV, GfxShaderUIMaskFragSPVSzie);
+    std::vector<uint32_t> maskFragSPV(std::begin(GfxShaderUIMaskFragSPV), std::end(GfxShaderUIMaskFragSPV));
+    shader->createShaderModule(maskFragSPV);
     Gfx::shaders[shaderMaskFragName] = shader;
-
-    // 内置默认ui 遮罩 测试 顶点着色器
-    std::string shaderMaskTestVertName = "builtin-ui-mask-test.vert";
-    shader = new GfxShader(shaderMaskTestVertName);
-    shader->createShaderModule(GfxShaderUIMaskTestVertSPV, GfxShaderUIMaskTestVertSPVSzie);
-    Gfx::shaders[shaderMaskTestVertName] = shader;
-
-    // 内置默认ui 遮罩 测试 片元着色器
-    std::string shaderMaskTestFragName = "builtin-ui-mask-test.frag";
-    shader = new GfxShader(shaderMaskTestFragName);
-    shader->createShaderModule(GfxShaderUIMaskTestFragSPV, GfxShaderUIMaskTestFragSPVSzie);
-    Gfx::shaders[shaderMaskTestFragName] = shader;
 }
 /**
  * 创建内置默认的ui pipeline

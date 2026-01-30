@@ -93,6 +93,7 @@ void Camera::LateUpdate(float deltaTime)
 void Camera::Render()
 {
     GfxMgr::getInstance()->submitRenderData(this->_uuid, this->_matView.data(), this->_matProj.data(),this->_isOnScreen);
+    
 }
 void Camera::Disable()
 {

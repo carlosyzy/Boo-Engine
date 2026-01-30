@@ -30,10 +30,6 @@ class EditorCache
      * @brief 编辑器场景数据库
      */
     EditorCacheScene *_sceneCache;
-    /**
-     * @brief 编辑器专属纹理资产映射
-     */
-    std::unordered_map<std::string, TextureAsset *> _editorTextures;
 
     void _initAssetsCache();
     void _initSceneCache();
@@ -75,8 +71,7 @@ public:
 
     void update(float deltaTime);
 
-    void addEditorTexture(const std::string &path, TextureAsset *texture);
-    TextureAsset *getEditorTexture(const std::string &path);
+   
     ~EditorCache();
 
     // template <typename T, typename Func>

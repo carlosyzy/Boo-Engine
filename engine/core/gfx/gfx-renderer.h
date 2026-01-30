@@ -30,8 +30,18 @@ class GfxRenderer
 private:
 	GfxRendererDefault *_defaultRenderer;
 	GfxRendererBuiltin *_builtinRenderer;
-
 	std::vector<GfxTexture *> _destroyTextureCaches;
+	std::vector<GfxShader *> _destroyShaderCaches;
+
+	/**
+	 * @brief 编译GLSL着色器到SPIR-V
+	 *
+	 * @param type 着色器类型
+	 * @param cacheKey 缓存键
+	 * @param source GLSL着色器源代码
+	 * @param macros 宏定义
+	 */
+	std::vector<uint32_t> _compileShaderGlslToSpirv(const std::string &type, const std::string &cacheKey, const std::string &source, const std::map<std::string, std::string> &macros);
 public:
 	GfxRenderer();
 	void init();
@@ -51,18 +61,13 @@ public:
 	 */
 	void createGlslShader(const std::string &shaderName, const std::string &shaderType, const std::string &data, const std::map<std::string, std::string> &macros);
 	/**
-	 * @brief 编译GLSL着色器到SPIR-V
-	 *
-	 * @param type 着色器类型
-	 * @param cacheKey 缓存键
-	 * @param source GLSL着色器源代码
-	 * @param macros 宏定义
-	 */
-	std::vector<uint32_t> compileShaderGlslToSpirv(const std::string &type, const std::string &cacheKey, const std::string &source, const std::map<std::string, std::string> &macros);
-	/**
 	 * @brief 创建SPIR-V着色器
 	 */
-	void createSpirvShader(const std::string &shaderName, const std::vector<char> &data);
+	void createSpirvShader(const std::string &shaderName, const std::vector<uint32_t> &data);
+	/**
+	 * @brief 销毁着色器
+	 */
+	void destroyShader(std::string shaderName);
 
 	void initRenderQueue(std::string renderId, GfxRenderTexture *renderTexture);
 	void delRenderQueue(std::string renderId);
@@ -73,7 +78,7 @@ public:
 	void frameRenderer(uint32_t imageIndex, std::vector<VkCommandBuffer> &commandBuffers);
 	void frameRendererAfter();
 
-	void _clearDestroyTextureCaches();
+	void _clearDestroyCaches();
 	void _cleanRendererState();
 	void _resetRendererState();
 	

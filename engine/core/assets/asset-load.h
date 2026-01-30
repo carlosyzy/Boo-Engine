@@ -10,7 +10,7 @@
 #include "asset-task.h"
 
 class Asset;
-class Shader;
+class ShaderAsset;
 class AssetsManager;
 
 class AssetLoad

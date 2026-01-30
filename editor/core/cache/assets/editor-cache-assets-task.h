@@ -45,11 +45,6 @@ private:
 
 public:
     EditorCacheAssetsTask();
-    /**
-     * 相对路径
-     * 父路径
-     * 资产配置
-     */
     void init(const std::string assetPath);
     void run();
     // /**

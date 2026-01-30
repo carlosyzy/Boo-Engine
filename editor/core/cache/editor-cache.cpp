@@ -77,18 +77,6 @@ void EditorCache::update(float deltaTime)
     this->_assetsCache->update(deltaTime);
 }
 
-void EditorCache::addEditorTexture(const std::string &path, TextureAsset *texture)
-{
-    this->_editorTextures[path] = texture;
-}
-TextureAsset *EditorCache::getEditorTexture(const std::string &path)
-{
-    if (this->_editorTextures.find(path) != this->_editorTextures.end())
-    {
-        return this->_editorTextures[path];
-    }
-    return nullptr;
-}
 
 // void EditorCache::_initRoot()
 // {

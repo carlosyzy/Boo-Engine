@@ -90,8 +90,6 @@ private:
 	 */
 	std::map<std::string, GfxQueueBuiltin *> _renderQueues;
 
-	// GfxMesh *_uiMesh;
-	// GfxMaterial *_uiMaterial;
 
 public:
 	GfxRendererBuiltin(std::string name);

@@ -4,6 +4,7 @@
 #include "../../../engine/boo.h"
 #include "../../../engine/core/assets/assets-manager.h"
 #include "../../../engine/core/assets/asset.h"
+#include "../../../engine/core/assets/asset-task.h"
 #include "../../../engine/core/assets/texture-asset.h"
 #include "../../../engine/core/renderer/ui/ui-sprite.h"
 #include "../../../engine/core/scene/node-2d.h"
@@ -70,7 +71,7 @@ void EditorLoading::_initBg()
 }
 void EditorLoading::_initLogo()
 {
-	Asset *text = Boo::game->assetsManager()->getAsset("123e4567-e89b-12d3-a456-426614174000");
+	Asset *text = Boo::game->assetsManager()->getAsset("_private/logo.png");
 	TextureAsset *texture = dynamic_cast<TextureAsset *>(text);
 	this->_logoTxWidth = texture->width();
 	this->_logoTxHeight = texture->height();
@@ -142,18 +143,21 @@ void EditorLoading::_initAssetsDBCompleteCallback()
 }
 void EditorLoading::_saveEditorCache()
 {
-	
-	// 加载 res/private 下边的所有资产
-	std::filesystem::path privatePath = (std::filesystem::path(BooEditor::editorPath) / "res/private").generic_string();
-	std::cout << "EditorLoading::_saveEditorCache:"<< privatePath << std::endl;
-	for (const auto &entry : std::filesystem::recursive_directory_iterator(privatePath))
+	// // 加载 res/private 下边的所有资产
+	std::filesystem::path resPath = (std::filesystem::path(BooEditor::editorPath) / "res").generic_string();
+	std::cout << "EditorLoading::_saveEditorCache:" << resPath << std::endl;
+	for (const auto &entry : std::filesystem::recursive_directory_iterator(resPath))
 	{
 		if (std::filesystem::is_regular_file(entry))
 		{
-			std::string relativePath = std::filesystem::relative(entry.path(), privatePath).generic_string();
-			TextureAsset *texture = new TextureAsset(relativePath);
-			texture->create(entry.path().string());
-			BooEditor::cache->addEditorTexture(relativePath, texture);
+			std::string relativePath = std::filesystem::relative(entry.path(), resPath).generic_string();
+			std::cout << "EditorLoading::_saveEditorCache:" << relativePath << std::endl;
+			AssetTask task(0);
+			Asset *asset = task.load(resPath, relativePath);
+			if (asset != nullptr)
+			{
+				Boo::game->assetsManager()->getAssetsCache()->addAsset(relativePath, asset);
+			}
 		}
 	}
 	this->_setLoadProgress(1.0f);

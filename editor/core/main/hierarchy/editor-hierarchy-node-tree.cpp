@@ -296,13 +296,13 @@ void EditorHierarchyNodeTree::_updateTreeItemFold(Node2D *ndItem, NodeTreeStruct
         ndFold->setActive(true);
         if (uiTreeData.isFold)
         {
-            TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-right.png");
-            spFold->setTexture(tex);
+            // TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-right.png");
+            // spFold->setTexture(tex);
         }
         else
         {
-            TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-bottom.png");
-            spFold->setTexture(tex);
+            // TextureAsset *tex = BooEditor::cache->getEditorTexture("ic-arrow-bottom.png");
+            // spFold->setTexture(tex);
         }
     }
     else
@@ -320,8 +320,8 @@ void EditorHierarchyNodeTree::_updateTreeItemIcon(Node2D *ndItem, NodeTreeStruct
 {
     Node2D *ndIcon = dynamic_cast<Node2D *>(ndItem->getChildByName("NodeTreeItemIcon"));
     UISprite *spIcon = dynamic_cast<UISprite *>(ndIcon->getComponent("UISprite"));
-    TextureAsset *tex = BooEditor::cache->getEditorTexture(uiTreeData.icon);
-    spIcon->setTexture(tex);
+    // TextureAsset *tex = BooEditor::cache->getEditorTexture(uiTreeData.icon);
+    // spIcon->setTexture(tex);
     _width += this->_itemElemBorder;
     const Size &size = ndIcon->getSize();
     ndIcon->setPosition(_width + size.getWidth() / 2.0f, 0.0f, 0.0f);

@@ -10,7 +10,7 @@
 #include "asset-struct.h"
 
 class Asset;
-class Shader;
+class ShaderAsset;
 class AssetsManager;
 class AssetCache;
 class SceneAsset;
@@ -51,19 +51,19 @@ enum class AssetTaskType
 class AssetTask
 {
 private:
-    AssetsManager *_mgr;
+    // AssetsManager *_mgr;
     /**
      * @brief 资产任务ID
      */
     int _id = 0;
-    /**
-     * @brief 资产路径
-     */
-    std::string _assetPath;
-     /**
-     * @brief 资产扩展名
-     */
-    std::string _assetExtension;
+    // /**
+    //  * @brief 资产路径
+    //  */
+    // std::string _assetPath;
+    //  /**
+    //  * @brief 资产扩展名
+    //  */
+    // std::string _assetExtension;
     // /**
     //  * @brief 资产加载任务类型
     //  */
@@ -89,14 +89,14 @@ private:
      * @param resKey 资产键值
      * @param fullPath 资产路径
      */
-    Asset *_createTexture();
+    Asset *_createTexture(const std::string &rootPath,const std::string &assetPath);
     /**
      * @brief 创建场景
      *
      * @param resKey 资产键值
      * @param fullPath 资产路径
      */
-    Asset *_createScene();
+    Asset *_createScene(const std::string &rootPath,const std::string &assetPath);
 
     /**
      * @brief 加载完成
@@ -108,7 +108,7 @@ private:
     void _loadError();
 
 public:
-    AssetTask(AssetsManager *mgr, int id);
+    AssetTask(int id);
     /**
      * @brief 获取资产任务ID
      * @return int 资产任务ID
@@ -117,7 +117,13 @@ public:
     {
         return this->_id;
     }
-    Asset *load(const std::string &path);
+    /**
+     * @brief 加载资产
+     * @param rootPath 资产根路径
+     * @param assetPath 资产路径:相对于资产根路径
+     * @return Asset* 资产实例
+     */
+    Asset *load(const std::string &rootPath,const std::string &assetPath);
     void clearCallback();
     bool isComplete()
     {

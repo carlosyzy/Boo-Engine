@@ -16,7 +16,7 @@ GfxRendererDefault::GfxRendererDefault(std::string name)
 }
 void GfxRendererDefault::init()
 {
-    std::cout << "[Gfx : GfxRendererDefault] :: init "<< this->_name << std::endl;
+    std::cout << "[Gfx : GfxRendererDefault] :: init " << this->_name << std::endl;
     this->_initDescriptorSetLayout();
     this->_initDefaultDescriptor();
     this->_initDefaultRenderPass();
@@ -84,15 +84,20 @@ GfxRenderPassDefault *GfxRendererDefault::getRenderPass()
  */
 void GfxRendererDefault::_initDefaultShader()
 {
+    std::cout << "[Gfx : GfxRendererDefault]::_initDefaultShader:v0:" << std::endl;
     std::string shaderVertName = "default.vert";
     GfxShader *shader = new GfxShader(shaderVertName);
-    shader->createShaderModule(GfxShaderDefaultVertSPV, GfxShaderDefaultVertSPVSize);
+    std::vector<uint32_t> vertSPV(std::begin(GfxShaderDefaultVertSPV), std::end(GfxShaderDefaultVertSPV));
+    shader->createShaderModule(vertSPV);
     Gfx::shaders[shaderVertName] = shader;
 
     std::string shaderFragName = "default.frag";
     shader = new GfxShader(shaderFragName);
-    shader->createShaderModule(GfxShaderDefaultFragSPV, GfxShaderDefaultFragSPVSize);
+    std::vector<uint32_t> fragSPV(std::begin(GfxShaderDefaultFragSPV), std::end(GfxShaderDefaultFragSPV));
+    shader->createShaderModule(fragSPV);
     Gfx::shaders[shaderFragName] = shader;
+
+    std::cout << "[Gfx : GfxRendererDefault]::_initDefaultShader:v1:" << std::endl;
 }
 /**
  * 创建内置默认的ui pipeline
