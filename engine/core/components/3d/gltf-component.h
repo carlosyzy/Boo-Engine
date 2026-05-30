@@ -8,10 +8,8 @@
 #include <cstdint>
 #include <array>
 #include <cstdint>
-#include "../../component/component.h"
-#include "../../component/component-register.h"
-#include "../../math/math-api.h"
-#include "../../assets/gltf-asset.h"
+#include "core/component/component.h"
+#include "core/component/component-register.h"
 
 namespace Boo
 {
@@ -21,6 +19,8 @@ namespace Boo
     class Node3D;
     class MeshAsset;
     class MeshRenderer;
+    class GLTFAsset;
+    struct GLTFNode;
 
     class GLTFComponent : public Component
     {
@@ -35,8 +35,9 @@ namespace Boo
 
     public:
         GLTFComponent(std::string name, Node *node, std::string uuid = "");
-        void Awake() override;
-        void Enable() override;
+        void OnAwake() override;
+        void OnEnable() override;
+        void setProperty(json &data) override;
         void setGLTFAsset(std::string gltfAssetPath);
         void setGLTFAsset(GLTFAsset *gltfAsset);
         void setMaterial(std::string meshNodePath, int meshIndex, std::string materialPath);
@@ -64,10 +65,11 @@ namespace Boo
         void setTexture(std::string meshNodePath, int mtlIndex, TextureAsset *texture);
         void setTexture(std::string meshNodePath, int mtlIndex, std::string key, std::string texturePath);
         void setTexture(std::string meshNodePath, int mtlIndex, std::string key, TextureAsset *texture);
-        
+
         void Update(float deltaTime) override;
         void LateUpdate(float deltaTime) override;
-        void Disable() override;
+        void OnDisable() override;
+        void OnDestroy() override {};
         void destroy() override;
         ~GLTFComponent() override;
     };

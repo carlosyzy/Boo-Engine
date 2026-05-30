@@ -368,7 +368,7 @@ FT_BEGIN_HEADER
    *
    * Guessing methods to access embedded resource forks
    *
-   *   Enable extra Mac fonts support on non-Mac platforms (e.g., GNU/Linux).
+   *     OnEnable  extra Mac fonts support on non-Mac platforms (e.g., GNU/Linux).
    *
    *   Resource forks which include fonts data are stored sometimes in
    *   locations which users or developers don't expected.  In some cases,

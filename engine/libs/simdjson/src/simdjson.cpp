@@ -289,7 +289,7 @@ using std::size_t;
 // slower, but it should run everywhere.
 
 //
-// Enable valid runtime implementations, and select SIMDJSON_BUILTIN_IMPLEMENTATION
+//   OnEnable  valid runtime implementations, and select SIMDJSON_BUILTIN_IMPLEMENTATION
 //
 
 // We are going to use runtime dispatch.
@@ -8786,7 +8786,7 @@ const implementation *available_implementation_list::detect_best_supported() con
 
 const implementation *detect_best_supported_implementation_on_first_use::set_best() const noexcept {
   SIMDJSON_PUSH_DISABLE_WARNINGS
-  SIMDJSON_DISABLE_DEPRECATED_WARNING // Disable CRT_SECURE warning on MSVC: manually verified this is safe
+  SIMDJSON_DISABLE_DEPRECATED_WARNING //   OnDisable CRT_SECURE warning on MSVC: manually verified this is safe
   char *force_implementation_name = getenv("SIMDJSON_FORCE_IMPLEMENTATION");
   SIMDJSON_POP_DISABLE_WARNINGS
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "../math/math-api.h"
+#include "core/math/mat4.h"
 namespace Boo
 {
 
@@ -39,7 +39,7 @@ namespace Boo
 
     public:
         View();
-        View(int uiDesignWidth, int uiDesignHeight, UIDesignFitMode fitMode, int width, int height);
+        View(int width, int height);
         /**
          * @brief 重新设置视图大小
          * @param width 视图宽度
@@ -48,6 +48,8 @@ namespace Boo
         void resize(int width, int height);
         int getWidth() const;
         int getHeight() const;
+        void setDesignFitMode(UIDesignFitMode fitMode);
+        void setDesignSize(int width, int height);
         int getDesignWidth() const;
         int getDesignHeight() const;
         UIDesignFitMode getDesignFitMode() const;

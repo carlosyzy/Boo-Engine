@@ -1,14 +1,16 @@
 #include "alpha.h"
-#include "../../boo.h"
-#include "../../log.h"
-#include "../event/event.h"
-#include "../view/view.h"
-#include "../scene/node-2d.h"
-#include "../scene/node-3d.h"
-#include "../renderer/camera.h"
-#include "../renderer/ui/ui-sprite.h"
-#include "../assets/assets-manager.h"
-#include "../gfx/gfx-mgr.h"
+#include "boo.h"
+#include "log.h"
+#include "core/event/event.h"
+#include "core/view/view.h"
+#include "core/scene/node-2d.h"
+#include "core/scene/node-3d.h"
+#include "core/renderer/camera.h"
+#include "core/renderer/ui/ui-sprite.h"
+#include "core/renderer/ui/ui-bmfont-text.h"
+#include "core/asset/asset-manager.h"
+#include "core/asset/bmfont-asset.h"
+#include "core/gfx/gfx-manager.h"
 
 namespace Boo
 {
@@ -20,7 +22,6 @@ namespace Boo
         _uiCamera(nullptr),
         _ndAlpha(nullptr),
         _spriteAlpha(nullptr),
-        _textureBg(nullptr),
         _ndSplash(nullptr),
         _spriteSplash(nullptr),
         _alphaDuration(1.0f),
@@ -35,16 +36,6 @@ namespace Boo
     LOGI("[Alpha]: init");
     this->_initCamera();
     this->_initAlpha();
-    // 添加text
-    // Node2D *node2d = this->getRoot2D();
-    // Node2D *ndText = new Node2D("Text");
-    // node2d->addChild(ndText);
-    // ndText->setPosition(0.0f, 100.0f, 0.0f);
-    // UIText *compText = dynamic_cast<UIText *>(ndText->addComponent("UIText"));
-    // if (compText != nullptr)
-    // {
-    //   compText->setText("Alpha Boo!");
-    // }
   }
   void Alpha::_initCamera()
   {
@@ -53,8 +44,8 @@ namespace Boo
     node2d->addChild(ndCamera);
     ndCamera->setPosition(0.0f, 0.0f, 100.0f);
     this->_uiCamera = dynamic_cast<Camera *>(ndCamera->addComponent("Camera"));
-    this->_uiCamera->addGroupID(NodeGroup::Node2D);
-    this->_uiCamera->setProjection(CameraProjection::Ortho);
+    this->_uiCamera->addGroupID(ENodeGroup::Node2D);
+    this->_uiCamera->setProjection(ECameraProjection::Ortho);
   }
   void Alpha::_initAlpha()
   {
@@ -67,6 +58,7 @@ namespace Boo
     Node2D *node2d = this->getRoot2D();
     this->_ndAlpha = new Node2D("Alpha");
     this->_ndAlpha->setSize(view->getDesignWidth(), view->getDesignHeight());
+    this->_ndAlpha->setPosition(0.0f, 0.0f, 0.0f);
     node2d->addChild(this->_ndAlpha);
     // 添加alpha
     this->_spriteAlpha = dynamic_cast<UISprite *>(this->_ndAlpha->addComponent("UISprite"));
@@ -75,16 +67,16 @@ namespace Boo
       this->_spriteAlpha->setMaterial(AssetBuiltinMaterial::UI);
       this->_spriteAlpha->setColor(0.0f, 0.0f, 0.0f, 1.0f);
     }
+
   }
   void Alpha::_initAlphaSplash()
   {
-    // std::cout << "initAlphaSplash" << std::endl;
     Node2D *node2d = this->getRoot2D();
     // 添加logo splash
     this->_ndSplash = new Node2D("Splash");
     node2d->addChild(this->_ndSplash);
     this->_ndSplash->setPosition(0.0f, 50.0f, 0.0f);
-    this->_ndSplash->setSize(144.0f, 144.0f);
+    this->_ndSplash->setSize(85.0f, 85.0f);
     Component *compSplash = this->_ndSplash->addComponent("UISprite");
     if (compSplash != nullptr)
     {
@@ -93,6 +85,17 @@ namespace Boo
       this->_spriteSplash->setColor(1.0f, 1.0f, 1.0f, 0.0f);
       this->_spriteSplash->setTexture(AssetBuiltinTexture::Splash);
     }
+
+    // 添加bm text测试文本
+    Node2D *ndBMText = new Node2D("BMText");
+    node2d->addChild(ndBMText);
+    ndBMText->setPosition(0.0f, 50.0f, 0.0f);
+   
+    // UIBMFontText *bmText = dynamic_cast<UIBMFontText *>(ndBMText->addComponent("UIBMFontText"));
+    // bmText->setSize(30);
+    // bmText->setLineHeight(30);
+    // bmText->setText(L"1");
+    // bmText->setColor(1.0f, 0.0f, 0.0f, 1.0f);
   }
   void Alpha::update(float deltaTime)
   {

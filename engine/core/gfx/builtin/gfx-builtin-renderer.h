@@ -82,6 +82,7 @@ private:
 	 * 渲染队列
 	 */
 	std::map<std::string, GfxBuiltinQueue *> _renderQueues;
+	std::vector<GfxBuiltinQueue *> _destroyQueueCaches;
 
 public:
 	GfxBuiltinRenderer(std::string name);

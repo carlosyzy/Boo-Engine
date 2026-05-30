@@ -32,6 +32,8 @@ namespace Boo
         float getY() const;
         float getZ() const;
         float getW() const;
+        void normalize();
+
        
         ~Quat();
 
@@ -62,5 +64,14 @@ namespace Boo
          */
         
         static void fromEuler(float x, float y, float z, RotationOrder order,Quat &out);
+        
+        /**
+         * @en Sets a third order matrix with view direction and up direction. Then save the results to out matrix
+         * @zh 根据视口前方向和上方向计算矩阵
+         * @param view The view direction, it`s must be normalized.
+         * @param up The view up direction, it`s must be normalized, default value is (0, 1, 0).
+         * @param out Output quaternion
+         */
+        static void fromViewUp(const Vec3 &view, const Vec3 &up, Quat &out);
     };
 } // namespace Boo

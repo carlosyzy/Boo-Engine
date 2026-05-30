@@ -38,14 +38,9 @@ Scene 系统是 Boo 引擎的核心功能之一，负责管理游戏中的所有
 // 构造函数
 Scene(const std::string name, const std::string uuid = "");
 
-// 根节点管理
-void createRoot2D();
-void createRoot3D();
+// 根节点获取（引擎自动创建，无需手动调用 createRoot2D/3D）
 Node3D *getRoot3D();
 Node2D *getRoot2D();
-
-// 场景控制
-void launch();
 
 // 生命周期方法
 void update(float deltaTime) override;
@@ -74,13 +69,13 @@ Component *addComponent(std::string name, std::string uuid = "") override;
 Node(const std::string name, const std::string uuid = "");
 
 // 基本属性
-const NodeLayer getLayer() const;
-const std::string getUuid() const;
+const ENodeLayer getLayer() const;
+const std::string& getUuid() const;
 void setUuid(const std::string &uuid);
 void setName(const std::string &name);
-std::string getName() const;
-int getGroupID() const;
-void setGroupID(int groupID);
+const std::string& getName() const;
+int getGroupId() const;
+void setGroupId(int groupID);
 
 // 变换操作
 virtual void setPosition(float x, float y, float z);
@@ -101,8 +96,8 @@ const Mat4 &getLocalMatrix();
 const Mat4 &getWorldMatrix();
 
 // 变换状态
-const bool hasWorldTransformFlag() const;
 const bool hasFrameTransformFlag() const;
+void setMatrix(const std::array<float, 16>& matrix);
 virtual void clearNodeFrameFlag();
 
 // 节点层次结构
@@ -177,8 +172,11 @@ void destroy() override;
 // 构造函数
 Node3D(const std::string name, const std::string uuid = "");
 
-// 析构函数
-~Node3D();
+// 获取世界矩阵逆转置（用于法线变换）
+const Mat4& getWorldMatrixIT();
+
+// 获取网格渲染器
+MeshRenderer* getMeshRenderer();
 ```
 
 ## 使用示例
@@ -189,10 +187,10 @@ Node3D(const std::string name, const std::string uuid = "");
 // 创建场景
 Boo::Scene* scene = new Boo::Scene("MainScene");
 
-// 打开场景（重要：创建场景后立即调用此方法）
+// 打开场景（重要：new Scene 后必须紧接着调用此方法）
 Boo::game->openScene(scene);
 
-// 注意：createRoot2D、createRoot3D 和 launch 方法会由引擎自动调用
+// 注意：根节点由引擎自动创建，不要手动调用 createRoot2D/createRoot3D
 ```
 
 ### 创建 2D 节点
@@ -346,5 +344,5 @@ Scene
 ## 注意事项
 
 - 创建场景后，必须立即调用 `Boo::game->openScene(scene)` 来打开场景，否则场景不会被引擎管理和渲染
-- 场景中的 2D 和 3D 根节点需要通过 `createRoot2D()` 和 `createRoot3D()` 手动创建
+- 场景中的 2D 和 3D 根节点由引擎在 `openScene` 后自动创建，不要手动调用 `createRoot2D/3D`
 - 节点的激活状态会影响其子节点的激活状态，因此需要合理管理节点的激活状态

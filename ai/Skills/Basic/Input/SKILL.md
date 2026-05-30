@@ -1,231 +1,114 @@
 ---
 name: "input"
-description: "输入系统，处理键盘、鼠标和触摸输入。"
+description: "输入系统，处理鼠标和触控板输入事件。"
 ---
 
 # 输入系统
 
-输入系统负责处理玩家的各种输入，包括键盘、鼠标和触摸输入。通过输入系统，你可以检测按键状态、鼠标位置和触摸事件。
+输入系统负责处理玩家的鼠标和触控板输入。通过注册回调函数来响应输入事件，而不是轮询输入状态。
 
 ## 核心功能
 
-### 键盘输入
-- **按键状态检测**：检测键盘按键的按下和释放状态
-- **按键映射**：支持自定义按键映射
-- **键盘事件**：处理键盘按下和释放事件
-
 ### 鼠标输入
-- **鼠标位置**：获取鼠标在屏幕和游戏世界中的位置
-- **鼠标按键**：检测鼠标按键的按下和释放状态
-- **鼠标移动**：处理鼠标移动事件
+- **鼠标按键事件**：监听鼠标按下和释放
+- **鼠标移动事件**：监听鼠标移动
+- **鼠标滚轮事件**：监听鼠标滚轮滚动
 
-### 触摸输入
-- **触摸位置**：获取触摸点的位置
-- **触摸状态**：检测触摸的开始、移动和结束
-- **多点触摸**：支持多点触摸输入
+### 触控板输入
+- **触控板滚动事件**：监听触控板滚动
 
 ## 主要接口
 
-### 键盘输入
+### 鼠标事件监听
 ```cpp
-// 检测按键是否按下
-bool getKey(KeyCode key);
+// 注册鼠标按下监听，返回监听器 ID
+uint64_t onMouseDown(std::function<void(FInputMouseEvent&)> func);
 
-// 检测按键是否刚刚按下（只在按下的第一帧返回true）
-bool getKeyDown(KeyCode key);
+// 注册鼠标释放监听，返回监听器 ID
+uint64_t onMouseUp(std::function<void(FInputMouseEvent&)> func);
 
-// 检测按键是否刚刚释放（只在释放的第一帧返回true）
-bool getKeyUp(KeyCode key);
+// 注册鼠标移动监听，返回监听器 ID
+uint64_t onMouseMove(std::function<void(FInputMouseEvent&)> func);
 
-// 获取按键的持续按下时间
-float getKeyDuration(KeyCode key);
+// 取消鼠标事件监听
+void offMouse(uint64_t id);
 ```
 
-### 鼠标输入
+### 鼠标滚轮事件监听
 ```cpp
-// 获取鼠标位置（屏幕坐标）
-Vec2 getMousePosition();
+// 注册鼠标滚轮监听，返回监听器 ID
+uint64_t onMouseScroll(std::function<void(FInputScrollEvent&)> func);
 
-// 获取鼠标位置（游戏世界坐标）
-Vec2 getMouseWorldPosition();
+// 注册触控板滚动监听，返回监听器 ID
+uint64_t onTouchpadScroll(std::function<void(FInputScrollEvent&)> func);
 
-// 检测鼠标按键是否按下
-bool getMouseButton(MouseButton button);
+// 取消鼠标滚轮监听
+void offMouseScroll(uint64_t id);
 
-// 检测鼠标按键是否刚刚按下
-bool getMouseButtonDown(MouseButton button);
-
-// 检测鼠标按键是否刚刚释放
-bool getMouseButtonUp(MouseButton button);
-
-// 获取鼠标滚轮 delta
-float getMouseScrollDelta();
+// 取消触控板滚动监听
+void offTouchpadScroll(uint64_t id);
 ```
 
-### 触摸输入
-```cpp
-// 获取触摸点数量
-int getTouchCount();
+## 事件结构体
 
-// 获取指定触摸点的位置
-Vec2 getTouchPosition(int index);
+### FInputMouseEvent
 
-// 获取指定触摸点的世界位置
-Vec2 getTouchWorldPosition(int index);
+| 字段 | 类型 | 描述 |
+|------|------|------|
+| `button` | `int` | 鼠标按键（0=左键，1=右键，2=中键） |
+| `x` | `double` | 鼠标 X 坐标 |
+| `y` | `double` | 鼠标 Y 坐标 |
 
-// 检测触摸是否刚刚开始
-bool getTouchDown(int index);
+### FInputScrollEvent
 
-// 检测触摸是否刚刚结束
-bool getTouchUp(int index);
-
-// 获取触摸的移动距离
-Vec2 getTouchDelta(int index);
-```
-
-### 输入事件
-```cpp
-// 更新键盘状态
-void updateKeyState(int key, int scancode, int action, int mods);
-
-// 更新鼠标状态
-void updateMouseState(int button, int action, int mods);
-
-// 更新鼠标位置
-void updateMousePos(double xpos, double ypos);
-
-// 更新鼠标滚轮
-void updateMouseScroll(double xoffset, double yoffset);
-
-// 更新触摸状态
-void updateTouchState(int touchId, int action, double xpos, double ypos);
-```
-
-## 枚举类型
-
-### 按键码
-```cpp
-enum class KeyCode {
-    // 字母键
-    A = 65, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
-    
-    // 数字键
-    NUM_0 = 48, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9,
-    
-    // 功能键
-    ESCAPE = 256, ENTER, TAB, BACKSPACE, INSERT, DELETE, RIGHT, LEFT, DOWN, UP,
-    PAGE_UP, PAGE_DOWN, HOME, END,
-    
-    // 功能键 F1-F12
-    F1 = 290, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
-    
-    // 特殊键
-    SPACE = 32, SHIFT = 340, CONTROL = 341, ALT = 342,
-};
-```
-
-### 鼠标按键
-```cpp
-enum class MouseButton {
-    LEFT = 0,    // 鼠标左键
-    RIGHT = 1,   // 鼠标右键
-    MIDDLE = 2,  // 鼠标中键
-};
-```
+| 字段 | 类型 | 描述 |
+|------|------|------|
+| `xoffset` | `double` | 水平滚动量 |
+| `yoffset` | `double` | 垂直滚动量 |
 
 ## 使用示例
 
-### 基本输入检测
+### 监听鼠标点击
 
 ```cpp
 #include "engine/boo.h"
 
-void handleInput() {
-    // 检测键盘输入
-    if (Boo::game->input->getKey(Boo::KeyCode::SPACE)) {
-        // 空格键被按下，执行跳跃
-        LOGI("跳跃！");
-    }
-    
-    if (Boo::game->input->getKeyDown(Boo::KeyCode::E)) {
-        // E键刚刚被按下，执行交互
-        LOGI("交互！");
-    }
-    
-    // 检测鼠标输入
-    if (Boo::game->input->getMouseButton(Boo::MouseButton::LEFT)) {
-        // 鼠标左键被按下，执行攻击
-        LOGI("攻击！");
-    }
-    
-    // 获取鼠标位置
-    Boo::Vec2 mousePos = Boo::game->input->getMousePosition();
-    LOGI("鼠标位置: (%.2f, %.2f)", mousePos.x, mousePos.y);
-    
-    // 获取鼠标世界位置
-    Boo::Vec2 worldPos = Boo::game->input->getMouseWorldPosition();
-    LOGI("鼠标世界位置: (%.2f, %.2f)", worldPos.x, worldPos.y);
+void setupInput() {
+    Boo::game->input->onMouseDown([](Boo::FInputMouseEvent& e) {
+        if (e.button == 0) {
+            LOGI("鼠标左键按下，位置: (%.1f, %.1f)", e.x, e.y);
+        }
+    });
 }
 ```
 
-### 触摸输入处理
+### 监听鼠标移动
 
 ```cpp
-void handleTouchInput() {
-    // 检测触摸输入
-    int touchCount = Boo::game->input->getTouchCount();
-    if (touchCount > 0) {
-        // 获取第一个触摸点的位置
-        Boo::Vec2 touchPos = Boo::game->input->getTouchPosition(0);
-        LOGI("触摸位置: (%.2f, %.2f)", touchPos.x, touchPos.y);
-        
-        // 检测触摸是否刚刚开始
-        if (Boo::game->input->getTouchDown(0)) {
-            LOGI("触摸开始！");
-        }
-        
-        // 检测触摸是否刚刚结束
-        if (Boo::game->input->getTouchUp(0)) {
-            LOGI("触摸结束！");
-        }
-    }
-}
+Boo::game->input->onMouseMove([](Boo::FInputMouseEvent& e) {
+    LOGI("鼠标移动到: (%.1f, %.1f)", e.x, e.y);
+});
 ```
 
-## 输入系统架构
+### 监听滚轮
 
-### 核心组件
-- **Input**：输入系统的核心类，负责处理所有输入事件
-- **InputManager**：管理输入设备和输入状态
-
-### 输入流程
-1. **输入事件捕获**：从操作系统捕获原始输入事件
-2. **输入状态更新**：根据原始事件更新输入状态
-3. **输入查询**：游戏代码通过输入系统查询输入状态
-4. **输入处理**：根据输入状态执行相应的游戏逻辑
+```cpp
+Boo::game->input->onMouseScroll([](Boo::FInputScrollEvent& e) {
+    LOGI("滚轮滚动: xoffset=%.1f, yoffset=%.1f", e.xoffset, e.yoffset);
+});
+```
 
 ## 最佳实践
 
-1. **输入映射**：使用枚举或常量定义输入按键，便于统一管理
-2. **输入检测**：在游戏的更新循环中检测输入，确保及时响应
-3. **输入状态**：区分持续按下和刚刚按下/释放的状态
-4. **多平台适配**：考虑不同平台的输入差异，如PC端的键盘鼠标和移动端的触摸
-5. **输入反馈**：为重要的输入操作提供视觉或听觉反馈
+1. **保存监听器 ID**：保存 `onMouseDown` 等方法返回的 ID，以便在不需要时调用 `offMouse` 取消
+2. **避免重复注册**：每次调用 `onMouseDown` 等都会新增一个监听器，注意避免重复注册
+3. **及时取消监听**：对象销毁前通过 `offMouse(id)` 取消监听，防止访问悬空指针
 
 ## 常见问题
 
-- **输入无响应**：检查输入系统是否正确初始化，以及输入事件是否正确传递
-- **触摸位置偏差**：检查触摸坐标转换是否正确，特别是屏幕坐标到世界坐标的转换
-- **按键重复触发**：使用 `getKeyDown` 和 `getKeyUp` 来检测单次按键事件
-- **输入延迟**：优化输入处理逻辑，避免在输入检测中执行耗时操作
+- **回调未触发**：确认注册时机，需要在引擎启动后（`EventEngine_Launch` 之后）注册
+- **坐标系**：鼠标坐标为屏幕像素坐标，原点在左上角
 
 ## 总结
 
-输入系统是 Boo 引擎中处理玩家交互的重要组件，它提供了统一的接口来处理键盘、鼠标和触摸输入。通过输入系统，你可以：
-
-- 检测玩家的各种输入操作
-- 实现游戏中的交互逻辑
-- 支持不同平台的输入设备
-- 提供流畅的玩家体验
-
-输入系统的设计理念是提供简洁、统一的输入接口，使开发者能够专注于游戏逻辑的实现，而不必关心底层的输入处理细节。
+输入系统通过事件回调模式处理鼠标和触控板输入。通过 `onMouseDown/Up/Move` 和 `onMouseScroll/onTouchpadScroll` 注册回调，通过对应的 `offMouse/offMouseScroll/offTouchpadScroll` 取消监听。

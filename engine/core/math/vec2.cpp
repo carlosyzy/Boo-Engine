@@ -16,6 +16,14 @@ void Vec2::set(float x, float y)
     this->_x = x;
     this->_y = y;
 }
+void Vec2::setX(float x)
+{
+    this->_x = x;
+}
+void Vec2::setY(float y)
+{
+    this->_y = y;
+}
 float Vec2::getX() const
 {
     return this->_x;

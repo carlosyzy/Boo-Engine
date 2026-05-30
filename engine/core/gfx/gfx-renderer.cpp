@@ -32,7 +32,7 @@ void GfxRenderer::createPipeline(std::string name, GfxRendererState rendererStat
     this->_builtinRenderer->createPipeline(name, rendererState);
 }
 
-GfxTexture *GfxRenderer::createTexture(std::string uuid, uint32_t width, uint32_t height, uint32_t channels, const std::vector<uint8_t> *pixels, GfxTextureFormat format)
+GfxTexture *GfxRenderer::createTexture(std::string uuid, uint32_t width, uint32_t height, uint32_t channels, int textureType,const std::vector<uint8_t> *pixels, GfxTextureFormat format)
 {
     if (Gfx::_textures.find(uuid) == Gfx::_textures.end())
     {
@@ -49,7 +49,7 @@ GfxTexture *GfxRenderer::createTexture(std::string uuid, uint32_t width, uint32_
         {
             _format = VK_FORMAT_R8_UNORM;
         }
-        GfxTexture *texture = new GfxTexture(uuid, width, height, channels, _format);
+        GfxTexture *texture = new GfxTexture(uuid, width, height, channels, textureType, _format);
         texture->create(pixels);
         Gfx::_textures[uuid] = texture;
     }
@@ -161,198 +161,199 @@ void GfxRenderer::destroyShader(GfxShader *shader)
         Gfx::_shaders.erase(shader->getUuid());
     }
 }
-// glslang 编译器编译GLSL着色器为SPIR-V代码
-std::vector<uint32_t> GfxRenderer::_compileShaderGlslToSpirv(const std::string &type, const std::string &cacheKey, const std::string &source, const std::map<std::string, int> &macros)
-{
-    auto startTime = std::chrono::high_resolution_clock::now();
-
-    // 1. 确定着色器阶段
-    EShLanguage stage;
-    if (type == "Vert")
-        stage = EShLangVertex;
-    else if (type == "Frag")
-        stage = EShLangFragment;
-    else
-    {
-        LOGE("[Gfx : Renderer] :: Unsupported shader type: %s", type.c_str());
-        return {};
-    }
-
-    // 2. 预处理源码：提取 #version 并注入宏（无论 macros 是否为空都处理）
-    std::string processedSource;
-    {
-        std::string versionLine = "#version 450\n";
-        std::string restSource = source;
-
-        // 用简单字符串查找代替 regex
-        size_t versionPos = source.find("#version");
-        if (versionPos != std::string::npos)
-        {
-            size_t lineEnd = source.find('\n', versionPos);
-            if (lineEnd != std::string::npos)
-            {
-                // 处理 \r\n
-                size_t lineEndLen = (lineEnd > 0 && source[lineEnd - 1] == '\r') ? 2 : 1;
-                versionLine = source.substr(versionPos, lineEnd - versionPos + 1);
-                restSource = source.substr(lineEnd + 1);
-            }
-        }
-
-        std::stringstream ss;
-        ss << versionLine;
-        ss << "#define VULKAN 100\n";
-        for (const auto &[key, value] : macros)
-            ss << "#define " << key << " " << value << "\n";
-        ss << restSource;
-        processedSource = ss.str();
-    }
-
-    // 3. 创建着色器对象
-    glslang::TShader shader(stage);
-    const char *src = processedSource.c_str();
-    const char *name = cacheKey.c_str();
-    shader.setStrings(&src, 1);
-    // shader.setStringNames(&name, 1); // 设置文件名，报错时显示正确路径
-    shader.setEntryPoint("main");
-    shader.setSourceEntryPoint("main");
-
-    // 4. 设置目标环境
-    shader.setEnvInput(glslang::EShSourceGlsl, stage, glslang::EShClientVulkan, 100);
-    shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_0);
-    shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_0);
-
-    // 5. 编译消息（去掉 EShMsgReadHlsl，避免影响 GLSL 编译行为）
-    EShMessages messages = (EShMessages)(EShMsgSpvRules | EShMsgVulkanRules);
-
-    // 6. 解析（第一个参数必须是资源限制，不是字符串）
-    if (!shader.parse(GetDefaultResources(), 100, false, messages))
-    {
-        LOGE("[Gfx : Renderer] :: Shader compile failed: %s\n%s\n%s",
-             cacheKey.c_str(),
-             shader.getInfoLog(),
-             shader.getInfoDebugLog());
-        return {};
-    }
-
-    // 7. 链接
-    glslang::TProgram program;
-    program.addShader(&shader);
-    if (!program.link(messages))
-    {
-        LOGE("[Gfx : Renderer] :: Shader link failed: %s\n%s",
-             cacheKey.c_str(),
-             program.getInfoLog());
-        return {};
-    }
-
-    // 8. 生成 SPIR-V
-    const glslang::TIntermediate *intermediate = program.getIntermediate(stage);
-    if (!intermediate)
-    {
-        LOGE("[Gfx : Renderer] :: Failed to get intermediate: %s", cacheKey.c_str());
-        return {};
-    }
-
-    glslang::SpvOptions spvOptions{};
-#ifdef NDEBUG
-    spvOptions.generateDebugInfo = false;
-    spvOptions.disableOptimizer = false;
-    spvOptions.optimizeSize = false;
-#else
-    spvOptions.generateDebugInfo = true; // Debug 模式保留调试信息
-    spvOptions.disableOptimizer = true;
-#endif
-
-    std::vector<uint32_t> spirvCode;
-    glslang::GlslangToSpv(*intermediate, spirvCode, &spvOptions);
-
-    if (spirvCode.empty())
-    {
-        LOGE("[Gfx : Renderer] :: GlslangToSpv produced empty output: %s", cacheKey.c_str());
-        return {};
-    }
-
-    // 9. 输出警告
-    const char *infoLog = shader.getInfoLog();
-    if (infoLog && strlen(infoLog) > 0)
-        LOGW("[Gfx : Renderer] :: Shader warnings [%s]:\n%s", cacheKey.c_str(), infoLog);
-
-    // 10. 耗时
-    auto ms = std::chrono::duration<double, std::milli>(
-                  std::chrono::high_resolution_clock::now() - startTime)
-                  .count();
-    LOGI("[Gfx : Renderer] :: Compiled %s (%zu words) %.2fms", cacheKey.c_str(), spirvCode.size(), ms);
-
-    return spirvCode;
-}
-
-// // shaderc 编译器编译GLSL着色器为SPIR-V代码
+// // glslang 编译器编译GLSL着色器为SPIR-V代码
 // std::vector<uint32_t> GfxRenderer::_compileShaderGlslToSpirv(const std::string &type, const std::string &cacheKey, const std::string &source, const std::map<std::string, int> &macros)
 // {
 //     auto startTime = std::chrono::high_resolution_clock::now();
 
-//     // 1. 确定阶段
-//     shaderc_shader_kind kind;
+//     // 1. 确定着色器阶段
+//     EShLanguage stage;
 //     if (type == "Vert")
-//         kind = shaderc_vertex_shader;
+//         stage = EShLangVertex;
 //     else if (type == "Frag")
-//         kind = shaderc_fragment_shader;
-//     else if (type == "Comp")
-//         kind = shaderc_compute_shader;
+//         stage = EShLangFragment;
 //     else
 //     {
 //         LOGE("[Gfx : Renderer] :: Unsupported shader type: %s", type.c_str());
 //         return {};
 //     }
 
-//     // 2. 编译选项
-//     shaderc::CompileOptions options;
-//     options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_0);
-//     options.AddMacroDefinition("GL_SPIRV", "1");
-//     options.AddMacroDefinition("VULKAN", "100");
-//     for (const auto &[key, value] : macros)
-//         options.AddMacroDefinition(key, std::to_string(value));
-
-// #ifdef NDEBUG
-//     options.SetOptimizationLevel(shaderc_optimization_level_performance);
-// #else
-//     options.SetGenerateDebugInfo();
-//     options.SetOptimizationLevel(shaderc_optimization_level_zero);
-// #endif
-
-//     // 3. 编译
-//     shaderc::Compiler compiler;
-//     auto result = compiler.CompileGlslToSpv(source, kind, cacheKey.c_str(), options);
-
-//     if (result.GetCompilationStatus() != shaderc_compilation_status_success)
+//     // 2. 预处理源码：提取 #version 并注入宏（无论 macros 是否为空都处理）
+//     std::string processedSource;
 //     {
-//         LOGE("[Gfx : Renderer] :: Shader compile failed: %s\nStatus: %d\n%s",
+//         std::string versionLine = "#version 450\n";
+//         std::string restSource = source;
+
+//         // 用简单字符串查找代替 regex
+//         size_t versionPos = source.find("#version");
+//         if (versionPos != std::string::npos)
+//         {
+//             size_t lineEnd = source.find('\n', versionPos);
+//             if (lineEnd != std::string::npos)
+//             {
+//                 // 处理 \r\n
+//                 size_t lineEndLen = (lineEnd > 0 && source[lineEnd - 1] == '\r') ? 2 : 1;
+//                 versionLine = source.substr(versionPos, lineEnd - versionPos + 1);
+//                 restSource = source.substr(lineEnd + 1);
+//             }
+//         }
+
+//         std::stringstream ss;
+//         ss << versionLine;
+//         ss << "#define VULKAN 100\n";
+//         for (const auto &[key, value] : macros)
+//             ss << "#define " << key << " " << value << "\n";
+//         ss << restSource;
+//         processedSource = ss.str();
+//     }
+
+//     // 3. 创建着色器对象
+//     glslang::TShader shader(stage);
+//     const char *src = processedSource.c_str();
+//     const char *name = cacheKey.c_str();
+//     shader.setStrings(&src, 1);
+//     // shader.setStringNames(&name, 1); // 设置文件名，报错时显示正确路径
+//     shader.setEntryPoint("main");
+//     shader.setSourceEntryPoint("main");
+
+//     // 4. 设置目标环境
+//     shader.setEnvInput(glslang::EShSourceGlsl, stage, glslang::EShClientVulkan, 100);
+//     shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_0);
+//     shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_0);
+
+//     // 5. 编译消息（去掉 EShMsgReadHlsl，避免影响 GLSL 编译行为）
+//     EShMessages messages = (EShMessages)(EShMsgSpvRules | EShMsgVulkanRules);
+
+//     // 6. 解析（第一个参数必须是资源限制，不是字符串）
+//     if (!shader.parse(GetDefaultResources(), 100, false, messages))
+//     {
+//         LOGE("[Gfx : Renderer] :: Shader compile failed: %s\n%s\n%s",
 //              cacheKey.c_str(),
-//              result.GetCompilationStatus(),
-//              result.GetErrorMessage().c_str());
+//              shader.getInfoLog(),
+//              shader.getInfoDebugLog());
 //         return {};
 //     }
 
-//     if (result.GetNumWarnings() > 0)
-//         LOGW("[Gfx : Renderer] :: Shader warnings [%s]:\n%s",
-//              cacheKey.c_str(), result.GetErrorMessage().c_str());
+//     // 7. 链接
+//     glslang::TProgram program;
+//     program.addShader(&shader);
+//     if (!program.link(messages))
+//     {
+//         LOGE("[Gfx : Renderer] :: Shader link failed: %s\n%s",
+//              cacheKey.c_str(),
+//              program.getInfoLog());
+//         return {};
+//     }
 
+//     // 8. 生成 SPIR-V
+//     const glslang::TIntermediate *intermediate = program.getIntermediate(stage);
+//     if (!intermediate)
+//     {
+//         LOGE("[Gfx : Renderer] :: Failed to get intermediate: %s", cacheKey.c_str());
+//         return {};
+//     }
+
+//     glslang::SpvOptions spvOptions{};
+// #ifdef NDEBUG
+//     spvOptions.generateDebugInfo = false;
+//     spvOptions.disableOptimizer = false;
+//     spvOptions.optimizeSize = false;
+// #else
+//     spvOptions.generateDebugInfo = true; // Debug 模式保留调试信息
+//     spvOptions.disableOptimizer = true;
+// #endif
+
+//     std::vector<uint32_t> spirvCode;
+//     glslang::GlslangToSpv(*intermediate, spirvCode, &spvOptions);
+
+//     if (spirvCode.empty())
+//     {
+//         LOGE("[Gfx : Renderer] :: GlslangToSpv produced empty output: %s", cacheKey.c_str());
+//         return {};
+//     }
+
+//     // 9. 输出警告
+//     const char *infoLog = shader.getInfoLog();
+//     if (infoLog && strlen(infoLog) > 0)
+//         LOGW("[Gfx : Renderer] :: Shader warnings [%s]:\n%s", cacheKey.c_str(), infoLog);
+
+//     // 10. 耗时
 //     auto ms = std::chrono::duration<double, std::milli>(
 //                   std::chrono::high_resolution_clock::now() - startTime)
 //                   .count();
-//     LOGI("[Gfx : Renderer] :: Compiled %s (%zu words) %.2fms",
-//          cacheKey.c_str(),
-//          std::distance(result.cbegin(), result.cend()),
-//          ms);
+//     LOGI("[Gfx : Renderer] :: Compiled %s (%zu words) %.2fms", cacheKey.c_str(), spirvCode.size(), ms);
 
-//     return {result.cbegin(), result.cend()};
+//     return spirvCode;
 // }
-GfxMesh *GfxRenderer::createMesh(std::string meshUuid, int meshMode, const std::vector<float> &vertices, const std::vector<uint32_t> &indices)
+
+// shaderc 编译器编译GLSL着色器为SPIR-V代码
+std::vector<uint32_t> GfxRenderer::_compileShaderGlslToSpirv(const std::string &type, const std::string &cacheKey, const std::string &source, const std::map<std::string, int> &macros)
+{
+    auto startTime = std::chrono::high_resolution_clock::now();
+
+    // 1. 确定阶段
+    shaderc_shader_kind kind;
+    if (type == "Vert")
+        kind = shaderc_vertex_shader;
+    else if (type == "Frag")
+        kind = shaderc_fragment_shader;
+    else if (type == "Comp")
+        kind = shaderc_compute_shader;
+    else
+    {
+        LOGE("[Gfx : Renderer] :: Unsupported shader type: %s", type.c_str());
+        return {};
+    }
+
+    // 2. 编译选项
+    shaderc::CompileOptions options;
+    options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_0);
+    options.AddMacroDefinition("GL_SPIRV", "1");
+    options.AddMacroDefinition("VULKAN", "100");
+    for (const auto &[key, value] : macros)
+        options.AddMacroDefinition(key, std::to_string(value));
+
+#ifdef NDEBUG
+    options.SetOptimizationLevel(shaderc_optimization_level_performance);
+#else
+    options.SetGenerateDebugInfo();
+    options.SetOptimizationLevel(shaderc_optimization_level_zero);
+#endif
+
+    // 3. 编译
+    shaderc::Compiler compiler;
+    auto result = compiler.CompileGlslToSpv(source, kind, cacheKey.c_str(), options);
+
+    if (result.GetCompilationStatus() != shaderc_compilation_status_success)
+    {
+        LOGE("[Gfx : Renderer] :: Shader compile failed: %s\nStatus: %d\n%s",
+             cacheKey.c_str(),
+             result.GetCompilationStatus(),
+             result.GetErrorMessage().c_str());
+        return {};
+    }
+
+    if (result.GetNumWarnings() > 0)
+        LOGW("[Gfx : Renderer] :: Shader warnings [%s]:\n%s",
+             cacheKey.c_str(), result.GetErrorMessage().c_str());
+
+    auto ms = std::chrono::duration<double, std::milli>(
+                  std::chrono::high_resolution_clock::now() - startTime)
+                  .count();
+    LOGI("[Gfx : Renderer] :: Compiled %s (%zu words) %.2fms",
+         cacheKey.c_str(),
+         std::distance(result.cbegin(), result.cend()),
+         ms);
+
+    return {result.cbegin(), result.cend()};
+}
+
+GfxMesh *GfxRenderer::createMesh(std::string meshUuid, int meshType, const std::vector<float> &vertices, const std::vector<uint32_t> &indices)
 {
     if (Gfx::_meshes.find(meshUuid) == Gfx::_meshes.end())
     {
         GfxMesh *mesh = new GfxMesh(meshUuid);
-        mesh->createMesh(meshMode, vertices, indices);
+        mesh->createMesh(meshType, vertices, indices);
         Gfx::_meshes[meshUuid] = mesh;
     }
     try

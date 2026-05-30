@@ -9,10 +9,8 @@
 #include <array>
 #include <cstdint>
 
-#include "../../math/math-api.h"
-#include "../../component/component.h"
-#include "../../component/component-register.h"
-
+#include "core/component/component.h"
+#include "core/component/component-register.h"
 
 namespace Boo
 {
@@ -33,14 +31,17 @@ namespace Boo
 
         void _clearMaterials();
         void _resetMaterials();
+
     public:
         MeshRenderer(std::string name, Node *node, std::string uuid = "");
-        void Awake() override;
-        void Enable() override;
+        void OnAwake() override;
+        void OnEnable() override;
+        void setProperty(json &data) override;
         std::vector<MaterialAsset *> getMaterials();
         MaterialAsset *getMaterial();
         MaterialAsset *getMaterial(int index);
-        
+
+        void setMesh(std::string meshUuid);
         /**
          * @brief 设置网格资产
          * @param meshAsset 网格资产
@@ -54,7 +55,9 @@ namespace Boo
         void setMaterial(MaterialAsset *materialAsset);
         void setMaterial(int index, std::string materialName);
         void setMaterial(int index, MaterialAsset *materialAsset);
-       
+
+        void setTexture(std::string path);
+        void setTexture(TextureAsset *texture);
 
         void Update(float deltaTime) override;
         void LateUpdate(float deltaTime) override;
@@ -63,9 +66,10 @@ namespace Boo
          * 当前节点组件以及子节点组件的lateUpdate执行结束,render渲染函数开始
          */
         void Render(Camera *camera);
-        void Disable() override;
+        void OnDisable() override;
+        void OnDestroy() override {};
         void destroy() override;
-         ~MeshRenderer() override;
+        ~MeshRenderer() override;
     };
     REGISTER_COMPONENT(MeshRenderer, "Mesh Renderer Component")
 } // namespace Boo

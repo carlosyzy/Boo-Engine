@@ -32,7 +32,7 @@
 
 #### 5.1 棋子不显示
 - 检查纹理路径是否正确
-- 确保调用了 `Boo::assetsManager->loadAsset()` 加载资源
+- 确保调用了 `Boo::assetManager->loadAsset()` 加载资源
 - 检查棋子节点的位置是否正确
 
 #### 5.2 游戏逻辑错误

@@ -14,23 +14,17 @@ namespace Boo
 	/**
 	 * @brief 资产系统
 	 */
-	AssetsManager *assetsManager = nullptr;
-	/**
-	 * @brief 渲染系统
-	 */
-	Renderer *renderer = nullptr;
+	AssetManager *assetManager = nullptr;
 	/**
 	 * @brief 性能分析系统
 	 */
 	Profiler *profiler = nullptr;
-
-	// /**
-	//  * @brief 字体系统
-	//  */
-	// FreetypeMgr *fontMgr = nullptr;
-	// /**
-	//  * @brief 输入系统
-	//  */
-	// Input *input = nullptr;
-	
+	/**
+	 * @brief 输入系统
+	 */
+	Input *input = nullptr;
+	/**
+	 * @brief 音频系统
+	 */
+	AudioManager *audioManager = nullptr;
 }

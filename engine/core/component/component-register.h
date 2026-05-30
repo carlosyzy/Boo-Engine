@@ -1,8 +1,6 @@
 #pragma once
 #include <iostream>
-#include "component-factory.h"
-// namespace Boo
-// {
+#include "core/component/component-factory.h"
 /**
  * @brief 自动注册宏 - 在全局命名空间注册组件
  * @param Component 组件类名
@@ -23,4 +21,3 @@
         };                                                                                        \
         static ComponentClass##Registrar ComponentClass##_registrar;                              \
     }
-// }

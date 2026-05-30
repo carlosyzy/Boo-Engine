@@ -50,17 +50,16 @@ static_assert(std::string_view { SIMDJSON_TARGET_VERSION } == SIMDJSON_VERSION, 
 
 #include <fastgltf/core.hpp>
 #include <fastgltf/base64.hpp>
-
-#if defined(FASTGLTF_IS_X86)
-#include <nmmintrin.h> // SSE4.2 for the CRC-32C instructions
+#if defined(__OHOS__) || defined(__HARMONY__) || defined(__HARMONYOS__)
+    #include <zlib.h>
+#elif defined(FASTGLTF_IS_X86)
+    #include <nmmintrin.h> // SSE4.2 for the CRC-32C instructions
 #elif defined(FASTGLTF_ENABLE_ARMV8_CRC)
-// MSVC does not provide the arm crc32 intrinsics.
-#include <arm_acle.h>
-#ifdef __APPLE__
-#include <sys/sysctl.h>
+    #include <arm_acle.h>
+    #ifdef __APPLE__
+    #include <sys/sysctl.h>
+    #endif
 #endif
-#endif
-
 namespace fg = fastgltf;
 namespace fs = std::filesystem;
 
@@ -136,7 +135,18 @@ namespace fastgltf {
 
 	using CRCStringFunction = std::uint32_t(*)(std::string_view str);
 
-#if defined(FASTGLTF_IS_X86)
+#if defined(__OHOS__) || defined(__HARMONY__) || defined(__HARMONYOS__)
+   // 双参数版本
+    [[gnu::hot, gnu::const]] std::uint32_t crc32c_impl(const std::uint8_t* d, std::size_t len) noexcept {
+        // zlib 的 crc32 使用 0xFFFFFFFF 作为初始值，结果取反
+        return crc32(0xFFFFFFFF, d, len) ^ 0xFFFFFFFF;
+    }
+
+    // 单参数版本
+    [[gnu::hot, gnu::const]] std::uint32_t crc32c_impl(std::string_view str) noexcept {
+        return crc32c_impl(reinterpret_cast<const std::uint8_t*>(str.data()), str.size());
+    }
+#elif defined(FASTGLTF_IS_X86)
     [[gnu::hot, gnu::const, gnu::target("sse4.2")]] std::uint32_t sse_crc32c(std::string_view str) noexcept {
         return sse_crc32c(reinterpret_cast<const std::uint8_t*>(str.data()), str.size());
     }
@@ -220,7 +230,9 @@ namespace fastgltf {
      * Checks if SSE4.2 is available to try and use the hardware accelerated version.
      */
     void initialiseCrc() {
-#if defined(FASTGLTF_IS_X86)
+#if defined(__OHOS__) || defined(__HARMONY__) || defined(__HARMONYOS__)  
+    crcStringFunction = crc32c_impl;
+#elif defined(FASTGLTF_IS_X86)
         const auto& impls = simdjson::get_available_implementations();
         if (const auto* sse4 = impls["westmere"]; sse4 != nullptr && sse4->supported_by_runtime_system()) {
             crcStringFunction = sse_crc32c;

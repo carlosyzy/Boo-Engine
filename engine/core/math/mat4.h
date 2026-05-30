@@ -142,19 +142,18 @@ namespace Boo
 
         static void ortho(Mat4 &out, float left, float right, float bottom, float top, float near, float far, float projectionSignY, int orientation); // float minClipZ,
         static void perspective(Mat4 &out, float fov, float aspect, float near, float far, float projectionSignY, int orientation);                    // bool isFOVY, float minClipZ,
+        /**
+         * @en Rotates the transform by the given angle and save the results into the out matrix, the rotate is applied before
+         * the matrix, i.e. (out = a * R)
+         * @zh 在给定矩阵变换基础上加入新旋转变换, 并将结果保存到 out 矩阵中，旋转变换将应用在矩阵变换之前，即 (out = a * R)
+         * @param a Input matrix
+         * @param rad Angle of rotation (in radians)
+         * @param axis axis of rotation
+         * @param out Output matrix
+         * @return true if rotation is successful, false if axis length is too small
+         */
+        static bool rotate(const Mat4 &a, float rad, const Vec3 &axis, Mat4 &out);
+        
     };
 
 } // namespace Boo
-// /**
-//          * @brief 从四元数创建矩阵
-//          *
-//          * @param out
-//          * @param quat
-//          */
-//         static void fromQuat(Mat4 &out, Quat &quat);
-// static void translate(Mat4 &out, const Mat4 &mat, Vec3 &v);
-// static void scale(Mat4 &out, const Mat4 &mat, Vec3 &v);
-// static void rotateX(Mat4 &out, const Mat4 &mat, float rad);
-// static void rotateY(Mat4 &out, const Mat4 &mat, float rad);
-// static void rotateZ(Mat4 &out, const Mat4 &mat, float rad);
-// static void rotate(Mat4 &out, const Mat4 &mat, float rad, Vec3 &axis);

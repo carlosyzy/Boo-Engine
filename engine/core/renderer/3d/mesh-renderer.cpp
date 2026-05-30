@@ -1,8 +1,12 @@
 #include "mesh-renderer.h"
-#include "../../../boo.h"
-#include "../../../log.h"
-#include "../../assets/mesh-asset.h"
-#include "../../assets/material-asset.h"
+#include "boo.h"
+#include "log.h"
+#include "core/asset/mesh-asset.h"
+#include "core/asset/material-asset.h"
+#include "core/asset/texture-asset.h"
+#include "core/scene/node-3d.h"
+#include "core/gfx/gfx-manager.h"
+#include "core/renderer/camera.h"
 
 namespace Boo
 {
@@ -10,19 +14,48 @@ namespace Boo
                                                                                  _meshAsset(nullptr),
                                                                                  _materials({})
     {
-        this->_layer = ComponentLayer::Node3D;
+        this->_layer = EComponentLayer::Layer3D;
         this->_node3D = dynamic_cast<Node3D *>(node);
-    }
-
-    void MeshRenderer::Awake()
-    {
-        Component::Awake();
         this->_meshAsset = nullptr;
         this->_materials.clear();
     }
-    void MeshRenderer::Enable()
+
+    void MeshRenderer::OnAwake()
     {
-        Component::Enable();
+        Component::OnAwake();
+    }
+    void MeshRenderer::setProperty(json &data)
+    {
+        Component::setProperty(data);
+        // set mesh asset
+        if (data.contains("mesh") && data["mesh"].is_string())
+        {
+            this->setMesh(data["mesh"].get<std::string>());
+        }
+        // set material asset
+        if (data.contains("material") && data["material"].is_array())
+        {
+            for (int i = 0; i < data["material"].size(); i++)
+            {
+                this->setMaterial(i, data["material"][i].get<std::string>());
+            }
+        }
+    }
+
+    void MeshRenderer::OnEnable()
+    {
+        Component::OnEnable();
+    }
+    void MeshRenderer::setMesh(std::string meshUuid)
+    {
+        Asset *asset = assetManager->getAsset(meshUuid);
+        MeshAsset *meshAsset = dynamic_cast<MeshAsset *>(asset);
+        if (meshAsset == nullptr)
+        {
+            LOGW("MeshRenderer::setMesh: meshAsset is nullptr");
+            return;
+        }
+        this->setMesh(meshAsset);
     }
     void MeshRenderer::setMesh(MeshAsset *meshAsset)
     {
@@ -37,7 +70,7 @@ namespace Boo
     }
     void MeshRenderer::setMaterial(std::string materialName)
     {
-        Asset *asset = assetsManager->getAsset(materialName, true);
+        Asset *asset = assetManager->getAsset(materialName, true);
         MaterialAsset *materialAsset = dynamic_cast<MaterialAsset *>(asset);
         if (materialAsset == nullptr)
         {
@@ -52,7 +85,7 @@ namespace Boo
     }
     void MeshRenderer::setMaterial(int index, std::string materialName)
     {
-        Asset *asset = assetsManager->getAsset(materialName, true);
+        Asset *asset = assetManager->getAsset(materialName, true);
         MaterialAsset *materialAsset = dynamic_cast<MaterialAsset *>(asset);
         if (materialAsset == nullptr)
         {
@@ -73,14 +106,41 @@ namespace Boo
             LOGW("MeshRenderer::setMaterialAsset: index out of range");
             return;
         }
+        std::cout << "MeshRenderer::setMaterialAsset: materialAsset created" << std::endl;
         this->_materials[index]->create(materialAsset);
     }
+    void MeshRenderer::setTexture(std::string path)
+    {
+        Asset *asset = assetManager->getAsset(path, true);
+        TextureAsset *texture = dynamic_cast<TextureAsset *>(asset);
+        if (texture == nullptr)
+        {
+            LOGW("MeshRenderer::setTextureAsset: texture is nullptr");
+            return;
+        }
+        this->setTexture(texture);
+    }
+    void MeshRenderer::setTexture(TextureAsset *texture)
+    {
+        if (texture == nullptr)
+        {
+            LOGW("MeshRenderer::setTextureAsset: texture is nullptr");
+            return;
+        }
+        this->_materials[0]->setTexture(texture);
+    }
+
     std::vector<MaterialAsset *> MeshRenderer::getMaterials()
     {
         return this->_materials;
     }
     MaterialAsset *MeshRenderer::getMaterial()
     {
+        if (this->_materials.empty())
+        {
+            LOGW("MeshRenderer::getMaterial: materials is empty");
+            return nullptr;
+        }
         return this->_materials[0];
     }
     MaterialAsset *MeshRenderer::getMaterial(int index)
@@ -120,6 +180,7 @@ namespace Boo
             LOGW("MeshRenderer::Render: materials is empty");
             return;
         }
+
         const Mat4 &matrix = this->_node3D->getWorldMatrix();
         const Mat4 &worldIT = this->_node3D->getWorldMatrixIT();
         size_t subMeshCount = this->_meshAsset->getSubMeshCount();
@@ -141,7 +202,7 @@ namespace Boo
             this->_materials[i]->setModelWorldMatrix(matrix.data());
             this->_materials[i]->setModelWorldMatrixIT(worldIT.data());
             GfxMaterial *gfxMaterial = this->_materials[i]->getGfxMaterial();
-            GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), gfxMaterial, gfxMesh);
+            GfxManager::getInstance()->submitRenderObject(camera->getUuid(), gfxMaterial, gfxMesh);
         }
         // 增加渲染物体数量
         profiler->addObjectCount(1);
@@ -153,7 +214,7 @@ namespace Boo
             LOGW("MeshRenderer::_resetMaterials: meshAsset is nullptr");
             return;
         }
-        MaterialAsset *defaultMaterial = dynamic_cast<MaterialAsset *>(assetsManager->getAsset("internal/materials/standard.mtl"));
+        MaterialAsset *defaultMaterial = dynamic_cast<MaterialAsset *>(assetManager->getAsset(AssetBuiltinMaterial::Unlit));
         if (defaultMaterial == nullptr)
         {
             LOGW("MeshRenderer::_resetMaterials: default materialAsset is nullptr");
@@ -177,9 +238,9 @@ namespace Boo
         this->_materials.clear();
     }
 
-    void MeshRenderer::Disable()
+    void MeshRenderer::OnDisable()
     {
-        Component::Disable();
+        Component::OnDisable();
     }
     void MeshRenderer::destroy()
     {
@@ -187,5 +248,14 @@ namespace Boo
     }
     MeshRenderer::~MeshRenderer()
     {
+        for (auto mtl : this->_materials)
+        {
+            mtl->destroy();
+            delete mtl;
+            mtl = nullptr;
+        }
+        this->_materials.clear();
+        this->_node3D = nullptr;
+        this->_meshAsset = nullptr;
     }
 } // namespace Boo

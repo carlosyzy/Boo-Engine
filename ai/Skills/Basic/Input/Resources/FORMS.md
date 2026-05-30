@@ -1,111 +1,38 @@
-# 输入系统输入输出格式
+# 输入系统表单定义
 
-## 输入格式
-
-### 键盘输入检测
+## 鼠标按下/释放/移动监听
 
 | 参数 | 类型 | 描述 | 必填 |
 |------|------|------|------|
-| `keyCode` | string | 按键代码，如 "SPACE", "A", "UP" 等 | 是 |
+| `func` | `std::function<void(FInputMouseEvent&)>` | 回调函数 | 是 |
 
-### 鼠标位置获取
+**返回值**：`uint64_t` 监听器 ID
 
-无参数
-
-### 鼠标按键检测
+## 取消鼠标监听
 
 | 参数 | 类型 | 描述 | 必填 |
 |------|------|------|------|
-| `button` | string | 鼠标按键，如 "LEFT", "RIGHT", "MIDDLE" | 是 |
+| `id` | `uint64_t` | 监听器 ID | 是 |
 
-### 触摸输入检测
+## 鼠标滚轮/触控板滚动监听
 
 | 参数 | 类型 | 描述 | 必填 |
 |------|------|------|------|
-| `index` | number | 触摸点索引，从0开始 | 否，默认为0 |
+| `func` | `std::function<void(FInputScrollEvent&)>` | 回调函数 | 是 |
 
-## 输出格式
+**返回值**：`uint64_t` 监听器 ID
 
-### 键盘输入检测
-
-| 字段 | 类型 | 描述 |
-|------|------|------|
-| `isPressed` | boolean | 按键是否被按下 |
-| `isDown` | boolean | 按键是否刚刚被按下 |
-| `isUp` | boolean | 按键是否刚刚被释放 |
-
-### 鼠标位置获取
+## FInputMouseEvent 字段
 
 | 字段 | 类型 | 描述 |
 |------|------|------|
-| `x` | number | 鼠标X坐标 |
-| `y` | number | 鼠标Y坐标 |
+| `button` | `int` | 鼠标按键（0=左键，1=右键，2=中键） |
+| `x` | `double` | 鼠标 X 坐标 |
+| `y` | `double` | 鼠标 Y 坐标 |
 
-### 鼠标按键检测
-
-| 字段 | 类型 | 描述 |
-|------|------|------|
-| `isPressed` | boolean | 鼠标按键是否被按下 |
-| `isDown` | boolean | 鼠标按键是否刚刚被按下 |
-| `isUp` | boolean | 鼠标按键是否刚刚被释放 |
-
-### 触摸输入检测
+## FInputScrollEvent 字段
 
 | 字段 | 类型 | 描述 |
 |------|------|------|
-| `count` | number | 当前触摸点数量 |
-| `positions` | array | 触摸点位置数组，每个元素包含x和y坐标 |
-| `deltas` | array | 触摸点移动增量数组，每个元素包含x和y增量 |
-
-## 示例输入输出
-
-### 示例 1: 检测空格键
-
-**输入**:
-```json
-{
-  "keyCode": "SPACE"
-}
-```
-
-**输出**:
-```json
-{
-  "isPressed": true,
-  "isDown": false,
-  "isUp": false
-}
-```
-
-### 示例 2: 获取鼠标位置
-
-**输入**:
-```json
-{}
-```
-
-**输出**:
-```json
-{
-  "x": 450,
-  "y": 300
-}
-```
-
-### 示例 3: 检测鼠标左键
-
-**输入**:
-```json
-{
-  "button": "LEFT"
-}
-```
-
-**输出**:
-```json
-{
-  "isPressed": true,
-  "isDown": true,
-  "isUp": false
-}
-```
+| `xoffset` | `double` | 水平滚动量 |
+| `yoffset` | `double` | 垂直滚动量 |

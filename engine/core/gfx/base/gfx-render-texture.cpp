@@ -156,7 +156,7 @@ void GfxRenderTexture::_createTextures()
         return;
     }
     LOGI("[Gfx : RenderTexture]:: create textures success %s width:%d height:%d", this->_uuid.c_str(), this->_width, this->_height);
-    this->_colorTexture = new GfxTexture(this->_colorUuid, this->_width, this->_height, 4, Gfx::_context->getSwapChainImageFormat());
+    this->_colorTexture = new GfxTexture(this->_colorUuid, this->_width, this->_height, 4, 0, Gfx::_context->getSwapChainImageFormat());
     this->_colorTexture->createImage(
         VK_IMAGE_TILING_OPTIMAL,
         VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, /* // 可作为纹理采样 */
@@ -166,7 +166,7 @@ void GfxRenderTexture::_createTextures()
         VK_IMAGE_ASPECT_COLOR_BIT);
     this->_colorTexture->crateImageSampler();
 
-    this->_depthTexture = new GfxTexture(this->_depthUuid, this->_width, this->_height, 4, VK_FORMAT_D32_SFLOAT_S8_UINT);
+    this->_depthTexture = new GfxTexture(this->_depthUuid, this->_width, this->_height, 4, 0, VK_FORMAT_D32_SFLOAT_S8_UINT);
     this->_depthTexture->createImage(
         VK_IMAGE_TILING_OPTIMAL,
         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
@@ -293,16 +293,15 @@ void GfxRenderTexture::destroy()
 {
     if (this->_colorTexture != nullptr)
     {
-        this->_colorTexture->destroy();
-        delete this->_colorTexture;
+        Gfx::_renderer->destroyTexture(this->_colorTexture);
         this->_colorTexture = nullptr;
     }
     if (this->_depthTexture != nullptr)
     {
-        this->_depthTexture->destroy();
-        delete this->_depthTexture;
+        Gfx::_renderer->destroyTexture(this->_depthTexture);
         this->_depthTexture = nullptr;
     }
+    
     if (this->_framebuffer != VK_NULL_HANDLE)
     {
         vkDestroyFramebuffer(Gfx::_context->getVkDevice(), this->_framebuffer, nullptr);

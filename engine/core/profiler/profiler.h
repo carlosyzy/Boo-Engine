@@ -1,9 +1,10 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include "../util/util-api.h"
-#include "../math/math-api.h"
-#include "../font/freetype-mgr.h"
+#include <sstream>
+#include <iomanip>
+#include "core/math/mat4.h"
+
 
 class GfxRenderTexture;
 namespace Boo
@@ -11,6 +12,7 @@ namespace Boo
     class MaterialAsset;
     class MeshAsset;
     struct FontTexture;
+    class BMFontAsset;
 }
 namespace Boo
 {
@@ -33,9 +35,18 @@ namespace Boo
          */
         Mat4 _matProj = Mat4::identity();
 
-    private:
-        int _objectCount = 0;
+        bool _initialized = false;
+        void _doInit();
 
+        float _lastFrameTime = -1.0f; // 新增
+        int _lastDrawCount = -1;      // 新增
+        int _lastObjectCount = -1;    // 新增
+
+    private:
+        BMFontAsset *_bmFont = nullptr;
+        int _fontSize = 20;
+        int _objectCount = 0;
+        void _createDefaultFont();
         MeshAsset *_defaultMeshAsset = nullptr;
         void _createDefaultMeshAsset();
         MeshAsset *_createMeshAsset();

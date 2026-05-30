@@ -1,5 +1,4 @@
 #include "component-factory.h"
-
 namespace Boo
 {
     /**

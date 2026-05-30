@@ -1,43 +1,87 @@
 #include "camera.h"
-#include "../../boo.h"
-#include "../../log.h"
-#include "../gfx/gfx-mgr.h"
-#include "../gfx/base/gfx-render-texture.h"
+#include "boo.h"
+#include "log.h"
+#include "core/gfx/gfx-manager.h"
+#include "core/gfx/base/gfx-render-texture.h"
+#include "core/renderer/renderer-mgr.h"
 
 namespace Boo
 {
 
     Camera::Camera(std::string name, Node *node, std::string uuid) : Component(name, node, uuid),
                                                                      _priority(0),
-                                                                     _groupIDs(0),
-                                                                     _projection(CameraProjection::Perspective),
+                                                                     _groupIds(0),
+                                                                     _projection(ECameraProjection::Perspective),
                                                                      _fov(60.0f),
                                                                      _nearClip(0.1f),
                                                                      _farClip(2000.0f),
                                                                      _orthoHeight(1.0f),
-                                                                     _isOnScreen(true),
-                                                                     _renderTexture(nullptr)
+                                                                     _isOnScreen(true)
 
     {
-    }
-    void Camera::Awake()
-    {
-        Component::Awake();
         this->_matView = Mat4::identity();
         this->_matProj = Mat4::identity();
-        this->_updateViewMatrix();
-        this->_updateProjectionMatrix();
+        this->_layer = EComponentLayer::Default;
+    }
+    void Camera::OnAwake()
+    {
+        Component::OnAwake();
         this->_createRenderPipeline();
+    }
+    void Camera::setProperty(json &data)
+    {
+        Component::setProperty(data);
+        // 优先级
+        if (data.contains("priority") && data["priority"].is_number_integer())
+        {
+            this->_priority = data["priority"].get<int>();
+        }
+        // 分组
+        if (data.contains("groupIds") && data["groupIds"].is_number_integer())
+        {
+            this->_groupIds = data["groupIds"].get<int>();
+        }
+        // 相机类型
+        if (data.contains("projection") && data["projection"].is_number_integer())
+        {
+            this->_projection = (ECameraProjection)data["projection"].get<int>();
+        }
+        // FOV
+        if (data.contains("fov") && data["fov"].is_number())
+        {
+            this->_fov = data["fov"].get<float>();
+        }
+        // 近裁剪平面
+        if (data.contains("nearClip") && data["nearClip"].is_number())
+        {
+            this->_nearClip = data["nearClip"].get<float>();
+        }
+        // 远裁剪平面
+        if (data.contains("farClip") && data["farClip"].is_number())
+        {
+            this->_farClip = data["farClip"].get<float>();
+        }
+        // 正交高度
+        if (data.contains("orthoHeight") && data["orthoHeight"].is_number())
+        {
+            this->_orthoHeight = data["orthoHeight"].get<float>();
+        }
+        // 是否可见
+        if (data.contains("isOnScreen") && data["isOnScreen"].is_boolean())
+        {
+            this->_isOnScreen = data["isOnScreen"].get<bool>();
+        }
+        this->_updateProjectionMatrix();
     }
     void Camera::_createRenderPipeline()
     {
-        // this->_renderTexture = GfxMgr::getInstance()->createRenderTexture(this->_uuid, view->getWidth(), view->getHeight());
-        GfxMgr::getInstance()->createRenderQueue(this->_uuid, this->_priority, view->getWidth(), view->getHeight());
+        GfxManager::getInstance()->createRenderQueue(this->_uuid, this->_priority, view->getWidth(), view->getHeight());
     }
-    void Camera::Enable()
+    void Camera::OnEnable()
     {
-        Component::Enable();
-        renderer->mountCamera(this);
+        Component::OnEnable();
+        this->_updateProjectionMatrix();
+        RendererMgr::getInstance()->mountCamera(this);
     }
     void Camera::setIsOnScreen(bool isOnScreen)
     {
@@ -49,36 +93,36 @@ namespace Boo
     }
     void Camera::updateViewSize()
     {
-        GfxMgr::getInstance()->resizeRenderQueue(this->_uuid, view->getWidth(), view->getHeight());
+        GfxManager::getInstance()->resizeRenderQueue(this->_uuid, view->getWidth(), view->getHeight());
         this->_updateProjectionMatrix();
     }
     void Camera::setPriority(int priority)
     {
         this->_priority = priority;
-        GfxMgr::getInstance()->setRenderQueuePriority(this->_uuid, this->_priority);
+        GfxManager::getInstance()->setRenderQueuePriority(this->_uuid, this->_priority);
     }
     int Camera::getPriority()
     {
         return this->_priority;
     }
-    void Camera::setGroupIDs(int groupIDs)
+    void Camera::setGroupIDs(int groupIds)
     {
-        this->_groupIDs = groupIDs;
+        this->_groupIds = groupIds;
     }
-    void Camera::addGroupID(int groupID)
+    void Camera::addGroupID(int groupId)
     {
-        this->_groupIDs |= groupID;
+        this->_groupIds |= groupId;
     }
     int Camera::getGroupIDs()
     {
-        return this->_groupIDs;
+        return this->_groupIds;
     }
-    void Camera::addGroupID(NodeGroup groupID)
+    void Camera::addGroupID(ENodeGroup groupId)
     {
-        this->_groupIDs |= (int)groupID;
+        this->_groupIds |= (int)groupId;
     }
 
-    void Camera::setProjection(CameraProjection projection)
+    void Camera::setProjection(ECameraProjection projection)
     {
         this->_projection = projection;
         this->_updateProjectionMatrix();
@@ -97,9 +141,9 @@ namespace Boo
     }
     void Camera::Render()
     {
-        this->_updateViewMatrix();
-        std::array<float, 4> cameraPosition = {this->_node->getPosition().getX(), this->_node->getPosition().getY(), this->_node->getPosition().getZ(), 0.0f};
-        GfxMgr::getInstance()->submitRenderData(this->_uuid, this->_matView.data(), this->_matProj.data(), this->_isOnScreen, cameraPosition);
+        const Vec3 &position = this->_node->getWorldPosition();
+        std::array<float, 4> cameraPosition = {position.getX(), position.getY(), position.getZ(), 0.0f};
+        GfxManager::getInstance()->submitRenderData(this->_uuid, this->_matView.data(), this->_matProj.data(), this->_isOnScreen, cameraPosition);
     }
     void Camera::_updateViewMatrix()
     {
@@ -121,12 +165,11 @@ namespace Boo
         Mat4 tempMat;
         Mat4::multiply(this->_matView, scaleMat, tempMat);
         this->_matView = tempMat;
-       
     }
     void Camera::_updateProjectionMatrix()
     {
         Mat4 worldMat = this->_node->getWorldMatrix();
-        if (this->_projection == CameraProjection::Ortho)
+        if (this->_projection == ECameraProjection::Ortho)
         {
             float left = -(float)view->getWidth() / 2.0f;
             float right = (float)view->getWidth() / 2.0f;
@@ -134,28 +177,27 @@ namespace Boo
             float top = (float)view->getHeight() / 2.0f;
             this->_nearClip = -1000.0f;
             this->_farClip = 1000.0f;
-            Mat4::ortho(this->_matProj, left, right, bottom, top, this->_nearClip, this->_farClip,  -1.0f, 0);
+            Mat4::ortho(this->_matProj, left, right, bottom, top, this->_nearClip, this->_farClip, -1.0f, 0);
         }
-        else if (this->_projection == CameraProjection::Perspective)
+        else if (this->_projection == ECameraProjection::Perspective)
         {
             float fovRad = this->_fov * 3.14159f / 180.0f;
             float aspectRatio = (float)view->getWidth() / (float)view->getHeight();
-            Mat4::perspective(this->_matProj, fovRad, aspectRatio, this->_nearClip, this->_farClip,  -1.0f, 0);
+            Mat4::perspective(this->_matProj, fovRad, aspectRatio, this->_nearClip, this->_farClip, -1.0f, 0);
         }
     }
-    // -1 0 1
-    // 1 0 1
-    // -1 0 1
-    void Camera::Disable()
+    void Camera::OnDisable()
     {
-        Component::Disable();
-        renderer->unmountCamera(this);
+        Component::OnDisable();
+        RendererMgr::getInstance()->unmountCamera(this);
+    }
+    void Camera::OnDestroy()
+    {
+        GfxManager::getInstance()->delRenderQueue(this->_uuid);
     }
     void Camera::destroy()
     {
         Component::destroy();
-        GfxMgr::getInstance()->delRenderQueue(this->_uuid);
-        this->_renderTexture = nullptr;
     }
     Camera::~Camera()
     {

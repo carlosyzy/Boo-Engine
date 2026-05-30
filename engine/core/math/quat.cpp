@@ -49,6 +49,23 @@ namespace Boo
     {
         return this->_w;
     }
+    void Quat::normalize()
+    {
+        float length = _x * _x + _y * _y + _z * _z + _w * _w;
+        if (length > 0) {
+            length = 1 / sqrt(length);
+            _x *= length;
+            _y *= length;
+            _z *= length;
+            _w *= length;
+        } else {
+            _x = 0;
+            _y = 0;
+            _z = 0;
+            _w = 0;
+        }
+    }
+
     
 
     Quat::~Quat()
@@ -149,15 +166,16 @@ namespace Boo
     {
         float halfToRad = 0.5f * 3.14159265358979323846f / 180.0f;
         // 转换为弧度的一半
-        x *= halfToRad;
-        y *= halfToRad;
-        z *= halfToRad;
-        float sx = sin(x);
-        float cx = cos(x);
-        float sy = sin(y);
-        float cy = cos(y);
-        float sz = sin(z);
-        float cz = cos(z);
+        float fx = x * halfToRad;
+        float fy = y * halfToRad;
+        float fz = z * halfToRad;
+
+        float sx = sin(fx);
+        float cx = cos(fx);
+        float sy = sin(fy);
+        float cy = cos(fy);
+        float sz = sin(fz);
+        float cz = cos(fz);
         switch (order)
         {
         case RotationOrder::XYZ:
@@ -280,5 +298,45 @@ namespace Boo
        eulerAngles.setX(bank);
        eulerAngles.setY(heading);
        eulerAngles.setZ(attitude);
+    }
+
+    void Quat::fromViewUp(const Vec3 &view, const Vec3 &up, Quat &out)
+    {
+        const float EPSILON = 1e-6f;
+        
+        // 检查view向量是否有效
+        if (Vec3::lengthSqr(view) < EPSILON * EPSILON)
+        {
+            out.set(0, 0, 0, 1); // 单位四元数
+            return;
+        }
+
+        // 计算右向量：up和view的叉乘并归一化
+        Vec3 right;
+        Vec3::cross(up, view, right);
+        Vec3::normalize(right, right);
+
+        // 检查right向量是否有效
+        if (Vec3::lengthSqr(right) < EPSILON * EPSILON)
+        {
+            out.set(0, 0, 0, 1); // 单位四元数
+            return;
+        }
+
+        // 计算新的上向量：view和right的叉乘
+        Vec3 newUp;
+        Vec3::cross(view, right, newUp);
+
+        // 构建3x3旋转矩阵（列主序）
+        float mat3[9] = {
+            right.getX(), right.getY(), right.getZ(),
+            newUp.getX(), newUp.getY(), newUp.getZ(),
+            view.getX(), view.getY(), view.getZ()
+        };
+
+        // 从矩阵创建四元数
+        Quat::fromMat3(mat3, out);
+        out.normalize();
+
     }
 }

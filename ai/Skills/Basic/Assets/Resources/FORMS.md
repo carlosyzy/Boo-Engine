@@ -1,153 +1,63 @@
-# 资产管理系统输入输出格式
+# 资产管理系统表单定义
 
-## 输入格式
-
-### 加载纹理
+## AssetManager::loadAsset
 
 | 参数 | 类型 | 描述 | 必填 |
 |------|------|------|------|
-| `path` | string | 纹理文件路径 | 是 |
+| `uuid` | `std::string` | 资产路径或 UUID | 是 |
 
-### 加载材质
+**返回值**：`Asset*`，需转型为具体类型（`TextureAsset*`、`MaterialAsset*` 等）
 
-| 参数 | 类型 | 描述 | 必填 |
-|------|------|------|------|
-| `path` | string | 材质文件路径 | 是 |
-
-### 加载着色器
+## AssetManager::getAsset
 
 | 参数 | 类型 | 描述 | 必填 |
 |------|------|------|------|
-| `path` | string | 着色器文件路径 | 是 |
+| `uuid` | `std::string` | 资产路径或 UUID | 是 |
+| `loadIfNotFound` | `bool` | 未找到时是否自动加载 | 否，默认 false |
 
-### 加载场景
+**返回值**：`Asset*`
 
-| 参数 | 类型 | 描述 | 必填 |
-|------|------|------|------|
-| `path` | string | 场景文件路径 | 是 |
-
-### 加载网格
+## AssetManager::unloadAsset
 
 | 参数 | 类型 | 描述 | 必填 |
 |------|------|------|------|
-| `path` | string | 网格文件路径 | 是 |
+| `uuid` | `std::string` | 资产路径或 UUID | 是 |
 
-### 释放资产
+## TextureAsset::create（像素数据）
 
 | 参数 | 类型 | 描述 | 必填 |
 |------|------|------|------|
-| `assetPath` | string | 资产文件路径 | 是 |
+| `width` | `int` | 宽度 | 是 |
+| `height` | `int` | 高度 | 是 |
+| `channels` | `int` | 通道数 | 是 |
+| `pixelsVector` | `std::vector<uint8_t>` | 像素数据 | 是 |
+| `format` | `GfxTextureFormat` | 纹理格式 | 是 |
 
-## 输出格式
+## TextureAsset::create（文件数据）
 
-### 加载资产
+| 参数 | 类型 | 描述 | 必填 |
+|------|------|------|------|
+| `data` | `const unsigned char*` | 文件内存数据 | 是 |
+| `size` | `size_t` | 数据长度 | 是 |
 
-| 字段 | 类型 | 描述 |
-|------|------|------|
-| `success` | boolean | 是否加载成功 |
-| `asset` | object | 资产信息 |
-| `message` | string | 加载结果消息 |
+## MaterialAsset::setTexture
 
-### 资产信息
+| 参数 | 类型 | 描述 | 必填 |
+|------|------|------|------|
+| `texture` | `TextureAsset*` | 纹理资产 | 是 |
 
-| 字段 | 类型 | 描述 |
-|------|------|------|
-| `path` | string | 资产路径 |
-| `uuid` | string | 资产UUID |
-| `type` | string | 资产类型 |
-| `width` | number | 纹理宽度（仅纹理资产） |
-| `height` | number | 纹理高度（仅纹理资产） |
+或
 
-### 释放资产
+| 参数 | 类型 | 描述 | 必填 |
+|------|------|------|------|
+| `key` | `std::string` | 纹理槽名称 | 是 |
+| `texture` | `TextureAsset*` | 纹理资产 | 是 |
 
-| 字段 | 类型 | 描述 |
-|------|------|------|
-| `success` | boolean | 是否释放成功 |
-| `message` | string | 释放结果消息 |
+## MaterialAsset::setUIColor
 
-## 示例输入输出
-
-### 示例 1: 加载纹理
-
-**输入**:
-```json
-{
-  "path": "assets/textures/player.png"
-}
-```
-
-**输出**:
-```json
-{
-  "success": true,
-  "asset": {
-    "path": "assets/textures/player.png",
-    "uuid": "12345678-1234-1234-1234-1234567890ab",
-    "type": "texture",
-    "width": 128,
-    "height": 128
-  },
-  "message": "纹理加载成功"
-}
-```
-
-### 示例 2: 加载材质
-
-**输入**:
-```json
-{
-  "path": "assets/materials/player.material"
-}
-```
-
-**输出**:
-```json
-{
-  "success": true,
-  "asset": {
-    "path": "assets/materials/player.material",
-    "uuid": "87654321-4321-4321-4321-ba0987654321",
-    "type": "material"
-  },
-  "message": "材质加载成功"
-}
-```
-
-### 示例 3: 加载场景
-
-**输入**:
-```json
-{
-  "path": "assets/scenes/level1.scene"
-}
-```
-
-**输出**:
-```json
-{
-  "success": true,
-  "asset": {
-    "path": "assets/scenes/level1.scene",
-    "uuid": "11223344-5566-7788-9900-aabbccddeeff",
-    "type": "scene"
-  },
-  "message": "场景加载成功"
-}
-```
-
-### 示例 4: 释放资产
-
-**输入**:
-```json
-{
-  "assetPath": "assets/textures/player.png"
-}
-```
-
-**输出**:
-```json
-{
-  "success": true,
-  "message": "资产释放成功"
-}
-```
+| 参数 | 类型 | 描述 | 必填 |
+|------|------|------|------|
+| `r` | `float` | 红色通道 | 是 |
+| `g` | `float` | 绿色通道 | 是 |
+| `b` | `float` | 蓝色通道 | 是 |
+| `w` | `float` | Alpha 通道 | 是 |

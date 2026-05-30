@@ -11,6 +11,9 @@ class GfxBuffer;
 
 class GfxBuiltinBatch3D : public GfxBuiltinBatch
 {
+private:
+    //透明材质
+    float _disTransparent = 0.0f;
 protected:
     void _setViewportScissor(VkCommandBuffer &queueCommandBuffer) override;
     void _bindUniformBuffer() override;
@@ -22,5 +25,7 @@ public:
     GfxBuiltinBatch3D();
     virtual void addObject(const std::vector<char> &instanceData);
     void render(VkCommandBuffer &queueCommandBuffer) override;
+    float getDisTransparent() const;
+
     ~GfxBuiltinBatch3D();
 };

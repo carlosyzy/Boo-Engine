@@ -3,22 +3,12 @@
 #include "node.h"
 namespace Boo
 {
-    // enum
-    enum class NodeInput;
-    // struct
-    struct NodeInputResult;
+    // // enum
+    // enum class NodeInput;
+    // // struct
+    // struct NodeInputResult;
     // class
     class UIRenderer;
-
-    // 添加组：groups | = group（位或运算）
-    // 移除组：groups &= ~group（位与+非运算）
-    // 检查组：(groups & group) == group（位与运算）
-    // 切换组：groups ^= group（位异或运算）
-    enum class Node2DSizeLock
-    {
-        None = 0,
-        SpriteRaw = 1 << 0,
-    };
 
     class Node2D : public Node
     {
@@ -61,9 +51,9 @@ namespace Boo
         void setWorldRotation(float x, float y, float z, float w) override;
         void setActive(bool active) override;
         
-        void addSizeLock(Node2DSizeLock sizeLock);
-        void removeSizeLock(Node2DSizeLock sizeLock);
-        void setSizeLock(Node2DSizeLock sizeLock);
+        void addSizeLock(ENode2DSizeLock sizeLock);
+        void removeSizeLock(ENode2DSizeLock sizeLock);
+        void setSizeLock(ENode2DSizeLock sizeLock);
         int getSizeLock();
         /**
          * 添加组件

@@ -1,6 +1,8 @@
 #include "component.h"
-#include "../../boo.h"
-#include "../../log.h"
+#include "boo.h"
+#include "log.h"
+#include "core/util/uuid-util.h"
+#include "core/scene/node.h"
 
 namespace Boo
 {
@@ -8,7 +10,7 @@ namespace Boo
     Component::Component(std::string name, Node *node, std::string uuid) : _isAwaked(false),
                                                                            _uuid(uuid),
                                                                            _name(name),
-                                                                           _layer(ComponentLayer::Default),
+                                                                           _layer(EComponentLayer::Default),
                                                                            _node(node),
                                                                            _isEnabled(true),
                                                                            _isEnabledInHierarchy(false)
@@ -19,18 +21,32 @@ namespace Boo
             this->_uuid = UuidUtil::generateUUID();
         }
     }
+    void Component::setProperty(json &data)
+    {
+        // 从json中获取组件的属性
+        // uuid
+        if (data.contains("uuid") && data["uuid"].is_string())
+        {
+            this->_uuid = data["uuid"].get<std::string>();
+        }
+        // 可见enable
+        if (data.contains("enable") && data["enable"].is_boolean())
+        {
+            this->setEnabled(data["enable"].get<bool>());
+        }
+    }
+
     void Component::setEnabled(bool enabled)
     {
         this->_isEnabled = enabled;
+        if (this->_node == nullptr)
+            return;
         this->setNodeActiveInHierarchy(this->_node->getActiveInHierarchy());
     }
 
     void Component::setNodeActiveInHierarchy(bool isActiveInHierarchy)
     {
-        // LOGI("Component::setNodeActiveInHierarchy: %s, isActiveInHierarchy: %d", this->_name.c_str(), isActiveInHierarchy);
-
         bool isEnableInHierarchy = isActiveInHierarchy && this->_isEnabled;
-        // LOGI("Component::setNodeActiveInHierarchy: %s, isEnableInHierarchy: %d", this->_name.c_str(), isEnableInHierarchy);
         if (this->_isEnabledInHierarchy == isEnableInHierarchy)
         {
             return; // 状态未改变
@@ -41,31 +57,28 @@ namespace Boo
             if (!this->_isAwaked)
             {
                 this->_isAwaked = true;
-                this->Awake();
+                this->OnAwake();
             }
-            this->Enable();
+            this->OnEnable();
         }
         else
         {
-            this->Disable();
+            this->OnDisable();
         }
     }
     /**
      * @brief 组件唤醒函数
      * 组件被添加到节点后,第一次激活会调用Awake函数
      */
-    void Component::Awake()
+    void Component::OnAwake()
     {
-        // std::cout << "Component::Awake" << std::endl;
-        // LOGI("Component::Awake: %s", this->_name.c_str());
     }
     /**
      * @brief 组件启用函数
      * 组件被激活后,会调用Enable函数
      */
-    void Component::Enable()
+    void Component::OnEnable()
     {
-        // std::cout << "Component::Enable" << std::endl;
     }
 
     void Component::Update(float deltaTime)
@@ -78,20 +91,17 @@ namespace Boo
      * @brief 组件禁用函数
      * 组件被禁用后,会调用Disable函数
      */
-    void Component::Disable()
+    void Component::OnDisable()
     {
-        // std::cout << "Component::Disable" << std::endl;
     }
-
     void Component::destroy()
     {
-        // std::cout << "Component::destroy" << std::endl;
         game->addCompClearCaches(this);
     }
 
     Component::~Component()
     {
-        // std::cout << "Component::~destructor" << std::endl;
+        this->_node = nullptr;
     }
 
 } // namespace Boo

@@ -1,13 +1,17 @@
 #include "profiler.h"
-
-#include <sstream>
-#include <iomanip>
-
-#include "../../boo.h"
-#include "../assets/assets-manager.h"
-#include "../gfx/gfx.h"
-#include "../gfx/gfx-mgr.h"
-#include "../gfx/base/gfx-render-texture.h"
+#include "boo.h"
+#include "core/asset/asset-manager.h"
+#include "core/asset/material-asset.h"
+#include "core/asset/texture-asset.h"
+#include "core/asset/mesh-asset.h"
+#include "core/asset/bmfont-asset.h"
+#include "core/gfx/gfx.h"
+#include "core/gfx/gfx-manager.h"
+#include "core/gfx/base/gfx-render-texture.h"
+#include "core/util/uuid-util.h"
+#include "core/util/fmt-util.h"
+#include "core/font/freetype-mgr.h"
+#include "core/font/bmfont-manager.h"
 
 namespace Boo
 {
@@ -16,13 +20,32 @@ namespace Boo
     }
     void Profiler::init()
     {
+        // 只记录标记，不创建资源
+        this->_initialized = false;
         this->_uuid = UuidUtil::generateUUID();
         this->_width = 200;
         this->_height = 130;
         this->_matView = Mat4::identity();
         this->_matProj = Mat4::identity();
+    }
+    void Profiler::openDebug()
+    {
+        if (!this->_initialized)
+        {
+            this->_doInit(); // 首次开启时才真正创建资源
+            this->_initialized = true;
+        }
+        this->_isShowDebug = true;
+    }
+    void Profiler::closeDebug()
+    {
+        this->_isShowDebug = false;
+    }
+    void Profiler::_doInit()
+    {
         // 渲染性能分析窗口
-        GfxMgr::getInstance()->createRenderQueue(this->_uuid, 999999, this->_width * 5, this->_height * 5);
+        GfxManager::getInstance()->createRenderQueue(this->_uuid, 999999, this->_width * 5, this->_height * 5);
+        this->_createDefaultFont();
         this->_createDefaultMeshAsset();
         this->_initBg();
         this->_initFps();
@@ -30,12 +53,22 @@ namespace Boo
         this->_initRenderCount();
         this->_initObjectCount();
     }
+    void Profiler::_createDefaultFont()
+    {
+        Asset *asset = assetManager->getAsset(AssetBuiltinFont::Font);
+		BMFontAsset *bmFont = dynamic_cast<BMFontAsset *>(asset);
+		if(bmFont != nullptr)
+		{
+			this->_bmFont = bmFont;
+		}
+    }
+
     void Profiler::_createDefaultMeshAsset()
     {
         this->_defaultMeshAsset = new MeshAsset();
-        MeshPrimitive primitive;
+        FMeshPrimitive primitive;
         primitive.index = 0;
-        primitive.type = 0;
+        primitive.mode = EMeshMode::UI;
         primitive._positions = {-0.5f, 0.5f, 0.0f,
                                 -0.5f, -0.5f, 0.0f,
                                 0.5f, -0.5f, 0.0f,
@@ -65,7 +98,7 @@ namespace Boo
         this->_fpsMeshNumAsset = this->_createMeshAsset();
         int width, height;
         this->_setText(this->_fpsTitle, this->_fpsMeshAsset, this->_fpsMltAsset, width, height);
-        this->_setFontTransform(5, 5, width, height, 25, this->_fpsMat);
+        this->_setFontTransform(5, 5, width, height, this->_fontSize, this->_fpsMat);
     }
     void Profiler::_initRenderTime()
     {
@@ -77,7 +110,7 @@ namespace Boo
         this->_renderTimeMat = Mat4::identity();
         int width, height;
         this->_setText(this->_renderTimeTitle, this->_renderTitleMeshAsset, this->_renderTitleMltAsset, width, height);
-        this->_setFontTransform(5, 35, width, height, 25, this->_renderTitleMat);
+        this->_setFontTransform(5, 35, width, height, this->_fontSize, this->_renderTitleMat);
     }
     void Profiler::_initRenderCount()
     {
@@ -88,7 +121,7 @@ namespace Boo
         this->_renderCountMat = Mat4::identity();
         int width, height;
         this->_setText(this->_renderCountTitle, this->_renderCountTitleMeshAsset, this->_renderCountTitleMltAsset, width, height);
-        this->_setFontTransform(5, 65, width, height, 25, this->_renderCountTitleMat);
+        this->_setFontTransform(5, 65, width, height, this->_fontSize, this->_renderCountTitleMat);
     }
     void Profiler::_initObjectCount()
     {
@@ -99,16 +132,7 @@ namespace Boo
         this->_objectCountMat = Mat4::identity();
         int width, height;
         this->_setText(this->_objectCountTitle, this->_objectCountTitleMeshAsset, this->_objectCountTitleMltAsset, width, height);
-        this->_setFontTransform(5, 95, width, height, 25, this->_objectCountTitleMat);
-    }
-
-    void Profiler::openDebug()
-    {
-        this->_isShowDebug = true;
-    }
-    void Profiler::closeDebug()
-    {
-        this->_isShowDebug = false;
+        this->_setFontTransform(5, 95, width, height, this->_fontSize, this->_objectCountTitleMat);
     }
     void Profiler::addObjectCount(int count)
     {
@@ -116,6 +140,10 @@ namespace Boo
     }
     void Profiler::render()
     {
+        if (!this->_initialized)
+        {
+            return;
+        }
         if (!this->_isShowDebug)
         {
             return;
@@ -137,7 +165,7 @@ namespace Boo
         float bottom = -(float)this->_height / 2.0f;
         Mat4::ortho(this->_matProj, left, right, bottom, top, -1000.0f, 1000.0f, -1.0f, 0);
         std::array<float, 4> cameraPosition = {0.0f, 0.0f, 0.0f, 0.0f};
-        GfxMgr::getInstance()->submitRenderData(this->_uuid, this->_matView.data(), this->_matProj.data(), true, cameraPosition);
+        GfxManager::getInstance()->submitRenderData(this->_uuid, this->_matView.data(), this->_matProj.data(), true, cameraPosition);
         // 渲染背景
         this->_refreshBg();
         // 渲染FPS
@@ -166,22 +194,26 @@ namespace Boo
             this->_fpsNum = game->getFps();
             int width, height;
             this->_setText(std::to_string(this->_fpsNum), this->_fpsMeshNumAsset, this->_fpsNumMltAsset, width, height);
-            this->_setFontTransform(50, 5, width, height, 25, this->_fpsNumMat);
+            this->_setFontTransform(50, 5, width, height, this->_fontSize, this->_fpsNumMat);
         }
         this->_submitRenderObject(this->_fpsNumMltAsset, this->_fpsMeshNumAsset, this->_fpsNumMat, 1.0f, 0.0f, 0.0f, 1.0);
     }
     void Profiler::_refreshRenderTime()
     {
         this->_submitRenderObject(this->_renderTitleMltAsset, this->_renderTitleMeshAsset, this->_renderTitleMat, 1.0f, 0.0f, 0.0f, 1.0);
-        // 渲染时间
-        int width, height;
-        std::ostringstream oss;
-        // oss << std::fixed << std::setprecision(2) << Gfx::_submitTime;
-        oss << std::fixed << std::setprecision(2) << Gfx::_frameTime;
-        // std::cout << std::to_string(Gfx::_submitTime) << std::endl;
-        std::string result = oss.str() + "ms";
-        this->_setText(result, this->_renderTimeMeshAsset, this->_renderTimeMltAsset, width, height);
-        this->_setFontTransform(120, 35, width, height, 25, this->_renderTimeMat);
+        if (this->_lastFrameTime != Gfx::_frameTime)
+        {
+            this->_lastFrameTime = Gfx::_frameTime;
+            // 渲染时间
+            int width, height;
+            std::ostringstream oss;
+            // oss << std::fixed << std::setprecision(2) << Gfx::_submitTime;
+            oss << std::fixed << std::setprecision(2) << this->_lastFrameTime;
+            // std::cout << std::to_string(Gfx::_submitTime) << std::endl;
+            std::string result = oss.str() + "ms";
+            this->_setText(result, this->_renderTimeMeshAsset, this->_renderTimeMltAsset, width, height);
+            this->_setFontTransform(100, 35, width, height, this->_fontSize, this->_renderTimeMat);
+        }
         this->_submitRenderObject(this->_renderTimeMltAsset, this->_renderTimeMeshAsset, this->_renderTimeMat, 1.0f, 0.0f, 0.0f, 1.0);
     }
     void Profiler::_refreshRenderCount()
@@ -189,36 +221,41 @@ namespace Boo
         this->_submitRenderObject(this->_renderCountTitleMltAsset, this->_renderCountTitleMeshAsset, this->_renderCountTitleMat, 1.0f, 0.0f, 0.0f, 1.0);
         // 渲染提交次数
         int width, height;
-        // std::ostringstream oss;
-        // oss << std::fixed << std::setprecision(2) << Gfx::_drawCount;
-        // std::string result = oss.str();
-        this->_setText(std::to_string(Gfx::_drawCount), this->_renderCountMeshAsset, this->_renderCountMltAsset, width, height);
-        this->_setFontTransform(130, 65, width, height, 25, this->_renderCountMat);
+        if (this->_lastDrawCount != Gfx::_drawCount)
+        {
+            this->_lastDrawCount = Gfx::_drawCount;
+            this->_setText(std::to_string(this->_lastDrawCount), this->_renderCountMeshAsset, this->_renderCountMltAsset, width, height);
+            this->_setFontTransform(100, 65, width, height, this->_fontSize, this->_renderCountMat);
+        }
         this->_submitRenderObject(this->_renderCountMltAsset, this->_renderCountMeshAsset, this->_renderCountMat, 1.0f, 0.0f, 0.0f, 1.0);
     }
     void Profiler::_refreshObjectCount()
     {
         this->_submitRenderObject(this->_objectCountTitleMltAsset, this->_objectCountTitleMeshAsset, this->_objectCountTitleMat, 1.0f, 0.0f, 0.0f, 1.0);
         // 渲染物体数量
-        int width, height;
-        this->_setText(std::to_string(this->_objectCount), this->_objectCountMeshAsset, this->_objectCountMltAsset, width, height);
-        this->_setFontTransform(170, 95, width, height, 25, this->_objectCountMat);
+        if (this->_lastObjectCount != this->_objectCount)
+        {
+            this->_lastObjectCount = this->_objectCount;
+            int width, height;
+            this->_setText(std::to_string(this->_lastObjectCount), this->_objectCountMeshAsset, this->_objectCountMltAsset, width, height);
+            this->_setFontTransform(140, 95, width, height, this->_fontSize, this->_objectCountMat);
+        }
         this->_submitRenderObject(this->_objectCountMltAsset, this->_objectCountMeshAsset, this->_objectCountMat, 1.0f, 0.0f, 0.0f, 1.0);
     }
 
     MeshAsset *Profiler::_createMeshAsset()
     {
+        uint32_t MAX_SIZE = 50; // 最大字符数
         MeshAsset *meshAsset = new MeshAsset(UuidUtil::generateUUID());
-        MeshPrimitive primitive;
+        FMeshPrimitive primitive;
         primitive.index = 0;
-        primitive.type = 0;
-        // primitive._positions = {-0.5f, 0.5f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 0.0f};
-        // primitive._uvs = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
-        // primitive._indices = {0, 1, 2, 0, 2, 3};
+        primitive.mode = EMeshMode::UI;
         std::vector<float> positions = {};
         std::vector<float> uvs = {};
         std::vector<uint32_t> indices = {};
-        uint32_t MAX_SIZE = 50; // 最大字符数
+        positions.reserve(MAX_SIZE * 6 * 3); // 900
+        uvs.reserve(MAX_SIZE * 6 * 2);       // 600
+        indices.reserve(MAX_SIZE * 6);       // 300
         for (int i = 0; i < MAX_SIZE; i++)
         {
             // 每个字符两个三角形,6个顶点
@@ -277,7 +314,7 @@ namespace Boo
     MaterialAsset *Profiler::_createMaterialAsset()
     {
         MaterialAsset *materialAsset = new MaterialAsset(UuidUtil::generateUUID());
-        MaterialAsset *mtl = dynamic_cast<MaterialAsset *>(assetsManager->getAsset(AssetBuiltinMaterial::UI));
+        MaterialAsset *mtl = dynamic_cast<MaterialAsset *>(assetManager->getAsset(AssetBuiltinMaterial::UI));
         materialAsset->create(mtl);
         return materialAsset;
     }
@@ -287,25 +324,29 @@ namespace Boo
         {
             return;
         }
-        TextLayoutResult result = FreetypeMgr::getInstance()->create(text, 50);
-        MeshPrimitive primitive;
-        primitive._positions = result.batches[0].positions;
-        primitive._uvs = result.batches[0].uvs;
-        primitive._indices = result.batches[0].indices;
+        // TextLayoutResult result = FreetypeMgr::getInstance()->create(text, 50);
+        BMFontLayoutResult result = {};
+        std::wstring wstr = FmtUtil::utf8_to_wstring(text);
+        BMFontManager::getInstance()->create(wstr, this->_fontSize, this->_fontSize, this->_bmFont, result);
+
+        FMeshPrimitive primitive;
+        primitive.index = 0;
+        primitive.mode = EMeshMode::UI;
+        primitive._positions = result.positions;
+        primitive._uvs = result.uvs;
+        primitive._indices = result.indices;
         meshAsset->updateDynamicSubMesh(0, primitive);
-        materialAsset->setTexture(result.batches[0].texture);
+        materialAsset->setTexture(result.texture);
         width = result.width;
         height = result.height;
     }
     void Profiler::_setFontTransform(int x, int y, int width, int height, int fontSize, Mat4 &mat)
     {
         mat.identity();
-        float rate = fontSize / 50.f;
-        float _width = width * rate;
-        float _height = height * rate;
+        float _width = width ;
+        float _height = height ;
         float _x = -this->_width * 0.5f + _width * 0.5f + x;
         float _y = this->_height * 0.5f - _height * 0.5f - y;
-
         mat.setM0(_width);
         mat.setM5(_height);
         mat.setM11(1);
@@ -322,11 +363,11 @@ namespace Boo
         materialAsset->setUIColor(colorR, colorG, colorB, colorA);
         if (meshAsset == nullptr)
         {
-            GfxMgr::getInstance()->submitRenderObject(this->_uuid, materialAsset->getGfxMaterial(), this->_defaultMeshAsset->getGfxMesh(0));
+            GfxManager::getInstance()->submitRenderObject(this->_uuid, materialAsset->getGfxMaterial(), this->_defaultMeshAsset->getGfxMesh(0));
         }
         else
         {
-            GfxMgr::getInstance()->submitRenderObject(this->_uuid, materialAsset->getGfxMaterial(), meshAsset->getGfxMesh(0));
+            GfxManager::getInstance()->submitRenderObject(this->_uuid, materialAsset->getGfxMaterial(), meshAsset->getGfxMesh(0));
         }
     }
 } // namespace Boo

@@ -52,7 +52,7 @@ Boo-Engine 采用模块化设计，各个模块职责清晰，易于理解和扩
 | **核心系统** | - | 引擎的入口点和游戏主类 |
 | **Scene 场景系统** | `engine/core/scene/` | 场景管理，包含 2D/3D 根节点 |
 | **Component 组件系统** | `engine/core/component/` | 组件基类，生命周期管理 |
-| **Assets 资产系统** | `engine/core/assets/` | 资产管理器，加载与缓存 |
+| **Assets 资产系统** | `engine/core/asset/` | 资产管理器，加载与缓存 |
 | **Event 事件系统** | `engine/core/event/` | 事件系统，订阅/发布模式 |
 | **Input 输入系统** | `engine/core/input/` | 输入管理，鼠标/键盘/节点触摸事件 |
 | **Renderer 渲染系统** | `engine/core/renderer/` | 渲染器管理 |
@@ -85,11 +85,11 @@ Boo-Engine 采用模块化设计，各个模块职责清晰，易于理解和扩
 
 | 模块 | 文件 | 说明 |
 |------|------|------|
-| **AssetsManager** | `engine/core/assets/assets-manager.h` | 资产管理器，加载与缓存 |
-| **Asset** | `engine/core/assets/asset.h` | 资产基类 |
-| **TextureAsset** | `engine/core/assets/texture-asset.h` | 纹理资产 |
-| **MaterialAsset** | `engine/core/assets/material-asset.h` | 材质资产 |
-| **ShaderAsset** | `engine/core/assets/shader-asset.h` | 着色器资产 |
+| **AssetsManager** | `engine/core/asset/asset-manager.h` | 资产管理器，加载与缓存 |
+| **Asset** | `engine/core/asset/asset.h` | 资产基类 |
+| **TextureAsset** | `engine/core/asset/texture-asset.h` | 纹理资产 |
+| **MaterialAsset** | `engine/core/asset/material-asset.h` | 材质资产 |
+| **ShaderAsset** | `engine/core/asset/shader-asset.h` | 着色器资产 |
 
 **支持的资产类型：**
 - `Texture` - 纹理

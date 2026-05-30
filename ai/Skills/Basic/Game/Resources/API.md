@@ -1,5 +1,14 @@
 # Game 类核心 API 文档
 
+## 初始化
+
+| 方法 | 返回类型 | 描述 |
+|------|----------|------|
+| `init(Window *window, int uiDesignWidth, int uiDesignHeight, UIDesignFitMode fitMode)` | `void` | 初始化引擎（桌面端） |
+| `setFrameRate(int frameRate)` | `void` | 设置目标帧率 |
+| `getFrameRate()` | `int` | 获取目标帧率 |
+| `getFps()` | `int` | 获取当前实际帧率 |
+
 ## 场景管理
 
 | 方法 | 返回类型 | 描述 |
@@ -18,15 +27,16 @@
 
 | 方法 | 返回类型 | 描述 |
 |------|----------|------|
-| `schedule(Func func, T *instance, float interval)` | `int` | 安排定时任务（重复执行），返回任务ID |
-| `scheduleOnce(Func func, T *instance, float interval)` | `int` | 安排定时任务（执行一次），返回任务ID |
-| `unschedule(int scheduleID)` | `void` | 取消指定ID的定时任务 |
+| `schedule(Func func, T *instance, float interval)` | `int` | 注册定时重复任务，返回任务 ID |
+| `scheduleOnce(Func func, T *instance, float interval)` | `int` | 注册定时单次任务，返回任务 ID |
+| `unschedule(int scheduleID)` | `void` | 取消指定 ID 的定时任务 |
 
-## 输入处理
+## 枚举类型
 
-| 方法 | 返回类型 | 描述 |
-|------|----------|------|
-| `updateMouseState(int button, int action, int mods)` | `void` | 更新鼠标按钮状态 |
-| `updateMousePos(double xpos, double ypos)` | `void` | 更新鼠标位置 |
-| `updateKeyState(int key, int scancode, int action, int mods)` | `void` | 更新键盘按键状态 |
+### UIDesignFitMode
 
+| 值 | 描述 |
+|----|------|
+| `None` | 不适配 |
+| `Width` | 按宽度适配 |
+| `Height` | 按高度适配 |

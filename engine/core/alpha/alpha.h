@@ -23,7 +23,6 @@ namespace Boo
 
 		Node2D *_ndAlpha;
 		UISprite *_spriteAlpha;
-		TextureAsset *_textureBg;
 		// logo splash
 		Node2D *_ndSplash;
 		UISprite *_spriteSplash;
@@ -36,12 +35,8 @@ namespace Boo
 		void _initAlphaSplash();
 
 		void _updateLogoAlpha(float deltaTime);
-		// void _updateBgSize(float width, float height);
-		// void _updateLogoSize(float width, float height);
-
 	public:
 		Alpha(const std::string name, const std::string uuid = "");
-
 		void update(float deltaTime) override;
 		void destroy() override;
 		~Alpha();

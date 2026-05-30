@@ -1,10 +1,8 @@
 #include "scene.h"
 #include <iostream>
-#include "../../boo.h"
-#include "../../log.h"
-// #include "../util/util-api.h"
-// #include "node-3d.h"
-// #include "node-2d.h"
+#include "boo.h"
+#include "log.h"
+#include "core/util/uuid-util.h"
 
 namespace Boo
 {
@@ -12,7 +10,7 @@ namespace Boo
 	Scene::Scene(const std::string name, const std::string uuid)
 	{
 		this->_groupID = 0;
-		this->_layer = NodeLayer::Scene;
+		this->_layer = ENodeLayer::Scene;
 		this->_name = name;
 		this->_uuid = uuid.empty() ? UuidUtil::generateUUID() : uuid;
 		this->_isLocked = false;
@@ -27,8 +25,8 @@ namespace Boo
 		this->_worldRotation.set(0.0f, 0.0f, 0.0f, 1.0f);
 		this->_localMatrix = Mat4::identity();
 		this->_worldMatrix = Mat4::identity();
-		this->_worldTransformFlag = static_cast<uint32_t>(NodeTransformFlag::ALL_FLAG);
-		this->_frameTransformFlag = static_cast<uint32_t>(NodeTransformFlag::ALL_FLAG);
+		this->_worldTransformFlag = static_cast<uint32_t>(ENodeTransformFlag::ALL_FLAG);
+		this->_frameTransformFlag = static_cast<uint32_t>(ENodeTransformFlag::ALL_FLAG);
 		this->_root2D = nullptr;
 		this->_root3D = nullptr;
 		this->_parent = nullptr;
@@ -42,11 +40,11 @@ namespace Boo
 			return;
 		}
 		this->_root2D = new Node2D("root2D");
-		this->_root2D->setGroupID(uint32_t(NodeGroup::Node2D));
-		this->addChild(this->_root2D);
-		this->_root2D->setSize(view->getDesignWidth(), view->getDesignHeight());
+		this->_root2D->setGroupId(uint32_t(ENodeGroup::Node2D));
 		// 跟节点上锁
 		this->_root2D->_isLocked = true;
+		this->addChild(this->_root2D);
+		this->_root2D->setSize(view->getDesignWidth(), view->getDesignHeight());
 	}
 	void Scene::createRoot3D()
 	{
@@ -55,10 +53,11 @@ namespace Boo
 			return;
 		}
 		this->_root3D = new Node3D("root3D");
-		this->_root3D->setGroupID(uint32_t(NodeGroup::Node3D));
+		this->_root3D->_isLocked = true;
+		this->_root3D->setGroupId(uint32_t(ENodeGroup::Node3D));
 		this->addChild(this->_root3D);
 		// 跟节点上锁
-		this->_root3D->_isLocked = true;
+		
 	}
 	Node3D *Scene::getRoot3D()
 	{
@@ -143,6 +142,8 @@ namespace Boo
 	}
 	Scene::~Scene()
 	{
+		this->_root2D = nullptr;
+		this->_root3D = nullptr;
 		std::cout << "Scene::~destructor" << std::endl;
 	}
 

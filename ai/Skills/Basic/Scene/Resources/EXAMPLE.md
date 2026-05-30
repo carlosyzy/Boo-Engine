@@ -168,9 +168,8 @@ void transform3DNode() {
 #include "engine/boo.h"
 
 void manageActivation() {
-    // 创建场景和节点
     Boo::Scene* scene = new Boo::Scene("TestScene");
-    scene->createRoot2D();
+    Boo::game->openScene(scene);
     Boo::Node2D* root2D = scene->getRoot2D();
     
     // 创建父节点
@@ -261,27 +260,12 @@ void addComponentsToNode() {
 #include "engine/boo.h"
 
 void manageSceneLifecycle() {
-    // 创建场景
+    // 创建并打开场景（引擎接管后自动调用 launch）
     Boo::Scene* scene = new Boo::Scene("LifecycleScene");
-    scene->createRoot2D();
-    
-    // 启动场景
-    scene->launch();
-    
-    // 模拟游戏循环
-    float deltaTime = 0.016f; // 60 FPS
-    for (int i = 0; i < 100; i++) {
-        // 更新场景
-        scene->update(deltaTime);
-        scene->lateUpdate(deltaTime);
-        
-        // 清除帧变换标志
-        scene->clearNodeFrameFlag();
-    }
-    
-    // 销毁场景
-    scene->destroy();
-    delete scene;
+    Boo::game->openScene(scene);
+
+    // 销毁场景时通过 game 管理
+    Boo::game->destroyScene();
 }
 ```
 
@@ -370,13 +354,11 @@ public:
     void init() {
         // 创建场景
         _scene = new Boo::Scene("GameScene");
-        
-        // 打开场景（重要：创建场景后立即调用此方法）
+
+        // 打开场景（new Scene后必须紧接着调用open）
         Boo::game->openScene(_scene);
-        
-        // 注意：createRoot2D 和 launch 方法会由引擎自动调用
-        
-        // 获取 2D 根节点
+
+        // 获取 2D 根节点（引擎自动创建）
         Boo::Node2D* root2D = _scene->getRoot2D();
         
         // 创建玩家
@@ -395,22 +377,13 @@ public:
     }
     
     void update(float deltaTime) {
-        // 更新场景
-        _scene->update(deltaTime);
-        
         // 更新玩家
         _player->update(deltaTime);
-        
+
         // 更新敌人
         for (auto enemy : _enemies) {
             enemy->update(deltaTime);
         }
-        
-        // 晚更新
-        _scene->lateUpdate(deltaTime);
-        
-        // 清除帧变换标志
-        _scene->clearNodeFrameFlag();
     }
     
     void cleanup() {
@@ -419,13 +392,12 @@ public:
             delete enemy;
         }
         _enemies.clear();
-        
+
         // 销毁玩家
         delete _player;
-        
-        // 销毁场景
-        _scene->destroy();
-        delete _scene;
+
+        // 通过 game 销毁场景
+        Boo::game->destroyScene();
     }
 };
 
@@ -433,22 +405,14 @@ public:
 int main() {
     // 初始化引擎
     // ...
-    
+
     // 创建游戏管理器
     GameManager gameManager;
     gameManager.init();
-    
-    // 游戏主循环
-    while (!shouldExit()) {
-        float deltaTime = getDeltaTime();
-        gameManager.update(deltaTime);
-        // 渲染
-        // ...
-    }
-    
-    // 清理
-    gameManager.cleanup();
-    
+
+    // 引擎主循环由 window/platform 驱动
+    // ...
+
     return 0;
 }
 ```

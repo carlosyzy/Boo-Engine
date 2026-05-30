@@ -25,11 +25,11 @@
 Component(std::string name, Node *node, std::string uuid = "");
 
 // 生命周期方法
-virtual void Awake() = 0;
-virtual void Enable() = 0;
+virtual void   OnAwake() = 0;
+virtual void   OnEnable () = 0;
 virtual void Update(float deltaTime) = 0;
 virtual void LateUpdate(float deltaTime) = 0;
-virtual void Disable() = 0;
+virtual void   OnDisable() = 0;
 virtual void destroy();
 
 // 状态管理
@@ -40,7 +40,7 @@ const bool isEnabledInHierarchy();
 // 属性访问
 std::string getName();
 Node *getNode();
-NodeLayer getLayer();
+EComponentLayer getLayer();
 const std::string getUuid();
 ```
 
@@ -52,12 +52,12 @@ const std::string getUuid();
 Camera(std::string name, Node *node, std::string uuid = "");
 
 // 生命周期方法
-void Awake() override;
-void Enable() override;
+void   OnAwake() override;
+void   OnEnable () override;
 void Update(float deltaTime) override;
 void LateUpdate(float deltaTime) override;
 virtual void Render();
-void Disable() override;
+void   OnDisable() override;
 void destroy() override;
 
 // 属性设置
@@ -79,12 +79,12 @@ int getGroupIDs();
 UISprite(std::string name, Node *node, std::string uuid = "");
 
 // 生命周期方法
-void Awake() override;
-void Enable() override;
+void   OnAwake() override;
+void   OnEnable () override;
 void Update(float deltaTime) override;
 void LateUpdate(float deltaTime) override;
 void Render(Camera *camera) override;
-void Disable() override;
+void   OnDisable() override;
 void destroy() override;
 
 // 属性设置
@@ -107,9 +107,9 @@ void setMaterial(MaterialAsset *material);
 #include "engine/boo.h"
 
 void setupComponents() {
-    // 创建节点
-    Boo::Node2D* node = new Boo::Node2D();
-    node->setPosition(Boo::Vector2(100, 100));
+    // 创建节点（必须提供名称参数）
+    Boo::Node2D* node = new Boo::Node2D("PlayerNode");
+    node->setPosition(100, 100, 0);
 
     // 添加相机组件
     Boo::Component* cameraComp = node->addComponent("Camera");
@@ -139,11 +139,11 @@ class GameLogic : public Boo::Component
 public:
     GameLogic(std::string name, Boo::Node *node, std::string uuid = "");
 
-    void Awake() override;
-    void Enable() override;
+    void   OnAwake() override;
+    void   OnEnable () override;
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
-    void Disable() override;
+    void   OnDisable() override;
     void destroy() override;
     ~GameLogic() override;
 
@@ -163,12 +163,12 @@ GameLogic::GameLogic(std::string name, Boo::Node *node, std::string uuid)
     : Boo::Component(name, node, uuid), score(0), timer(0.0f) {
 }
 
-void GameLogic::Awake() {
+void GameLogic::  OnAwake() {
     score = 0;
     timer = 0.0f;
 }
 
-void GameLogic::Enable() {
+void GameLogic::  OnEnable () {
 }
 
 void GameLogic::Update(float deltaTime) {
@@ -182,7 +182,7 @@ void GameLogic::Update(float deltaTime) {
 void GameLogic::LateUpdate(float deltaTime) {
 }
 
-void GameLogic::Disable() {
+void GameLogic::  OnDisable() {
 }
 
 void GameLogic::destroy() {
@@ -225,7 +225,7 @@ void setupGameLogic() {
 在组件中创建子节点时，应该使用 `getNode()` 获取组件所在的节点，而不是使用 `root2D`：
 
 ```cpp
-void GameLogic::Awake() {
+void GameLogic::  OnAwake() {
     auto node = getNode();
     
     auto sprite = new Boo::Node2D("Background");
@@ -247,11 +247,11 @@ void GameLogic::Awake() {
 
 组件的生命周期包括以下阶段：
 
-1. **初始化**：当组件被创建时，`Awake()` 方法被调用
-2. **启用**：当组件被启用时，`Enable()` 方法被调用
+1. **初始化**：当组件被创建时，`  OnAwake()` 方法被调用
+2. **启用**：当组件被启用时，`  OnEnable ()` 方法被调用
 3. **更新**：每一帧，`Update()` 方法被调用
 4. **晚更新**：每一帧，在所有 `Update()` 方法执行后，`LateUpdate()` 方法被调用
-5. **禁用**：当组件被禁用时，`Disable()` 方法被调用
+5. **禁用**：当组件被禁用时，`  OnDisable()` 方法被调用
 6. **销毁**：当组件被销毁时，`destroy()` 方法被调用
 
 ## 组件系统架构

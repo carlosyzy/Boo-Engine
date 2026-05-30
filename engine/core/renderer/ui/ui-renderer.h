@@ -9,10 +9,8 @@
 #include <cstdint>
 #include <array>
 #include <cstdint>
-
-#include "../../math/math-api.h"
-#include "../../component/component.h"
-
+#include "core/component/component.h"
+#include "core/math/mat4.h"
 namespace Boo
 {
 
@@ -34,11 +32,13 @@ namespace Boo
          *
          */
         bool _canRenderer(Camera *camera);
+
     public:
         UIRenderer(std::string name, Node *node, std::string uuid = "");
 
-        void Awake() override;
-        void Enable() override;
+        void OnAwake() override;
+        void OnEnable() override;
+        void setProperty(json &data) override;
         void Update(float deltaTime) override;
         void LateUpdate(float deltaTime) override;
         /**
@@ -46,7 +46,8 @@ namespace Boo
          * 当前节点组件以及子节点组件的lateUpdate执行结束,render渲染函数开始
          */
         virtual void Render(Camera *camera);
-        void Disable() override;
+        void OnDisable() override;
+        void OnDestroy() override {};
         void destroy() override;
 
         virtual ~UIRenderer() override;

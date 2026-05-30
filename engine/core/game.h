@@ -5,11 +5,42 @@
 #include <vector>
 #include <unordered_map>
 #include <cstdint>
-class Window;
+class Windows;
+class MacOS;
 class Android;
+class HarmonyOS;
 namespace Boo
 {
+    class Scene;
+    class Camera;
+    class Node;
+    class Node3D;
+    class Node2D;
+    class Renderer;
+    class Component;
 
+    enum class UIDesignFitMode
+    {
+        /**
+         * 无适配(宽度和高度都不变,常用于全屏游戏)
+         */
+        None,
+        /**
+         * 宽适配(宽度不变，高度按比例缩放,超出部分裁剪,常用于竖屏游戏)
+         */
+        Width,
+        /**
+         * 高适配(高度不变，宽度按比例缩放,超出部分裁剪,常用于横屏游戏)
+         */
+        Height,
+    };
+    struct InitConfig
+    {
+        int fps;
+        int designWidth;
+        int designHeight;
+        UIDesignFitMode fitMode;
+    };
     struct ScheduleInfo
     {
         std::function<void()> func;
@@ -33,15 +64,6 @@ namespace Boo
         }
     };
 
-    enum class UIDesignFitMode;
-    class Scene;
-    class Camera;
-    class Node;
-    class Node3D;
-    class Node2D;
-    class Renderer;
-    class Component;
-
     class Game
     {
     private:
@@ -64,19 +86,23 @@ namespace Boo
          * @brief 当前场景
          */
         Scene *_curScene;
-
+    
+    private:
+        // 平台相关
+        Windows *_windows;
+        MacOS *_macos;
+        Android *_android;
+        HarmonyOS *_harmonyos;
     private:
         // 调度器相关
         uint64_t _scheduleNextID_ = 0;
         std::unordered_map<int, ScheduleInfo> _schedules;
-
     private:
         std::vector<int> _scheduleClearCaches;
         // 组件清理相关
         std::vector<Component *> _compClearCaches;
         // 节点清理相关
         std::vector<Node *> _nodeClearCaches;
-
     private:
         /**
          * @brief 初始化事件系统
@@ -87,13 +113,13 @@ namespace Boo
          */
         void _initInput();
         /**
-         * @brief 初始化字体系统
-         */
-        void _initFont();
-        /**
          * @brief 初始化资产系统
          */
-        void _initAssets(Window *window, Android *android);
+        void _initAssets();
+        /**
+         * @brief 初始化音频系统
+         */
+        void _initAudio();
         /**
          * @brief 初始化性能分析系统
          */
@@ -116,37 +142,35 @@ namespace Boo
          * @param width 实际宽度
          * @param height 实际高度
          */
-        void _initView(int uiDesignWidth, int uiDesignHeight, UIDesignFitMode fitMode, int width, int height);
+        void _initView(int width, int height, InitConfig &config);
 
         void _update(float dt);
         void _updateSchedules(float dt);
+        void _updateSystem(float dt);
         void _lateUpdate(float dt);
         void _render(float dt);
-
         void _clear();
         void _updateClearCaches();
 
     public:
         Game();
         ~Game();
-        /**
-         * @brief 初始化游戏
-         * @param window 窗口
-         * @param uiDesignWidth 设计宽度
-         * @param uiDesignHeight 设计高度
-         * @param fitMode 适配模式
-         */
-        void init(Window *window, int uiDesignWidth, int uiDesignHeight, UIDesignFitMode fitMode);
-        void init(Android *android, int uiDesignWidth, int uiDesignHeight, UIDesignFitMode fitMode);
+        void init(Windows *windows, InitConfig &config);
+        void init(MacOS *macos, InitConfig &config);
+        void init(Android *android, InitConfig &config);
+        void init(HarmonyOS *harmonyos, InitConfig &config);
+        Windows *getWindows();
+        MacOS *getMacOS();
+        Android *getAndroid();
+        HarmonyOS *getHarmonyOS();
+
         void setFrameRate(int frameRate);
         const int getFrameRate() const;
         const int getFps() const;
         Scene *getScene();
         void openScene(Scene *scene);
         void destroyScene();
-
         void resizeView(const int width, const int height);
-
         // typename T: 表示一个类型参数，通常指类的类型
         // typename Func: 表示另一个类型参数，通常指函数类型（函数指针、成员函数指针、函数对象等）
         template <typename T, typename Func>
@@ -174,10 +198,8 @@ namespace Boo
             return id;
         }
         void unschedule(int scheduleID);
-
         void addCompClearCaches(Component *comp);
         void addNodeClearCaches(Node *node);
-
         /**
          * @brief 更新鼠标状态
          *
@@ -202,6 +224,20 @@ namespace Boo
          * @param mods 键盘修饰键 0:无 1:Shift 2:Ctrl 3:Alt
          */
         void updateKeyState(int key, int scancode, int action, int mods);
+        /**
+         * @brief 更新滚动状态
+         *
+         * @param xoffset 滚动X偏移量
+         * @param yoffset 滚动Y偏移量
+         */
+        void updateScroll(double xoffset, double yoffset);
+        /**
+         * @brief 更新触摸状态
+         * @param action 触摸操作 0:抬起 1:按下
+         * @param x 触摸X坐标
+         * @param y 触摸Y坐标
+         */
+        void updateTouch(int action, float x, float y);
 
         void tick();
     };

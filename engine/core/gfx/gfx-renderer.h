@@ -53,7 +53,7 @@ public:
 	/**
 	 * 创建 or 销毁渲染纹理
 	 */
-	GfxTexture *createTexture(std::string uuid, uint32_t width, uint32_t height, uint32_t channels, const std::vector<uint8_t> *pixels, GfxTextureFormat format);
+	GfxTexture *createTexture(std::string uuid, uint32_t width, uint32_t height, uint32_t channels,int textureType, const std::vector<uint8_t> *pixels, GfxTextureFormat format);
 	void insertTexture(GfxTexture *texture);
 	void destroyTexture(GfxTexture *texture);
 	
@@ -76,11 +76,11 @@ public:
 	/**
 	 * @brief 创建网格
 	 */
-	GfxMesh *createMesh(std::string meshUuid, int meshMode, const std::vector<float> &vertices, const std::vector<uint32_t> &indices);
+	GfxMesh *createMesh(std::string meshUuid, int meshType, const std::vector<float> &vertices, const std::vector<uint32_t> &indices);
 	/**
 	 * @brief 创建UI网格
 	 */
-	GfxMesh *createUIMesh(std::string meshUuid,int meshMode,  const std::vector<float> &vertices, const std::vector<uint32_t> &indices);
+	GfxMesh *createUIMesh(std::string meshUuid,int meshType,  const std::vector<float> &vertices, const std::vector<uint32_t> &indices);
 	/**
 	 * @brief 销毁网格
 	 */

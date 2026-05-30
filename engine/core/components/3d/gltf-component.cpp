@@ -1,25 +1,39 @@
 #include "gltf-component.h"
-#include "../../../boo.h"
-#include "../../../log.h"
-#include "../../renderer/3d/mesh-renderer.h"
+#include "boo.h"
+#include "log.h"
+#include "core/scene/node-3d.h"
+#include "core/renderer/3d/mesh-renderer.h"
+#include "core/asset/gltf-asset.h"
+#include "core/asset/mesh-asset.h"
+#include "core/asset/material-asset.h"
+#include "core/asset/texture-asset.h"
+
 namespace Boo
 {
     GLTFComponent::GLTFComponent(std::string name, Node *node, std::string uuid)
         : Component(name, node, uuid)
     {
-        this->_gltfAsset = nullptr;
-        this->_layer = ComponentLayer::Node3D;
+        this->_layer = EComponentLayer::Layer3D;
         this->_node3D = dynamic_cast<Node3D *>(node);
+        this->_gltfAsset = nullptr;
     }
-    void GLTFComponent::Awake()
+    void GLTFComponent::  OnAwake()
     {
     }
-    void GLTFComponent::Enable()
+    void GLTFComponent::  OnEnable ()
     {
+    }
+    void GLTFComponent::setProperty(json &data)
+    {
+        Component::setProperty(data);
+        if (data.contains("gltf")&&data["gltf"].is_string())
+        {
+           this->setGLTFAsset(data["gltf"].get<std::string>());
+        }
     }
     void GLTFComponent::setGLTFAsset(std::string gltfAssetPath)
     {
-        GLTFAsset *asset = dynamic_cast<GLTFAsset *>(assetsManager->getAsset(gltfAssetPath,true));
+        GLTFAsset *asset = dynamic_cast<GLTFAsset *>(assetManager->getAsset(gltfAssetPath,true));
         if (asset == nullptr)
         {
             LOGI("GLTFComponent::setGLTFAsset, asset: %s not found", gltfAssetPath.c_str());
@@ -44,8 +58,8 @@ namespace Boo
             LOGE("GLTFComponent::_parseGLTFAsset, gltfAsset: nullptr");
             return;
         }
-        const GLTFNode &root = this->_gltfAsset->getRoot();
-        this->_parseGLTFNode(this->_node3D, this->_gltfAsset->getRoot());
+        // const GLTFNode &root = this->_gltfAsset->getRoot();
+        // this->_parseGLTFNode(this->_node3D, this->_gltfAsset->getRoot());
     }
     void GLTFComponent::_parseGLTFNode(Node3D *parent, const GLTFNode &gltfNode)
     {
@@ -91,7 +105,7 @@ namespace Boo
             return;
         }
 
-        MeshAsset *meshAsset = dynamic_cast<MeshAsset *>(assetsManager->getAsset(meshUuid,true));
+        MeshAsset *meshAsset = dynamic_cast<MeshAsset *>(assetManager->getAsset(meshUuid,true));
         if (meshAsset == nullptr)
         {
             LOGE("GLTFComponent::_parseGLTFMeshRenderer, meshAsset: nullptr");
@@ -101,7 +115,7 @@ namespace Boo
     }
     void GLTFComponent::setMaterial(std::string meshNodePath, int meshIndex, std::string materialPath)
     {
-        MaterialAsset *material = dynamic_cast<MaterialAsset *>(assetsManager->getAsset(materialPath,true));
+        MaterialAsset *material = dynamic_cast<MaterialAsset *>(assetManager->getAsset(materialPath,true));
         if (material == nullptr)
         {
             LOGE("GLTFComponent::setMaterial, material: %s not found", materialPath.c_str());
@@ -163,7 +177,7 @@ namespace Boo
     }
     void GLTFComponent::setTexture(std::string meshNodePath, int mtlIndex, std::string texturePath)
     {
-        TextureAsset *texture = dynamic_cast<TextureAsset *>(assetsManager->getAsset(texturePath,true));
+        TextureAsset *texture = dynamic_cast<TextureAsset *>(assetManager->getAsset(texturePath,true));
         if (texture == nullptr)
         {
             LOGE("GLTFComponent::setTexture, texture: %s not found", texturePath.c_str());
@@ -186,7 +200,7 @@ namespace Boo
     }
     void GLTFComponent::setTexture(std::string meshNodePath, int mtlIndex, std::string key, std::string texturePath)
     {
-        TextureAsset *texture = dynamic_cast<TextureAsset *>(assetsManager->getAsset(texturePath,true));
+        TextureAsset *texture = dynamic_cast<TextureAsset *>(assetManager->getAsset(texturePath,true));
         if (texture == nullptr)
         {
             LOGE("GLTFComponent::setTexture, texture: %s not found", texturePath.c_str());
@@ -207,7 +221,7 @@ namespace Boo
         }
         materials[mtlIndex]->setTexture(key, texture);
     }
-    void GLTFComponent::Disable()
+    void GLTFComponent::  OnDisable()
     {
     }
     void GLTFComponent::Update(float deltaTime)

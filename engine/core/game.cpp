@@ -1,16 +1,24 @@
 #include "game.h"
-#include "../boo.h"
-#include "../log.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "../libs/stb/stb_image.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "../libs/stb/stb_image_write.h"
-#include "../platforms/window/window.h"
-#include "../platforms/android/android.h"
-#include "../boo.h"
-#include "gfx/gfx-mgr.h"
-#include "font/freetype-mgr.h"
-#include "alpha/alpha.h"
+#include "boo.h"
+#include "log.h"
+#define MINIAUDIO_IMPLEMENTATION
+#include "libs/miniaudio/miniaudio.h"
+#include "platforms/windows/windows.h"
+#include "platforms/macos/macos.h"
+#include "platforms/android/android.h"
+#include "platforms/harmonyos/harmonyos.h"
+#include "core/gfx/gfx-manager.h"
+#include "core/font/freetype-mgr.h"
+#include "core/alpha/alpha.h"
+#include "core/view/view.h"
+#include "core/asset/asset-manager.h"
+#include "core/event/event.h"
+#include "core/input/input.h"
+#include "core/profiler/profiler.h"
+#include "core/renderer/renderer-mgr.h"
+#include "core/util/time-util.h"
+#include "core/component/component.h"
+#include "core/scene/node.h"
 
 namespace Boo
 {
@@ -20,50 +28,95 @@ namespace Boo
 				   _viewChanged(false),
 				   _viewChangedTime(0.0f),
 				   _curScene(nullptr),
-				   _scheduleNextID_(0)
+				   _scheduleNextID_(0),
+				   _windows(nullptr),
+				   _macos(nullptr),
+				   _android(nullptr),
+				   _harmonyos(nullptr)
 	{
 	}
-	void Game::init(Window *window, int uiDesignWidth, int uiDesignHeight, UIDesignFitMode fitMode)
+	void Game::init(Windows *windows, InitConfig &config)
 	{
+#if defined(BOO_PLATFORM_WINDOWS)
+		this->_windows = windows;
 		LOGI("[Game]:INIT WINDOW");
-		GfxMgr::getInstance()->init(window);
-		this->_initAssets(window, nullptr);
-		this->_initView(uiDesignWidth, uiDesignHeight, fitMode, window->getWidth(), window->getHeight());
+		GfxManager::getInstance()->init(windows);
+		this->_initAssets();
+		this->_initView(windows->getWidth(), windows->getHeight(), config);
 		this->_initEvent();
 		this->_initInput();
-		this->_initFont();
+		this->_initAudio();
 		this->_initProfiler();
 		this->_initRenderer();
 		this->_initAlpha();
+#endif
 	}
-	void Game::init(Android *android, int uiDesignWidth, int uiDesignHeight, UIDesignFitMode fitMode)
+	void Game::init(MacOS *macos, InitConfig &config)
 	{
-		LOGI("[Game]:INIT ANDROID");
-		GfxMgr::getInstance()->init(android);
+#if defined(BOO_PLATFORM_MACOS)
+		this->_macos = macos;
+		LOGI("[Game]:INIT MACOS");
+		GfxManager::getInstance()->init(macos);
+		this->_initAssets();
+		this->_initView(macos->getWidth(), macos->getHeight(), config);
 		this->_initEvent();
-		this->_initView(uiDesignWidth, uiDesignHeight, fitMode, android->getWidth(), android->getHeight());
-		this->_initAssets(nullptr, android);
 		this->_initInput();
-		this->_initFont();
+		this->_initAudio();
 		this->_initProfiler();
 		this->_initRenderer();
-		// this->_initAlpha();
+		this->_initAlpha();
+#endif
 	}
-	void Game::_initView(int uiDesignWidth, int uiDesignHeight, UIDesignFitMode fitMode, int width, int height)
+	void Game::init(Android *android, InitConfig &config)
 	{
-		view = new View(uiDesignWidth, uiDesignHeight, fitMode, width, height);
+#if defined(BOO_PLATFORM_ANDROID)
+		this->_android = android;
+		LOGI("[Game]:INIT ANDROID");
+		GfxManager::getInstance()->init(android);
+		this->_initEvent();
+		this->_initView(android->getWidth(), android->getHeight(), config);
+		this->_initAssets();
+		this->_initInput();
+		this->_initAudio();
+		this->_initProfiler();
+		this->_initRenderer();
+		this->_initAlpha();
+#endif
 	}
-	void Game::_initAssets(Window *window, Android *android)
+	void Game::init(HarmonyOS *harmonyos, InitConfig &config)
+	{
+#if defined(BOO_PLATFORM_HARMONYOS)
+		this->_harmonyos = harmonyos;
+		LOGI("[Game]:INIT HARMONYOS");
+		GfxManager::getInstance()->init(harmonyos);
+		this->_initEvent();
+		this->_initView(harmonyos->getWidth(), harmonyos->getHeight(), config);
+		this->_initAssets();
+		this->_initInput();
+		this->_initAudio();
+		this->_initProfiler();
+		this->_initRenderer();
+		this->_initAlpha();
+#endif
+	}
+	void Game::_initView(int width, int height, InitConfig &config)
+	{
+		view = new View(width, height);
+		view->setDesignFitMode(config.fitMode);
+		view->setDesignSize(config.designWidth, config.designHeight);
+	}
+	void Game::_initAssets()
 	{
 		LOGI("[Game]:INIT ASSETS MGR");
-		assetsManager = new AssetsManager();
-#if defined(BOO_PLATFORM_WINDOWS) || defined(BOO_PLATFORM_MACOS)
-		assetsManager->setAssetsRoot(window->getAssetsRoot());
-#elif defined(BOO_PLATFORM_ANDROID)
-		assetsManager->setAndroidAssetsManager(android->getAndroidAssetsManager());
-#endif
+		assetManager = new AssetManager();
 		// 初始化资产管理器
-		assetsManager->init();
+		assetManager->init();
+	}
+	void Game::_initAudio()
+	{
+		LOGI("[Game]:INIT AUDIO MGR");
+		audioManager = new AudioManager();
+		audioManager->init();
 	}
 	void Game::_initEvent()
 	{
@@ -73,13 +126,8 @@ namespace Boo
 	void Game::_initInput()
 	{
 		LOGI("[Game]:INIT INPUT");
-		// input = new Input();
-		// input->init();
-	}
-	void Game::_initFont()
-	{
-		LOGI("[Game]:INIT FONT MGR");
-		FreetypeMgr::getInstance()->init();
+		input = new Input();
+		input->init();
 	}
 	/**
 	 * @brief 初始化性能分析系统
@@ -93,14 +141,29 @@ namespace Boo
 	void Game::_initRenderer()
 	{
 		LOGI("[Game]:INIT RENDERER");
-		renderer = new Renderer();
-		renderer->init();
+		RendererMgr::getInstance()->init();
 	}
 	void Game::_initAlpha()
 	{
 		LOGI("[Game]:INIT ALPHA");
 		Alpha *alpha = new Alpha("AlphaScene");
 		this->openScene(alpha);
+	}
+	Windows *Game::getWindows()
+	{
+		return this->_windows;
+	}
+	MacOS *Game::getMacOS()
+	{
+		return this->_macos;
+	}
+	Android *Game::getAndroid()
+	{
+		return this->_android;
+	}
+	HarmonyOS *Game::getHarmonyOS()
+	{
+		return this->_harmonyos;
 	}
 	void Game::resizeView(const int width, const int height)
 	{
@@ -112,7 +175,7 @@ namespace Boo
 		view->resize(width, height);
 		this->_viewChanged = true;
 		this->_viewChangedTime = TimeUtil::nowTime();
-		GfxMgr::getInstance()->resize(width, height);
+		GfxManager::getInstance()->resize(width, height);
 	}
 	/**
 	 * @brief 取消调度
@@ -144,7 +207,7 @@ namespace Boo
 			LOGI("[Game]:destroy scene: %s", this->_curScene->getName().c_str());
 			this->_curScene->destroy();
 			this->_curScene = nullptr;
-			renderer->clearCameras();
+			RendererMgr::getInstance()->clearCameras();
 		}
 	}
 	Scene *Game::getScene()
@@ -173,6 +236,7 @@ namespace Boo
 	}
 	void Game::tick()
 	{
+
 		if (this->_deltaTime == 0)
 		{
 			this->_deltaTime = TimeUtil::nowTime();
@@ -186,6 +250,7 @@ namespace Boo
 			this->_fps = static_cast<int>(std::ceil(1.0f / dt));
 			this->_deltaTime = deltaTime;
 			this->_update(dt);
+			this->_updateSystem(dt);
 			this->_lateUpdate(dt);
 			this->_render(dt);
 			this->_clear();
@@ -198,53 +263,11 @@ namespace Boo
 			this->_curScene->update(dt);
 		}
 		this->_updateSchedules(dt);
-		if (assetsManager != nullptr)
+		if (assetManager != nullptr)
 		{
-			assetsManager->update(dt);
+			assetManager->update(dt);
 		}
 	}
-	void Game::_lateUpdate(float dt)
-	{
-		if (this->_curScene)
-		{
-			this->_curScene->lateUpdate(dt);
-		}
-	}
-	void Game::_render(float dt)
-	{
-		// 重置相机渲染纹理大小
-		if (this->_viewChanged)
-		{
-			if (TimeUtil::nowTime() - this->_viewChangedTime >= 100)
-			{
-				this->_viewChanged = false;
-				if (renderer != nullptr)
-				{
-					renderer->updateViewSize();
-				}
-			}
-		}
-		// 更新渲染器
-		if (renderer != nullptr)
-		{
-			renderer->render(this->_curScene); // 可以统计出渲染物体数量
-		}
-		if (profiler != nullptr)
-		{
-			profiler->render();
-		}
-		GfxMgr::getInstance()->update(dt);
-	}
-
-	void Game::_clear()
-	{
-		if (this->_curScene)
-		{
-			this->_curScene->clearNodeFrameFlag();
-		}
-		this->_updateClearCaches();
-	}
-
 	void Game::_updateSchedules(float dt)
 	{
 		// 待修复
@@ -278,6 +301,49 @@ namespace Boo
 			}
 		}
 	}
+	void Game::_updateSystem(float dt)
+	{
+		if (audioManager != nullptr)
+		{
+			audioManager->update(dt);
+		}
+	}
+	void Game::_lateUpdate(float dt)
+	{
+		if (this->_curScene)
+		{
+			this->_curScene->lateUpdate(dt);
+		}
+	}
+	void Game::_render(float dt)
+	{
+		// 重置相机渲染纹理大小
+		if (this->_viewChanged)
+		{
+			if (TimeUtil::nowTime() - this->_viewChangedTime >= 100)
+			{
+				this->_viewChanged = false;
+				RendererMgr::getInstance()->updateViewSize();
+			}
+		}
+		// 更新渲染器
+		RendererMgr::getInstance()->render(this->_curScene); // 可以统计出渲染物体数量
+		if (profiler != nullptr)
+		{
+			profiler->render();
+		}
+		GfxManager::getInstance()->update(dt);
+	}
+
+	void Game::_clear()
+	{
+		if (this->_curScene)
+		{
+			this->_curScene->clearNodeFrameFlag();
+		}
+		this->_updateClearCaches();
+	}
+
 	void Game::_updateClearCaches()
 	{
 		// 清除计数器
@@ -288,9 +354,10 @@ namespace Boo
 		this->_scheduleClearCaches.clear();
 
 		// 清除组件缓存
-		for (auto &comp : this->_compClearCaches)
+		for (auto comp : this->_compClearCaches)
 		{
-			// std::cout << "Game::_updateClearCaches: clear comp: " << comp->getNode()->getName() << std::endl;
+			// std::cout << "Game::_updateClearCaches: clear comp: " << comp->getName() << std::endl;
+			// LOGI("Game::_updateClearCaches: clear comp: %s",comp->getName().c_str());
 			if (comp != nullptr)
 			{
 				delete comp;
@@ -299,9 +366,11 @@ namespace Boo
 		}
 		this->_compClearCaches.clear();
 		// 清除节点缓存
-		for (auto &node : this->_nodeClearCaches)
+		for (auto node : this->_nodeClearCaches)
 		{
 			// std::cout << "Game::_updateClearCaches: clear node: " << node << "   " << node->getName() << std::endl;
+			const std::string name = node->getName();
+			// LOGI("Game::_updateClearCaches: clear node: %s",name.c_str());
 			if (node != nullptr)
 			{
 				delete node;
@@ -313,20 +382,28 @@ namespace Boo
 	/**
 	 * @brief 鼠标按钮事件
 	 * @param button 鼠标按钮 0: 左键 1: 右键 2: 中键
-	 * @param action 事件动作 GLFW_PRESS: 按下 GLFW_RELEASE: 释放
-	 * @param mods 按键修饰符
+	 * @param action 事件动作 GLFW_PRESS(0): 按下 GLFW_RELEASE(1): 释放
+	 * @param mods 按键修饰符 GLFW_MOD_SHIFT: Shift GLFW_MOD_CTRL: Ctrl GLFW_MOD_ALT: Alt
 	 */
 	void Game::updateMouseState(int button, int action, int mods)
 	{
-		// Boo::input->onMouseButton(button, action, mods);
+		input->_emitMouseButton(button, action, mods);
 	}
 	void Game::updateMousePos(double xpos, double ypos)
 	{
-		// Boo::input->onCursorPos(xpos, ypos);
+		input->_emitMouseMove(xpos, ypos);
 	}
 	void Game::updateKeyState(int key, int scancode, int action, int mods)
 	{
-		// Boo::input->onKey(key, scancode, action, mods);
+		// input->_onKey(key, scancode, action, mods);
+	}
+	void Game::updateScroll(double xoffset, double yoffset)
+	{
+		input->_emitScroll(xoffset, yoffset);
+	}
+	void Game::updateTouch(int action, float x, float y)
+	{
+		input->_emitTouch(action, x, y);
 	}
 
 	Game::~Game()

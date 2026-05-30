@@ -1,33 +1,53 @@
 #include "gfx.h"
 #include "gfx-context.h"
-#include "gfx-mgr.h"
+#include "gfx-manager.h"
 #include "../../boo.h"
 #include "../../log.h"
 #if defined(BOO_PLATFORM_ANDROID)
 #include <vulkan/vulkan_android.h>
+#elif defined(BOO_PLATFORM_HARMONYOS)
+#include <vulkan/vulkan_ohos.h>
 #endif
-#include "../../platforms/window/window.h"
+#include "../../platforms/windows/windows.h"
 #include "../../platforms/android/android.h"
+#include "../../platforms/macos/macos.h"
 
 // 校验层
 std::vector<const char *> ValidationLayers = {"VK_LAYER_KHRONOS_validation"};
 std::vector<const char *> DeviceExtensions = {
-    VK_KHR_SWAPCHAIN_EXTENSION_NAME,             // 交换链扩展
-    VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME // 扩展动态状态
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME, // 交换链扩展
 };
 
 GfxContext::GfxContext()
 {
 }
-void GfxContext::init(Window *window)
+void GfxContext::init(Windows *windows)
 {
     this->_createInstance();
     this->_setupDebugMessenger();
-#if defined(BOO_PLATFORM_WINDOWS) || defined(BOO_PLATFORM_MACOS)
+#if defined(BOO_PLATFORM_WINDOWS)
     LOGI("[Gfx Context]:CREATE WINDOW SURFACE");
-    if (glfwCreateWindowSurface(this->_vkinstance, window->getWindow(), nullptr, &this->_surface) != VK_SUCCESS)
+    if (glfwCreateWindowSurface(this->_vkinstance, windows->getWindow(), nullptr, &this->_surface) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create window surface!");
+    }
+#endif
+    this->_initPhysicalDevice();
+    this->_createLogicalDevice();
+    this->_createCommandPool();
+    this->_createSwapChainKHR();
+    this->_createImageViews();
+    this->_createSyncObjects();
+}
+void GfxContext::init(MacOS *macos)
+{
+    this->_createInstance();
+    this->_setupDebugMessenger();
+#if defined(BOO_PLATFORM_MACOS)
+    LOGI("[Gfx Context]:CREATE MACOS SURFACE");
+    if (glfwCreateWindowSurface(this->_vkinstance, macos->getWindow(), nullptr, &this->_surface) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create macOS surface!");
     }
 #endif
     this->_initPhysicalDevice();
@@ -52,6 +72,47 @@ void GfxContext::init(Android *android)
     {
         throw std::runtime_error("failed to create android surface!");
     }
+#endif
+    this->_initPhysicalDevice();
+    this->_createLogicalDevice();
+    this->_createCommandPool();
+    this->_createSwapChainKHR();
+    this->_createImageViews();
+    this->_createSyncObjects();
+}
+void GfxContext::init(HarmonyOS *harmonyos)
+{
+    this->_createInstance();
+    this->_setupDebugMessenger();
+#if defined(BOO_PLATFORM_HARMONYOS)
+    LOGI("[Gfx Context]:CREATE HARMONYOS SURFACE");
+    VkSurfaceCreateInfoOHOS surfaceInfo = {};
+    surfaceInfo.sType = VK_STRUCTURE_TYPE_OH_SURFACE_CREATE_INFO_OHOS;
+    LOGI("[Gfx Context]:CREATE HARMONYOS SURFACE1");
+    surfaceInfo.window = harmonyos->getNativeWindow(); // 传入ANativeWindow
+    surfaceInfo.flags = 0;
+    surfaceInfo.pNext = nullptr;
+    LOGI("[Gfx Context]:CREATE HARMONYOS SURFACE2");
+    // 1. 声明函数指针变量
+    PFN_vkCreateSurfaceOHOS vkCreateSurfaceOHOS = nullptr;
+    // 2. 从 Vulkan 实例中加载函数
+    vkCreateSurfaceOHOS = (PFN_vkCreateSurfaceOHOS)vkGetInstanceProcAddr(
+        this->_vkinstance,
+        "vkCreateSurfaceOHOS");
+    LOGI("[Gfx Context]:CREATE HARMONYOS SURFACE3");
+    // 3. 检查函数指针是否加载成功
+    if (vkCreateSurfaceOHOS == nullptr)
+    {
+        // 处理错误：设备不支持该扩展或函数未导出
+        // 例如：日志输出并返回失败
+        throw std::runtime_error("failed to create PFN_vkCreateSurfaceOHOS!");
+    }
+    LOGI("[Gfx Context]:CREATE HARMONYOS SURFACE4");
+    if (vkCreateSurfaceOHOS(this->_vkinstance, &surfaceInfo, NULL, &this->_surface) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create harmonyos surface!");
+    }
+    LOGI("[Gfx Context]:CREATE HARMONYOS SURFACE Success");
 #endif
     this->_initPhysicalDevice();
     this->_createLogicalDevice();
@@ -92,9 +153,12 @@ void GfxContext::_createInstance()
     // VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR 是一个 Vulkan 扩展标识
     // 这个标识在 macOS/iOS 的 MoltenVK 中需要，但在 Android 上不需要
     createInfo.flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
-#else
+#elif defined(BOO_PLATFORM_ANDROID)
     // Android 和其他平台不需要此标识
     createInfo.flags = 0;
+#elif defined(BOO_PLATFORM_HARMONYOS)
+    // HarmonyOS 和其他平台不需要此标识
+    createInfo.flags = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 #endif
 
     createInfo.pApplicationInfo = &appInfo;
@@ -112,12 +176,16 @@ void GfxContext::_createInstance()
     this->_populateDebugMessengerCreateInfo(debugCreateInfo);
     createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&debugCreateInfo;
 #endif
-    if (vkCreateInstance(&createInfo, nullptr, &this->_vkinstance) != VK_SUCCESS)
+    VkResult ret = vkCreateInstance(&createInfo, nullptr, &this->_vkinstance);
+    if (ret != VK_SUCCESS)
     {
-        throw std::runtime_error("Failed to create instance!");
+        std::stringstream ss;
+        ss << "vkCreateInstance failed, VkResult = " << ret;
+        throw std::runtime_error(ss.str());
     }
     // 3. 加载实例级函数指针（关键步骤！）
     volkLoadInstance(this->_vkinstance);
+    LOGI("[Gfx Context]:CREATE INSTANCE SUCCESS");
 }
 bool GfxContext::_checkValidationLayerSupport()
 {
@@ -126,10 +194,19 @@ bool GfxContext::_checkValidationLayerSupport()
 
     std::vector<VkLayerProperties> availableLayers(layerCount);
     vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+    for (const char *layerName : ValidationLayers)
+    {
+        LOGI("[Gfx Context]:CHECK VALIDATION LAYER %s", layerName);
+    }
+    for (const auto &layerProperties : availableLayers)
+    {
+        LOGI("[Gfx Context]:CHECK VALIDATION LAYER %s", layerProperties.layerName);
+    }
+
     for (const char *layerName : ValidationLayers)
     {
         bool layerFound = false;
-
         for (const auto &layerProperties : availableLayers)
         {
             if (strcmp(layerName, layerProperties.layerName) == 0)
@@ -168,6 +245,10 @@ std::vector<const char *> GfxContext::_getRequiredExtensions()
     // VK_KHR_ANDROID_SURFACE_EXTENSION_NAME 是一个 Vulkan 实例扩展，它的核心作用是将 Android 的原生窗口（ANativeWindow）转换成 Vulkan 可以使用的抽象窗口表面（VkSurfaceKHR）
     extensions.push_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME); // windows renderdoc 报错
     extensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);         // windows renderdoc 报错
+#elif defined(BOO_PLATFORM_HARMONYOS)
+    // HarmonyOS 和其他平台不需要此标识
+    extensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);  // windows renderdoc 报错
+    extensions.push_back(VK_OHOS_SURFACE_EXTENSION_NAME); // windows renderdoc 报错
 #endif
     return extensions;
 }
@@ -375,55 +456,6 @@ bool GfxContext::_checkDeviceExtensionSupport(VkPhysicalDevice device)
 
     return requiredExtensions.empty();
 }
-
-// void GfxContext::_createDescriptorPool()
-// {
-//     const uint32_t TOTAL_OBJECTS = 3000;
-//     std::vector<VkDescriptorPoolSize> poolSizes(2);
-//     poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-//     poolSizes[0].descriptorCount = MAX_FRAMES_IN_FLIGHT * TOTAL_OBJECTS; // 支持更多
-//     poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-//     poolSizes[1].descriptorCount = MAX_FRAMES_IN_FLIGHT * TOTAL_OBJECTS * 8; // 一个描述符最多只是8张图
-
-//     VkDescriptorPoolCreateInfo poolInfo{};
-//     poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-//     poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
-//     poolInfo.pPoolSizes = poolSizes.data();
-//     poolInfo.maxSets = MAX_FRAMES_IN_FLIGHT * TOTAL_OBJECTS; // 支持更多描述符集
-//     if (vkCreateDescriptorPool(this->_vkdevice, &poolInfo, nullptr, &this->_descriptorPool) != VK_SUCCESS)
-
-//     {
-//         throw std::runtime_error("failed to create descriptor pool!");
-//     }
-//    /*  // GfxMgr::Log("create descriptor pool success...");
-
-//     // //需要销毁
-//     // if (this->_descriptorPool != VK_NULL_HANDLE) {
-//     //     vkDestroyDescriptorPool(this->_vkdevice, this->_descriptorPool, nullptr);
-//     //     this->_descriptorPool = VK_NULL_HANDLE;
-//     // } */
-// }
-
-// void GfxContext::setWindow(Window *window)
-// {
-// #if defined(BOO_PLATFORM_WINDOWS) || defined(BOO_PLATFORM_MACOS)
-//     this->_surface = VK_NULL_HANDLE;
-//     if (glfwCreateWindowSurface(this->_vkinstance, window->getWindow(), nullptr, &this->_surface) != VK_SUCCESS)
-//     {
-//         throw std::runtime_error("failed to create window surface!");
-//     }
-// #endif
-// }
-
-// void GfxContext::setAndroid(Android *android)
-// {
-// }
-// void GfxContext::clearSurface()
-// {
-//     this->cleanSwapChain();
-//     vkDestroySurfaceKHR(this->_vkinstance, this->_surface, nullptr);
-// }
-
 void GfxContext::resetSwapChain()
 {
     this->_createSwapChainKHR();
@@ -476,7 +508,7 @@ void GfxContext::_createSwapChainKHR()
     createInfo.imageArrayLayers = 1;                             /* // 用于指定每个图像所包含的层次。除了VR场景外，一般都是1. */
     createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; /*  // 指定我们在图像上的操作，此处我们将图像作为颜色来使用 */
     // 使用 pre-multiplied alpha 来支持窗口透明
-    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR;
+    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
     /**
      * VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR - 不透明（之前的设置）
      * VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR - 预乘 Alpha（用于透明窗口）
@@ -696,42 +728,6 @@ void GfxContext::_cleanSyncObjects()
     }
     this->_renderFinishedSemaphores.clear();
 }
-// /**
-//  * @brief 创建MSAA附件纹理
-//  *
-//  */
-// void GfxContext::_createMsaaAttachmentTexture()
-// {
-//     this->_colorMsaaTexture = new GfxTexture(this);
-//     this->_colorMsaaTexture->createImage(this->_swapChainExtent.width, this->_swapChainExtent.height, this->_swapChainImageFormat, VK_IMAGE_TILING_OPTIMAL,
-//                                          VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT|VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-//                                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, MsaaSamples);
-//     std::cout << "this->_colorMsaaTexture createImage end" << std::endl;
-//     this->_colorMsaaTexture->createImageView(this->_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
-//     std::cout << "this->_colorMsaaTexture createImageView end" << std::endl;
-//     this->_depthMsaaTexture = new GfxTexture(this);
-//     this->_depthMsaaTexture->createImage(this->_swapChainExtent.width, this->_swapChainExtent.height, VK_FORMAT_D32_SFLOAT, VK_IMAGE_TILING_OPTIMAL,
-//                                          VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-//                                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, MsaaSamples);
-//     this->_depthMsaaTexture->createImageView(VK_FORMAT_D32_SFLOAT, VK_IMAGE_ASPECT_DEPTH_BIT);
-// }
-// /**
-//  * @brief 清理MSAA附件纹理
-//  *
-//  */
-// void GfxContext::_cleanMsaaAttachmentTexture()
-// {
-//     if (this->_colorMsaaTexture != nullptr)
-//     {
-//         delete this->_colorMsaaTexture;
-//         this->_colorMsaaTexture = nullptr;
-//     }
-//     if (this->_depthMsaaTexture != nullptr)
-//     {
-//         delete this->_depthMsaaTexture;
-//         this->_depthMsaaTexture = nullptr;
-//     }
-// }
 /**
  * 阻塞CPU，直到 GPU 完成 上一帧 的所有渲染任务（即关联到这个栅栏的命令全部执行完毕）。
  */
@@ -754,20 +750,32 @@ VkResult GfxContext::frameAcquireNextImage(uint32_t *imageIndex, size_t currentF
 }
 void GfxContext::frameWaitImageInUse(uint32_t imageIndex, size_t currentFrame)
 {
-    /**
-     * 检查当前获取索引图像是否已被其他帧使用
-     */
+    const uint64_t FENCE_TIMEOUT_NS = 16666666;
     if (this->_imagesInFlight[imageIndex] != VK_NULL_HANDLE)
     {
-        /*  // 先检查状态避免不必要等待 */
-        if (vkGetFenceStatus(this->_vkdevice, this->_imagesInFlight[imageIndex]) == VK_NOT_READY)
+        VkResult status = vkGetFenceStatus(this->_vkdevice, this->_imagesInFlight[imageIndex]);
+        if (status == VK_NOT_READY)
         {
             /**
              * VK_NOT_READY:栅栏未触发，GPU仍在处理关联的操作
              * VK_SUCCESS:栅栏已触发，关联的GPU操作已完成，可以安全复用图像
              */
-            /*  // std::cout << "renderer update:'VK_ERROR_OUT_OF_DATE_KHR',The image is being used by other frames and needs to wait." << std::endl; */
-            vkWaitForFences(this->_vkdevice, 1, &this->_imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
+            // vkWaitForFences(this->_vkdevice, 1, &this->_imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
+            VkResult waitResult = vkWaitForFences(this->_vkdevice, 1, &this->_imagesInFlight[imageIndex], VK_TRUE, FENCE_TIMEOUT_NS);
+            if (waitResult == VK_TIMEOUT)
+            {
+                // LOGW("Fence wait timeout for image %u, resetting...", imageIndex);
+                // 超时处理：强制重置 fence
+                vkResetFences(this->_vkdevice, 1, &this->_imagesInFlight[imageIndex]);
+            }
+            else if (waitResult != VK_SUCCESS)
+            {
+                // LOGW("Fence wait failed with result %d for image %u", waitResult, imageIndex);
+            }
+        }
+        else if (status != VK_SUCCESS)
+        {
+            // LOGW("Fence status check failed with result %d for image %u", status, imageIndex);
         }
     }
     this->_imagesInFlight[imageIndex] = this->_inFlightFences[currentFrame];

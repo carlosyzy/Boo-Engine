@@ -1,17 +1,16 @@
 #include "node.h"
-#include "../../boo.h"
-#include "../../log.h"
-#include "../game.h"
-#include "../component/component.h"
+#include "log.h"
+#include "boo.h"
+#include "core/component/component.h"
 
 namespace Boo
 {
-	const NodeLayer Node::getLayer() const
+	const ENodeLayer Node::getLayer() const
 	{
 		return this->_layer;
 	}
 
-	const std::string Node::getUuid() const
+	const std::string &Node::getUuid() const
 	{
 		return this->_uuid;
 	}
@@ -23,15 +22,15 @@ namespace Boo
 	{
 		this->_name = name;
 	}
-	std::string Node::getName() const
+	const std::string &Node::getName() const
 	{
 		return this->_name;
 	}
-	int Node::getGroupID() const
+	int Node::getGroupId() const
 	{
 		return this->_groupID;
 	}
-	void Node::setGroupID(int groupID)
+	void Node::setGroupId(int groupID)
 	{
 		this->_groupID = groupID;
 	}
@@ -45,7 +44,7 @@ namespace Boo
 			return;
 		}
 		this->_position.set(x, y, z);
-		this->_updateWorldTransformFlag(NodeTransformFlag::POSITION_FLAG);
+		this->_updateWorldTransformFlag(ENodeTransformFlag::POSITION_FLAG);
 	}
 	/**
 	 * 获取本地位置
@@ -114,7 +113,7 @@ namespace Boo
 		}
 		this->_rotation.set(x, y, z, w);
 		Quat::toEuler(this->_rotation, false, this->_eulerAngles);
-		this->_updateWorldTransformFlag(NodeTransformFlag::ROTATION_FLAG);
+		this->_updateWorldTransformFlag(ENodeTransformFlag::ROTATION_FLAG);
 	}
 	/**
 	 * 获取本地角度
@@ -162,7 +161,7 @@ namespace Boo
 			return;
 		}
 		this->_scale.set(x, y, z);
-		this->_updateWorldTransformFlag(NodeTransformFlag::SCALE_FLAG);
+		this->_updateWorldTransformFlag(ENodeTransformFlag::SCALE_FLAG);
 	}
 	/**
 	 * 获取本地缩放
@@ -191,7 +190,7 @@ namespace Boo
 		_worldScaleMatrix.setM0(x);
 		_worldScaleMatrix.setM5(y);
 		_worldScaleMatrix.setM10(z);
-		//2. 用世界矩阵的逆矩阵乘以"只有缩放"的世界矩阵,得到"只有缩放"的本地矩阵
+		// 2. 用世界矩阵的逆矩阵乘以"只有缩放"的世界矩阵,得到"只有缩放"的本地矩阵
 		Mat4 localMatrix{};
 		Mat4::multiply(parentMatInv, _worldScaleMatrix, localMatrix);
 		// 3. 从本地矩阵中提取缩放
@@ -207,7 +206,7 @@ namespace Boo
 	{
 		Mat4::toSRT(matrix, &this->_position, &this->_rotation, &this->_scale);
 		Quat::toEuler(this->_rotation, false, this->_eulerAngles);
-		this->_updateWorldTransformFlag(NodeTransformFlag::ALL_FLAG);
+		this->_updateWorldTransformFlag(ENodeTransformFlag::ALL_FLAG);
 	}
 
 	const Mat4 &Node::getLocalMatrix()
@@ -222,7 +221,7 @@ namespace Boo
 		this->_updateWorldTransform();
 		return this->_worldScale;
 	}
-	void Node::_updateWorldTransformFlag(NodeTransformFlag flag)
+	void Node::_updateWorldTransformFlag(ENodeTransformFlag flag)
 	{
 		this->_worldTransformFlag |= static_cast<uint32_t>(flag);
 		this->_frameTransformFlag |= static_cast<uint32_t>(flag);
@@ -234,10 +233,6 @@ namespace Boo
 	}
 	void Node::_updateWorldTransform()
 	{
-		if (!this->_isActiveInHierarchy)
-			return;
-		if (this->_worldTransformFlag == NodeTransformFlag::NONE_FLAG)
-			return;
 		// 通过位移,旋转,缩放计算本地矩阵
 		this->_localMatrix.fromTRS(this->_position, this->_rotation, this->_scale);
 		if (this->_parent)
@@ -251,7 +246,7 @@ namespace Boo
 		Mat4::getPosition(this->_worldMatrix, this->_worldPosition);
 		Mat4::getScale(this->_worldMatrix, this->_worldScale);
 		Mat4::getRotation(this->_worldMatrix, this->_worldRotation);
-		this->_worldTransformFlag = NodeTransformFlag::NONE_FLAG;
+		this->_worldTransformFlag = ENodeTransformFlag::NONE_FLAG;
 	}
 	/**
 	 * @brief 当前节点在当前帧帧内是否发生了变换
@@ -260,7 +255,7 @@ namespace Boo
 	 */
 	const bool Node::hasFrameTransformFlag() const
 	{
-		return (this->_frameTransformFlag != NodeTransformFlag::NONE_FLAG);
+		return (this->_frameTransformFlag != ENodeTransformFlag::NONE_FLAG);
 	}
 	/**
 	 * @brief 获取世界矩阵
@@ -289,6 +284,11 @@ namespace Boo
 	 */
 	void Node::removeChild(Node *node)
 	{
+		if (nullptr == node)
+		{
+			LOGW("[Node]:removeChild:: node is nullptr");
+			return;
+		}
 		// 使用标准算法更安全
 		auto it = std::find(this->_children.begin(), this->_children.end(), node);
 		if (it != this->_children.end())
@@ -412,8 +412,7 @@ namespace Boo
 	{
 		// 递归激活的节点
 		// LOGW("[Node]:addChild:: _activeNodeInHierarchyState %s ", this->getName().c_str());
-		std::vector<Component *> components = this->_components;
-		for (auto &component : components)
+		for (auto *component : this->_components)
 		{
 			component->setNodeActiveInHierarchy(true);
 		}
@@ -470,6 +469,7 @@ namespace Boo
 		// 销毁当前节点所有组件
 		for (auto &component : this->_components)
 		{
+			component->OnDestroy();
 			component->destroy();
 		}
 		this->_components.clear();
@@ -489,11 +489,11 @@ namespace Boo
 	/*
 	 * 获取组件
 	 */
-	Component *Node::getComponent(std::string name)
+	Component *Node::getComponent(const std::string &name)
 	{
 		for (auto component : this->_components)
 		{
-			if (component != nullptr)
+			if (component != nullptr && component->getName() == name)
 			{
 				return component;
 			}
@@ -506,6 +506,40 @@ namespace Boo
 	std::vector<Component *> Node::getComponents()
 	{
 		return this->_components;
+	}
+	/**
+	 * 移除指定组件
+	 */
+	void Node::removeComponent(Component *component)
+	{
+		if (component == nullptr)
+		{
+			return;
+		}
+		auto comp = std::find(this->_components.begin(), this->_components.end(), component);
+		if (comp != this->_components.end())
+		{
+			this->_components.erase(comp);
+			component->setNodeActiveInHierarchy(false);
+		}
+	}
+	/**
+	 * 销毁指定组件
+	 */
+	void Node::destoryComponent(Component *component)
+	{
+		if (component == nullptr)
+		{
+			return;
+		}
+		auto comp = std::find(this->_components.begin(), this->_components.end(), component);
+		if (comp != this->_components.end())
+		{
+			this->_components.erase(comp);
+			component->setNodeActiveInHierarchy(false);
+			component->OnDestroy();
+			component->destroy();
+		}
 	}
 
 	void Node::update(float dt)
@@ -539,7 +573,7 @@ namespace Boo
 	}
 	void Node::clearNodeFrameFlag()
 	{
-		this->_frameTransformFlag = NodeTransformFlag::NONE_FLAG;
+		this->_frameTransformFlag = ENodeTransformFlag::NONE_FLAG;
 		for (auto &child : this->_children)
 		{
 			child->clearNodeFrameFlag();

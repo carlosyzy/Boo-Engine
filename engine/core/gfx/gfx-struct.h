@@ -1,15 +1,13 @@
 #pragma once
-#define VK_NO_PROTOTYPES
-#include <volk.h>  // 替代 vulkan.h
+#define VK_NO_PROTOTYPES      // 禁止官方头文件定义函数原型
+#include <volk/volk.h>  // 替代 vulkan.h
 #include <iostream>
 #include <fstream>
 #include <cstring>
 #include <vector>
 #include <string>
 #include <sstream>
-#include <glslang/Public/ShaderLang.h>
-#include <glslang/SPIRV/GlslangToSpv.h>
-#include <glslang/Public/ResourceLimits.h>
+#include <shaderc/shaderc.hpp>
 #include "../../log.h"
 /**
  * @brief 渲染器分类
@@ -216,7 +214,7 @@ struct GfxRendererState
     /**
      * 深度比较操作
      */
-    GfxRendererStateCompareOp depthCompareOp = GfxRendererStateCompareOp::Always;
+    GfxRendererStateCompareOp depthCompareOp = GfxRendererStateCompareOp::Less;
 
     /**
      * 模板测试
@@ -276,12 +274,6 @@ struct GfxRendererState
      * alpha混合操作
      */
     GfxRendererStateColorBlendOp alphaBlendOp = GfxRendererStateColorBlendOp::Add;
-
-    /**
-     * 推送常量
-     * 开关
-     */
-    int pushConstant = 0;
     /**
      * 推送常量键
      */

@@ -28,7 +28,7 @@ namespace Boo
     void Vec3::set(Vec3 &v)
     {
         this->_x = v.getX();
-        this->_y = v.getX();
+        this->_y = v.getY();
         this->_z = v.getZ();
     }
     void Vec3::setX(float x)
@@ -105,17 +105,18 @@ namespace Boo
         this->_y = iy * qw + iw * -qy + iz * -qx - ix * -qz;
         this->_z = iz * qw + iw * -qz + ix * -qy - iy * -qx;
     }
-
-    void Vec3::test()
+    void Vec3::normalize()
     {
-        Vec3 v(0, 0, 0);
-        for (int i = 0; i < 100000000; i++)
+        float len = this->len();
+        if (len > 0.0f)
         {
-            v.set(99.99, 88.88, 0.99);
-            this->add(v);
+            len = 1.0f / len;
+            this->set(this->_x * len, this->_y * len, this->_z * len);
+        }else
+        {
+            this->set(0.0f, 0.0f, 0.0f);
         }
     }
-
     Vec3::~Vec3()
     {
     }
@@ -127,7 +128,7 @@ namespace Boo
     {
         out.set(a.getX() + b.getX(), a.getY() + b.getY(), a.getZ() + b.getZ());
     }
-    void Vec3::subtract(Vec3 &a, Vec3 &b, Vec3 &out)
+    void Vec3::subtract(const Vec3 &a, const Vec3 &b, Vec3 &out)
     {
         out.set(a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ());
     }
@@ -147,11 +148,11 @@ namespace Boo
         out.setY(iy * qw + iw * -qy + iz * -qx - ix * -qz);
         out.setZ(iz * qw + iw * -qz + ix * -qy - iy * -qx);
     }
-    float Vec3::dot(Vec3 &a, Vec3 &b)
+    float Vec3::dot(const Vec3 &a, const Vec3 &b)
     {
         return a.getX() * b.getX() + a.getY() * b.getY() + a.getZ() * b.getZ();
     }
-    void Vec3::normalize(Vec3 &v, Vec3 &out)
+    void Vec3::normalize(const Vec3 &v, Vec3 &out)
     {
         float len = v.len();
         if (len > 0.0f)
@@ -162,6 +163,24 @@ namespace Boo
         {
             out.set(0.0f, 0.0f, 0.0f);
         }
+    }
+    float Vec3::distance(const Vec3 &a, const Vec3 &b)
+    {
+        return sqrt((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY()) + (a.getZ() - b.getZ()) * (a.getZ() - b.getZ()));
+    }
+
+    float Vec3::lengthSqr(const Vec3 &v)
+    {
+        return v.getX() * v.getX() + v.getY() * v.getY() + v.getZ() * v.getZ();
+    }
+
+    void Vec3::cross(const Vec3 &a, const Vec3 &b, Vec3 &out)
+    {
+        out.set(
+            a.getY() * b.getZ() - a.getZ() * b.getY(),
+            a.getZ() * b.getX() - a.getX() * b.getZ(),
+            a.getX() * b.getY() - a.getY() * b.getX()
+        );
     }
 
 }

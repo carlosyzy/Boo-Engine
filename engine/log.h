@@ -4,10 +4,22 @@
 #include <ctime>
 #include "platforms/platform.h"
 
-#ifndef LOG_TAG
-#define LOG_TAG "BooEngine"
+#ifndef LOG_TAG_NAME
+#define LOG_TAG_NAME "BooEngine"
 #endif
 
+// 定义LOG输出
+#ifdef NDEBUG
+#define LOGV(...) ((void)0)
+#define LOGD(...) ((void)0)
+#define LOGI(...) ((void)0)
+#define LOGW(...) ((void)0)
+#define LOGE(...) ((void)0)
+#define LOGF(...) ((void)0)
+#else
+#define LOGV(...) ((void)0)
+#define LOGD(...) ((void)0)
+#if defined(BOO_PLATFORM_WINDOWS) || defined(BOO_PLATFORM_MACOS)
 // Linux/Mac 颜色代码
 #define LOG_COLOR_RESET "\033[0m"
 #define LOG_COLOR_RED "\033[31m"
@@ -49,7 +61,6 @@ inline const char *getLevelString(LogLevel level)
         return "?";
     }
 }
-
 // ========== 获取级别颜色 ==========
 inline const char *getLevelColor(LogLevel level)
 {
@@ -80,50 +91,55 @@ inline void getCurrentTime(char *buffer, size_t size)
     strftime(buffer, size, "%H:%M:%S", tm_info);
 }
 
+// Unix 平台的日志实现
+#define __max_log_print(level, tag, ...)                                    \
+    do                                                                      \
+    {                                                                       \
+        char time_str[32];                                                  \
+        getCurrentTime(time_str, sizeof(time_str));                         \
+        printf("%s[%s] [%s] [%s] " LOG_COLOR_RESET,                         \
+               getLevelColor(level), time_str, getLevelString(level), tag); \
+        printf(__VA_ARGS__);                                                \
+        printf("\n");                                                       \
+    } while (0)
+// #define LOGV(...) __max_log_print(LOG_LEVEL_VERBOSE, LOG_TAG_NAME, __VA_ARGS__)
+// #define LOGD(...) __max_log_print(LOG_LEVEL_DEBUG, LOG_TAG_NAME, __VA_ARGS__)
+#define LOGI(...) __max_log_print(LOG_LEVEL_INFO, LOG_TAG_NAME, __VA_ARGS__)
+#define LOGW(...) __max_log_print(LOG_LEVEL_WARN, LOG_TAG_NAME, __VA_ARGS__)
+#define LOGE(...) __max_log_print(LOG_LEVEL_ERROR, LOG_TAG_NAME, __VA_ARGS__)
+#define LOGF(...) __max_log_print(LOG_LEVEL_FATAL, LOG_TAG_NAME, __VA_ARGS__)
+#elif defined(BOO_PLATFORM_ANDROID)
 // 定义LOG输出
-#ifdef NDEBUG
-    #define LOGV(...) ((void)0)
-    #define LOGD(...) ((void)0)
-    #define LOGI(...) ((void)0)
-    #define LOGW(...) ((void)0)
-    #define LOGE(...) ((void)0)
-    #define LOGF(...) ((void)0)
+#include <android/log.h>
+// #define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG_NAME, __VA_ARGS__)
+// #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG_NAME, __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG_NAME, __VA_ARGS__)
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG_NAME, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG_NAME, __VA_ARGS__)
+#define LOGF(...) __android_log_print(ANDROID_LOG_FATAL, LOG_TAG_NAME, __VA_ARGS__)
+#elif defined(BOO_PLATFORM_HARMONYOS)
+    // 鸿蒙平台的日志输出
+    #include "hilog/log.h"
+    
+    // 鸿蒙日志级别映射
+    #undef LOG_DOMAIN
+    #undef LOG_TAG
+    #define LOG_DOMAIN 0x3200  // 你可以修改为你自己的领域ID
+    #define LOG_TAG LOG_TAG_NAME
+    
+    // #define LOGV(...) OH_LOG_DEBUG(LOG_APP, __VA_ARGS__)  // 鸿蒙没有VERBOSE，用DEBUG代替
+    // #define LOGD(...) OH_LOG_DEBUG(LOG_APP, __VA_ARGS__)
+    #define LOGI(...) OH_LOG_INFO(LOG_APP, __VA_ARGS__)
+    #define LOGW(...) OH_LOG_WARN(LOG_APP, __VA_ARGS__)
+    #define LOGE(...) OH_LOG_ERROR(LOG_APP, __VA_ARGS__)
+    #define LOGF(...) OH_LOG_FATAL(LOG_APP, __VA_ARGS__)
 #else
-    #define LOGV(...) ((void)0)
-    #define LOGD(...) ((void)0)
-    #if defined(BOO_PLATFORM_WINDOWS) || defined(BOO_PLATFORM_MACOS)
-        // Unix 平台的日志实现
-        #define __max_log_print(level, tag, ...) \
-        do { \
-            char time_str[32]; \
-            getCurrentTime(time_str, sizeof(time_str)); \
-            printf("%s[%s] [%s] [%s] " LOG_COLOR_RESET, \
-                getLevelColor(level), time_str, getLevelString(level), tag); \
-            printf(__VA_ARGS__); \
-            printf("\n"); \
-        } while(0)
-        // #define LOGV(...) __max_log_print(LOG_LEVEL_VERBOSE, LOG_TAG, __VA_ARGS__)
-        // #define LOGD(...) __max_log_print(LOG_LEVEL_DEBUG, LOG_TAG, __VA_ARGS__)
-        #define LOGI(...) __max_log_print(LOG_LEVEL_INFO, LOG_TAG, __VA_ARGS__)
-        #define LOGW(...) __max_log_print(LOG_LEVEL_WARN, LOG_TAG, __VA_ARGS__)
-        #define LOGE(...) __max_log_print(LOG_LEVEL_ERROR, LOG_TAG, __VA_ARGS__)
-        #define LOGF(...) __max_log_print(LOG_LEVEL_FATAL, LOG_TAG, __VA_ARGS__)
-    #elif defined(BOO_PLATFORM_ANDROID)
-        //定义LOG输出
-        #include <android/log.h>
-        // #define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
-        // #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
-        #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-        #define LOGW(...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
-        #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
-        #define LOGF(...) __android_log_print(ANDROID_LOG_FATAL,   LOG_TAG, __VA_ARGS__)
-    #else
-        // 其他平台的日志实现
-        #define LOGV(...) ((void)0)
-        #define LOGD(...) ((void)0)
-        #define LOGI(...) ((void)0)
-        #define LOGW(...) ((void)0)
-        #define LOGE(...) ((void)0)
-        #define LOGF(...) ((void)0)
-    #endif
+// 其他平台的日志实现
+#define LOGV(...) ((void)0)
+#define LOGD(...) ((void)0)
+#define LOGI(...) ((void)0)
+#define LOGW(...) ((void)0)
+#define LOGE(...) ((void)0)
+#define LOGF(...) ((void)0)
+#endif
 #endif

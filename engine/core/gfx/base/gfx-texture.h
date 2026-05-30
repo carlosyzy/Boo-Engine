@@ -17,6 +17,7 @@ private:
     uint32_t _width;
     uint32_t _height;
     uint32_t _channels;
+    int _textureType = 0;
     VkFormat _format;
     std::vector<uint8_t> _pixels;
     int _changeFlag = 0;
@@ -38,14 +39,14 @@ private:
     void _endSingleTimeCommands(VkCommandBuffer commandBuffer);
     bool _hasStencilComponent(VkFormat format);
     void _copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
-
+    void _clearPixels();
 public:
     /**
      * @brief 创建纹理
      *
      * @�理uuid
      */
-    GfxTexture(std::string uuid, uint32_t width, uint32_t height, uint32_t channels, VkFormat format);
+    GfxTexture(std::string uuid, uint32_t width, uint32_t height, uint32_t channels, int textureType, VkFormat format);
     /**
      * @brief 创建纹理
      *

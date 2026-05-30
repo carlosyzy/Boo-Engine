@@ -1,18 +1,18 @@
 #include "gfx-mesh.h"
-#include "../gfx-mgr.h"
 #include "../gfx.h"
 #include "../gfx-context.h"
+#include "../gfx-manager.h"
 #include <cmath>
 
 GfxMesh::GfxMesh(std::string uuid)
 {
     this->_uuid = uuid;
 }
-void GfxMesh::createUIMesh(int meshMode, const std::vector<float> &vertices, const std::vector<uint32_t> &indices)
+void GfxMesh::createUIMesh(int meshType, const std::vector<float> &vertices, const std::vector<uint32_t> &indices)
 {
     this->_isVisible = false;
-    this->_meshType = 0;
-    this->_meshMode = meshMode;
+    this->_meshMode = 0;
+    this->_meshType = meshType;
     if (vertices.size() <= 0)
     {
         LOGE("GfxMesh::createUIMesh: vertices.size() <=0");
@@ -25,7 +25,7 @@ void GfxMesh::createUIMesh(int meshMode, const std::vector<float> &vertices, con
     }
     this->_vertices = vertices;
     this->_indices = indices;
-    if (this->_meshMode == 0)
+    if (this->_meshType == 0)
     {
         this->_createStaticBuffers();
     }
@@ -34,11 +34,11 @@ void GfxMesh::createUIMesh(int meshMode, const std::vector<float> &vertices, con
         this->_createDynamicBuffers();
     }
 }
-void GfxMesh::createMesh(int meshMode, const std::vector<float> &vertices, const std::vector<uint32_t> &indices)
+void GfxMesh::createMesh(int meshType, const std::vector<float> &vertices, const std::vector<uint32_t> &indices)
 {
     this->_isVisible = false;
-    this->_meshType = 1;
-    this->_meshMode = meshMode;
+    this->_meshMode = 1;
+    this->_meshType = meshType;
     if (vertices.size() <= 0 || indices.size() <= 0)
     {
         LOGE("GfxMesh::createMesh: vertices.size() <=0 || indices.size() <=0");
@@ -46,7 +46,7 @@ void GfxMesh::createMesh(int meshMode, const std::vector<float> &vertices, const
     }
     this->_vertices = vertices;
     this->_indices = indices;
-    if (this->_meshMode == 0)
+    if (this->_meshType == 0)
     {
         this->_createStaticBuffers();
     }
@@ -65,7 +65,7 @@ void GfxMesh::_createStaticBuffers()
     // Staging buffers（临时，CPU 可见）
     VkBuffer stagingVertexBuffer, stagingIndexBuffer;
     VkDeviceMemory stagingVertexMemory, stagingIndexMemory;
-    VkResult result = GfxMgr::getInstance()->createBuffer(
+    VkResult result = GfxManager::getInstance()->createBuffer(
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         &stagingVertexBuffer, &stagingVertexMemory,
@@ -76,7 +76,7 @@ void GfxMesh::_createStaticBuffers()
         LOGE("GfxMesh::_createStaticBuffers: create staging vertex buffer failed");
         return;
     }
-    result = GfxMgr::getInstance()->createBuffer(
+    result = GfxManager::getInstance()->createBuffer(
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         &stagingIndexBuffer, &stagingIndexMemory,
@@ -91,7 +91,7 @@ void GfxMesh::_createStaticBuffers()
     }
     // ========== 第二步：创建目标 Buffers（GPU 显存） ==========
     // 目标 buffers（GPU 显存）
-    GfxMgr::getInstance()->createBuffer(
+    GfxManager::getInstance()->createBuffer(
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
         &this->_vertexBuffer, &this->_vertexMemory,
@@ -106,7 +106,7 @@ void GfxMesh::_createStaticBuffers()
         vkFreeMemory(device, stagingIndexMemory, nullptr);
         return;
     }
-    result = GfxMgr::getInstance()->createBuffer(
+    result = GfxManager::getInstance()->createBuffer(
         VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
         &this->_indexBuffer, &this->_indexMemory,
@@ -125,8 +125,8 @@ void GfxMesh::_createStaticBuffers()
     }
     // ========== 第三步：通过 GPU 复制数据 ==========
     // 通过命令缓冲区从 staging 复制到 GPU
-    GfxMgr::getInstance()->copyBuffer(stagingVertexBuffer, this->_vertexBuffer, vertexDataSize);
-    GfxMgr::getInstance()->copyBuffer(stagingIndexBuffer, this->_indexBuffer, indexDataSize);
+    GfxManager::getInstance()->copyBuffer(stagingVertexBuffer, this->_vertexBuffer, vertexDataSize);
+    GfxManager::getInstance()->copyBuffer(stagingIndexBuffer, this->_indexBuffer, indexDataSize);
     // ========== 第四步：释放 Staging Buffers ==========
     // 释放 staging 资源
     vkDestroyBuffer(Gfx::_context->getVkDevice(), stagingVertexBuffer, nullptr);
@@ -143,7 +143,7 @@ void GfxMesh::_createDynamicBuffers()
 {
     VkDeviceSize vertexDataSize = this->_vertices.size() * sizeof(float);
     VkDeviceSize indexDataSize = this->_indices.size() * sizeof(uint32_t);
-    VkResult result = GfxMgr::getInstance()->createBuffer(
+    VkResult result = GfxManager::getInstance()->createBuffer(
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         &this->_vertexBuffer,
@@ -156,7 +156,7 @@ void GfxMesh::_createDynamicBuffers()
         return;
     }
     // 索引缓冲区
-    result = GfxMgr::getInstance()->createBuffer(
+    result = GfxManager::getInstance()->createBuffer(
         VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         &this->_indexBuffer,
@@ -175,7 +175,7 @@ void GfxMesh::_createDynamicBuffers()
 }
 void GfxMesh::update(const std::vector<float> &vertices, const std::vector<uint32_t> &indices)
 {
-    if (this->_meshMode == 0)
+    if (this->_meshType == 0)
     {
         return;
     }
@@ -443,7 +443,7 @@ void GfxMesh::destroy()
 // }
 
 // //动态网格
-//   GfxMgr::getInstance()->createBuffer(
+//   GfxManager::getInstance()->createBuffer(
 //       VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,           // 去掉 TRANSFER_DST
 //       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 //       &this->_vertexBuffer,
@@ -456,7 +456,7 @@ void GfxMesh::destroy()
 //   {
 //       VkDeviceSize maxSize = MAX_VERTICES * sizeof(Vertex);
 
-//       GfxMgr::getInstance()->createBuffer(
+//       GfxManager::getInstance()->createBuffer(
 //           VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 //           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 //           &this->_vertexBuffer,
@@ -491,7 +491,7 @@ void GfxMesh::destroy()
 //   // 初始化时 map 一次，保持映射
 //   void GfxMesh::_createPersistentBuffer()
 //   {
-//       GfxMgr::getInstance()->createBuffer(...);
+//       GfxManager::getInstance()->createBuffer(...);
 
 //       vkMapMemory(device, this->_vertexMemory, 0, VK_WHOLE_SIZE, 0, &this->_mappedPtr);
 //       // 不 unmap，一直保持映射状态

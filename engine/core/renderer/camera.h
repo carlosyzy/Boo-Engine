@@ -1,11 +1,11 @@
 #pragma once
-#include "../component/component.h"
-#include "../component/component-register.h"
-#include "../scene/node.h"
+#include "core/component/component.h"
+#include "core/component/component-register.h"
+#include "core/scene/node-type.h"
 class GfxRenderTexture;
 namespace Boo
 {
-    enum class CameraProjection
+    enum class ECameraProjection
     {
         /**
          * 正交投影
@@ -33,13 +33,13 @@ namespace Boo
         /**
          * 相机是否可见
          */
-        int _groupIDs = 1;
+        int _groupIds = 1;
         /**
          * 相机类型
          * 0：正交相机
          * 1：透视相机
          */
-        CameraProjection _projection = CameraProjection::Perspective;
+        ECameraProjection _projection = ECameraProjection::Perspective;
         /**
          * 相机视场角度
          */
@@ -79,7 +79,6 @@ namespace Boo
          * 类型：透视投影（3D）或正交投影（2D/UI）
          */
         Mat4 _matProj = Mat4::identity();
-        GfxRenderTexture *_renderTexture = nullptr;
         void _createRenderPipeline();
         /**
          * @brief 更新视图矩阵
@@ -92,11 +91,11 @@ namespace Boo
          */
         void _updateProjectionMatrix();
 
-
     public:
         Camera(std::string name, Node *node, std::string uuid = "");
-        void Awake() override;
-        void Enable() override;
+        void OnAwake() override;
+        void OnEnable() override;
+        void setProperty(json &data) override;
         /**
          * @brief 设置相机是否在屏幕上
          *
@@ -108,18 +107,17 @@ namespace Boo
         int getPriority();
         void setGroupIDs(int groupIDs);
         void addGroupID(int groupID);
-        void addGroupID(NodeGroup groupID);
+        void addGroupID(ENodeGroup groupID);
         int getGroupIDs();
-        void setProjection(CameraProjection projection);
+        void setProjection(ECameraProjection projection);
         void updateViewSize();
         void Update(float deltaTime) override;
         void LateUpdate(float deltaTime) override;
         virtual void Render();
-        void Disable() override;
+        void OnDisable() override;
+        void OnDestroy() override;
         void destroy() override;
         ~Camera();
     };
-
+    REGISTER_COMPONENT(Camera, "Camera Component");
 } // namespace Boo
-
-REGISTER_COMPONENT(Camera, "Camera Component");

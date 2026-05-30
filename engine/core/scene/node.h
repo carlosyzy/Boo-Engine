@@ -5,36 +5,17 @@
 #include <functional>
 #include <iostream>
 #include <unordered_map>
-#include "../math/math-api.h"
-
+#include "core/math/mat4.h"
+#include "core/math/vec3.h"
+#include "core/math/vec2.h"
+#include "core/math/quat.h"
+#include "core/math/size.h"
+#include "core/math/color.h"
+#include "core/scene/node-type.h"
+#include "core/component/component-type.h"
 namespace Boo
 {
-	enum class NodeGroup
-	{
-		Default = 1 << 0,
-		Node3D = 1 << 1,
-		Node2D = 1 << 2,
-	};
-	enum NodeTransformFlag : uint32_t
-	{
-		NONE_FLAG = 0,
-		POSITION_FLAG = 1 << 0,
-		ROTATION_FLAG = 1 << 1,
-		SCALE_FLAG = 1 << 2,
-		SIZE_FLAG = 1 << 3,
-		ANCHOR_FLAG = 1 << 4,
-		ALL_FLAG = POSITION_FLAG | ROTATION_FLAG | SCALE_FLAG | SIZE_FLAG | ANCHOR_FLAG,
-	};
-	enum class NodeLayer
-	{
-		Default = 0,
-		Node2D,
-		Node3D,
-		Scene,
-	};
-
 	class Component;
-
 	class Node
 	{
 	private:
@@ -47,7 +28,7 @@ namespace Boo
 		 * 当前节点类型
 		 * 固定不变的,在创建时就已经确定了
 		 */
-		NodeLayer _layer;
+		ENodeLayer _layer;
 		/**
 		 * 节点名称
 		 */
@@ -63,12 +44,12 @@ namespace Boo
 		 * @brief 获取节点类型
 		 * @return NodeLayer 节点类型 Node2D,Node3D,Scene,
 		 */
-		const NodeLayer getLayer() const;
+		const ENodeLayer getLayer() const;
 		/**
 		 * @brief 获取节点uuid
 		 * @return std::string 节点uuid
 		 */
-		const std::string getUuid() const;
+		const std::string &getUuid() const;
 		/**
 		 * @brief 设置节点uuid
 		 * @param uuid 节点uuid
@@ -83,17 +64,17 @@ namespace Boo
 		 * @brief 获取节点名称
 		 * @return std::string 节点名称
 		 */
-		std::string getName() const;
+		const std::string &getName() const;
 		/**
 		 * @brief 获取节点可见性
 		 * @return int 可见性
 		 */
-		int getGroupID() const;
+		int getGroupId() const;
 		/**
 		 * @brief 设置节点组ID
 		 * @param groupID 节点组ID
 		 */
-		void setGroupID(int groupID);
+		void setGroupId(int groupId);
 
 	protected:
 		/*
@@ -138,17 +119,17 @@ namespace Boo
 		/*
 		 *节点世界变化是否发生了变换
 		 */
-		uint32_t _worldTransformFlag = uint32_t(NodeTransformFlag::NONE_FLAG);
+		uint32_t _worldTransformFlag = uint32_t(ENodeTransformFlag::NONE_FLAG);
 		/**
 		 * @brief 当前节点在一帧内是否发生了变换
 		 */
-		uint32_t _frameTransformFlag = uint32_t(NodeTransformFlag::NONE_FLAG);
+		uint32_t _frameTransformFlag = uint32_t(ENodeTransformFlag::NONE_FLAG);
 
 	protected:
 		/*
 		 * 更新世界transform 的更新flag
 		 */
-		void _updateWorldTransformFlag(NodeTransformFlag flag);
+		void _updateWorldTransformFlag(ENodeTransformFlag flag);
 		/**
 		 * @brief 更新世界transform矩阵
 		 *
@@ -345,11 +326,19 @@ namespace Boo
 		/**
 		 * 获取组件
 		 */
-		Component *getComponent(std::string name);
+		Component *getComponent(const std::string &name);
 		/**
 		 * 获取所有组件
 		 */
 		std::vector<Component *> getComponents();
+		/**
+		 * 移除指定组件
+		 */
+		void removeComponent(Component *component);
+		/**
+		 * 销毁指定组件
+		 */
+		void destoryComponent(Component *component);
 
 	public:
 		/**

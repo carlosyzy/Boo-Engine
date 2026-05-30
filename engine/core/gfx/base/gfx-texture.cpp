@@ -1,17 +1,18 @@
 #include "gfx-texture.h"
 #include "../gfx.h"
 #include "../gfx-context.h"
-#include "../gfx-mgr.h"
+#include "../gfx-manager.h"
 #include "../../../libs/stb/stb_image_write.h"
 #include "../../../log.h"
 
 /* // 主要用于创建附件贴图 */
-GfxTexture::GfxTexture(std::string uuid, uint32_t width, uint32_t height, uint32_t channels, VkFormat format)
+GfxTexture::GfxTexture(std::string uuid, uint32_t width, uint32_t height, uint32_t channels, int textureType, VkFormat format)
 {
     this->_uuid = uuid;
     this->_width = width;
     this->_height = height;
     this->_channels = channels;
+    this->_textureType = textureType;
     this->_format = format;
 }
 
@@ -23,7 +24,11 @@ void GfxTexture::create(const std::vector<uint8_t> *pixels)
     this->createImageView(VK_IMAGE_ASPECT_COLOR_BIT);
     this->crateImageSampler();
     this->_updateTextureData();
-    LOGI("GfxTexture::create success: %s", this->_uuid.c_str());
+    if (this->_textureType == 0)
+    {
+        this->_clearPixels(); // 静态纹理资源释放内存
+    }
+    LOGI("GfxTexture::create success: %s type:%d", this->_uuid.c_str(),this->_textureType);
 }
 void GfxTexture::createImage(VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkSampleCountFlagBits samples)
 {
@@ -54,7 +59,7 @@ void GfxTexture::createImage(VkImageTiling tiling, VkImageUsageFlags usage, VkMe
     VkMemoryAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     allocInfo.allocationSize = memRequirements.size;
-    allocInfo.memoryTypeIndex = GfxMgr::getInstance()->getMemoryTypeIndex(memRequirements.memoryTypeBits, properties);
+    allocInfo.memoryTypeIndex = GfxManager::getInstance()->getMemoryTypeIndex(memRequirements.memoryTypeBits, properties);
 
     if (vkAllocateMemory(Gfx::_context->getVkDevice(), &allocInfo, nullptr, &this->_textureImageMemory) != VK_SUCCESS)
     {
@@ -121,7 +126,7 @@ void GfxTexture::_updateTextureData()
     // 计算暂存缓冲区大小
     VkDeviceSize imageSize = this->_width * this->_height * this->_channels;
     // 创建暂存缓冲区
-    GfxMgr::getInstance()->createBuffer(
+    GfxManager::getInstance()->createBuffer(
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         &stagingBuffer,
@@ -276,6 +281,11 @@ void GfxTexture::_copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t wid
 }
 void GfxTexture::setPixel(uint32_t x, uint32_t y, std::vector<uint8_t> pixel)
 {
+    if (this->_textureType == 0)
+    {
+        LOGW("GfxTexture::setPixel: attachment texture can not set pixel");
+        return;
+    }
     this->_changeFlag++;
     if (this->_channels != pixel.size())
     {
@@ -290,11 +300,16 @@ void GfxTexture::setPixel(uint32_t x, uint32_t y, std::vector<uint8_t> pixel)
 }
 void GfxTexture::updateData()
 {
+    
     if (this->_changeFlag == 0)
     {
         return;
     }
     this->_changeFlag = 0;
+    if (this->_textureType == 0)
+    {
+        return;
+    }
     this->_updateTextureData();
 }
 
@@ -324,7 +339,7 @@ bool GfxTexture::saveToFile(std::string filePath)
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
 
-    GfxMgr::getInstance()->createBuffer(
+    GfxManager::getInstance()->createBuffer(
         VK_BUFFER_USAGE_TRANSFER_DST_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         &stagingBuffer,
@@ -443,8 +458,15 @@ bool GfxTexture::saveToFile(std::string filePath)
 
     return success;
 }
+void GfxTexture::_clearPixels()
+{
+    this->_pixels.clear();
+    this->_pixels.shrink_to_fit(); // 释放内存
+}
+
 void GfxTexture::destroy()
 {
+    this->_clearPixels();
     std::cout << "[Gfx : Texture]::~Texture: uuid:" << this->_uuid << std::endl;
     /*  // 销毁采样器 */
     if (this->_textureSampler != VK_NULL_HANDLE)

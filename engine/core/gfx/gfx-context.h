@@ -10,10 +10,10 @@
 #include <unordered_map>
 #include <sstream>
 #include "gfx-struct.h"
-class Window;
 class Android;
-
-
+class MacOS;
+class Windows;
+class HarmonyOS;
 
 // 查询并记录交换链支持的细节
 struct SwapChainSupportDetails
@@ -150,21 +150,14 @@ private:
     void _createSyncObjects();
     void _cleanSyncObjects();
 
-    // /**
-    //  * 多重采样-颜色附件贴图和深度附件贴图
-    //  */
-    // GfxTexture *_colorMsaaTexture;
-    // GfxTexture *_depthMsaaTexture;
-    // void _createMsaaAttachmentTexture();
-    // void _cleanMsaaAttachmentTexture();
-    
-
     QueueFamilyIndices _findQueueFamilies(VkPhysicalDevice device);
     SwapChainSupportDetails _querySwapChainSupport(VkPhysicalDevice device);
 public:
     GfxContext();
-    void init(Window *window);
+    void init(Windows *windows);
     void init(Android *android);
+    void init(MacOS *macos);
+    void init(HarmonyOS *harmonyos);
 
     // void setWindow(Window *window);
     // void setAndroid(Android *android);

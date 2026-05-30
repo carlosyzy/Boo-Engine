@@ -1,18 +1,36 @@
 #include "view.h"
-#include "../../boo.h"
+#include "boo.h"
+#include "core/game.h"
 namespace Boo
 {
 
     View::View() : _width(0), _height(0) {}
 
-    View::View(int uiDesignWidth, int uiDesignHeight, UIDesignFitMode fitMode, int width, int height) : _designWidth(uiDesignWidth),
-                                                                                                        _designHeight(uiDesignHeight),
-                                                                                                        _designFitMode(fitMode),
-                                                                                                        _fitMat(Mat4::identity()),
-                                                                                                        _width(width),
-                                                                                                        _height(height)
+    View::View(int width, int height) : _width(width),
+                                        _height(height),
+                                        _designWidth(width),
+                                        _designHeight(height),
+                                        _designFitMode(UIDesignFitMode::None),
+                                        _fitMat(Mat4::identity())
     {
         // 根据设计分辨率，适配模式，视图分辨率，计算适配矩阵
+        this->_updateFitMat();
+    }
+    void View::setDesignFitMode(UIDesignFitMode fitMode)
+    {
+        this->_designFitMode = fitMode;
+        this->_updateFitMat();
+    }
+    void View::setDesignSize(int width, int height)
+    {
+        this->_designWidth = width;
+        this->_designHeight = height;
+        this->_updateFitMat();
+    }
+    void View::resize(int width, int height)
+    {
+        this->_width = width;
+        this->_height = height;
         this->_updateFitMat();
     }
     void View::_updateFitMat()
@@ -43,18 +61,10 @@ namespace Boo
         this->_fitMat.setM5(scaleY);
         this->_fitMat.setM11(1.0f);
     }
-    void View::resize(int width, int height)
-    {
-        this->_width = width;
-        this->_height = height;
-        this->_updateFitMat();
-    }
-
     int View::getDesignWidth() const
     {
         return _designWidth;
     }
-
     int View::getDesignHeight() const
     {
         return _designHeight;

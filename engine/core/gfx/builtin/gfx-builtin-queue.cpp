@@ -1,7 +1,7 @@
 #include "gfx-builtin-queue.h"
 #include "../gfx.h"
 #include "../gfx-context.h"
-#include "../gfx-mgr.h"
+#include "../gfx-manager.h"
 #include "../base/gfx-render-pass.h"
 #include "../base/gfx-render-texture.h"
 #include "../base/gfx-texture.h"
@@ -17,16 +17,18 @@
 #include "gfx-builtin-renderer.h"
 #include "../../../log.h"
 
-GfxBuiltinQueue::GfxBuiltinQueue(std::string renderId, uint32_t width, uint32_t height, GfxBuiltinRenderer *renderer)
+GfxBuiltinQueue::GfxBuiltinQueue(std::string renderId, uint32_t width, uint32_t height, GfxBuiltinRenderer *renderer) : _renderer(nullptr),
+                                                                                                                        _renderTexture(nullptr)
 {
+    this->_rendererId = renderId;
     this->_renderer = renderer;
     this->_renderTexture = new GfxRenderTexture(renderId, width, height);
     this->_renderTexture->bindRenderPass(this->_renderer->getRenderPass());
-    this->_uiBatches.reserve(500);         // 500个ui批次，足够多，避免频繁创建ui批次
-    this->_3dOpaqueBatches.reserve(500);   // 500个3d不透明批次，足够多，避免频繁创建3d不透明批次
-    this->_3dOpaqueMeshes.reserve(500);    // 500个3d不透明网格，足够多，避免频繁创建3d不透明网格
-    this->_3dOpaqueMaterials.reserve(500); // 500个3d不透明材质，足够多，避免频繁创建3d不透明材质
-    // this->_3dTransparentBatches.reserve(500); // 500个3d透明批次，足够多，避免频繁创建3d透明批次
+    this->_uiBatches.reserve(500);            // 500个ui批次，足够多，避免频繁创建ui批次
+    this->_3dOpaqueBatches.reserve(500);      // 500个3d不透明批次，足够多，避免频繁创建3d不透明批次
+    this->_3dOpaqueMeshes.reserve(500);       // 500个3d不透明网格，足够多，避免频繁创建3d不透明网格
+    this->_3dOpaqueMaterials.reserve(500);    // 500个3d不透明材质，足够多，避免频繁创建3d不透明材质
+    this->_3dTransparentBatches.reserve(500); // 500个3d透明批次，足够多，避免频繁创建3d透明批次
 }
 void GfxBuiltinQueue::init()
 {
@@ -155,6 +157,10 @@ void GfxBuiltinQueue::_submitObject3DOpaque(GfxMaterial *material, GfxMesh *mesh
 }
 void GfxBuiltinQueue::_submitObject3DTransparent(GfxMaterial *material, GfxMesh *mesh)
 {
+    GfxBuiltinBatch3D *batch = new GfxBuiltinBatch3D();
+    batch->init(this->_renderer, this->_renderTexture, material, mesh, this->_viewMatrix, this->_projMatrix, this->_cameraPosition);
+    batch->addObject(material->getInstanceData());
+    this->_3dTransparentBatches.push_back(batch);
 }
 void GfxBuiltinQueue::render(std::vector<VkCommandBuffer> &commandBuffers)
 {
@@ -166,6 +172,14 @@ void GfxBuiltinQueue::render(std::vector<VkCommandBuffer> &commandBuffers)
     // 3d不透明批次
     for (auto &[key, batch] : this->_3dOpaqueBatches)
     {
+        batch->render(this->_renderTexture->getCommandBuffer());
+    }
+    // 3d透明批次
+    std::sort(this->_3dTransparentBatches.begin(), this->_3dTransparentBatches.end(), [](GfxBuiltinBatch3D *a, GfxBuiltinBatch3D *b)
+              { return a->getDisTransparent() > b->getDisTransparent(); });
+    for (size_t i = 0; i < this->_3dTransparentBatches.size(); i++)
+    {
+        GfxBuiltinBatch3D *batch = this->_3dTransparentBatches[i];
         batch->render(this->_renderTexture->getCommandBuffer());
     }
     // ui批次
@@ -203,6 +217,13 @@ void GfxBuiltinQueue::render(std::vector<VkCommandBuffer> &commandBuffers)
         delete batch;
         batch = nullptr;
     }
+    // 遍历透明
+    for (auto *batch : this->_3dTransparentBatches)
+    {
+        batch->destroy();
+        delete batch;
+        batch = nullptr;
+    }
     // ui批次
     for (size_t i = 0; i < this->_uiBatches.size(); i++)
     {
@@ -213,6 +234,7 @@ void GfxBuiltinQueue::render(std::vector<VkCommandBuffer> &commandBuffers)
     }
     this->_uiBatches.clear();
     this->_3dOpaqueBatches.clear();
+    this->_3dTransparentBatches.clear();
     this->_3dOpaqueMaterials.clear();
     this->_3dOpaqueMeshes.clear();
     // std::chrono::high_resolution_clock::time_point clearEnd = std::chrono::high_resolution_clock::now();
@@ -272,6 +294,14 @@ void GfxBuiltinQueue::destroy()
     this->_3dOpaqueBatches.clear();
     this->_3dOpaqueMaterials.clear();
     this->_3dOpaqueMeshes.clear();
+    // 透明
+    for (auto *batch : this->_3dTransparentBatches)
+    {
+        batch->destroy();
+        delete batch;
+        batch = nullptr;
+    }
+    this->_3dTransparentBatches.clear();
     // ui批次
     for (size_t i = 0; i < this->_uiBatches.size(); i++)
     {
@@ -281,8 +311,14 @@ void GfxBuiltinQueue::destroy()
         batch = nullptr;
     }
     this->_uiBatches.clear();
-    this->_renderer = nullptr;
+    // 销毁rt
+    if (this->_renderTexture != nullptr)
+    {
+        this->_renderTexture->destroy();
+        delete this->_renderTexture;
+    }
     this->_renderTexture = nullptr;
+    this->_renderer = nullptr;
 }
 
 GfxBuiltinQueue::~GfxBuiltinQueue()

@@ -12,11 +12,11 @@
 
 | 方法 | 参数 | 返回类型 | 描述 |
 |------|------|----------|------|
-| `Awake()` | 无 | `void` | 组件初始化时调用 |
-| `Enable()` | 无 | `void` | 组件启用时调用 |
+| `  OnAwake()` | 无 | `void` | 组件初始化时调用 |
+| `  OnEnable ()` | 无 | `void` | 组件启用时调用 |
 | `Update(float deltaTime)` | `deltaTime`: 时间步长 | `void` | 每一帧更新时调用 |
 | `LateUpdate(float deltaTime)` | `deltaTime`: 时间步长 | `void` | 每一帧晚更新时调用 |
-| `Disable()` | 无 | `void` | 组件禁用时调用 |
+| `  OnDisable()` | 无 | `void` | 组件禁用时调用 |
 | `destroy()` | 无 | `void` | 组件销毁时调用 |
 
 ### 状态管理
@@ -35,7 +35,7 @@
 | `getUuid()` | 无 | `std::string` | 获取组件唯一标识符 |
 | `getName()` | 无 | `std::string` | 获取组件名称 |
 | `getNode()` | 无 | `Node*` | 获取组件所属节点 |
-| `getLayer()` | 无 | `NodeLayer` | 获取组件所在层级 |
+| `getLayer()` | 无 | `EComponentLayer` | 获取组件所在层级 |
 
 ## 组件工厂 (ComponentFactory)
 
@@ -65,12 +65,12 @@
 
 | 方法 | 参数 | 返回类型 | 描述 |
 |------|------|----------|------|
-| `Awake()` | 无 | `void` | 相机初始化时调用 |
-| `Enable()` | 无 | `void` | 相机启用时调用 |
+| `  OnAwake()` | 无 | `void` | 相机初始化时调用 |
+| `  OnEnable ()` | 无 | `void` | 相机启用时调用 |
 | `Update(float deltaTime)` | `deltaTime`: 时间步长 | `void` | 每一帧更新时调用 |
 | `LateUpdate(float deltaTime)` | `deltaTime`: 时间步长 | `void` | 每一帧晚更新时调用 |
 | `Render()` | 无 | `void` | 相机渲染时调用 |
-| `Disable()` | 无 | `void` | 相机关用时调用 |
+| `  OnDisable()` | 无 | `void` | 相机关用时调用 |
 | `destroy()` | 无 | `void` | 相机销毁时调用 |
 
 ### 属性设置
@@ -103,12 +103,12 @@
 
 | 方法 | 参数 | 返回类型 | 描述 |
 |------|------|----------|------|
-| `Awake()` | 无 | `void` | 精灵初始化时调用 |
-| `Enable()` | 无 | `void` | 精灵启用时调用 |
+| `  OnAwake()` | 无 | `void` | 精灵初始化时调用 |
+| `  OnEnable ()` | 无 | `void` | 精灵启用时调用 |
 | `Update(float deltaTime)` | `deltaTime`: 时间步长 | `void` | 每一帧更新时调用 |
 | `LateUpdate(float deltaTime)` | `deltaTime`: 时间步长 | `void` | 每一帧晚更新时调用 |
 | `Render(Camera *camera)` | `camera`: 相机 | `void` | 精灵渲染时调用 |
-| `Disable()` | 无 | `void` | 精灵禁用时调用 |
+| `  OnDisable()` | 无 | `void` | 精灵禁用时调用 |
 | `destroy()` | 无 | `void` | 精灵销毁时调用 |
 
 ### 属性设置
@@ -137,12 +137,12 @@
 
 | 方法 | 参数 | 返回类型 | 描述 |
 |------|------|----------|------|
-| `Awake()` | 无 | `void` | 文本初始化时调用 |
-| `Enable()` | 无 | `void` | 文本启用时调用 |
+| `  OnAwake()` | 无 | `void` | 文本初始化时调用 |
+| `  OnEnable ()` | 无 | `void` | 文本启用时调用 |
 | `Update(float deltaTime)` | `deltaTime`: 时间步长 | `void` | 每一帧更新时调用 |
 | `LateUpdate(float deltaTime)` | `deltaTime`: 时间步长 | `void` | 每一帧晚更新时调用 |
 | `Render(Camera *camera)` | `camera`: 相机 | `void` | 文本渲染时调用 |
-| `Disable()` | 无 | `void` | 文本禁用时调用 |
+| `  OnDisable()` | 无 | `void` | 文本禁用时调用 |
 | `destroy()` | 无 | `void` | 文本销毁时调用 |
 
 ### 属性设置
@@ -169,12 +169,12 @@
 
 | 方法 | 参数 | 返回类型 | 描述 |
 |------|------|----------|------|
-| `Awake()` | 无 | `void` | 遮罩初始化时调用 |
-| `Enable()` | 无 | `void` | 遮罩启用时调用 |
+| `  OnAwake()` | 无 | `void` | 遮罩初始化时调用 |
+| `  OnEnable ()` | 无 | `void` | 遮罩启用时调用 |
 | `Update(float deltaTime)` | `deltaTime`: 时间步长 | `void` | 每一帧更新时调用 |
 | `LateUpdate(float deltaTime)` | `deltaTime`: 时间步长 | `void` | 每一帧晚更新时调用 |
 | `Render(Camera *camera)` | `camera`: 相机 | `void` | 遮罩渲染时调用 |
-| `Disable()` | 无 | `void` | 遮罩禁用时调用 |
+| `  OnDisable()` | 无 | `void` | 遮罩禁用时调用 |
 | `destroy()` | 无 | `void` | 遮罩销毁时调用 |
 
 ### 属性设置

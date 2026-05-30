@@ -4,13 +4,15 @@
 #include <memory> // 智能指针头文件
 #include <thread> // 线程头文件
 #include <string>
-class Window;
+class Windows;
 class Android;
+class MacOS;
+class HarmonyOS;
 class Game;
-
 namespace Boo
 {
     enum class UIDesignFitMode;
+    struct InitConfig;
 }
 class Engine
 {
@@ -23,7 +25,7 @@ public:
      * @param uiDesignHeight 设计高度
      * @param fitMode 适配模式
      */
-    void init(Window *window,int uiDesignWidth,int uiDesignHeight,Boo::UIDesignFitMode fitMode);
+    void init(Windows *windows,Boo::InitConfig &config);
     /**
      * android 平台下传入内置的Android封装
      * @param android Android封装
@@ -33,7 +35,9 @@ public:
      * @param width 实际宽度
      * @param height 实际高度
      */
-    void init(Android *android,int uiDesignWidth,int uiDesignHeight,Boo::UIDesignFitMode fitMode);
+    void init(Android *android,Boo::InitConfig &config);
+    void init(MacOS *macos,Boo::InitConfig &config);
+    void init(HarmonyOS *harmonyos,Boo::InitConfig &config);
 
     void tick();
 

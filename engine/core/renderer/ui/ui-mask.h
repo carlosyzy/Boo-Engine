@@ -2,15 +2,14 @@
 #include <string>
 #include <iostream>
 #include "ui-renderer.h"
-#include "../../component/component-register.h"
-#include "../../scene/node.h"
-class GfxMesh;
+#include "core/component/component-register.h"
 namespace Boo
 {
     class Node;
     class Camera;
-    class TextureAsset;
     class MaterialAsset;
+    class TextureAsset;
+    class MeshAsset;
 
     /**
      * mask 组件继承与ui-renderer组件
@@ -22,20 +21,21 @@ namespace Boo
     private:
         MaterialAsset *_addMaterialAsset;
         MaterialAsset *_subMaterialAsset;
-        GfxMesh *_maskMesh;
-
-        void _updateNodeMask();
+        MeshAsset *_maskMesh;
+        void _createDefaultMaterial();
+        void _createDefaultMesh();
 
     public:
         UIMask(std::string name, Node *node, std::string uuid = "");
-        void Awake() override;
-        void Enable() override;
+        void OnAwake() override;
+        void OnEnable() override;
 
         void Update(float deltaTime) override;
         void LateUpdate(float deltaTime) override;
         void Render(Camera *camera) override;
         void lateRender(Camera *camera);
-        void Disable() override;
+        void OnDisable() override;
+        void OnDestroy() override {};
         void destroy() override;
         ~UIMask() override;
     };

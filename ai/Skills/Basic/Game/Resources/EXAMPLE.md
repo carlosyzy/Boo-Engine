@@ -9,12 +9,10 @@
 
 // 创建并打开场景
 void openMainScene() {
-    // 创建场景实例
     Boo::Scene* scene = new Boo::Scene("MainScene");
-     // 打开场景（new Scene后必须紧接着调用open）
+    // 打开场景（new Scene后必须紧接着调用open）
     Boo::game->openScene(scene);
-    // 在场景中添加节点
-    // ...
+    // 根节点由引擎自动创建，之后可通过 scene->getRoot2D() 获取
 }
 
 // 获取当前打开场景
@@ -35,27 +33,26 @@ public:
     GameManager() {
         // 每帧执行一次更新
         _updateId = Boo::game->schedule(&GameManager::update, this, 0.0f);
-        
+
         // 每2秒执行一次定时任务
         _timerId = Boo::game->schedule(&GameManager::onTimer, this, 2.0f);
     }
-    
+
     ~GameManager() {
         // 取消定时任务
         Boo::game->unschedule(_updateId);
         Boo::game->unschedule(_timerId);
     }
-    
+
     void update() {
         // 每帧更新逻辑
-        std::cout << "Updating game logic..." << std::endl;
     }
-    
+
     void onTimer() {
         // 定时执行的逻辑
-        std::cout << "Timer triggered!" << std::endl;
+        LOGI("Timer triggered!");
     }
-    
+
 private:
     int _updateId;
     int _timerId;
@@ -75,11 +72,11 @@ public:
     void startCountdown() {
         // 5秒后执行一次
         Boo::game->scheduleOnce(&Countdown::onCountdownEnd, this, 5.0f);
-        std::cout << "Countdown started!" << std::endl;
+        LOGI("Countdown started!");
     }
-    
+
     void onCountdownEnd() {
-        std::cout << "Countdown ended!" << std::endl;
+        LOGI("Countdown ended!");
     }
 };
 
@@ -97,9 +94,7 @@ countdown.startCountdown();
 
 // 窗口大小变化回调
 void onWindowSizeChanged(GLFWwindow* window, int width, int height) {
-    // 调整游戏视图大小
     Boo::game->resizeView(width, height);
-    std::cout << "Window resized to: " << width << "x" << height << std::endl;
 }
 
 // 注册窗口大小变化回调（以GLFW为例）
@@ -120,61 +115,60 @@ public:
     void init() {
         // 创建场景
         _scene = new Boo::Scene("GameScene");
-         // 打开场景（new Scene后必须紧接着调用open）
+        // 打开场景（new Scene后必须紧接着调用open）
         Boo::game->openScene(_scene);
-        
+
+        // 获取 2D 根节点（引擎自动创建）
+        Boo::Node2D* root2D = _scene->getRoot2D();
+
         // 创建玩家节点
-        _player = new Boo::Node2D();
-        _player->setPosition(Boo::Vector2(100, 100));
-        _player->setName("Player");
-        _scene->addChild(_player);
-        
+        _player = new Boo::Node2D("Player");
+        _player->setPosition(100, 100, 0);
+        _player->setSize(50, 50);
+        root2D->addChild(_player);
+
         // 为玩家添加精灵组件
-        Boo::Component* playerSpriteComp = _player->addComponent("UISprite");
-        _playerSprite = dynamic_cast<Boo::UISprite*>(playerSpriteComp);
+        _playerSprite = dynamic_cast<Boo::UISprite*>(_player->addComponent("UISprite"));
         if (_playerSprite) {
             _playerSprite->setColor(1.0f, 0.0f, 0.0f, 1.0f); // 红色
-            _playerSprite->setTexture("player.png");
+            _playerSprite->setTexture(Boo::AssetBuiltinTexture::Default);
         }
-        
+
         // 创建敌人节点
-        _enemy = new Boo::Node2D();
-        _enemy->setPosition(Boo::Vector2(300, 100));
-        _enemy->setName("Enemy");
-        _scene->addChild(_enemy);
-        
+        _enemy = new Boo::Node2D("Enemy");
+        _enemy->setPosition(300, 100, 0);
+        _enemy->setSize(50, 50);
+        root2D->addChild(_enemy);
+
         // 为敌人添加精灵组件
-        Boo::Component* enemySpriteComp = _enemy->addComponent("UISprite");
-        _enemySprite = dynamic_cast<Boo::UISprite*>(enemySpriteComp);
+        _enemySprite = dynamic_cast<Boo::UISprite*>(_enemy->addComponent("UISprite"));
         if (_enemySprite) {
             _enemySprite->setColor(0.0f, 0.0f, 1.0f, 1.0f); // 蓝色
-            _enemySprite->setTexture("enemy.png");
+            _enemySprite->setTexture(Boo::AssetBuiltinTexture::Default);
         }
-        
-       
-        
-        // 设置调度任务
+
+        // 设置调度任务（每帧更新）
         _updateId = Boo::game->schedule(&SimpleGame::update, this, 0.0f);
     }
-    
+
     void update() {
         // 更新玩家位置
-        Boo::Vector2 playerPos = _player->getPosition();
+        Boo::Vec3 playerPos = _player->getPosition();
         playerPos.x += 1.0f;
         if (playerPos.x > 800) {
             playerPos.x = 0;
         }
-        _player->setPosition(playerPos);
-        
+        _player->setPosition(playerPos.x, playerPos.y, playerPos.z);
+
         // 更新敌人位置
-        Boo::Vector2 enemyPos = _enemy->getPosition();
+        Boo::Vec3 enemyPos = _enemy->getPosition();
         enemyPos.x -= 1.0f;
         if (enemyPos.x < 0) {
             enemyPos.x = 800;
         }
-        _enemy->setPosition(enemyPos);
+        _enemy->setPosition(enemyPos.x, enemyPos.y, enemyPos.z);
     }
-    
+
 private:
     Boo::Scene* _scene;
     Boo::Node2D* _player;
@@ -188,21 +182,23 @@ int main() {
     // 创建窗口
     Boo::Window* window = new Boo::Window();
     window->init();
-    
+
     // 初始化游戏
     Boo::game->init(window, 800, 600, Boo::UIDesignFitMode::None);
-    
-    // 初始化游戏逻辑
-    SimpleGame game;
-    game.init();
-    
+
+    // 初始化游戏逻辑（在引擎启动事件里）
+    Boo::event->on(Boo::EventEngine_Launch, []() {
+        static SimpleGame game;
+        game.init();
+    });
+
     // 游戏主循环
     while (!window->shouldClose()) {
         window->pollEvents();
         Boo::game->tick();
         window->swapBuffers();
     }
-    
+
     return 0;
 }
 ```

@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 #include "ui-renderer.h"
-#include "../../component/component-register.h"
-#include "../../math/math-api.h"
+#include "core/component/component-register.h"
+#include "core/math/color.h"
 
 namespace Boo
 {
@@ -12,7 +12,7 @@ namespace Boo
     class TextureAsset;
     class MeshAsset;
 
-    enum class SizeMode
+    enum class ESizeMode
     {
         /**
          * @brief 图片的原始尺寸精灵的大小与节点的大小相同
@@ -40,7 +40,7 @@ namespace Boo
          */
         MeshAsset *_meshAsset;
         Color _color;
-        SizeMode sizeMode;
+        ESizeMode sizeMode;
 
         void _createDefaultMaterial();
         void _createDefaultMesh();
@@ -48,8 +48,9 @@ namespace Boo
     public:
         UISprite(std::string name, Node *node, std::string uuid = "");
 
-        void Awake() override;
-        void Enable() override;
+        void OnAwake() override;
+        void OnEnable() override;
+        void setProperty(json &data) override;
 
         /**
          * @brief 设置渲染器的颜色
@@ -60,7 +61,7 @@ namespace Boo
         void setColor(std::string color);
         void setAlpha(float alpha);
         void setColor(float r, float g, float b, float a);
-        void setSizeMode(SizeMode sizeMode);
+        void setSizeMode(ESizeMode sizeMode);
 
         /**
          * @brief 设置渲染器的纹理
@@ -81,7 +82,8 @@ namespace Boo
         void Update(float deltaTime) override;
         void LateUpdate(float deltaTime) override;
         void Render(Camera *camera) override;
-        void Disable() override;
+        void OnDisable() override;
+        void OnDestroy() override {};
         void destroy() override;
         ~UISprite() override;
     };

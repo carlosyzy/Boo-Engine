@@ -1,23 +1,27 @@
 #include "ui-sprite.h"
-#include "../../../boo.h"
-#include "../../../log.h"
-#include "../../scene/node.h"
-#include "../../scene/node-2d.h"
-#include "../../renderer/camera.h"
-#include "../../assets/assets-manager.h"
-#include "../../gfx/gfx.h"
-#include "../../gfx/gfx-mgr.h"
-#include "../../gfx/base/gfx-mesh.h"
-#include "../../gfx/base/gfx-material.h"
+#include "boo.h"
+#include "log.h"
+#include "core/scene/node-2d.h"
+#include "core/renderer/camera.h"
+#include "core/asset/asset-manager.h"
+#include "core/asset/texture-asset.h"
+#include "core/asset/mesh-asset.h"
+#include "core/asset/material-asset.h"
+#include "core/gfx/gfx.h"
+#include "core/gfx/gfx-manager.h"
+#include "core/gfx/base/gfx-mesh.h"
+#include "core/gfx/base/gfx-material.h"
 
 namespace Boo
 {
 
     UISprite::UISprite(std::string name, Node *node, std::string uuid) : UIRenderer(name, node, uuid)
     {
-        this->sizeMode = SizeMode::Custom;
+        this->sizeMode = ESizeMode::Custom;
         // 默认纹理
         this->_textureAsset = nullptr;
+        this->_materialAsset = nullptr;
+        this->_meshAsset = nullptr;
         // 默认UI材质
         this->_createDefaultMaterial();
         // 默认UI网格
@@ -25,37 +29,74 @@ namespace Boo
     }
     void UISprite::_createDefaultMaterial()
     {
-        this->_materialAsset = new MaterialAsset(AssetBuiltinMaterial::UI, "", "");
-        MaterialAsset *mtl = dynamic_cast<MaterialAsset *>(assetsManager->getAsset(AssetBuiltinMaterial::UI));
+        this->_materialAsset = new MaterialAsset();
+        MaterialAsset *mtl = dynamic_cast<MaterialAsset *>(assetManager->getAsset(AssetBuiltinMaterial::UI));
         this->_materialAsset->create(mtl);
     }
 
     void UISprite::_createDefaultMesh()
     {
-        this->_meshAsset = new MeshAsset();
-        MeshPrimitive primitive;
-        primitive.index = 0;
-        primitive.type = 0;
-        primitive._positions = {-0.5f, 0.5f, 0.0f,
-                                -0.5f, -0.5f, 0.0f,
-                                0.5f, -0.5f, 0.0f,
-                                0.5f, 0.5f, 0.0f};
-        primitive._uvs = {0.0f, 0.0f,
-                          0.0f, 1.0f,
-                          1.0f, 1.0f,
-                          1.0f, 0.0f};
-        primitive._indices = {0, 1, 2, 0, 2, 3};
-        this->_meshAsset->create({primitive});
+        this->_meshAsset = dynamic_cast<MeshAsset *>(assetManager->getAsset(AssetBuiltinMesh::UI));
     }
 
-    void UISprite::Awake()
+    void UISprite::OnAwake()
     {
-        UIRenderer::Awake();
+        UIRenderer::OnAwake();
+    }
+    void UISprite::setProperty(json &data)
+    {
+        UIRenderer::setProperty(data);
+        // set texture asset
+        if (data.contains("texture") && data["texture"].is_string())
+        {
+            this->setTexture(data["texture"].get<std::string>());
+        }
+        // set material asset
+        if (data.contains("material") && data["material"].is_string())
+        {
+            this->setMaterial(data["material"].get<std::string>());
+        }
+        // set color
+        if (data.contains("color") && data["color"].is_object())
+        {
+            float r = 1.0f;
+            float g = 1.0f;
+            float b = 1.0f;
+            float a = 1.0f;
+            if (data["color"].contains("r") && data["color"]["r"].is_number())
+            {
+                r = data["color"]["r"].get<float>();
+            }
+            if (data["color"].contains("g") && data["color"]["g"].is_number())
+            {
+                g = data["color"]["g"].get<float>();
+            }
+            if (data["color"].contains("b") && data["color"]["b"].is_number())
+            {
+                b = data["color"]["b"].get<float>();
+            }
+            if (data["color"].contains("a") && data["color"]["a"].is_number())
+            {
+                a = data["color"]["a"].get<float>();
+            }
+            this->setColor(r, g, b, a);
+        }
+        // set alpha
+        if (data.contains("alpha") && data["alpha"].is_number())
+        {
+            this->setAlpha(data["alpha"].get<float>());
+        }
+        // set size mode
+        if (data.contains("sizeMode") && data["sizeMode"].is_number_integer())
+        {
+            ESizeMode sizeMode = ESizeMode(data["sizeMode"].get<int>());
+            this->setSizeMode(sizeMode);
+        }
     }
 
-    void UISprite::Enable()
+    void UISprite::OnEnable()
     {
-        UIRenderer::Enable();
+        UIRenderer::OnEnable();
     }
 
     void UISprite::setColor(Color &color)
@@ -101,7 +142,7 @@ namespace Boo
 
     void UISprite::setMaterial(std::string material)
     {
-        MaterialAsset *mtl = dynamic_cast<MaterialAsset *>(assetsManager->getAsset(material,true));
+        MaterialAsset *mtl = dynamic_cast<MaterialAsset *>(assetManager->getAsset(material, true));
         if (mtl == nullptr)
         {
             LOGW("[UISprite]:setMaterial: material %s not found", material.c_str());
@@ -121,7 +162,7 @@ namespace Boo
 
     void UISprite::setTexture(std::string path)
     {
-        TextureAsset *texture = dynamic_cast<TextureAsset *>(assetsManager->getAsset(path,true));
+        TextureAsset *texture = dynamic_cast<TextureAsset *>(assetManager->getAsset(path, true));
         if (texture == nullptr)
         {
             LOGW("[UISprite]:setTexture: texture %s not found", path.c_str());
@@ -140,13 +181,13 @@ namespace Boo
         {
             return;
         }
-        if (this->sizeMode == SizeMode::Raw)
+        if (this->sizeMode == ESizeMode::Raw)
         {
             float width = this->_textureAsset->getWidth();
             float height = this->_textureAsset->getHeight();
-            this->_node2D->removeSizeLock(Node2DSizeLock::SpriteRaw);
+            this->_node2D->removeSizeLock(ENode2DSizeLock::SpriteRaw);
             this->_node2D->setSize(width, height);
-            this->_node2D->addSizeLock(Node2DSizeLock::SpriteRaw);
+            this->_node2D->addSizeLock(ENode2DSizeLock::SpriteRaw);
         }
         if (this->_materialAsset == nullptr)
         {
@@ -155,27 +196,27 @@ namespace Boo
         this->_materialAsset->setTexture(texture);
     }
 
-    void UISprite::setSizeMode(SizeMode sizeMode)
+    void UISprite::setSizeMode(ESizeMode sizeMode)
     {
         if (this->sizeMode == sizeMode)
         {
             return;
         }
         this->sizeMode = sizeMode;
-        if (this->sizeMode == SizeMode::Raw)
+        if (this->sizeMode == ESizeMode::Raw)
         {
             if (this->_textureAsset != nullptr)
             {
                 float width = this->_textureAsset->getWidth();
                 float height = this->_textureAsset->getHeight();
-                this->_node2D->removeSizeLock(Node2DSizeLock::SpriteRaw);
+                this->_node2D->removeSizeLock(ENode2DSizeLock::SpriteRaw);
                 this->_node2D->setSize(width, height);
             }
-            this->_node2D->addSizeLock(Node2DSizeLock::SpriteRaw);
+            this->_node2D->addSizeLock(ENode2DSizeLock::SpriteRaw);
         }
         else
         {
-            this->_node2D->removeSizeLock(Node2DSizeLock::SpriteRaw);
+            this->_node2D->removeSizeLock(ENode2DSizeLock::SpriteRaw);
         }
     }
 
@@ -207,25 +248,29 @@ namespace Boo
         Mat4::multiply(matrix, view->getFitMatrix(), this->_uiViewMatrix);
         // 更新世界矩阵
         this->_materialAsset->setModelWorldMatrix(this->_uiViewMatrix.data());
-        GfxMgr::getInstance()->submitRenderObject(camera->getUuid(), this->_materialAsset->getGfxMaterial(), this->_meshAsset->getGfxMesh(0));
+        GfxManager::getInstance()->submitRenderObject(camera->getUuid(), this->_materialAsset->getGfxMaterial(), this->_meshAsset->getGfxMesh(0));
         // 增加渲染物体数量
         profiler->addObjectCount(1);
     }
-    void UISprite::Disable()
+    void UISprite::OnDisable()
     {
-        UIRenderer::Disable();
+        UIRenderer::OnDisable();
     }
 
     void UISprite::destroy()
     {
         UIRenderer::destroy();
-        delete this->_materialAsset;
-        delete this->_meshAsset;
-        this->_materialAsset = nullptr;
-        this->_meshAsset = nullptr;
     }
     UISprite::~UISprite()
     {
+        if (this->_materialAsset != nullptr)
+        {
+            this->_materialAsset->destroy();
+            delete this->_materialAsset;
+        }
+        this->_materialAsset = nullptr;
+        this->_meshAsset = nullptr;
+        this->_textureAsset=nullptr;
     }
 
 } // namespace Boo

@@ -1,6 +1,6 @@
 #include "gfx-builtin-batch.h"
 #include "../../gfx.h"
-#include "../../gfx-mgr.h"
+#include "../../gfx-manager.h"
 #include "../../gfx-context.h"
 #include "../../gfx-renderer.h"
 #include "../../base/gfx-mesh.h"

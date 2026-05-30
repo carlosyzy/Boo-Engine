@@ -10,7 +10,7 @@
 
 | 方法名 | 描述 | 参数 | 返回值 |
 |--------|------|------|--------|
-| `Awake()` | 组件初始化，加载资源并创建棋盘 | 无 | 无 |
+| `  OnAwake()` | 组件初始化，加载资源并创建棋盘 | 无 | 无 |
 | `destroy()` | 组件销毁，清理资源 | 无 | 无 |
 | `placePiece(int x, int y, int player)` | 在指定位置放置棋子 | x: 横坐标<br>y: 纵坐标<br>player: 玩家编号(1=黑, 2=白) | 无 |
 | `checkWin(int x, int y, int player)` | 检查是否获胜 | x: 横坐标<br>y: 纵坐标<br>player: 玩家编号 | bool: 是否获胜 |
@@ -35,7 +35,7 @@
 |-----|------|------|
 | `Boo::game->scheduleOnce()` | 调度一次性任务 | 实现AI思考时间 |
 | `Boo::game->unschedule()` | 取消调度任务 | 清理定时器 |
-| `Boo::assetsManager->loadAsset()` | 加载资源 | 加载棋子图片 |
+| `Boo::assetManager->loadAsset()` | 加载资源 | 加载棋子图片 |
 | `Boo::view->getDesignWidth()` | 获取设计宽度 | 背景尺寸适配 |
 | `Boo::view->getDesignHeight()` | 获取设计高度 | 背景尺寸适配 |
 

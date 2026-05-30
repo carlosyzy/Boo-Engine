@@ -1,12 +1,13 @@
 #include "ui-renderer.h"
 #include <filesystem>
-#include "../../../boo.h"
-#include "../../../log.h"
-#include "../../gfx/gfx.h"
-#include "../../gfx/gfx-mgr.h"
-#include "../../scene/node.h"
-#include "../../gfx/base/gfx-mesh.h"
-#include "../../gfx/base/gfx-material.h"
+#include "boo.h"
+#include "log.h"
+#include "core/gfx/gfx.h"
+#include "core/gfx/gfx-manager.h"
+#include "core/scene/node.h"
+#include "core/scene/node-2d.h"
+#include "core/gfx/base/gfx-mesh.h"
+#include "core/gfx/base/gfx-material.h"
 
 namespace Boo
 {
@@ -14,16 +15,19 @@ namespace Boo
 	UIRenderer::UIRenderer(std::string name, Node *node, std::string uuid) : Component(name, node, uuid),
 																			 _uiViewMatrix(Mat4::identity())
 	{
-		this->_layer = ComponentLayer::Node2D;
+		this->_layer = EComponentLayer::Layer2D;
 		this->_node2D = dynamic_cast<Node2D *>(node);
 	}
-	void UIRenderer::Awake()
+	void UIRenderer::OnAwake()
 	{
-		Component::Awake();
+		Component::OnAwake();
 	}
-	void UIRenderer::Enable()
+	void UIRenderer::setProperty(json &data)
 	{
-		Component::Enable();
+	}
+	void UIRenderer::OnEnable()
+	{
+		Component::OnEnable();
 	}
 	void UIRenderer::Update(float deltaTime)
 	{
@@ -47,16 +51,19 @@ namespace Boo
 		{
 			return false; // 节点不可见
 		}
+		if (this->_node->getWorldScale().getX() <= 0 || this->_node->getWorldScale().getY() <= 0)
+		{
+			return false; // 节点不可见
+		}
 		return true;
 	}
 	void UIRenderer::Render(Camera *camera)
-	{	
-		 
+	{
 	}
 
-	void UIRenderer::Disable()
+	void UIRenderer::OnDisable()
 	{
-		Component::Disable();
+		Component::OnDisable();
 	}
 	void UIRenderer::destroy()
 	{
@@ -65,37 +72,7 @@ namespace Boo
 
 	UIRenderer::~UIRenderer()
 	{
+		this->_node2D = nullptr;
 	}
 
 } // namespace Boo
-// void UIRenderer::_setColor(float r, float g, float b, float a)
-	// {
-	// 	// 透明度会影响到子节点的透明度
-	// 	if (r == this->_color.getR() && g == this->_color.getG() && b == this->_color.getB() && a == this->_color.getA())
-	// 	{
-	// 		return;
-	// 	}
-	// 	this->_color.set(r, g, b, a);
-	// 	this->_materialAsset->setUIColor(r, g, b, a);
-	// 	if (!this->_isEnabledInHierarchy)
-	// 		return;
-	// }
-	// const Color &UIRenderer::getColor()
-	// {
-	// 	return this->_color;
-	// }
-
-	// void UIRenderer::_setMaterial(MaterialAsset *mtl)
-	// {
-	// 	if (mtl == nullptr)
-	// 	{
-	// 		LOGW("UIRenderer::setMaterial: mtl is nullptr");
-	// 		return;
-	// 	}
-	// 	if (this->_materialAsset != nullptr && this->_materialAsset->getUuid() == mtl->getUuid())
-	// 	{
-	// 		LOGW("UIRenderer::setMaterial: mtl is same as _materialAsset");
-	// 		return;
-	// 	}
-	// 	this->_materialAsset->create(mtl);
-	// }

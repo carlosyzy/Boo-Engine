@@ -2,12 +2,10 @@
 #include "node.h"
 #include <vector>
 #include <memory>
-
+#include "core/scene/node-2d.h"
+#include "core/scene/node-3d.h"
 namespace Boo
 {
-    class Node3D;
-    class Node2D;
-
     class Scene : public Node
     {
     public:

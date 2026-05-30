@@ -16,19 +16,18 @@ Boo 命名空间提供了以下全局实例，用于访问各个核心系统：
 | 实例 | 类型 | 描述 |
 |------|------|------|
 | `Boo::game` | `Game*` | 游戏核心实例，负责游戏的初始化、更新、渲染和场景管理 |
-| `Boo::event` | `Event*` | 事件系统，处理引擎和游戏事件的发布订阅 |
+| `Boo::event` | `Event*` | 事件系统，处理引擎和游戏事件的监听与触发 |
 | `Boo::view` | `View*` | 视图系统，管理窗口尺寸和视口 |
-| `Boo::assetsManager` | `AssetsManager*` | 资产管理系统，负责加载和管理游戏资源 |
-| `Boo::renderer` | `Renderer*` | 渲染系统，负责图形渲染 |
+| `Boo::assetManager` | `AssetsManager*` | 资产管理系统，负责加载和管理游戏资源 |
 
 ### 枚举类型
 
 | 枚举 | 描述 |
 |------|------|
 | `Boo::UIDesignFitMode` | UI适配模式，包括 None（无适配）、Width（宽适配）、Height（高适配） |
-| `Boo::NodeGroup` | 节点组，用于确定节点的可见性，包括 Default、Node3D、Node2D |
-| `Boo::NodeTransformFlag` | 节点变换标志，包括 NONE_FLAG、POSITION_FLAG、ROTATION_FLAG、SCALE_FLAG、SIZE_FLAG、ANCHOR_FLAG、ALL_FLAG |
-| `Boo::NodeLayer` | 节点层，包括 Default、Node2D、Node3D、Scene |
+| `Boo::ENodeGroup` | 节点组，用于确定节点的可见性，包括 Default、Node3D、Node2D |
+| `Boo::ENodeTransformFlag` | 节点变换标志，包括 NONE_FLAG、POSITION_FLAG、ROTATION_FLAG、SCALE_FLAG、SIZE_FLAG、ANCHOR_FLAG、ALL_FLAG |
+| `Boo::ENodeLayer` | 节点层，包括 Default、Node2D、Node3D、Scene |
 
 ### 核心类
 
@@ -88,7 +87,7 @@ Boo 命名空间
 │   ├── Game* game              // 游戏核心实例
 │   ├── Event* event            // 事件系统
 │   ├── View* view              // 视图系统
-│   ├── AssetsManager* assetsManager  // 资产管理
+│   ├── AssetsManager* assetManager  // 资产管理
 │   └── Renderer* renderer      // 渲染系统
 │
 ├── 场景管理

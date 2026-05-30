@@ -25,7 +25,6 @@ struct GfxMaterialDataBlock {
     size_t offset;  // 相对于HEADER的偏移
     size_t size;
     void * data;
-    
 };
 class GfxMaterial
 {
@@ -37,6 +36,8 @@ private:
      */
     std::unordered_map<std::string, GfxMaterialDataBlock> _instanceBlocks;
     std::vector<char> _instanceData;
+    std::array<float, 16> _instanceWorldMatrixData;
+
     /**
      * @brief 自定义属性
      */
@@ -54,7 +55,7 @@ private:
 
 public:
     GfxMaterial();
-    void create(GfxRendererLayer layer, const std::string &vert, const std::string &frag);
+    void create(GfxRendererLayer layer, GfxRendererType type, const std::string &vert, const std::string &frag);
     void setVertexShader(const std::string &vert);
     void setFragmentShader(const std::string &frag);
     void setProperties(std::vector<GfxMaterialDataBlock> &properties);
@@ -107,81 +108,9 @@ public:
     std::string getRendererStateKey() const;
     const std::vector<char> &getInstanceData() const;
     const std::vector<std::string> &getTextures() const;
+    const std::array<float, 16> &getInstanceWorldMatrixData() const;
 
-
-    // void testSyncGfxPipeline();
+    void destroy();
 
     ~GfxMaterial();
-
-    // void create(const json &originData);
-    // /**
-    //  * @brief 更新模型矩阵
-    //  *
-    //  * @param mat4 4x4矩阵
-    //  */
-    // void updateModelMatrix(const std::array<float, 16> &modelMatrix);
-    // /**
-    //  * @brief 更新整数参数
-    //  *
-    //  * @param key 参数名
-    //  * @param value 参数值
-    //  */
-    // void updatePropertyInt(const std::string &key, const int value);
-    // /**
-    //  * @brief 更新浮点数参数
-    //  *
-    //  * @param key 参数名
-    //  * @param value 参数值
-    //  */
-    // void updatePropertyFloat(const std::string &key, const float value);
-    // /**
-    //  * @brief 更新2维向量参数
-    //  *
-    //  * @param key 参数名
-    //  * @param x 向量x坐标
-    //  * @param y 向量y坐标
-    //  */
-    // void updatePropertyVec2(const std::string &key, const float x, const float y);
-    // /**
-    //  * @brief 更新3维向量参数
-    //  *
-    //  * @param key 参数名
-    //  * @param x 向量x坐标
-    //  * @param y 向量y坐标
-    //  * @param z 向量z坐标
-    //  */
-    // void updatePropertyVec3(const std::string &key, const float x, const float y, const float z);
-    // /**
-    //  * @brief 更新4维向量参数
-    //  *
-    //  * @param key 参数名
-    //  * @param x 向量x坐标
-    //  * @param y 向量y坐标
-    //  * @param z 向量z坐标
-    //  * @param w 向量w坐标
-    //  */
-    // void updatePropertyVec4(const std::string &key, const float x, const float y, const float z, const float w);
-
-    // /**
-    //  * @brief 更新纹理参数
-    //  *
-    //  * @param key 参数名
-    //  * @param texture 纹理名
-    //  */
-    // void updateTexture(const int binding, const std::string &texture);
-
-    // /**
-    //  * @brief 获取渲染状态
-    //  *
-    //  * @return GfxRendererState
-    //  */
-    // GfxRendererState getRendererState() const;
-    
-    // const std::vector<std::string> &getTextures() const;
-    
-    // void setPipelineStruct(const GfxPipelineStruct pipelineStruct);
-    // void setTextures(const std::vector<std::string> textures);
-   
-
-    // const GfxPipelineStruct &getPipelineStruct() const;
 };

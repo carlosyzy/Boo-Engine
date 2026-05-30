@@ -1,16 +1,17 @@
 #include "node-2d.h"
-#include "../../boo.h"
-#include "../../log.h"
-#include "../component/component-factory.h"
-#include "../renderer/ui/ui-renderer.h"
+#include "boo.h"
+#include "log.h"
+#include "core/util/uuid-util.h"
+#include "core/component/component-factory.h"
+#include "core/renderer/ui/ui-renderer.h"
 
 namespace Boo
 {
 	Node2D::Node2D(const std::string name, const std::string uuid)
 	{
-		this->_groupID = uint32_t(NodeGroup::Node2D);
+		this->_groupID = uint32_t(ENodeGroup::Node2D);
 		this->_name = name;
-		this->_layer = NodeLayer::Node2D;
+		this->_layer = ENodeLayer::Node2D;
 		this->_uuid = uuid.empty() ? UuidUtil::generateUUID() : uuid;
 		this->_anchor.set(0.5, 0.5);
 		this->_size.set(200, 200);
@@ -26,11 +27,11 @@ namespace Boo
 		this->_localMatrix = Mat4::identity();
 		this->_worldMatrix = Mat4::identity();
 		this->_uiWorldMatrix = Mat4::identity();
-		this->_worldTransformFlag = static_cast<uint32_t>(NodeTransformFlag::ALL_FLAG);
-		this->_frameTransformFlag = static_cast<uint32_t>(NodeTransformFlag::ALL_FLAG);
+		this->_worldTransformFlag = static_cast<uint32_t>(ENodeTransformFlag::ALL_FLAG);
+		this->_frameTransformFlag = static_cast<uint32_t>(ENodeTransformFlag::ALL_FLAG);
 		this->_parent = nullptr;
 		this->_uiRenderer = nullptr;
-		this->_sizeLock = (int)Node2DSizeLock::None;
+		this->_sizeLock = (int)ENode2DSizeLock::None;
 	}
 
 	/**
@@ -45,7 +46,7 @@ namespace Boo
 			return;
 		}
 		this->_anchor.set(x, y);
-		this->_updateWorldTransformFlag(NodeTransformFlag::ANCHOR_FLAG);
+		this->_updateWorldTransformFlag(ENodeTransformFlag::ANCHOR_FLAG);
 	}
 	const Vec2 &Node2D::getAnchor()
 	{
@@ -58,9 +59,9 @@ namespace Boo
 	 */
 	void Node2D::setSize(float width, float height)
 	{
-		if (this->_sizeLock != (int)Node2DSizeLock::None)
+		if (this->_sizeLock != (int)ENode2DSizeLock::None)
 		{
-			if (this->_sizeLock & (int)Node2DSizeLock::SpriteRaw)
+			if (this->_sizeLock & (int)ENode2DSizeLock::SpriteRaw)
 			{
 				LOGW("Node2D::setSize: SpriteRaw size lock, can not set size");
 			}
@@ -71,7 +72,7 @@ namespace Boo
 			return;
 		}
 		this->_size.set(width, height);
-		this->_updateWorldTransformFlag(NodeTransformFlag::SIZE_FLAG);
+		this->_updateWorldTransformFlag(ENodeTransformFlag::SIZE_FLAG);
 	}
 	const Size &Node2D::getSize()
 	{
@@ -118,25 +119,24 @@ namespace Boo
 		if (!this->_isActiveInHierarchy){
 			return;
 		}
-		if (this->_worldTransformFlag == NodeTransformFlag::NONE_FLAG){
+		if (this->_worldTransformFlag == ENodeTransformFlag::NONE_FLAG){
 			return;
 		}
 		Node::_updateWorldTransform();
+		this->_uiWorldMatrix.identity();
 		// 坐标
 		float x = this->_worldMatrix.getM12() + (0.5 - this->_anchor.getX()) * this->_size.getWidth();
 		float y = this->_worldMatrix.getM13() + (0.5 - this->_anchor.getY()) * this->_size.getHeight();
 		// 尺寸
 		float width = this->_worldMatrix.getM0() * this->_size.getWidth();
 		float height = this->_worldMatrix.getM5() * this->_size.getHeight();
-		
-		this->_uiWorldMatrix.setM0(width); // 宽高和缩放进行相乘
-		this->_uiWorldMatrix.setM5(height);
-		this->_uiWorldMatrix.setM11(1.0f);
-		this->_uiWorldMatrix.setM12(x);
-		this->_uiWorldMatrix.setM13(y);
+		Vec3 scale(width, height, 1.0f);
+		Vec3 position(x, y, 0.0f);
+		this->_uiWorldMatrix.fromTRS(position, this->_rotation, scale);
 	}
 	const Mat4 &Node2D::getUIWorldMatrix()
 	{
+		this->_updateWorldTransform();
 		return this->_uiWorldMatrix;
 	}
 	void Node2D::setActive(bool active)
@@ -153,7 +153,7 @@ namespace Boo
 			LOGW("[Node2D]:addComponent:: %s, %s, Component Not register", name.c_str(), uuid.c_str());
 			return nullptr;
 		}
-		if (component->getLayer() == ComponentLayer::Node3D)
+		if (component->getLayer() == EComponentLayer::Layer3D)
 		{
 			// std::cout << name << ":Component add fail,node type is Node3D" << std::endl;
 			LOGW("[Node2D]:addComponent:: %s, %s, Component add fail,node type is Node3D", name.c_str(), uuid.c_str());
@@ -194,21 +194,21 @@ namespace Boo
 	/**
 	 * 添加大小锁
 	 */
-	void Node2D::addSizeLock(Node2DSizeLock sizeLock)
+	void Node2D::addSizeLock(ENode2DSizeLock sizeLock)
 	{
 		this->_sizeLock |= (int)sizeLock;
 	}
 	/**
 	 * 移除大小锁
 	 */
-	void Node2D::removeSizeLock(Node2DSizeLock sizeLock)
+	void Node2D::removeSizeLock(ENode2DSizeLock sizeLock)
 	{
 		this->_sizeLock &= ~(int)sizeLock;
 	}
 	/**
 	 * 2d 节点的大小锁
 	 */
-	void Node2D::setSizeLock(Node2DSizeLock sizeLock)
+	void Node2D::setSizeLock(ENode2DSizeLock sizeLock)
 	{
 		this->_sizeLock = (int)sizeLock;
 	}

@@ -14,8 +14,6 @@
 #include "gfx-builtin-render-pass.h"
 #include "gfx-builtin-queue.h"
 
-
-
 uint32_t GfxBuiltinRenderer::StencilRef = 0;
 
 GfxBuiltinRenderer::GfxBuiltinRenderer(std::string name)
@@ -232,7 +230,6 @@ GfxBuiltinRenderPass *GfxBuiltinRenderer::getRenderPass()
     return this->_pass;
 }
 
-
 void GfxBuiltinRenderer::createPipeline(std::string name, GfxRendererState rendererState)
 {
     if (this->_pipelines.find(name) != this->_pipelines.end())
@@ -273,15 +270,13 @@ GfxBuiltinPipeline *GfxBuiltinRenderer::getPipeline(const GfxRendererState &pipe
     std::string name = pipelineState.generateKey();
     this->createPipeline(name, pipelineState);
     if (this->_pipelines.find(name) != this->_pipelines.end())
-    {   GfxBuiltinPipeline *pipeline = this->_pipelines[name];
+    {
+        GfxBuiltinPipeline *pipeline = this->_pipelines[name];
         return pipeline;
     }
-    LOGI("[Gfx : RendererBuiltin] :: getPipeline:not found:%s", name.c_str());
+    // LOGI("[Gfx : RendererBuiltin] :: getPipeline:not found:%s", name.c_str());
     return nullptr;
 }
-
-
-
 void GfxBuiltinRenderer::createRenderQueue(std::string renderId, int priority, uint32_t width, uint32_t height)
 {
     if (this->_renderQueues.find(renderId) != this->_renderQueues.end())
@@ -289,7 +284,7 @@ void GfxBuiltinRenderer::createRenderQueue(std::string renderId, int priority, u
         LOGI("[Gfx : RendererBuiltin] :: createRenderQueue:renderId already exists:%s", renderId.c_str());
         return;
     }
-    GfxBuiltinQueue *queue = new GfxBuiltinQueue(renderId,width, height, this);
+    GfxBuiltinQueue *queue = new GfxBuiltinQueue(renderId, width, height, this);
     queue->init();
     queue->setPriority(priority);
     this->_renderQueues[renderId] = queue;
@@ -328,11 +323,8 @@ void GfxBuiltinRenderer::delRenderQueue(std::string renderId)
         LOGI("[Gfx : RendererBuiltin] :: delRenderQueue:renderId not found:%s", renderId.c_str());
         return;
     }
-    // this->_renderQueues[renderId]->destroy();
-    // // 销毁渲染队列
-    // delete this->_renderQueues[renderId];
+    this->_destroyQueueCaches.push_back(this->_renderQueues[renderId]);
     this->_renderQueues.erase(renderId);
-   
 }
 void GfxBuiltinRenderer::submitRenderData(std::string renderId, const std::array<float, 16> &viewMatrix, const std::array<float, 16> &projMatrix, bool isOnScreen, std::array<float, 4> &cameraPosition)
 {
@@ -364,16 +356,14 @@ void GfxBuiltinRenderer::submitRenderObject(std::string renderId, GfxMaterial *m
 }
 void GfxBuiltinRenderer::getOffScreenOutds(std::vector<std::string> &pipelineOutds)
 {
-    //将_renderQueues按priority排序
+    // 将_renderQueues按priority排序
     std::vector<std::string> renderQueueIds;
     for (auto &renderQueue : this->_renderQueues)
     {
         renderQueueIds.push_back(renderQueue.first);
     }
     std::sort(renderQueueIds.begin(), renderQueueIds.end(), [this](const std::string &a, const std::string &b)
-    {
-        return this->_renderQueues[a]->getPriority() < this->_renderQueues[b]->getPriority();
-    });
+              { return this->_renderQueues[a]->getPriority() < this->_renderQueues[b]->getPriority(); });
     // 遍历渲染队列，将isOnScreen为true的渲染队列添加到pipelineOutds中
     for (auto &renderQueueId : renderQueueIds)
     {
@@ -406,18 +396,25 @@ void GfxBuiltinRenderer::frameRendererBefore()
     {
         descriptorSet.isOccupied = false;
     }
+    // 销毁渲染队列缓存
+    for (auto &renderQueue : this->_destroyQueueCaches)
+    {
+        renderQueue->destroy();
+        delete renderQueue;
+        renderQueue = nullptr;
+    }
+    this->_destroyQueueCaches.clear();
     GfxBuiltinRenderer::StencilRef = 0;
 }
 void GfxBuiltinRenderer::frameRenderer(std::vector<VkCommandBuffer> &commandBuffers)
 {
     for (auto &renderQueue : this->_renderQueues)
     {
-        // LOGI("render renderQueue:%s start...........", renderQueue.first.c_str());
-        // std::chrono::high_resolution_clock::time_point frameStart = std::chrono::high_resolution_clock::now();
-        renderQueue.second->render(commandBuffers);
-        // std::chrono::high_resolution_clock::time_point frameEnd = std::chrono::high_resolution_clock::now();
-        // float frameDuration = std::chrono::duration_cast<std::chrono::nanoseconds>(frameEnd - frameStart).count() / 1000000.0f;
-        // LOGI("render renderQueue:%s end duration: %f", renderQueue.first.c_str(), frameDuration);
+        GfxBuiltinQueue *queue = renderQueue.second;
+        if (queue != nullptr)
+        {
+            renderQueue.second->render(commandBuffers);
+        }
     }
 }
 void GfxBuiltinRenderer::frameRendererAfter()

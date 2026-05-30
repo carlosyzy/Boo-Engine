@@ -1,7 +1,7 @@
 #pragma once
-#include "component-factory.h"
-#include "component.h"
-#include "../scene/node.h"
+#include "core/component/component-factory.h"
+#include "core/component/component.h"
+#include "core/scene/node.h"
 namespace Boo
 {
     template <typename Component>

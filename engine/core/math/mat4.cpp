@@ -157,7 +157,8 @@ namespace Boo
 
         float det = a0 * b5 - a1 * b4 + a2 * b3 + a3 * b2 - a4 * b1 + a5 * b0;
 
-        if (det == 0.0f)
+        const float EPSILON = 1e-8f;
+        if (std::abs(det) < EPSILON)
         {
             out = Mat4::identity();
             return;
@@ -537,7 +538,6 @@ namespace Boo
         // out._m[14] = far * near * nf * (1.0f - minClipZ);
         // out._m[15] = 0;
     }
-
     void Mat4::toSRT(const Mat4 &mat, Vec3 *outPos, Quat *outQuat, Vec3 *outScale)
     {
         // 提取位移 (列主序: m[col*4+row])
@@ -605,6 +605,81 @@ namespace Boo
         {
             Quat::fromMat3(m3, *outQuat);
         }
+    }
+
+    bool Mat4::rotate(const Mat4 &a, float rad, const Vec3 &axis, Mat4 &out)
+    {
+        float x = axis.getX();
+        float y = axis.getY();
+        float z = axis.getZ();
+
+        float len = sqrt(x * x + y * y + z * z);
+
+        const float EPSILON = 1e-6f;
+        if (fabs(len) < EPSILON)
+        {
+            return false;
+        }
+
+        len = 1.0f / len;
+        x *= len;
+        y *= len;
+        z *= len;
+
+        // ref: `https://en.wikipedia.org/wiki/Rotation_matrix#Axis_and_angle`
+
+        float s = sin(rad);
+        float c = cos(rad);
+        float t = 1 - c;
+
+        float a00 = a._m[0];
+        float a01 = a._m[1];
+        float a02 = a._m[2];
+        float a03 = a._m[3];
+        float a10 = a._m[4];
+        float a11 = a._m[5];
+        float a12 = a._m[6];
+        float a13 = a._m[7];
+        float a20 = a._m[8];
+        float a21 = a._m[9];
+        float a22 = a._m[10];
+        float a23 = a._m[11];
+
+        // Construct the elements of the rotation matrix
+        float b00 = x * x * t + c;
+        float b01 = y * x * t + z * s;
+        float b02 = z * x * t - y * s;
+        float b10 = x * y * t - z * s;
+        float b11 = y * y * t + c;
+        float b12 = z * y * t + x * s;
+        float b20 = x * z * t + y * s;
+        float b21 = y * z * t - x * s;
+        float b22 = z * z * t + c;
+
+        // Perform rotation-specific matrix multiplication
+        out._m[0] = a00 * b00 + a10 * b01 + a20 * b02;
+        out._m[1] = a01 * b00 + a11 * b01 + a21 * b02;
+        out._m[2] = a02 * b00 + a12 * b01 + a22 * b02;
+        out._m[3] = a03 * b00 + a13 * b01 + a23 * b02;
+        out._m[4] = a00 * b10 + a10 * b11 + a20 * b12;
+        out._m[5] = a01 * b10 + a11 * b11 + a21 * b12;
+        out._m[6] = a02 * b10 + a12 * b11 + a22 * b12;
+        out._m[7] = a03 * b10 + a13 * b11 + a23 * b12;
+        out._m[8] = a00 * b20 + a10 * b21 + a20 * b22;
+        out._m[9] = a01 * b20 + a11 * b21 + a21 * b22;
+        out._m[10] = a02 * b20 + a12 * b21 + a22 * b22;
+        out._m[11] = a03 * b20 + a13 * b21 + a23 * b22;
+
+        // If the source and destination differ, copy the unchanged last row
+        if (&a != &out)
+        {
+            out._m[12] = a._m[12];
+            out._m[13] = a._m[13];
+            out._m[14] = a._m[14];
+            out._m[15] = a._m[15];
+        }
+
+        return true;
     }
 
 } // namespace Boo

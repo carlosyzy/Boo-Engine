@@ -2,7 +2,7 @@
 #include "../gfx.h"
 #include "../gfx-context.h"
 #include "../gfx-renderer.h"
-#include "../gfx-mgr.h"
+#include "../gfx-manager.h"
 #include "../base/gfx-texture.h"
 #include "../../../log.h"
 
@@ -81,7 +81,7 @@ void GfxDefaultQueue::_createVertexBuffers()
         0, 1, 2,
         0, 2, 3};
     // 顶点缓冲区
-    GfxMgr::getInstance()->createBuffer(
+    GfxManager::getInstance()->createBuffer(
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         &this->_vertexBuffer,
@@ -91,7 +91,7 @@ void GfxDefaultQueue::_createVertexBuffers()
     );
 
     // 索引缓冲区（不变）
-    GfxMgr::getInstance()->createBuffer(
+    GfxManager::getInstance()->createBuffer(
         VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         &this->_indexBuffer,

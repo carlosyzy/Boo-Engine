@@ -13,6 +13,8 @@ public:
     Vec2();
     Vec2(float x, float y);
     void set(float x, float y);
+    void setX(float x);
+    void setY(float y);
     float getX() const;
     float getY() const;
     ~Vec2();

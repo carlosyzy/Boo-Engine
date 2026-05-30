@@ -3333,7 +3333,7 @@ FT_BEGIN_HEADER
    *     and setting the character size to `font->units_per_EM`.
    *
    *   FT_LOAD_NO_HINTING ::
-   *     Disable hinting.  This generally generates 'blurrier' bitmap glyphs
+   *       OnDisable hinting.  This generally generates 'blurrier' bitmap glyphs
    *     when the glyphs are rendered in any of the anti-aliased modes.  See
    *     also the note below.
    *
@@ -3414,7 +3414,7 @@ FT_BEGIN_HEADER
    *     @FT_GlyphSlotRec in font units.  See @FT_GlyphSlotRec for details.
    *
    *   FT_LOAD_NO_AUTOHINT ::
-   *     Disable the auto-hinter.  See also the note below.
+   *       OnDisable the auto-hinter.  See also the note below.
    *
    *   FT_LOAD_COLOR ::
    *     Load colored glyphs.  FreeType searches in the following order;

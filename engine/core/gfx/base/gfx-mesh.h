@@ -21,13 +21,13 @@ private:
      * 0:ui网格
      * 1:3d网格
      */
-    int _meshType;
+    int _meshMode;
     /**
      * @brief 网格类型
      * 0:静态网格
      * 1:动态网格
      */
-    int _meshMode;
+    int _meshType;
     std::vector<float> _vertices;
     std::vector<uint32_t> _indices;
     /**

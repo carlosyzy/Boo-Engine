@@ -15,15 +15,26 @@
 GfxBuiltinBatch3D::GfxBuiltinBatch3D()
     : GfxBuiltinBatch()
 {
+    this->_disTransparent = 0.0f;
 }
 void GfxBuiltinBatch3D::addObject(const std::vector<char> &instanceData)
 {
-    if (instanceData.size() !=128)
+    if (instanceData.size() != 128)
     {
         LOGE("[Gfx : BatchBuiltin3D] :: addObject: instanceData size must be 32! Current size: %d", (int)instanceData.size());
         return;
     }
     GfxBuiltinBatch::addObject(instanceData);
+    const GfxRendererState &pipelineState = this->_material->getRendererState();
+    if (pipelineState.type == GfxRendererType::_Transparent)
+    {
+        // 从材质中获取世界矩阵，提取世界坐标，计算与相机的距离
+        const std::array<float, 16> &worldMatrix = this->_material->getInstanceWorldMatrixData();
+        float x = worldMatrix[12] - this->_cameraPos[0];
+        float y = worldMatrix[13] - this->_cameraPos[1];
+        float z = worldMatrix[14] - this->_cameraPos[2];
+        this->_disTransparent = sqrtf(x * x + y * y + z * z);
+    }
 }
 void GfxBuiltinBatch3D::render(VkCommandBuffer &queueCommandBuffer)
 {
@@ -43,19 +54,19 @@ void GfxBuiltinBatch3D::render(VkCommandBuffer &queueCommandBuffer)
 }
 void GfxBuiltinBatch3D::_bindUniformBuffer()
 {
-    this->_ubo = Gfx::_bufferUBO->getBuffer((16 + 16 + 1+ 4 + 4 + 4) * sizeof(float)); // 视图矩阵+投影矩阵+时间+相机位置+主光方向+主光颜色
+    this->_ubo = Gfx::_bufferUBO->getBuffer((16 + 16 + 1 + 4 + 4 + 4) * sizeof(float)); // 视图矩阵+投影矩阵+时间+相机位置+主光方向+主光颜色
     this->_ubo->setIsOccupied(true);
     // 提交视图矩阵和投影矩阵
     memcpy(this->_ubo->getMappedData(), this->_viewMatrix.data(), sizeof(float) * 16);
     memcpy((char *)this->_ubo->getMappedData() + sizeof(float) * 16, this->_projMatrix.data(), sizeof(float) * 16);
-    // 提交时间
-    memcpy((char *)this->_ubo->getMappedData() + sizeof(float) * 32, &Gfx::_frameTime, sizeof(float));
     // 提交相机位置
-    memcpy((char *)this->_ubo->getMappedData() + sizeof(float) * 36, this->_cameraPos.data(), sizeof(float) * 4);
+    memcpy((char *)this->_ubo->getMappedData() + sizeof(float) * 32, this->_cameraPos.data(), sizeof(float) * 4);
     // 提交主光方向
-    memcpy((char *)this->_ubo->getMappedData() + sizeof(float) * 40, Gfx::_mainLitDir.data(), sizeof(float) * 4);
+    memcpy((char *)this->_ubo->getMappedData() + sizeof(float) * 36, Gfx::_mainLitDir.data(), sizeof(float) * 4);
     // 提交主光颜色
-    memcpy((char *)this->_ubo->getMappedData() + sizeof(float) * 44, Gfx::_mainLitColor.data(), sizeof(float) * 4);
+    memcpy((char *)this->_ubo->getMappedData() + sizeof(float) * 40, Gfx::_mainLitColor.data(), sizeof(float) * 4);
+    // 提交时间
+    memcpy((char *)this->_ubo->getMappedData() + sizeof(float) * 44, &Gfx::_frameTime, sizeof(float));
 }
 
 void GfxBuiltinBatch3D::_setViewportScissor(VkCommandBuffer &queueCommandBuffer)
@@ -71,7 +82,7 @@ void GfxBuiltinBatch3D::_bindDescriptorSets(VkCommandBuffer &queueCommandBuffer,
     VkDescriptorBufferInfo bufferInfo{};
     bufferInfo.buffer = ubo->getBuffer();
     bufferInfo.offset = 0;
-    bufferInfo.range = sizeof(float) * (16 + 16 + 1); // 视图矩阵+投影矩阵+全局时间
+    bufferInfo.range = sizeof(float) * (16 + 16 + 4 + 4 + 4 + 1); // 视图矩阵+投影矩阵+相机位置+主光方向+主光颜色+全局时间
     descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[0].dstSet = descriptor;
     descriptorWrites[0].dstBinding = 0;
@@ -125,6 +136,12 @@ void GfxBuiltinBatch3D::_bindVertexIndicesBuffers(VkCommandBuffer &queueCommandB
 {
     GfxBuiltinBatch::_bindVertexIndicesBuffers(queueCommandBuffer);
 }
+float GfxBuiltinBatch3D::getDisTransparent() const
+{
+    return this->_disTransparent;
+}
+
+
 
 GfxBuiltinBatch3D::~GfxBuiltinBatch3D()
 {

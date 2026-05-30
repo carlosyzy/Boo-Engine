@@ -1,18 +1,19 @@
 #include "node-3d.h"
 #include <iostream>
-#include "../../boo.h"
-#include "../../log.h"
-#include "../component/component-factory.h"
-#include "../renderer/3d/mesh-renderer.h"
+#include "boo.h"
+#include "log.h"
+#include "core/util/uuid-util.h"
+#include "core/component/component-factory.h"
+#include "core/renderer/3d/mesh-renderer.h"
 
 namespace Boo
 {
 
 	Node3D::Node3D(const std::string name, const std::string uuid)
 	{
-		this->_groupID = uint32_t(NodeGroup::Node3D);
+		this->_groupID = uint32_t(ENodeGroup::Node3D);
 		this->_name = name;
-		this->_layer = NodeLayer::Node3D;
+		this->_layer = ENodeLayer::Node3D;
 		this->_uuid = uuid.empty() ? UuidUtil::generateUUID() : uuid;
 		this->_active = true;
 		this->_isActiveInHierarchy = false;
@@ -25,8 +26,8 @@ namespace Boo
 		this->_worldRotation.set(0.0f, 0.0f, 0.0f, 1.0f);
 		this->_localMatrix = Mat4::identity();
 		this->_worldMatrix = Mat4::identity();
-		this->_worldTransformFlag = static_cast<uint32_t>(NodeTransformFlag::ALL_FLAG);
-		this->_frameTransformFlag = static_cast<uint32_t>(NodeTransformFlag::ALL_FLAG);
+		this->_worldTransformFlag = static_cast<uint32_t>(ENodeTransformFlag::ALL_FLAG);
+		this->_frameTransformFlag = static_cast<uint32_t>(ENodeTransformFlag::ALL_FLAG);
 		this->_parent = nullptr;
 		this->_meshRenderer = nullptr;
 	}
@@ -62,22 +63,9 @@ namespace Boo
 	{
 		if (!this->_isActiveInHierarchy)
 			return;
-		if (this->_worldTransformFlag == NodeTransformFlag::NONE_FLAG)
+		if (this->_worldTransformFlag == ENodeTransformFlag::NONE_FLAG)
 			return;
-		// 通过位移,旋转,缩放计算本地矩阵
-		this->_localMatrix.fromTRS(this->_position, this->_rotation, this->_scale);
-		if (this->_parent)
-		{
-			Mat4::multiply(this->_localMatrix, this->_parent->getWorldMatrix(), this->_worldMatrix);
-		}
-		else
-		{
-			this->_worldMatrix = this->_localMatrix;
-		}
-		Mat4::getPosition(this->_worldMatrix, this->_worldPosition);
-		Mat4::getScale(this->_worldMatrix, this->_worldScale);
-		Mat4::getRotation(this->_worldMatrix, this->_worldRotation);
-		this->_worldTransformFlag = NodeTransformFlag::NONE_FLAG;
+		Node::_updateWorldTransform();
 		// 计算世界矩阵的逆转置矩阵
 		Mat4::inverseTranspose(this->_worldMatrix, this->_worldMatrixIT);
 	}
@@ -104,7 +92,7 @@ namespace Boo
 			LOGW("[Node2D]:addComponent:: %s, %s, Component Not register", name.c_str(), uuid.c_str());
 			return nullptr;
 		}
-		if (component->getLayer() == ComponentLayer::Node2D)
+		if (component->getLayer() == EComponentLayer::Layer2D)
 		{
 			// std::cout << name << ":Component add fail,node type is Node2D" << std::endl;
 			LOGW("[Node3D]:addComponent:: %s, %s, Component add fail,node type is Node2D", name.c_str(), uuid.c_str());
@@ -120,7 +108,7 @@ namespace Boo
 			}
 			else
 			{
-				LOGW("[Node3D]:addComponent:: %s, %s, Component add fail,node already has UIRenderer", name.c_str(), uuid.c_str());
+				LOGW("[Node3D]:addComponent:: %s, %s, Component add fail,node already has MeshRenderer", name.c_str(), uuid.c_str());
 				delete component;
 				component = nullptr;
 				return nullptr;

@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <filesystem>
 #include <functional>
-#include "component.h"
+#include "core/component/component.h"
 namespace Boo
 {
     class ComponentFactory
@@ -20,7 +20,7 @@ namespace Boo
         ComponentFactory &operator=(ComponentFactory &&) = delete;
 
         // 存储组件创建函数和相关信息
-        std::unordered_map<std::string, std::function<Boo::Component *(std::string name, Boo::Node *node, std::string uuid)>> _creators;
+        std::unordered_map<std::string, std::function<Component *(std::string name, Node *node, std::string uuid)>> _creators;
         std::unordered_map<std::string, std::string> _descriptions;
 
     public:
@@ -36,7 +36,7 @@ namespace Boo
          * @param component 组件实例(指针)
          * @param description 组件描述
          */
-        bool registerComponent(const std::string &name, std::function<Boo::Component *(std::string name, Boo::Node *node, std::string uuid)> creator, std::string description = "");
+        bool registerComponent(const std::string &name, std::function<Component *(std::string name, Node *node, std::string uuid)> creator, std::string description = "");
 
         /**
          * @brief 创建组件实例
@@ -44,7 +44,7 @@ namespace Boo
          * @param name 组件名称
          * @return Component* 组件实例指针
          */
-        Boo::Component *createComponent(const std::string &name, Boo::Node *node, std::string uuid);
+        Component *createComponent(const std::string &name, Node *node, std::string uuid);
         /**
          * @brief 获取组件描述
          *

@@ -1,104 +1,97 @@
 # 事件系统示例
 
-## 示例 1: 基本事件订阅与发布
+## 示例 1: 监听引擎启动事件
 
 ```cpp
 #include "engine/boo.h"
 
-class MyGame {
+class GameApp {
 public:
     void init() {
-        // 订阅玩家跳跃事件
-        Boo::event->subscribe("PlayerJump", [](const Boo::EventData& data) {
-            float jumpHeight = data.getFloat("jumpHeight", 0.0f);
-            LOGI("玩家跳跃了！跳跃高度: %.2f", jumpHeight);
-        });
-        
-        // 订阅玩家得分事件
-        Boo::event->subscribe("PlayerScore", [](const Boo::EventData& data) {
-            int score = data.getInt("score", 0);
-            std::string playerName = data.getString("playerName", "Unknown");
-            LOGI("%s 得分: %d", playerName.c_str(), score);
+        // 监听引擎启动完成事件
+        Boo::event->on(Boo::EventEngine_Launch, [this]() {
+            this->onLaunch();
         });
     }
-    
-    void update(float deltaTime) {
-        // 模拟玩家跳跃
-        if (Boo::game->input->getKey(Boo::KeyCode::SPACE)) {
-            Boo::EventData jumpData;
-            jumpData.setFloat("jumpHeight", 10.0f);
-            Boo::event->publish("PlayerJump", jumpData);
-        }
-        
-        // 模拟玩家得分
-        if (Boo::game->input->getKey(Boo::KeyCode::E)) {
-            Boo::EventData scoreData;
-            scoreData.setInt("score", 100);
-            scoreData.setString("playerName", "Player1");
-            Boo::event->publish("PlayerScore", scoreData);
-        }
+
+    void onLaunch() {
+        LOGI("引擎启动完成，开始创建场景");
+
+        Boo::Scene* scene = new Boo::Scene("MainScene");
+        Boo::game->openScene(scene);
     }
 };
 ```
 
-## 示例 2: 带优先级的事件订阅
+## 示例 2: 自定义游戏事件
 
 ```cpp
 #include "engine/boo.h"
 
-class MyGame {
-public:
-    void init() {
-        // 高优先级订阅者（优先级值越小，优先级越高）
-        Boo::event->subscribe("GameStart", 1, [](const Boo::EventData& data) {
-            LOGI("高优先级订阅者: 游戏开始前的准备工作");
-        });
-        
-        // 普通优先级订阅者
-        Boo::event->subscribe("GameStart", 5, [](const Boo::EventData& data) {
-            LOGI("普通优先级订阅者: 游戏开始");
-        });
-        
-        // 低优先级订阅者
-        Boo::event->subscribe("GameStart", 10, [](const Boo::EventData& data) {
-            LOGI("低优先级订阅者: 游戏开始后的清理工作");
-        });
-    }
-    
-    void startGame() {
-        // 发布游戏开始事件
-        Boo::EventData gameStartData;
-        gameStartData.setString("level", "1");
-        Boo::event->publish("GameStart", gameStartData);
-    }
-};
-```
-
-## 示例 3: 取消事件订阅
-
-```cpp
-#include "engine/boo.h"
-
-class MyGame {
+class GameManager {
 private:
-    // 存储回调函数的引用
-    std::function<void(const Boo::EventData&)> onPlayerJump;
-    
+    uint64_t _playerDiedListenerId = 0;
+
 public:
     void init() {
-        // 创建回调函数
-        onPlayerJump = [](const Boo::EventData& data) {
-            LOGI("玩家跳跃了！");
-        };
-        
-        // 订阅事件
-        Boo::event->subscribe("PlayerJump", onPlayerJump);
+        // 监听玩家死亡事件
+        _playerDiedListenerId = Boo::event->on("PlayerDied", [this]() {
+            LOGI("玩家死亡，显示游戏结束界面");
+            this->showGameOver();
+        });
     }
-    
+
+    void onPlayerHealthZero() {
+        // 触发玩家死亡事件
+        Boo::event->emit("PlayerDied");
+    }
+
+    void showGameOver() {
+        // 显示游戏结束 UI ...
+    }
+
     void cleanup() {
-        // 取消订阅事件
-        Boo::event->unsubscribe("PlayerJump", onPlayerJump);
-        LOGI("已取消玩家跳跃事件的订阅");
+        // 取消监听
+        Boo::event->off(_playerDiedListenerId);
     }
 };
+```
+
+## 示例 3: 取消某事件的全部监听
+
+```cpp
+#include "engine/boo.h"
+
+void cleanupSceneEvents() {
+    // 取消场景内注册的所有 "EnemySpawn" 监听者
+    Boo::event->off("EnemySpawn");
+    LOGI("已取消所有 EnemySpawn 事件监听");
+}
+```
+
+## 示例 4: 多个监听者
+
+```cpp
+#include "engine/boo.h"
+
+class AudioManager {
+public:
+    void init() {
+        Boo::event->on("GameStart", []() {
+            LOGI("AudioManager: 播放背景音乐");
+        });
+    }
+};
+
+class UIManager {
+public:
+    void init() {
+        Boo::event->on("GameStart", []() {
+            LOGI("UIManager: 隐藏开始菜单");
+        });
+    }
+};
+
+// 触发 "GameStart"，AudioManager 和 UIManager 的回调都会执行
+Boo::event->emit("GameStart");
 ```

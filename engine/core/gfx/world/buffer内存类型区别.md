@@ -66,7 +66,7 @@ VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT
 结论：用可映射的方式！
 cpp
 // 正确做法：
-GfxMgr::getInstance()->createBuffer(
+GfxManager::getInstance()->createBuffer(
     VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,  // 不需要TRANSFER_DST_BIT！
     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
     ...);

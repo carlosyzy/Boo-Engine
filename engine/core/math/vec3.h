@@ -33,7 +33,7 @@ namespace Boo
         void add(Vec3 &v);
         void subtract(Vec3 &v);
         void rotate(Quat &q);
-        void test();
+        void normalize();
         /**
          * 析构函数 用于销毁释放内存
          */
@@ -41,8 +41,17 @@ namespace Boo
 
     public:
         static void add(Vec3 &a, Vec3 &b, Vec3 &out);
-        static void subtract(Vec3 &a, Vec3 &b, Vec3 &out);
-        static float dot(Vec3 &a, Vec3 &b);
+        static void subtract(const Vec3 &a, const Vec3 &b, Vec3 &out);
+        static float distance(const Vec3 &a, const Vec3 &b);
+        static float dot(const Vec3 &a, const Vec3 &b);
+        /**
+         * 计算向量长度的平方
+         */
+        static float lengthSqr(const Vec3 &v);
+        /**
+         * 计算两个向量的叉乘
+         */
+        static void cross(const Vec3 &a, const Vec3 &b, Vec3 &out);
         /**
          * 转换四元数
          */
@@ -50,7 +59,7 @@ namespace Boo
         /**
          * 归一化
          */
-        static void normalize(Vec3 &v, Vec3 &out);
+        static void normalize(const Vec3 &v, Vec3 &out);
     };
 
 } // namespace Boo
